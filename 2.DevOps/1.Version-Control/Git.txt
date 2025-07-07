@@ -1,0 +1,633 @@
+____________________________________________________________________________________________________________________________________________________________
+____________________________________________________________________________________________________________________________________________________________
+                                                                Git & GitHub
+                                 https://git-scm.com/                             https://www.techtarget.com/searchitoperations/definition/GitHub                                                 
+____________________________________________________________________________________________________________________________________________________________
+Git:
+    - Git is a free and open-source version control system that helps developers track changes made to code over time.
+    - It allows multiple developers to collaborate on the same project by tracking changes, managing different versions, and resolving conflicts
+    - Git is a distributed version control system, 
+      meaning that every developer working on the project has a full copy of the entire project history, which makes it easier to collaborate and work on different parts of the project
+    - Git is a command-line tool, but there are also GUI tools available, such as GitHub Desktop and GitKraken.
+GitHub:
+    - GitHub is a web-based platform that provides a central location for 
+      developers to store and manage their repositories, collaborate with others, and track changes to their code.
+    - GitHub is built on top of Git and provides additional features such as issue tracking, project management, and code review tools.
+____________________________________________________________________________________________________________________________________________________________
+Git Features:
+    1.It is free and open source.
+    2.It is Operating system independent.
+    3.It track everything.
+    4.It track history.
+    5.It treat files and directories as objects "blob, tree".
+    5.Each object has Unique ID 'sha'.
+    6.It does not make a change in your file contents.
+____________________________________________________________________________________________________________________________________________________________
+Git Architecture:
+    1.Working Directory:
+            - This is the directory where you are currently working on your project.
+            - It contains all the files and subdirectories that make up your project.
+            - It also contains a .git directory, which is a git repository and a hidden directory that contains all the metadata and history of your project.
+            - It also contains a .gitignore file
+            - It also contains a .gitattributes file
+    
+    2.Index (Staging Area):
+            - This is a cache of the changes you've made to your working directory.
+            - It's a snapshot of the changes you've made, but it's not yet committed to
+            - The index is used to stage changes before they are committed to the repository.
+
+    3.Repository (Local):
+            - This is the local copy of the repository on your computer.
+            - It contains all the files and subdirectories that make up your project, as well as the commit history.
+
+    4.Remote Repository (Remote):
+            - This is the central location where all the developers can access the project.
+            - It's a copy of the repository on a server, and it's used to share the project with others.
+    
+    5.Configuration Files:
+            - Local  -->>  ".git/config"     :  It contains configurations for specific repository.
+            - Global -->>  "user/.gitconfig" :  It contains configurations for all repositories of a specific user in the system.
+            - System -->>  "/etc/gitconfig"  :  It contains configurations for all repositories of all user in the system.   
+                                        git config --list --show-origin   
+
+
+                                        git config --global core.editor "<editor_command>"          
+                                        git config --global core.editor "vim"                      
+                                        git config --global core.editor "code --wait"          
+____________________________________________________________________________________________________________________________________________________________
+".git" Directory:
+    - The .git directory is the root of the repository and contains all the metadata and history of the project.
+    - The .git directory contains the following subdirectories and files:
+
+            - .git/description :
+                            - This file contains a brief description of the project.
+                            - Used primarily in bare repositories for display purposes.
+            - .git/info/    :
+                            - This directory contains additional information about the repository, such as the ignore file and the attributes file.
+            - .git/logs/    :
+                            - This directory contains the commit history, including the commit messages and the author information.
+                            - Tracks the history of changes to references (e.g., branches).
+                            - Includes:
+                                    logs/HEAD       : History of changes to the current branch.
+                                    logs/refs/heads/: Changes to individual branches.
+            - .git/config   :
+                            - This file contains the configuration settings for the repository, 
+                              such as the remote repository URL and the username and password for authentication.
+            - .git/hooks/   :
+                            - This directory contains scripts that are executed at specific points during the Git workflow,
+                              such as when a commit is made or when a push is attempted.
+                            - Contains scripts that Git runs at various stages of its lifecycle (e.g., pre-commit, post-commit).
+                            - Examples:
+                                    pre-commit: Runs before a commit is finalized.
+                                    post-merge: Runs after a successful merge.
+                            - Hooks are useful for automating tasks like code formatting or deployment.  
+
+            - .git/COMMIT_EDITMSG  :
+    
+            - .git/index :  
+                            - Contains the staging area (also known as the cache).
+                            - Tracks what files are staged for the next commit.
+                            - Managed automatically by Git.
+
+            - .git/HEAD  : 
+                            - A file that points to the current branch reference.
+                            - Example content: ref: refs/heads/main.
+                            - It tells Git where the current branch pointer is.
+
+            - .git/objects/ :
+                            - This directory contains the actual data for the repository, including the commit history and the file contents.
+                            - Stores all the content tracked by Git in a compressed format.
+                            - Organized into subdirectories based on the first two characters of the object’s hash.
+                            - Includes:
+                                    Blobs              : File contents and metadata.
+                                    Trees              : Directory structures and metadata.
+                                    Commits            : Metadata and links between trees and blobs.
+                                    Tagged Annotations :
+
+            - .git/refs/    :
+                            - This directory contains references to the commits, such as the HEAD reference and the branch references.
+                            - Stores references to commit objects (branches, tags, etc.).
+                            - Organized into:
+                                    heads/  : Points to the latest commit in each branch.
+                                    tags/   : Points to specific commits for tagging purposes.
+                                    remotes/: Tracks remote branches.
+
+            - .git/packed-refs :
+                            - A file that contains a list of references (e.g., branches, tags) and their corresponding object hashes.
+                            - Used to speed up access to references in large repositories.                        
+----------------------------------------------------------------------------------------------------------------------
+".gitignore" File:
+            - The .gitignore file is a file that tells Git which files or directories to ignore. 
+            - It is used to prevent certain files or directories from being tracked by Git.
+            - These files are not tracked, staged, or committed.
+            - The .gitignore file is placed in the root directory of the repository.
+            - Purpose:
+                        - Exclude sensitive files like environment variables (.env).
+                        - Ignore temporary or generated files such as logs or build artifacts.
+                        - Prevent tracking of platform-specific files like .DS_Store on macOS or Thumbs.db on Windows.
+                        - Works with git add and git status.
+                        ----------------------------------------- 
+                        .   # Logs                              .        
+                        .   *.log                               .        
+                        .                                       .
+                        .   # Temporary files                   .       
+                        .   *.tmp                               .        
+                        .                                       .
+                        .   # Node.js dependencies              .        
+                        .   node_modules/                       .      
+                        .                                       .
+                        .   # Compiled files                    .         
+                        .   *.o                                 .        
+                        .   *.class                             .        
+                        .                                       .
+                        .   # macOS system files                .        
+                        .   .DS_Store                           .        
+                        .                                       .
+                        .   # Environment variables             .        
+                        .   .env                                .  
+                        ----------------------------------------- 
+            - The rules for the patterns:
+                        - Blank lines or lines starting with # are ignored.
+                        - Standard glob patterns work, and will be applied recursively throughout the entire working tree.
+                        - You can start patterns with a forward slash (/) to avoid recursivity.
+                        - You can end patterns with a forward slash (/) to specify a directory.
+                        - You can negate a pattern by starting it with an exclamation point (!). 
+                        --------------------------------------------------------------------------
+                        # ignore all .a files
+                        *.a
+
+                        # but do track lib.a, even though you're ignoring .a files above
+                        !lib.a
+
+                        # only ignore the TODO file in the current directory, not subdir/TODO
+                        /TODO
+
+                        # ignore all files in any directory named build
+                        build/
+
+                        # ignore doc/notes.txt, but not doc/server/arch.txt
+                        doc/*.txt
+
+                        # ignore all .pdf files in the doc/ directory and any of its subdirectories
+                        doc/**/*.pdf           
+                        --------------------------------------------------------------------------
+     
+".gitattributes" File:
+            - The .gitattributes file is used to define attributes for files in the repository. 
+            - It is used to specify things like line endings, text files, and binary files. 
+            - The .gitattributes file is placed in the root directory of the repository.
+            - Purpose:
+                        - The .gitattributes file is used to configure attributes that 
+                          affect how Git handles specific files, particularly during merges, exports, and platform compatibility.
+                        - Define line-ending behaviors for cross-platform compatibility (e.g., LF vs CRLF).
+                        - Mark specific files as binary to prevent Git from attempting to merge them.
+                        - Specify how files should be handled in archives created with git archive.   
+                        - Affects git diff, git merge, and git archive. 
+                        -------------------------------------------
+                        .   # Handle line endings                 .
+                        .   * text=auto                           .
+                        .   *.sh text eol=lf                      .
+                        .   *.bat text eol=crlf                   .
+                        .                                         .      
+                        .   # Binary files                        .
+                        .   *.png binary                          .
+                        .   *.jpg binary                          .
+                        .                                         .
+                        .   # Ignore during archive               .
+                        .   secret.env export-ignore              .
+                        .                                         .
+                        .   # Use "ours" strategy for lock files  .
+                        .   *.lock merge=ours                     .
+                        -------------------------------------------
+____________________________________________________________________________________________________________________________________________________________
+Git Obects:
+        Def:
+            - In Git, objects are the fundamental building blocks of the repository. 
+            - They are the fundamental units of data that Git stores and manages.
+            - These objects are immutable and identified by a unique SHA-1 hash.
+            - Git stores all data as objects in the .git/objects directory. 
+        
+        Types:          Blob    -   Tree   -   Commit   -   Tag
+            1.Blob:
+                  - It is a 'binary large object' that represents the content of a file. 
+                  - It contains raw file data without metadata (e.g., filenames or permissions). 
+                  - It is Identified by a unique SHA-1 hash of its contents.
+
+            2.Tree:
+                  - It represents a directory structure.
+                  - It stores references to blobs and/or other trees.
+                  - It contains metadata like filenames and permissions.
+                  - It acts as a snapshot of the directory at a specific point in time. 
+
+            3.Commit:
+
+                  - It represents a single point in the repository’s history.
+                  - It contains metadata such as the author, committer, commit message, and a reference to a tree object.
+                  - It points to one or more parent commits (except for the first commit, which has no parent).
+                  - It links the history of the repository.
+
+            4.Tag:
+                  - It represents a reference to a specific commit, often used to mark release points.
+                  - It can be 
+                            1.lightweight: a simple pointer to a commit.
+                            2.annotated  : it contains additional metadata like a message, author, and timestamp.
+        
+        Git Objects Lifecycle:
+                1.Blob Creation:
+                                - When you run git add, the content of a file is converted into a blob object.
+                                - Example:
+                                    echo "Hello Git!" > file.txt
+                                    git add file.txt
+                                - A blob object is created for file.txt.
+                2.Tree Creation:
+                                - When you make a commit, Git creates a tree object that references all blobs and sub-trees for that commit.
+                3.Commit Creation:
+                                - Git creates a commit object referencing the tree object and linking it to the previous commit(s).
+
+
+
+____________________________________________________________________________________________________________________________________________________________
+File States:
+        - In Git, a file can exist in various states during its lifecycle within the repository. 
+        - These states determine how Git tracks and manages the file. 
+        - https://git-scm.com/book/en/v2/images/lifecycle.png
+        - Use "git status" to display the files states.
+        - File states:
+                ------------------------------------
+                    1.Untracked:
+                            - Untracked Not-Ignored. 'Red'
+                            - Untracked Ignored.
+
+                    2.Tracked:
+                            - Unmodified.
+                            - Modified:
+                                       - Unstaged 'Red'
+                                       - Staged   'Green'
+                            - Deleted:
+                                       - Unstaged 'Red'
+                                       - Staged   'Green'      
+                            - Committed.
+                ------------------------------------
+                1.Untracked:
+                        1.Not-Ignored:
+                                - A file that exists in your working directory but hasn’t been added to Git for tracking.
+                                - Git is unaware of this file.
+                                - Example:
+                                    - Run 'git status'.
+                                    - Untracked files will appear under the "Untracked files" section.
+                                    - Stage the file to move it to the "Staged" state:
+                                                'git add <filename>'  : to track specific file.
+                                                'git add .'           : to add all untracked files in the current directory and its subdirectories.       
+                                                'git add *.php'       : to add all untracked files in the current directory and its subdirectories, 
+                                                                        that have specific ext.
+                                    - If the file is tracked you can make them untracked using:
+                                                "git rm --cached <filename>"        
+
+                        2.Ignored:
+                            - A file that Git intentionally does not track, as specified in the .gitignore file.
+                            - Commonly used for files that are auto-generated or contain sensitive data (e.g., logs, build artifacts).
+                            - Example:
+                                    - Create a file called "example.txt" and add it to Git.
+                                    - Run 'git config --global core.excludesfile ~/.gitignore' to create a global ignore file.
+                                    - Add "example.txt" to the .gitignore file.
+                                    - Run 'git status' to see that the file is ignored.                
+                2.Tracked:
+                        - A file that has been added to Git for tracking.
+                        - Git is aware of this file and can track its changes.
+                        Types:
+                            1.Unmodified :
+                                        - A tracked file that hasn’t been modified since the last commit.
+                                        - Example:
+                                                - Create a file called "example.txt" and add it to Git.
+                                                - Modify the file, but then revert it back to its original state.
+                                                - Run 'git status' to see that the file is unmodified.
+                            2.Modified:
+                                    1.Unstaged :
+                                            - A tracked file that has been modified but hasn’t been staged for the next commit.
+                                            - Example:
+                                                    - Create a file called "example.txt" and add it to Git.
+                                                    - Modify the file.
+                                                    - Run 'git status' to see that the file is modified and unstaged.
+                                    2.Staged :
+                                            - A tracked file that has been modified and staged for the next commit.
+                                            - Example:
+                                                    - Create a file called "example.txt" and add it to Git.
+                                                    - Modify the file.
+                                                    - Run 'git add <filename>' to stage the file.
+                                                    - Run 'git status' to see that the file is modified and staged.
+                            3.Deleted:
+                                    1.Unstaged :
+                                            - A tracked file that has been deleted but hasn’t been staged for the next commit.
+                                            - Example:
+                                                    - Create a file called "example.txt" and add it to Git, then delete it.
+                                                    - Run 'git status' to see that the file is deleted and unstaged.
+                                    2.Staged :
+                                            - A tracked file that has been deleted and staged for the next commit.
+                                            - Example:
+                                                    - Create a file called "example.txt" and add it to Git, then delete it.
+                                                    - Run 'git add <filename>' to stage the deletion.
+                                                    - Run 'git status' to see that the file is deleted and staged.
+
+                                    - A tracked file that has been modified in multiple branches and hasn’t been merged yet.
+                                    - Example:
+                                    - Create a file called "example.txt" and add it to Git.
+                                    - Modify the file in the master branch.
+                                    - Create a new branch called "feature" and modify the file in the feature branch.
+                                    - Run 'git status' to see that the file is unmerged.
+                            4.Committed :
+                                        - A tracked file that has been committed to the repository.                      
+
+
+____________________________________________________________________________________________________________________________________________________________
+branches states:
+1.merged:
+2.unmerged:
+
+____________________________________________________________________________________________________________________________________________________________
+____________________________________________________________________________________________________________________________________________________________
+
+
+
+
+
+
+____________________________________________________________________________________________________________________________________________________________
+# Git help:
+                - man git-<command>            : displays the manual page for the specified command.
+
+                - git <command> -h             : displays the summary help for the specified command.
+                - git <command> --help         : displays the help for the specified command.
+
+                - git help <command>           : displays the help for the specified command.
+                - git help <command> --all     : displays the help for the specified command and all its subcommands.
+                - git help <command> --verbose : displays the help for the specified command with more details.
+____________________________________________________________________________________________________________________________________________________________
+# Working-With-Local:
+        $ cd path/your-project/
+        $ git init
+        $ code .
+# Working-With-Remote:
+        1.Cloning:         ("remote add + fetch")
+                $ cd path/
+                $ git clone <repo-url/path>   or   $ git clone <repo-url/path> <my-new-project-name>
+                $ cd <project-name>
+                $ git branch <branch-name>
+                $ git switch <branch-name>
+                $ code . 
+                
+             : to fetch and merge any update in the remote to your local.   
+                $ git fetch <remote> 
+                $ git merge  
+        ----------------------------------
+        2.Fetching:
+                $ git remote add <remote-shortname> <repo-url-or-path>       
+                
+                $ git fetch <remote>                            : to fetch and merge any update in the remote to your local.
+                $ git merge                                                
+             
+                $ git remote   or   $ git remote -v
+                $ git remote show <remote>
+                $ git remote rename <old-remote-shortname> <new-name>
+                $ git remote remove <remote-shortname>
+        ----------------------------------
+        3.Pull:          ("fetch + merge)
+                $ git pull <remote>  
+        
+        ----------------------------------
+        3.Pushing:
+                $ git push -u <remote> <branch>
+                $ git push <remote> <tag>
+                $ git push <remote> --tags                  : all tags
+        ----------------------------------
+
+        4.Branching:
+                $ git branch -r                             : display branches in remote.
+                $ git branch -vv
+____________________________________________________________________________________________________________________________________________________________
+# Display:
+                                        $ git log --oneline --decorate --graph --all
+        ------------------------------------------------------------------------------------
+        The Working Tree status:
+
+                $ git status        
+                $ git status -s
+                $ git status --short 
+                
+                $ git diff                              : displays difference between  'index area'      and  'working directory'.
+                $ git diff --staged/--cached            : displays difference between  'git repository'  and  'index area'.  
+
+                $ git diff <object-sha>..<object-sha>   : displays difference between  two objects.  
+
+        The Commit history:
+                $ git show                 : last commit
+                $ git show <object>        : specific commit
+
+
+                $ git log    
+                $ git log  <file-name> 
+                $ git log  --author=<pattern> 
+                $ git log  --committer=<pattern> 
+                
+                $ git log -<number>     
+                $ git log -p/--patch
+                $ git log --stat
+                
+                $ git log --graph 
+
+                $ git log --pretty=oneline
+                $ git log --pretty=full
+                $ git log --pretty=fuller
+                $ git log --pretty=format:"%h - %an, %ar : %s"
+                $ git log --pretty=format:"%h %s" --graph
+
+                   
+                $ git log --oneline --decorate --graph --all
+                alias graph="git log --oneline --decorate --graph --all"
+
+                $ git reflog
+        
+        Branching:
+                $ git branch
+
+
+        The Remote Repositories:
+
+                $ git remote  
+                $ git remote -v
+
+        The Annotated Tags:
+                $ git show v1.4             
+        ------------------------------------------------------------------------------------
+________________________________________________________________________________________________________________________________
+# Staging:
+                $ git add <file-name>
+                $ git add <pattern>
+                $ git add !<file-name>
+                $ git add .
+
+________________________________________________________________________________________________________________________________
+# UnStaging:         
+                $ git rm --cached <file-name>              : if the file is staged it makes it unstaged, and untracked.
+
+                $ git reset HEAD       <file-name>         : It is used to Unstaging   a Staged File
+                $ git restore --staged <file-name>         : It is used to Unstaging   a Staged File
+                $ git restore          <file-name>         : It is used to Unmodifying a Modified File
+                $ git checkout --      <file-name>         : It is used to Unmodifying a Modified File
+
+
+
+
+                $ git commit -m 'Initial commit'
+                $ git add forgotten_file
+                $ git commit --amend
+________________________________________________________________________________________________________________________________
+# Deleting:
+                $ git rm    <file-name>                    : if the file is unstaged it removes it from the Working directory.
+                $ git rm -f <file-name>                    : if the file is staged   it removes it forcely from the Working directory.
+
+
+________________________________________________________________________________________________________________________________
+# Renaming:
+                $ git mv file_from file_to
+                        is eual to
+                $ mv file_from   file_to
+                $ git rm file_from
+                $ git add file_to       
+
+________________________________________________________________________________________________________________________________
+# Commiting:
+               $ git commit                   : Commit msg using txt editor.
+               $ git commit -v                : Commit msg using txt editor with staging details.
+               $ git commit -m "msg"          : Direct commit msg without using txt editor.
+               $ git commit -a -m ''          : staging and commit in one line.
+
+
+
+
+                $ git commit -m 'Initial commit'
+                $ git add forgotten_file
+                $ git commit --amend
+________________________________________________________________________________________________________________________________
+# Tagging:
+        Listing Your Tags:
+                $ git tag                     : list all tags.
+                $ git tag -l "v1.8.5*"        : list specific tags.
+                $ git show <tag-name>
+        
+        Creating Annotated Tags:
+                $ git tag -a <tag-name> -m   "msg"                         : tag the current commit.      
+                $ git tag -a <tag-name> -m   "msg" <commit-sha>            : tag a specific commit.      
+
+        Sharing Tags:
+                $ git push <remote> <tag>                   : specific tag. 
+                $ git push <remote> --tags                  : all tags.
+                $ git push <remote> --follow-tags           : only annotated tags
+                
+      
+
+        Deleting Tags:
+                $ git tag -d <tagname>                      : for local  tags.                        
+                $ git push <remote> --delete <tagname>      : for remote tags.           
+________________________________________________________________________________________________________________________________
+# Git Aliases:
+                $ git config --global alias.yourCustomCommand <git-command> 
+                $ git config --global alias.unstage 'reset HEAD --'
+
+                $ git unstage fileA
+                $ git reset HEAD -- fileA
+________________________________________________________________________________________________________________________________
+# Reversioning:
+                $ git reset [<mode>] [<commit>]
+              
+           Backword:   
+                $ git reset           HEAD~<n>                    
+                $ git reset  --hard   HEAD~<n>                    
+                $ git reset  --soft   HEAD~<n>                  
+                $ git reset  --mixed  HEAD~<n> 
+
+           Fast-Forward:     
+                $ git reset           HEAD@{7}                    
+                $ git reset  --hard   HEAD@{7}                    
+                $ git reset  --soft   HEAD@{7}                  
+                $ git reset  --mixed  HEAD@{7}
+                                  
+                
+                $ git reset         <commit-sha>              
+                $ git reset --soft  <commit-sha>              
+                $ git reset --hard  <commit-sha>                
+                $ git reset --mixed <commit-sha>                
+
+                # Options:
+                         1."--hard":
+                                   - Resets the index and working tree.
+                                   - Any changes to tracked files in the working tree since <commit> are discarded. 
+                                   - Any untracked files or directories in the way of writing any tracked files are simply deleted.        
+                         2."--soft":
+                                   - It does not touch the index file or the working tree at all (but resets the head to <commit>, just like all modes do).
+                                   - This leaves all your changed files "Changes to be committed", as git status would put it.
+                         3."--mixed":
+                                   - It resets the index but not the working tree (i.e., the changed files are preserved but not marked for commit)
+                                     and reports what has not been updated. This is the default action.
+                         4."--merge
+                                   - It resets the index and updates the files in the working tree that are different between <commit> and HEAD, 
+                                     but keeps those which are different between the index and working tree (i.e. which have changes which have not been added). 
+                                   - If a file that is different between <commit> and the index has unstaged changes, reset is aborted. 
+                         5."--keep
+                                   - It resets index entries and updates files in the working tree that are different between <commit> and HEAD. 
+                                   - If a file that is different between <commit> and HEAD has local changes, reset is aborted. 
+
+________________________________________________________________________________________________________________________________
+# Branching:
+        -> Important Concepts:
+        1.Branch:
+                - A branch is a line of development in a version control system. 
+                - It is a separate line of code that can be worked on independently of other branches.
+        2.master:
+                - The default branch in a Git repository.
+                - It is the branch where the most recent commits are stored.
+        3.feature:
+                - A feature branch is a branch that is created to implement a specific feature or bug fix.
+        4.HEAD:
+                - The current commit you are on. 
+                - It is the tip of the current branch. 
+                - It is the most recent commit in the current branch. 
+                - It is the commit of the current working directory.
+       
+       
+
+        4.release:
+                - A release branch is a branch that is created to prepare for a release of the software.
+        5.tag:
+                - A tag is a reference to a specific commit in a Git repository.
+        6.merge:
+                - A merge is the process of combining changes from two or more branches into a single branch.
+
+        ----------------------------------------------------------------
+        # Creating a branch:
+                $ git branch <branch-name>
+                $ git branch -M main            : to rename the master branch.
+    
+        # Display branches:
+                $ git branch
+                $ git branch --merged
+                $ git branch -r                             : display branches in remote.
+                $ git branch -v
+
+                $ git branch -vv
+        # Swiching:
+                $ git switch <branch-name>
+
+        # Merging:
+              - merging-non-conflicts:
+                        $ git merge <branch-name>
+              - merging-conflicts:
+                        -> $ git merge <branch-name>
+                        -> solve the conflicts by deleteing one of them.
+                        -> $ git add . 
+                        -> $ git commit -m "resolved conflicts"
+                        -> $ git merge <branch-name>
+
+        # Deleteing:
+                $ git branch -d <branch-name>
+        ----------------------------------------------------------------
+________________________________________________________________________________________________________________________________

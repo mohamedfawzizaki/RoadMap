@@ -1,0 +1,144 @@
+CI/CD stands for **Continuous Integration** and **Continuous Delivery/Deployment**. It's a modern DevOps practice that automates the process of building, testing, and deploying software. Here's a detailed breakdown:
+
+---
+
+## 🔁 **1. Continuous Integration (CI)**
+
+### 📌 **Definition**:
+
+Continuous Integration is the practice of frequently integrating code changes into a shared repository, ideally several times a day. Each integration is verified by automated builds and tests.
+
+### 🔧 **Core Components**:
+
+* **Source Code Repository** (e.g., GitHub, GitLab, Bitbucket)
+* **CI Server** (e.g., Jenkins, GitHub Actions, GitLab CI, CircleCI, Travis CI)
+* **Automated Tests** (unit, integration, static analysis)
+* **Build Automation** (compiling, packaging, linting, etc.)
+
+### 🔄 **Typical CI Workflow**:
+
+1. **Developer pushes code** → Git `push` to a shared branch (e.g., `develop`, `main`).
+2. **CI server triggers** on push or pull request.
+3. **Steps executed**:
+
+   * Checkout code
+   * Install dependencies
+   * Run linters (e.g., ESLint, PHPStan)
+   * Run unit/integration tests
+   * Build the application (optional)
+
+### ✅ **Benefits**:
+
+* Early bug detection
+* Fast feedback
+* Code quality enforcement
+* Integration problems caught early
+
+---
+
+## 🚀 **2. Continuous Delivery (CD)**
+
+### 📌 **Definition**:
+
+Continuous Delivery ensures that the codebase is always in a **deployable state**, and deployment to staging or production is **automated**, but **manually triggered**.
+
+### 🔄 **Typical CD Workflow**:
+
+1. **CI passes** → trigger CD pipeline.
+2. **Package the app** → e.g., `.jar`, `.zip`, Docker image.
+3. **Push to artifact registry** → e.g., Docker Hub, GitHub Packages, AWS ECR.
+4. **Deploy to staging** environment.
+5. (Optional) Manual approval → deploy to production.
+
+### 📂 **Common Tools**:
+
+* **Infrastructure as Code (IaC)**: Terraform, CloudFormation
+* **Configuration Management**: Ansible, Chef
+* **Deployment Platforms**: Kubernetes, AWS ECS, Heroku, Azure, Firebase
+
+---
+
+## ⚙️ **3. Continuous Deployment (CD)**
+
+### 📌 **Definition**:
+
+Continuous Deployment extends Continuous Delivery by automatically **deploying every change that passes CI** to production **without manual intervention**.
+
+### 🚨 **Requirements**:
+
+* Very high test coverage
+* Robust monitoring and rollback systems
+* Feature flags to control visibility of incomplete features
+
+### 🔁 **Example CD Flow**:
+
+1. Developer pushes code
+2. CI runs tests and builds
+3. CD deploys new version automatically to production
+
+---
+
+## 📘 **CI/CD Example: GitHub Actions + Docker + AWS**
+
+```yaml
+# .github/workflows/ci-cd.yml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18'
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Run Tests
+      run: npm test
+
+    - name: Build Docker Image
+      run: docker build -t myapp:latest .
+
+    - name: Push to Docker Hub
+      run: |
+        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        docker tag myapp:latest mydockerhubuser/myapp:latest
+        docker push mydockerhubuser/myapp:latest
+
+    - name: Deploy to AWS
+      run: aws ecs update-service --cluster my-cluster --service my-service --force-new-deployment
+```
+
+---
+
+## 🧩 **Best Practices**:
+
+* Keep pipelines fast (under 10 minutes ideal)
+* Use feature flags to release incomplete features
+* Use canary deployments or blue-green deployments
+* Secure secrets using a vault or CI/CD secrets manager
+* Monitor builds and deployments with alerts/logs
+* Rollback mechanism for failed deployments
+
+---
+
+## 🧠 Summary Table:
+
+| **Stage**              | **Focus**                    | **Automated?**        | **Trigger**     |
+| ---------------------- | ---------------------------- | --------------------- | --------------- |
+| Continuous Integration | Build + Test code            | ✅ Yes                 | Code push/PR    |
+| Continuous Delivery    | Prepare for deployment       | ✅ Yes (Manual Deploy) | After CI passes |
+| Continuous Deployment  | Automatic deployment to prod | ✅ Fully automated     | After CI passes |
+
+---
