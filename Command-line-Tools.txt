@@ -1,0 +1,579 @@
+________________________________________________________________________________________________________________________________________________________________   
+________________________________________________________________________________________________________________________________________________________________   
+
+Command-Line Tools:      [ "bash" -  "git"  -  "docker" -  "mysql"  -  "php" -  "pear"  -  "pecl" -  "composer"  -  "npm" -  "laravel"  -  "php artisan" ]
+________________________________________________________________________________________________________________________________________________________________   
+________________________________________________________________________________________________________________________________________________________________   
+
+$ pecl:     
+        Use PECL for PHP extensions that need to be compiled into the PHP runtime for
+        performance and system-level integrations.
+        Usage : 
+                pecl install <extension_name>
+                pecl install pcov
+        Like : 
+                1.Xdebug.
+                2.Pcov.
+                3.Redis. 
+                4.Imagick.
+________________________________________________________________________________________________________________________________________________________________   
+________________________________________________________________________________________________________________________________________________________________   
+$ pear:     
+        Use PEAR for PHP libraries that are written in PHP and 
+        provide high-level application functionality.
+        Usage : 
+                pear install <extension_name>
+                pear install Mail
+        Like : 
+                1.Mail.
+                2.Net_SMTP.
+                3.HTTP_Request. 
+________________________________________________________________________________________________________________________________________________________________   
+________________________________________________________________________________________________________________________________________________________________   
+# 'php' :
+                            "php composer.phar install"-------------------------- you can use PHP CLI to install or run dependencies:     
+                            
+                            "php -v"	----------------------------------------- Displays the PHP version.
+                            "php --version"
+
+                            "php -i"	----------------------------------------- Outputs PHP information (similar to phpinfo()).
+                            "php -h"  ------------------------------------------- Display help information:
+                            
+                            "php -m"	----------------------------------------- Lists all loaded PHP modules/extensions.
+                            "php -m | grep -i "module_name""--------------------- Lists all loaded PHP modules/extensions that
+                            
+                            "php --ini" ----------------------------------------- Shows the path to the php.ini file in use.
+                            "php -c /path/to/php.ini" --------------------------- Runs PHP with the specified configuration file.
+                            "php -d key=value" ---------------------------------- Sets an INI configuration for the command.
+                            "php --disable-all" --------------------------------- Disable all extensions in php.ini
+                            "php --with-config-file-path=/etc/php.ini"  --------- Specify the path where the configuration file is located:
+                           
+                            "php -l script.php" --------------------------------- Check a PHP script for syntax errors:
+                            "php -e script.php" --------------------------------- Output any errors during script execution:
+                            "php script.php"	--------------------------------- Run a PHP script file .
+                            "php -r 'code;'"	--------------------------------- Runs a single line of PHP code.
+                            "php -a"	        --------------------------------- Starts an interactive shell.
+                            "php -d display_errors=1 -d error_reporting=E_ALL script.php"  -------Enable error reporting for CLI execution:
+                            
+                            "php -d memory_limit=512M script.php" ----------------Override configuration settings temporarily:
+
+                            "php -S host:port" ---------------------------------- Starts a built-in web server, This serves the current directory over http://localhost:8000..
+                            "php -S localhost:8000 -t public" ------------------- To specify a document root.
+                            "php artisan serve"
+                            "php -n"  --------------------------------------------Runs PHP without the Zend Engine.
+
+________________________________________________________________________________________________________________________________________________________________   
+________________________________________________________________________________________________________________________________________________________________   
+# 'npm':
+
+
+                        npm run build
+                        npm run production
+
+________________________________________________________________________________________________________________________________________________________________   
+________________________________________________________________________________________________________________________________________________________________   
+# 'composer':
+                        ----------------------------------------------------------------------
+                        composer run dev                                    php artisan serve
+                        ----------------------------------------------------------------------
+                        1.Displays the current version of Composer:
+                        ----------------------------------------------------------------------
+                                [""composer --version""}
+                        ----------------------------------------------------------------------      
+                        2.Updates Composer to the latest version:
+                        ----------------------------------------------------------------------
+                                [""composer self-update""}
+                        ----------------------------------------------------------------------        
+                        3.Check platform requirements, 
+                        it verifies your PHP version and extensions against dependencies:
+                        ----------------------------------------------------------------------
+                                [""composer check-platform-reqs""}
+                        ----------------------------------------------------------------------
+                        4.Searches for packages on Packagist:
+                        ----------------------------------------------------------------------
+                                [""composer search vendor-name/package-name""}
+                        ----------------------------------------------------------------------
+                                [""composer suggest""}
+                                [""composer fund""}
+                        ----------------------------------------------------------------------
+                        5.Creates a new project from a package:
+                        ----------------------------------------------------------------------
+                                [""composer create-project vendor-name/package-name project-name <version>""}
+                        ----------------------------------------------------------------------
+                        ---------------------------------------------------------------------
+                                [""composer create-project --prefer-dist laravel/laravel my-laravel-app""}
+                        ----------------------------------------------------------------------        
+                        6.Initialize a new composer.json, Interactively creates a composer.json file:
+                        ----------------------------------------------------------------------
+                                [""composer init""}
+                        ----------------------------------------------------------------------       
+                        7.Checks the syntax and validity of your composer.json:
+                        ----------------------------------------------------------------------
+                                [""composer validate""}
+                        ----------------------------------------------------------------------      
+                        8.Installs all dependencies specified in composer.json:
+                        ----------------------------------------------------------------------
+                                composer install
+                        ----------------------------------------------------------------------           
+                        9.Adds a package to the require section of composer.json:
+                        ----------------------------------------------------------------------
+                                composer require vendor-name/package-name
+                        ----------------------------------------------------------------------           
+                        10.Removes a package and updates composer.json:
+                        ----------------------------------------------------------------------
+                                composer remove vendor-name/package-name
+                        ----------------------------------------------------------------------           
+                        11.Updates all dependencies specified in composer.json:
+                        ----------------------------------------------------------------------
+                                composer update
+                        ----------------------------------------------------------------------           
+                        12.Updates all dependencies specified in composer.json and removes any packages that have been removed from composer.json:
+                        ----------------------------------------------------------------------
+                                composer update --no-dev --prefer-dist --optimize-autoloader
+                        ----------------------------------------------------------------------           
+                        13.Update a specific package:
+                        ----------------------------------------------------------------------
+                                composer update vendor-name/package-name
+                        ----------------------------------------------------------------------          
+                        14.Executes custom scripts defined in composer.json:
+                        ----------------------------------------------------------------------
+                                [""composer run-script <script-name>""}
+                        ----------------------------------------------------------------------
+                        15.Shows a list of all installed packages:
+                        ----------------------------------------------------------------------
+                                [""composer show""}
+                        ----------------------------------------------------------------------      
+                        16.Displays detailed information about a specific package:
+                        ----------------------------------------------------------------------
+                                [""composer show vendor-name/package-name""}
+                        ----------------------------------------------------------------------     
+                        17.Check outdated dependencies, it lists packages that have newer versions available:
+                        ----------------------------------------------------------------------
+                                [""composer outdated""}
+                        ----------------------------------------------------------------------
+                        18.Regenerate autoload files, it rebuilds the autoload files (useful after adding custom classes or PSR-4 mappings):
+                        ---------------------------------------------------------------------
+                                [""omposer dump-autoload""}
+                        ----------------------------------------------------------------------
+                        ---------------------------------------------------------------------
+                                [""composer dump-autoload --optimize""}
+                        ----------------------------------------------------------------------
+                        19.Shows the location and contents of Composer's cache:
+                        ---------------------------------------------------------------------
+                                [""composer cache:dir
+                        ----------------------------------------------------------------------     
+                        20.Clears Composer’s cache:
+                        ---------------------------------------------------------------------
+                                [""composer clear-cache
+                        ----------------------------------------------------------------------
+                        21.Installs a package globally:
+                        ---------------------------------------------------------------------
+                                [""composer global require vendor-name/package-name
+                        ----------------------------------------------------------------------      
+                        22.Lists all globally installed packages:
+                        ---------------------------------------------------------------------
+                                [""composer global show
+                        ----------------------------------------------------------------------
+                        23.Updates globally installed packages:
+                        ---------------------------------------------------------------------
+                                [""composer global update
+                        ----------------------------------------------------------------------
+                        24.Removes a globally installed package:
+                        ---------------------------------------------------------------------
+                                [""composer global remove vendor-name/package-name
+                        ---------------------------------------------------------------------
+________________________________________________________________________________________________________________________________________________________________   
+________________________________________________________________________________________________________________________________________________________________   
+# 'laravel':
+        - The Laravel Installer is a command-line tool designed to streamline the installation and creation of new Laravel projects. 
+        - It is part of the Laravel ecosystem and provides a convenient alternative to using Composer directly. 
+        - Install and use the Laravel Installer:
+        1. Prerequisites
+                    - Before using the Laravel Installer, ensure the following requirements are met:
+                            PHP     : PHP 8.0+ is recommended.
+                            Composer: Installed and configured globally on your system.
+        2. Install the Laravel Installer
+                                        -------------------------------------------
+                                        "composer global require laravel/installer"
+                                        "composer global update  laravel/installer"
+                                        "composer clear-cache"
+                                        -------------------------------------------
+                                        -------------------------------------------
+                                        laravel --version
+                                        -------------------------------------------
+        3. Create a New Laravel Project:
+                                        -------------------------------------------
+                                        "laravel new project-name"
+                                        "laravel new project-name --force"           : Overwrite Existing Directory.
+                                        -------------------------------------------
+        4. create a project using the latest development branch of Laravel:
+                                        -------------------------------------------
+                                        "laravel new project-name --dev"
+                                        -------------------------------------------
+                                        -------------------------------------------
+        6. Create a project in a specific directory:
+                                        -------------------------------------------
+                                        "laravel new project-name --directory=/path/to/project"
+                                        -------------------------------------------
+        7. Create a project with a custom namespace:
+                                        -------------------------------------------
+                                        "laravel new project-name --namespace=App\\"
+                                        -------------------------------------------
+        8. Create a project with a custom database connection:
+                                        -------------------------------------------
+                                        "laravel new project-name --database=mysql"
+                                        -------------------------------------------
+        9. Create a project with a custom database connection and a specific version of Laravel:
+                                        ------------------------------------------------------------
+                                        "laravel new project-name --database=mysql --version=9.0.0"
+                                        "composer create-project --prefer-dist laravel/laravel project-name "8.*""
+                                        ------------------------------------------------------------
+
+________________________________________________________________________________________________________________________________________________________________   
+________________________________________________________________________________________________________________________________________________________________   
+# 'php artisan':                         $ php artisan                  -> for all available commands.
+        -----------------------------------------------------------------------------------------------------------------------------------          
+        - php artisan is the command-line interface (CLI) for Laravel, a PHP framework. 
+        - It provides a set of useful commands for interacting with your Laravel application, 
+          managing tasks such as database migrations, running tests, managing routes, and more.
+        - Artisan Command Extensions:
+                - You can create your own custom Artisan commands by running php artisan make:command [name]. 
+                - Custom commands are typically placed within the app/Console/Commands directory 
+                  and are useful for running repetitive tasks in a Laravel application.
+
+                - For more detailed help, you can run php artisan [command] --help to get 
+                  a description and available options for any specific Artisan command.
+        -----------------------------------------------------------------------------------------------------------------------------------
+        - Commands:
+                                -------------------------------------------------------------------------------------------------
+                                                    General Commands:
+                                -------------------------------------------------------------------------------------------------
+                                php artisan	                        Lists all available artisan commands.
+                                php artisan list	                Displays all available commands, including their descriptions.
+                                php artisan about 
+                                php artisan help [command]	        Provides help and detailed information for a specific command.
+                                php artisan app:name [name]	        Sets the application namespace.
+                                php artisan down	                Puts the application into maintenance mode.
+                                php artisan up	                    Brings the application out of maintenance mode.
+                                php artisan key:generate	        Generates a new application encryption key.
+                                php artisan env	                    Displays the current environment.
+                                -------------------------------------------------------------------------------------------------
+
+
+                                -------------------------------------------------------------------------------------------------       
+                                                    Development and Environment Commands
+                                -------------------------------------------------------------------------------------------------       
+                                php artisan serve	                Serves the application on the local development server.
+                                php artisan env	                    Displays the current environment (e.g., local, production).
+                                -------------------------------------------------------------------------------------------------       
+
+
+
+                                -------------------------------------------------------------------------------------------------       
+                                                    Database Commands
+                                -------------------------------------------------------------------------------------------------       
+                                php artisan db 
+                                php artisan db dbName
+                                php artisan db:show	                 
+                                php artisan db:table	                
+                                php artisan db:seed	                Seeds the database with data from the database seeders.
+
+                                php artisan schema:dump
+                                php artisan schema:dump --database=database_name
+                                php artisan schema:dump --prune
+                                -------------------------------------------------------------------------------------------------
+                                php artisan migrate:status                      
+                                php artisan migrate --pretend                                      
+                                php artisan migrate	                Runs the database migrations.    
+                                php artisan migrate:rollback	        Rolls back the last database migration.
+                                php artisan migrate:reset	        Rolls back all migrations.
+                                php artisan migrate:refresh	        Rolls back and re-runs all migrations.
+                                php artisan migrate:fresh	        Drops all tables and re-runs all migrations.
+                                php artisan make:migration [name]	Creates a new migration file.
+                                php artisan make:model     [name]       Creates a new Eloquent model.
+                                php artisan make:seeder    [name]       Creates a new seeder file.
+                                php artisan make:factory   [name]       Creates a new model factory.
+                                -------------------------------------------------------------------------------------------------       
+
+
+
+
+                                -------------------------------------------------------------------------------------------------       
+                                                    Model and Controller Commands
+                                -------------------------------------------------------------------------------------------------       
+                                php artisan make:model      [name]	Creates a new Eloquent model.
+                                php artisan model:show      [name]      inspecting models
+                                php artisan make:controller [name]      Creates a new controller class.       
+                                php artisan make:resource   [name]	Creates a new API resource class.
+                                php artisan make:factory    [name]      Creates a new model factory.
+                                -------------------------------------------------------------------------------------------------       
+
+
+                                -------------------------------------------------------------------------------------------------       
+                                                    View Commands:
+                                -------------------------------------------------------------------------------------------------       
+                                php artisan view:clear	            Clears all compiled views.
+                                php artisan view:cache	            Compiles and caches all views for better performance.
+                                -------------------------------------------------------------------------------------------------       
+
+
+
+                                -------------------------------------------------------------------------------------------------       
+                                                    Route Commands:
+                                -------------------------------------------------------------------------------------------------       
+                                php artisan route:list	            Displays all registered routes.
+                                php artisan route:cache	            Caches the routes for faster performance.
+                                php artisan route:clear	            Clears the cached routes.
+                                -------------------------------------------------------------------------------------------------       
+
+
+                                -------------------------------------------------------------------------------------------------       
+                                                    Authentication and User Management
+                                -------------------------------------------------------------------------------------------------       
+                                php artisan make:auth	            Generates the necessary authentication scaffolding
+                                                                              (for older Laravel versions).   
+
+
+                                -------------------------------------------------------------------------------------------------       
+                                                    Make Commands (for generating code) :
+                                -------------------------------------------------------------------------------------------------       
+                                php artisan make:controller[name]	    Creates a new controller.
+                                php artisan make:model     [name]	    Creates a new Eloquent model.
+                                php artisan make:seeder    [name]	    Creates a new database seeder.
+                                php artisan make:middleware[name]	    Creates a new middleware.
+                                php artisan make:command   [name]	    Creates a custom Artisan command.
+                                php artisan make:event     [name]	    Creates a new event class.
+                                php artisan make:listener  [name]	    Creates a new listener class.
+                                php artisan make:job       [name]	    Creates a new job class.
+                                php artisan make:factory   [name]	    Creates a new factory class.
+                                php artisan make:resource  [name]	    Creates a new resource class.
+
+                                php artisan make:cache-table          [cache:table] Create a migration for the cache database table
+                                php artisan make:cast                 Create a new custom Eloquent cast class      
+                                php artisan make:channel              Create a new channel class
+                                php artisan make:class                Create a new class
+                                php artisan make:command              Create a new Artisan command
+                                php artisan make:component            Create a new view component class
+                                php artisan make:controller           Create a new controller class
+                                php artisan make:enum                 Create a new enum
+                                php artisan make:event                Create a new event class
+                                php artisan make:exception            Create a new custom exception class
+                                php artisan make:factory              Create a new model factory
+                                php artisan make:interface            Create a new interface
+                                php artisan make:job                  Create a new job class
+                                php artisan make:job-middleware       Create a new job middleware class
+                                php artisan make:listener             Create a new event listener class
+                                php artisan make:mail                 Create a new email class
+                                php artisan make:middleware           Create a new HTTP middleware class
+                                php artisan make:migration            Create a new migration file
+                                php artisan make:model                Create a new Eloquent model class
+                                php artisan make:notification         Create a new notification class
+                                php artisan make:notifications-table  [notifications:table] Create a migration for the notifications table
+                                php artisan make:observer             Create a new observer class
+                                php artisan make:policy               Create a new policy class
+                                php artisan make:provider             Create a new service provider class
+                                php artisan make:queue-batches-table  [queue:batches-table] Create a migration for the batches database table
+                                php artisan make:queue-failed-table   [queue:failed-table] Create a migration for the failed queue jobs database table
+                                php artisan make:queue-table          [queue:table] Create a migration for the queue jobs database table
+                                php artisan make:request              Create a new form request class
+                                php artisan make:resource             Create a new resource
+                                php artisan make:rule                 Create a new validation rule
+                                php artisan make:scope                Create a new scope class
+                                php artisan make:seeder               Create a new seeder class
+                                php artisan make:session-table        [session:table] Create a migration for the session database table
+                                php artisan make:test                 Create a new test class
+                                php artisan make:trait                Create a new trait
+                                php artisan make:view                 Create a new view
+                                -------------------------------------------------------------------------------------------------                               
+
+
+
+
+                                -------------------------------------------------------------------------------------------------       
+                                                    Cache and Configuration Commands
+                                -------------------------------------------------------------------------------------------------
+                                php artisan about        
+                                php artisan about --only=environment
+                                php artisan about --only=version
+                                php artisan config:show <config-file>
+
+                                php artisan cache:clear	        Clears the application cache.
+                                php artisan cache:forget [key]	Removes a single item from the cache.
+                                                                
+                                php artisan config:cache	Creates a cached version of the configuration files.
+                                php artisan config:clear	Clears the configuration cache.
+                                
+                                php artisan route:cache	Creates a cached version of the routes.
+                                php artisan route:clear	Clears the routes cache.
+                                
+                                php artisan view:cache	Compiles and caches all of the application's views.
+                                php artisan view:clear	Clears the compiled view files.
+                                -------------------------------------------------------------------------------------------------       
+
+
+
+
+                                -------------------------------------------------------------------------------------------------       
+                                                    Queue and Jobs Commands
+                                -------------------------------------------------------------------------------------------------       
+                                php artisan queue:listen	Listens for jobs in the queue and processes them.
+                                php artisan queue:work	Processes the jobs in the queue.
+                                                                
+                                php artisan queue:failed	Displays all failed jobs.
+                                php artisan queue:retry [id]	Retries a failed job.
+                                -------------------------------------------------------------------------------------------------       
+
+
+
+
+                                -------------------------------------------------------------------------------------------------       
+                                                    Testing and Tinker Commands
+                                -------------------------------------------------------------------------------------------------       
+                                php artisan tinker	Opens an interactive REPL (Read-Eval-Print Loop) for your Laravel application.
+                                php artisan test	Runs the tests for the application using PHPUnit.
+                                php artisan debug	Debugs your application in development mode.
+                                -------------------------------------------------------------------------------------------------       
+
+
+
+                                -------------------------------------------------------------------------------------------------       
+                                                    Other Useful Commands
+                                -------------------------------------------------------------------------------------------------       
+                                php artisan optimize	            Optimizes the application, including caching configuration, routes, etc.
+                                php artisan storage:link	        Creates a symbolic link for the storage folder.
+                                -------------------------------------------------------------------------------------------------       
+
+
+
+________________________________________________________________________________________________________________________________________________________________   
+________________________________________________________________________________________________________________________________________________________________   
+# 'mysql':
+                            mysql --version -------------------------------------------- To check the installed MySQL version.
+                            mysql --help    -------------------------------------------- display info about mysql command.
+                            
+                            ---------------------------------------------------------------------------------------------------------------------------
+                            To connect to the MySQL database server:
+
+                            "mysql -h <host-name>     -P <port-number>    -u <user-name>     -p <password>        -D <database-name>"
+                            "mysql --host=<host-name> -port=<port-number> --user=<user-name> -password=<password> --database=<database-name>"
+                            
+                            ---------------------------------------------------------------------------------------------------------------------------                            
+                            
+                            To exit the MySQL shell:
+                            "EXIT;"
+                            
+                            ---------------------------------------------------------------------------------------------------------------------------                            
+
+
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                               mysql + [Option]	                                  "Description"
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    -u, --user=name	                            The MySQL user to connect as.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    -p, --password[=name]	                    The password for the MySQL user. If not provided, prompts for it interactively.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    -h, --host=name	                            The hostname or IP address of the MySQL server.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    -P, --port=#	                            The port number for the MySQL server (default is 3306).
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    -S, --socket=name	                        The socket file for local connections (Unix-based systems).
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --protocol=name	                            The connection protocol to use (tcp, socket, pipe, memory).
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    -D, --database=name	                        The name of the database to use on startup.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    -e, --execute=name	                        Executes the SQL command and exits.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --skip-database	                            Skip the USE statement that selects the database.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    -B, --batch	                                Output in batch mode (no column names or pretty formatting).
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    -C, --compress	                            Compress all communication with the server.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    -t, --table                     	        Display results in table format (default).
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --vertical	                                Display results vertically, one row per line.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    -q, --quick	                                Don't buffer query results; retrieve and display them row by row.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    -v, --verbose	                            Produce more verbose output.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    -V, --version	                            Show MySQL client version.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    -i, --ignore-space	                        Ignore space after function names.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    -n, --no-named-commands	                    Disable the use of named commands like \g, \G, etc.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --no-auto-rehash	                        Disable automatic rehashing for tab completion.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --help	                                    Display help information on all available options.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --init-command=name	                        Execute a command when the MySQL client starts.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --login-path=name	                        Use a stored login path to login.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --ssl-ca=name	                            Path to the certificate authority file for SSL connections.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --ssl-cert=name	                            Path to the SSL certificate file for the client.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --ssl-key=name	                            Path to the SSL key file for the client.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --default-character-set=name	            Set the default character set for the client.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --character-sets-dir=name	                The directory containing the character sets.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --connect-timeout=#	                        Set the connection timeout in seconds (default is 10 seconds).
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --max-allowed-packet=#	                    Set the maximum packet size (default is 16MB).
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --pager=name	                            Set the pager program (e.g., less or more for paginated output).
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --prompt=name	                            Set the prompt string.
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --socket=name	                            The socket or named pipe for the MySQL server (typically for Unix systems).
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --wait-timeout=#	                        Set the wait timeout (default is 28800 seconds).
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                                    --no-defaults	                            Prevent reading the default configuration files.    
+                            ---------------------------------------------------------------------------------------------------------------------------    
+                            
+
+
+
+
+
+                            ---------------------------------------------------------------------------------------------------------------------------
+                            Common SQL commands:
+                            ---------------------------------------------------------------------------------------------------------------------------
+                                                SHOW DATABASES;
+                                                
+                                                USE database_name;
+                                                
+                                                SHOW TABLES;
+                                                
+                                                DESCRIBE table_name;
+                                                
+                                                CREATE DATABASE new_database_name;
+                                                
+                                                CREATE TABLE table_name (
+                                                    id INT PRIMARY KEY,
+                                                    name VARCHAR(255)
+                                                );
+                                                
+                                                INSERT INTO table_name (column1, column2) VALUES (value1, value2);
+                                                
+                                                SELECT * FROM table_name;
+                                                
+                                                UPDATE table_name SET column_name = new_value WHERE condition;
+                                                
+                                                DELETE FROM table_name WHERE condition;
+                                                
+                                                DROP TABLE table_name;
+
+                                                DROP DATABASE database_name;
+                            ---------------------------------------------------------------------------------------------------------------------------
+
+
+
+________________________________________________________________________________________________________________________________________________________________   
+________________________________________________________________________________________________________________________________________________________________   

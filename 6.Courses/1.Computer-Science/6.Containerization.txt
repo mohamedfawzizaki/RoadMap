@@ -1,0 +1,32 @@
+
+ ____________________________________________________________________________________________________________________________________________ 
+|                 |                                |                                                                                         |
+|                 |   Big Data                     |    https://www.youtube.com/watch?v=PrusdhS2lmo&t=3014s&pp=ygUNZG9ja2VyINi02LHYrQ%3D%3D  |
+|                 |------------------------------------------------------------------------------------------------------------------------- |
+|                 |   Mostafa Magdy                |    https://www.youtube.com/watch?v=9yoe8dBvAZ0&t=664s&pp=ygUNZG9ja2VyINi02LHYrQ%3D%3D   | 
+|    Docker       |------------------------------------------------------------------------------------------------------------------------- |                              
+|                 |   Tresmerge                    |    https://www.youtube.com/watch?v=DFyPl2cZM2g&list=PLX1bW_GeBRhDkTf_jbdvBbkHs2LCWVeXZ  |
+|                 |                                |    https://www.youtube.com/watch?v=tHP5IWfqPKk&list=PLzNfs-3kBUJnY7Cy1XovLaAkgfjim05RR  |
+|                 |                                |    https://www.youtube.com/watch?v=Y0r3Gemz26U&list=PLX1bW_GeBRhCS2TJvGgu38P-Rf9aNXKZD  |
+|                 |------------------------------------------------------------------------------------------------------------------------- |                              
+|                 |   Information Technology       |    https://www.youtube.com/watch?v=-rplRgKZjY0&list=PLLlr6jKKdyK2uRL5v__HsjsmylSDKT5fg  |
+|                 |------------------------------------------------------------------------------------------------------------------------- |                               
+|                 |   Coding-MA                    |    https://www.youtube.com/watch?v=LbyQaTA1uRM&list=PLk9nVQF4WDct8p3NrYxgPmSZ89jvwWYGJ  |
+|_________________|________________________________|_________________________________________________________________________________________|
+                 
+
+
+
+     
+ 
+                          Kubernetes بالعربي
+                    https://www.youtube.com/@K8saraby/videos
+ __________________________________________________________________________________________________________________________________________________________
+|                 |                                |           
+|                 |   Big Data                     |    https://www.youtube.com/watch?v=PrusdhS2lmo&t=3014s&pp=ygUNZG9ja2VyINi02LHYrQ%3D%3D
+|                 |   Tresmerge                    |    https://www.youtube.com/watch?v=jTggu1HiKyY&list=PLX1bW_GeBRhDCHijCrMO5F-oHg52rRBpl
+|                 |   DolfinED                     |    https://www.youtube.com/watch?v=-LF0O8T5sOI&t=8620s&pp=ygUNZG9ja2VyINi02LHYrQ%3D%3D
+|   Kubernates    |   Codegraphia                  |    https://www.youtube.com/watch?v=jTggu1HiKyY&list=PLX1bW_GeBRhDCHijCrMO5F-oHg52rRBpl
+|                 |   Ahmed Bakery                 |    https://www.youtube.com/watch?v=vq2gez4QA14&list=PLTbS-zwfzODB7RVIedHNql5u0ObBgbjjH
+|                 |   Mohamed Ali                  |    https://www.youtube.com/watch?v=fquIRHNl8iI&list=PLZbj6s7meYk8fharEP8BsYr0XA43A71l6
+|_________________|________________________________|____________________________________________________________________________________________________

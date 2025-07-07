@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Containerized Nginx Setup Guide</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Containerized Nginx Setup Guide</h1>
+    <nav>
+      <a href="index.html">Home</a> |
+      <a href="container_setup.html">Container Setup</a> |
+      <a href="about.html">About</a> |
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+  <main>
+    <section id="overview">
+      <h2>Overview</h2>
+      <p>This guide walks you through setting up Nginx in a containerized environment using Docker.</p>
+    </section>
+
+    <section id="docker-installation">
+      <h2>Step 1: Install Docker</h2>
+      <p>If Docker is not already installed on your system, follow the official <a href="https://docs.docker.com/get-docker/" target="_blank">Docker installation guide</a>.</p>
+    </section>
+
+    <section id="containerization">
+      <h2>Step 2: Prepare Your Nginx Container</h2>
+      <ol>
+        <li>
+          <strong>Create a Dockerfile:</strong>
+          <p>Create a file named <code>Dockerfile</code> in your project directory with the following content:</p>
+          <pre><code># Use the official Nginx image as the base
+FROM nginx:latest
+
+# Remove the default Nginx configuration
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copy your Nginx configuration file (if you have one)
+COPY my_static_site.conf /etc/nginx/conf.d/
+
+# Copy your static website files
+COPY . /usr/share/nginx/html</code></pre>
+        </li>
+        <li>
+          <strong>Create Your Nginx Configuration (Optional):</strong>
+          <p>If using a custom configuration, create a file (e.g., <code>my_static_site.conf</code>) with similar content:</p>
+          <pre><code>server {
+    listen 80;
+    server_name localhost;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}</code></pre>
+        </li>
+      </ol>
+    </section>
+
+    <section id="build-run">
+      <h2>Step 3: Build and Run the Docker Container</h2>
+      <ol>
+        <li>
+          <strong>Build the Docker Image:</strong>
+          <pre><code>docker build -t my_nginx_site .</code></pre>
+        </li>
+        <li>
+          <strong>Run the Container:</strong>
+          <pre><code>docker run -d -p 80:80 my_nginx_site</code></pre>
+        </li>
+      </ol>
+    </section>
+
+    <section id="verify">
+      <h2>Step 4: Verify Your Containerized Setup</h2>
+      <p>Open your browser and go to <code>http://localhost</code> (or your server’s IP) to verify that your static website is being served by Nginx running inside Docker.</p>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Your Name. All rights reserved.</p>
+  </footer>
+</body>
+</html>

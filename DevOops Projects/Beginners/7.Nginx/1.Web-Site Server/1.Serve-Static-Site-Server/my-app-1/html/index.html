@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setting Up Nginx for a Static Website</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>How to Set Up Nginx to Serve a Static Website</h1>
+    <nav>
+      <a href="index.html">Home</a> |
+      <a href="container_setup.html">Container Setup</a> |
+      <a href="about.html">About</a> |
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+  <main>
+    <section id="overview">
+      <h2>Overview</h2>
+      <p>Nginx is a high-performance web server known for its speed and efficiency when serving static content. In this guide, you'll learn how to host your own static website using Nginx.</p>
+    </section>
+
+    <section id="installation">
+      <h2>Step 1: Install Nginx</h2>
+      <p>Based on your operating system, run one of the following commands:</p>
+      <pre><code># On Debian/Ubuntu:
+sudo apt update && sudo apt install nginx
+
+# On CentOS/RHEL:
+sudo yum install nginx
+
+# On macOS (via Homebrew):
+brew install nginx</code></pre>
+    </section>
+
+    <section id="setup">
+      <h2>Step 2: Set Up Your Static Website Files</h2>
+      <ol>
+        <li>
+          <strong>Create Your Directory:</strong>
+          <pre><code>sudo mkdir -p /var/www/my_static_site
+sudo chown -R $USER:$USER /var/www/my_static_site</code></pre>
+        </li>
+        <li>
+          <strong>Add Your HTML File:</strong>
+          <p>Create an <code>index.html</code> file (this page) inside <code>/var/www/my_static_site</code>.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="nginx-config">
+      <h2>Step 3: Configure Nginx</h2>
+      <ol>
+        <li>
+          <strong>Create a Server Block:</strong>
+          <p>Create a configuration file for your site (for example, <code>/etc/nginx/sites-available/my_static_site</code>) with content similar to:</p>
+          <pre><code>server {
+    listen 80;
+    listen [::]:80;
+
+    server_name my_static_site.com www.my_static_site.com;
+
+    root /var/www/my_static_site;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}</code></pre>
+        </li>
+        <li>
+          <strong>Enable the Configuration:</strong>
+          <p>If your system uses <code>sites-available</code> and <code>sites-enabled</code>, create a symbolic link:</p>
+          <pre><code>sudo ln -s /etc/nginx/sites-available/my_static_site /etc/nginx/sites-enabled/</code></pre>
+        </li>
+        <li>
+          <strong>Test and Reload Nginx:</strong>
+          <pre><code>sudo nginx -t
+sudo systemctl restart nginx</code></pre>
+        </li>
+      </ol>
+    </section>
+
+    <section id="verify">
+      <h2>Step 4: Verify Your Setup</h2>
+      <p>Open your web browser and navigate to your domain or the server's IP address to verify that your static site loads.</p>
+    </section>
+
+    <section id="container-setup">
+      <h2>Containerized Environment Setup</h2>
+      <p>For running Nginx in a containerized environment, check out our <a href="container_setup.html">Containerized Nginx Setup Guide</a>.</p>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Your Name. All rights reserved.</p>
+  </footer>
+</body>
+</html>

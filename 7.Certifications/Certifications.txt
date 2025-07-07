@@ -1,0 +1,45 @@
+_______________________________________________________________________________________________________________________________________
+                                                AWS Certifications                
+                                              ====================== 
+1.AWS-Cloud-Practioner-Foundation.                                      AWS-CPF   =>  
+
+2.AWS-Cloud-Developer-Associate.                                        AWS-CDA   =>
+3.AWS-Cloud-SysOps----Administrator-Associate.                          AWS-CSAA  =>
+4.AWS-Cloud-DevOps----Engineer------Professional.                       AWS-CDEP  =>
+
+5.AWS-Cloud-Solution-Architect-Associate.                               AWS-CSAA  =>
+6.AWS-Cloud-Solutuin-Architect-Professional.                            AWS-CSAP  =>
+
+
+
+
+_______________________________________________________________________________________________________________________________________
+                                               Red Hat Certifications
+                                               ======================
+1.Red-Hat-Certified-System-Administrator.                               RHCSA     => https://www.redhat.com/en/services/certification/rhcsa
+2.Red-Hat-Certified-Engineer.                                           RHCE      => https://www.redhat.com/en/services/certification/rhce
+3.Red-Hat-Certified-Specialist-in-Containers.                           RHCS      => https://www.redhat.com/en/services/certification/rhcs-container
+4.Red-Hat-Certified-Specialist-in-Ansible-Automation.                   RHCSAA    => https://www.redhat.com/en/services/certification/rhcs-ansible-automation 
+
+
+
+_______________________________________________________________________________________________________________________________________
+                                    Cloud Native Computing Foundation Certifications                
+                                   =================================================
+1.Certified--Kubernetes-Administrator.                                  CKA      => https://www.cncf.io/training/certification/cka/
+2.Certified--Kubernetes-Application-Developer.                          CKAD     => https://www.cncf.io/training/certification/ckad/ 
+3.Kubernetes-and-Cloud--Native------Associate.                          KCNA     => https://www.cncf.io/training/certification/kcna/
+4.Prometheus-Certified--Associate.                                      PCA      => https://www.cncf.io/training/certification/pca/
+
+_______________________________________________________________________________________________________________________________________
+                                              HashiCorp Certifications 
+                                              ========================
+1.Certified-Terraform-Associate.                                        CTA      => https://developer.hashicorp.com/terraform/tutorials/certification-003 
+2.Certified-Terraform-Authoring-and-Operations-Professional.            CTAOP    => https://developer.hashicorp.com/terraform/tutorials/pro-cert 
+
+_______________________________________________________________________________________________________________________________________
+                                                     IELTS
+                                                =================
+
+
+_______________________________________________________________________________________________________________________________________
