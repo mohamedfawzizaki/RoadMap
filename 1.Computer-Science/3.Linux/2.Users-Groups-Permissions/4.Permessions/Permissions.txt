@@ -1,0 +1,250 @@
+______________________________________________________________________________________________________________________________________
+                                            File and Directory Permissions 
+                                            ==============================
+Breif:
+         - In Linux, permissions are a mechanism for controlling access to files and directories.
+         - They determine which users and groups can read, write, or execute a given file or directory.
+
+______________________________________________________________________________________________________________________________________
+                                           1.Understanding File Permissions
+
+--------------------------------------------------------------------------------------------------------------------------------------
+Each file and directory in Linux has a set of permissions associated with three categories of users:
+                                     ________________________________________________
+                                    | Category  | Description                        |
+                                    |___________|____________________________________|
+                                    | Owner     | The user who owns the file.        |
+                                    | Group     | The group associated with the file.|
+                                    | Others    | All other users on the system.     |
+                                    |___________|____________________________________|
+--------------------------------------------------------------------------------------------------------------------------------------
+Permission Types
+
+Each category has three types of permissions:
+                         ____________________________________________________________________________
+                        | Permission | Symbol     | Description                                      |
+                        |____________|____________|__________________________________________________|
+                        | Read       | `r`        | Allows viewing the contents of the file.         |
+                        | Write      | `w`        | Allows modifying the contents of the file.       |
+                        | Execute    | `x`        | Allows executing the file as a program or script.|
+                        |____________|____________|__________________________________________________|
+
+--------------------------------------------------------------------------------------------------------------------------------------
+For directories, the meaning of the permissions changes slightly:
+             ______________________________________________________________________________________________________
+            | Permission | Symbol     | Description                                                                |
+            |____________|____________|____________________________________________________________________________|
+            | Read       | `r`        | Allows listing the contents of the directory.                              |
+            | Write      | `w`        | Allows creating, deleting, or renaming files in the directory.             |
+            | Execute    | `x`        | Allows entering (changing into) the directory and accessing its contents.  |
+            |____________|____________|____________________________________________________________________________|
+
+______________________________________________________________________________________________________________________________________
+                                           2.Viewing File Permissions
+
+Use the `ls -l` command to display detailed information about a file or directory, including its permissions.
+
+Example:
+        `````````````````````````````````````````````````
+        ls -l /path/to/file
+        `````````````````````````````````````````````````
+
+        Output:
+        `````````````````````````````````````````````````
+        -rwxr-xr-- 1 user group 1024 Jan 10 14:00 myfile.sh
+        `````````````````````````````````````````````````
+
+Breakdown of the Output
+         _________________________________________________________________________
+        | Section           | Description                                         |
+        |___________________|_____________________________________________________|
+        | `-rwxr-xr--`      | File type and permissions (`-` for a regular file). |
+        | `1`               | Number of links to the file.                        |
+        | `user`            | Owner of the file.                                  |
+        | `group`           | Group associated with the file.                     |
+        | `1024`            | File size in bytes.                                 |
+        | `Jan 10 14:00`    | Last modification date and time.                    |
+        | `myfile.sh`       | File name.                                          |
+        |___________________|_____________________________________________________|
+
+Permission Breakdown (`-rwxr-xr--`):
+
+        - The first character (`-`) indicates the file type:
+                    - `-`: Regular file.
+                    - `d`: Directory.
+                    - `l`: Symbolic link.
+                    - `b`: Block device file.
+                    - `c`: Character device file.
+        
+        - The next nine characters represent the permissions in three groups of three:
+                    - `rwx`: Owner can read, write, and execute.
+                    - `r-x`: Group can read and execute, but not write.
+                    - `r--`: Others can only read.
+
+______________________________________________________________________________________________________________________________________
+                                           3.Changing File Permissions
+
+You can change file permissions using the `chmod` command.
+
+----------------------------------------------------------------------------------------------------------------------------------
+Symbolic Mode
+
+1.Grant permissions:
+        `````````````````````````````````````````````````
+        chmod u+x myfile.sh
+        `````````````````````````````````````````````````
+        This grants execute (`x`) permission to the owner (`u`).
+   
+2.Revoke permissions:
+        `````````````````````````````````````````````````
+        chmod g-w myfile.sh
+        `````````````````````````````````````````````````
+        This revokes write (`w`) permission from the group (`g`).
+        
+3.Set permissions for all:
+        `````````````````````````````````````````````````
+        chmod a+r myfile.sh
+        `````````````````````````````````````````````````
+        This grants read (`r`) permission to all (owner, group, and others).
+
+4.Combined changes:
+        `````````````````````````````````````````````````
+        chmod u+x,g-w,o+r myfile.sh
+        `````````````````````````````````````````````````
+----------------------------------------------------------------------------------------------------------------------------------
+Numeric Mode (Octal)
+
+Each permission is represented by a numeric value:
+                             __________________________________________________
+                            | Permission        |     Symbol   | Numeric Value |
+                            |___________________|______________|_______________|
+                            | No permission     |     `---`    |    `0`        |
+                            | Execute only      |     `--x`    |    `1`        |
+                            | Write only        |     `-w-`    |    `2`        |
+                            | Write and execute |     `-wx`    |    `3`        |
+                            | Read only         |     `r--`    |    `4`        |
+                            | Read and execute  |     `r-x`    |    `5`        |
+                            | Read and write    |     `rw-`    |    `6`        |
+                            | All permissions   |     `rwx`    |    `7`        |
+                            |___________________|______________|_______________|
+
+Example:
+        `````````````````````````````````````````````````
+        chmod 754 myfile.sh
+        `````````````````````````````````````````````````
+
+This sets:
+        - `7` (`rwx`) for the owner.
+        - `5` (`r-x`) for the group.
+        - `4` (`r--`) for others.
+______________________________________________________________________________________________________________________________________
+                                           4.Changing Ownership and Group
+
+1.Change Owner (`chown`):
+        `````````````````````````````````````````````````
+        sudo chown newuser myfile.sh
+        `````````````````````````````````````````````````
+        This changes the owner of the file to `newuser`.
+
+2.Change Group (`chgrp`):
+        `````````````````````````````````````````````````
+        sudo chgrp newgroup myfile.sh
+        `````````````````````````````````````````````````
+        This changes the group of the file to `newgroup`.
+
+3.Change Owner and Group Together:
+        `````````````````````````````````````````````````
+        sudo chown newuser:newgroup myfile.sh
+        `````````````````````````````````````````````````
+______________________________________________________________________________________________________________________________________
+                                           5.Special Permissions
+
+Linux provides three special permission types:
+
+----------------------------------------------------------------------------------------------------------------------------------
+1.Setuid (Set User ID)
+
+        - When the setuid bit is set on an executable file, any user running
+          the file will have the permissions of the file’s owner during execution.
+
+        - Represented by `s` in the owner’s execute position:
+                        `````````````````````````````````````````````````
+                        -rwsr-xr-x 1 root root 1024 Jan 10 14:00 myprog
+                        `````````````````````````````````````````````````
+
+        Set the setuid bit:
+                        `````````````````````````````````````````````````
+                        chmod u+s myprog
+                        `````````````````````````````````````````````````
+
+----------------------------------------------------------------------------------------------------------------------------------
+2.Setgid (Set Group ID)
+
+        - When the setgid bit is set on a directory, files created within that directory inherit the group of the directory.
+        - Represented by `s` in the group’s execute position:
+                        `````````````````````````````````````````````````
+                        drwxr-sr-x 2 user group 4096 Jan 10 14:00 mydir
+                        `````````````````````````````````````````````````
+
+        Set the setgid bit:
+                        `````````````````````````````````````````````````
+                        chmod g+s mydir
+                        `````````````````````````````````````````````````
+
+----------------------------------------------------------------------------------------------------------------------------------
+3.Sticky Bit
+
+        - When the sticky bit is set on a directory, only the owner of a file
+          can delete or modify it, even if others have write permissions on the directory.
+        - Commonly used on shared directories like `/tmp`.
+        
+        - Represented by `t` in the others’ execute position:
+                        `````````````````````````````````````````````````
+                        drwxrwxrwt 2 root root 4096 Jan 10 14:00 /tmp
+                        `````````````````````````````````````````````````
+
+        Set the sticky bit:
+                        `````````````````````````````````````````````````
+                        chmod +t /tmp
+                        `````````````````````````````````````````````````
+______________________________________________________________________________________________________________________________________
+                                           6.Default Permissions (umask)
+
+- umask determines the default permissions when a new file or directory is created.
+
+- You can check the current `umask` value using:
+        `````````````````````````````````````````````````
+        umask
+        `````````````````````````````````````````````````
+        - Example:
+        `````````````````````````````````````````````````
+        umask 022
+        `````````````````````````````````````````````````
+        This results in:
+                - New files with `644` permissions (`rw-r--r--`).
+                - New directories with `755` permissions (`rwxr-xr-x`).
+
+- To change the default `umask`, add the following line to your shell configuration file (e.g., `.rc`):
+        `````````````````````````````````````````````````
+        umask 027
+        `````````````````````````````````````````````````
+______________________________________________________________________________________________________________________________________
+                                           7.Summary of Commands
+                     _____________________________________________________________________________________
+                    | Command               |                 Description                                 |
+                    |_______________________|_____________________________________________________________|
+                    | `ls -l`               | List files with detailed information, including permissions.|
+                    | `chmod`               | Change file or directory permissions.                       |
+                    | `chown`               | Change the owner of a file or directory.                    |
+                    | `chgrp`               | Change the group of a file or directory.                    |
+                    | `umask`               | Set or display default permissions for new files.           |
+                    |_______________________|_____________________________________________________________|
+
+______________________________________________________________________________________________________________________________________
+                                           Conclusion
+
+Understanding and managing permissions is crucial for maintaining a secure and well-functioning Linux environment.
+
+Proper use of permissions ensures that users can only access files and
+ directories they are authorized to, minimizing the risk of unauthorized access or accidental modifications.
+______________________________________________________________________________________________________________________________________

@@ -1,0 +1,140 @@
+# ------------------------------------------------------------------------------
+# 🔐 TokenRequest: Secure short-lived token request for accessing Kubernetes API
+# ------------------------------------------------------------------------------
+
+# 📝 DEFINITION:
+# TokenRequest generates a short-lived JWT token for a specific ServiceAccount.
+# Supports:
+#   - Fine-grained audience control (e.g., API server only)
+#   - Expiration setting (TTL)
+#   - Binding to an existing object (e.g., Pod) for lifecycle security
+
+apiVersion: authentication.k8s.io/v1
+kind: TokenRequest
+metadata:
+  name: ci-access-token           # Optional: not validated by server
+spec:
+  audiences:
+    - https://kubernetes.default.svc  # 👈 Intended recipient (API server)
+  expirationSeconds: 3600             # ⏰ 1 hour TTL
+  boundObjectRef:                     # 🔒 Token is invalidated if bound object is deleted
+    apiVersion: v1
+    kind: Pod
+    name: my-job-pod
+    uid: "12345678-90ab-cdef-1234-567890abcdef"
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+# 📌 USE CASES:
+# ✅ Secure token access for Jenkins CI jobs
+# ✅ Injecting short-lived tokens into Kubernetes jobs or initContainers
+# ✅ Service-to-service auth for in-cluster applications with minimal lifetime
+# ✅ Replacing long-lived service account secrets with ephemeral alternatives
+
+---
+
+# 🧪 HOW TO CREATE THIS TOKEN VIA CLI OR SCRIPT:
+
+# 👇 Use `kubectl` to request the token using the service account
+# (No YAML needed – dynamic inline request)
+#
+# Note: `default` is the service account name and namespace
+
+# kubectl create token default \
+#   --duration=1h \
+#   --bound-object-kind=Pod \
+#   --bound-object-name=my-job-pod \
+#   --bound-object-uid=12345678-90ab-cdef-1234-567890abcdef \
+#   --audience=https://kubernetes.default.svc \
+#   --namespace=default
+
+# ➕ Output: A base64-encoded JWT token you can use in an Authorization header
+
+---
+
+# 🔁 AUTOMATICALLY INJECT THIS TOKEN INTO A POD VIA PROJECTED VOLUME:
+
+# Add this to your Pod `volumes:` and `volumeMounts:` sections:
+
+# volumes:
+#   - name: sa-token
+#     projected:
+#       sources:
+#         - serviceAccountToken:
+#             path: sa-token/token.jwt         # 📁 Where to write the token
+#             audience: https://kubernetes.default.svc
+#             expirationSeconds: 3600
+
+# volumeMounts:
+#   - name: sa-token
+#     mountPath: /var/run/secrets/ci
+#     readOnly: true
+
+# 🧪 Usage inside container:
+# curl -H "Authorization: Bearer $(cat /var/run/secrets/ci/sa-token/token.jwt)" https://kubernetes.default.svc/api
+
+---
+
+# ⚙️ INTEGRATE WITH A JENKINS CI/CD PIPELINE (running as a Pod):
+
+# Assuming Jenkins runs as a Pod using a Kubernetes agent:
+
+# pipeline {
+#   agent {
+#     kubernetes {
+#       yaml """
+# apiVersion: v1
+# kind: Pod
+# spec:
+#   serviceAccountName: jenkins
+#   containers:
+#     - name: jnlp
+#       image: jenkins/inbound-agent
+#       volumeMounts:
+#         - name: token
+#           mountPath: /var/run/secrets/jenkins
+#           readOnly: true
+#   volumes:
+#     - name: token
+#       projected:
+#         sources:
+#           - serviceAccountToken:
+#               path: token.jwt
+#               audience: https://kubernetes.default.svc
+#               expirationSeconds: 3600
+# """
+#     }
+#   }
+#   stages {
+#     stage('Call K8s API') {
+#       steps {
+#         container('jnlp') {
+#           sh '''
+#             echo "Token:"
+#             cat /var/run/secrets/jenkins/token.jwt
+
+#             echo "Calling Kubernetes API:"
+#             curl -H "Authorization: Bearer $(cat /var/run/secrets/jenkins/token.jwt)" https://kubernetes.default.svc/api
+#           '''
+#         }
+#       }
+#     }
+#   }
+# }
+
+# kubectl create token <serviceaccount-name> -n <namespace> \
+#   --duration=1h
+
+
+# kubectl create -f token-request.yaml --raw /api/v1/namespaces/default/serviceaccounts/<sa-name>/token

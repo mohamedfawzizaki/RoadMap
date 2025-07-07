@@ -1,0 +1,166 @@
+==================================================================================================================
+                                                 `/etc/systemd/network`
+
+The `/etc/systemd/network/` directory in Linux is part of the systemd network configuration system. 
+It is used for managing network interfaces and their settings in systems that use systemd for managing services and the system's initialization process.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Purpose of `/etc/systemd/network/`
+
+This directory is used to store configuration files that define network interface settings,
+ such as IP addresses, DHCP configuration, static routes, and other networking parameters. 
+ 
+The configuration files in this directory help control how network interfaces are brought up, configured, and managed during system boot and runtime.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Key Concepts
+
+1. Systemd Networkd: 
+   - systemd-networkd is a system service that manages network configurations. 
+   - It is a lightweight, efficient method of managing network interfaces in Linux systems using systemd.
+   - The network configuration files in `/etc/systemd/network/` are used by systemd-networkd to configure network interfaces on the system.
+
+2. Network Configuration Files:
+   - Each configuration file in the `/etc/systemd/network/` directory is usually associated with a specific network interface or a general network configuration.
+   - These files are typically named with the `.network` extension, for example: `20-wired.network`, `eth0.network`, etc.
+   - Configuration files define network settings such as static IP addresses, DNS servers, DHCP options, and more.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Structure of Network Configuration Files
+
+The network configuration files in `/etc/systemd/network/` follow a specific format that consists of sections with key-value pairs. 
+Here's a breakdown of common sections:
+
+ [Network]
+The `[Network]` section is used to define general network settings for an interface, such as static IP addresses, routing, and DNS servers.
+
+- Example:
+  ```ini
+  [Network]
+  Address=192.168.1.100/24
+  Gateway=192.168.1.1
+  DNS=8.8.8.8
+  ```
+
+  This configuration sets a static IP address (`192.168.1.100`), a gateway (`192.168.1.1`), and a DNS server (`8.8.8.8`).
+
+ [DHCP]
+The `[DHCP]` section is used to configure Dynamic Host Configuration Protocol (DHCP) settings for a network interface. 
+This section can be used to enable or disable DHCP for a specific interface.
+
+- Example:
+  ```ini
+  [DHCP]
+  ClientIdentifier=mac
+  ```
+
+  This configures the network interface to use the MAC address for DHCP client identification.
+
+ [Link]
+The `[Link]` section allows you to configure settings related to the link layer of a network interface, such as MTU size or other link-specific parameters.
+
+- Example:
+  ```ini
+  [Link]
+  MTUBytes=1500
+  ```
+
+  This configuration sets the Maximum Transmission Unit (MTU) for the network interface to 1500 bytes.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Common Network Configuration Options
+
+1. Address:
+   - Specifies a static IP address for the interface.
+   - Format: `Address=IP_ADDRESS/PREFIX_LENGTH`
+   - Example: `Address=192.168.1.100/24`
+
+2. Gateway:
+   - Specifies the default gateway for the network interface.
+   - Example: `Gateway=192.168.1.1`
+
+3. DNS:
+   - Specifies DNS servers to use for name resolution.
+   - Example: `DNS=8.8.8.8`
+
+4. DHCP:
+   - Controls whether the interface uses DHCP to obtain an IP address.
+   - You can enable or disable DHCP by setting `DHCP=yes` or `DHCP=no`.
+
+5. InterfaceNamePolicy:
+   - Defines how interfaces should be named. The default is `never` to avoid renaming network interfaces.
+   - Example: `InterfaceNamePolicy=kernel`
+
+6. IPv6AcceptRA:
+   - Controls whether the interface accepts Router Advertisements (RAs) for IPv6.
+   - Example: `IPv6AcceptRA=true`
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Examples of Network Configuration Files
+
+1. Static IP Configuration for an Interface (`/etc/systemd/network/10-static.network`)
+   ```ini
+   [Network]
+   Address=192.168.1.10/24
+   Gateway=192.168.1.1
+   DNS=8.8.8.8
+   ```
+
+   This file configures the network interface with a static IP address (`192.168.1.10`), sets the gateway to `192.168.1.1`,
+    and defines Google's DNS server (`8.8.8.8`).
+
+2. DHCP Configuration for an Interface (`/etc/systemd/network/20-dhcp.network`)
+   ```ini
+   [Network]
+   DHCP=yes
+   ```
+
+   This configuration file enables DHCP for the network interface, allowing it to automatically receive an IP address and other network settings.
+
+3. Configuration with IPv6 Settings (`/etc/systemd/network/30-ipv6.network`)
+   ```ini
+   [Network]
+   Address=2001:db8::100/64
+   Gateway=2001:db8::1
+   DNS=2001:4860:4860::8888
+   ```
+
+   This file configures an IPv6 address (`2001:db8::100/64`), sets the gateway for IPv6 (`2001:db8::1`), and defines Google's IPv6 DNS server.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Using `systemd-networkd`
+
+Once you've configured the network files in `/etc/systemd/network/`,
+ you need to enable and start the `systemd-networkd` service, which will apply the configurations.
+
+1. Enable and Start `systemd-networkd`:
+   ```bash
+   sudo systemctl enable systemd-networkd
+   sudo systemctl start systemd-networkd
+   ```
+
+2. Check the Status of the Network Service:
+   ```bash
+   sudo systemctl status systemd-networkd
+   ```
+
+3. Reapply the Network Configuration:
+   If you change any of the network files, you can reload the configurations with:
+   ```bash
+   sudo systemctl restart systemd-networkd
+   ```
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Conclusion
+
+The `/etc/systemd/network/` directory is where network interface configurations are stored when using systemd-networkd for managing network settings. 
+This directory allows administrators to easily configure network interfaces, assign static IP addresses, manage DHCP settings,
+ and define other parameters necessary for the system's network configuration. 
+It is a powerful way to manage networking in systems running systemd.

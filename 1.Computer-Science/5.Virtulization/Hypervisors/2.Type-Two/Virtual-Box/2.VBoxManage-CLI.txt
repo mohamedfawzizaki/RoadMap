@@ -1,0 +1,302 @@
+                          VBoxManage [‑q | ‑‑nologo] [‑‑settingspw=password] [‑‑settingspwfile=pw‑file] [@response‑file] [subcommand]
+
+
+______________________________________________________________________________________________________________________________________________________________
+                                                                  Information
+ _____________________________________________________________________________________________________________________________________________________________
+|                    Command                          |                 Example              |                       Description                              |
+| ----------------------------------------------------|--------------------------------------| ---------------------------------------------------------------|
+| VBoxManage help [subcommand]                        | VBoxManage help startvm              | Shows help for a specific VBoxManage subcommand.               |
+| VBoxManage commands                                 | VBoxManage commands                  | Lists all available VBoxManage commands.                       |
+| VBoxManage -V or --version                          | VBoxManage -V                        | Displays the version of VirtualBox installed.                  |
+| VBoxManage --dump-build-type                        | VBoxManage --dump-build-type         | Displays the build type of VirtualBox (e.g. release, debug).   |
+| ----------------------------------------------------|--------------------------------------| ---------------------------------------------------------------|
+| VBoxManage list vms                                 | VBoxManage list vms                  | Lists all registered virtual machines.                         |
+| VBoxManage list runningvms                          | VBoxManage list runningvms           | Lists all currently running VMs.                               |
+| VBoxManage list ostypes                             | VBoxManage list ostypes              | Lists all supported guest OS types.                            |
+| VBoxManage list hostinfo                            | VBoxManage list hostinfo             | Shows information about the host system.                       |
+| VBoxManage list dhcpservers                         | VBoxManage list dhcpservers          | Lists all VirtualBox DHCP servers.                             |
+| VBoxManage list bridgedifs                          | VBoxManage list bridgedifs           | Lists all bridged network interfaces.                          |
+| VBoxManage list hostonlyifs                         | VBoxManage list hostonlyifs          | Lists all host-only interfaces.                                |
+| VBoxManage list natnets                             | VBoxManage list natnets              | Lists all NAT networks.                                        |
+| VBoxManage list usbhost                             | VBoxManage list usbhost              | Lists all USB devices available on the host.                   |
+| VBoxManage list systemproperties                    | VBoxManage list systemproperties     | Displays VirtualBox system-wide settings.                      |
+| VBoxManage list extpacks                            | VBoxManage list extpacks             | Lists installed VirtualBox extension packs.                    |
+|_____________________________________________________________________________________________________________________________________________________________|
+
+
+ __________________________________________________________________________________________________________________________________________________________________________________________________________________________
+| VBoxManage adoptstate   <vm> <state‑filename>       | VBoxManage adoptstate "MyVM" saved_state.vbox                | Adopts a saved VM state file and assigns it to the specified VM.                                    |
+| VBoxManage discardstate <vm>                        | VBoxManage discardstate "MyVM"                               | Discards the saved state of a VM, effectively deleting its snapshot.                                |
+| VBoxManage registervm   <file> --passwordfile       | VBoxManage registervm "config.vbox" --passwordfile "pass.txt"| Registers a VM from a .vbox file, optionally using a password file for encryption.                  |
+| VBoxManage unregistervm <vm> [--delete][--delete-all] BoxManage unregistervm "OldVM" --delete                      | Unregisters a VM, optionally deleting associated files (e.g., disks) with --delete or --delete-all. |
+|__________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+
+
+ _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+|                                                                                                                                                                                                                                                     |
+| VBoxManage createvm <‑‑name=name> <‑‑platform‑architecture=x86 | arm> [‑‑basefolder=basefolder] [‑‑default] [‑‑groups=group‑ID [,...]] [‑‑ostype=ostype] [‑‑register] [‑‑uuid=uuid] [‑‑cipher=cipher] [‑‑password‑id=password‑id] [‑‑password=file] |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VBoxManage createhd --filename "D:VirtualBoxmy-vm-1my-vm-1.vdi" --size 32768
+|_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+| VBoxManage createmedium [disk | dvd | floppy] <‑‑filename=filename> [‑‑size=megabytes | ‑‑sizebyte=bytes] [‑‑diffparent=UUID | filename] [‑‑format=VDI | VMDK | VHD] [‑‑variant=Standard|Fixed|Split2G|Stream|ESX|Formatted|RawDisk...] [‑‑property=name=value...] [‑‑property‑file=name=/path/to/file/with/value...]
+| VBoxManage checkmediumpwd <uuid | filename> <password‑file>
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VBoxManage clonemedium <uuid | source‑medium> <uuid | target‑medium> [disk | dvd | floppy] [‑‑existing] [‑‑format=VDI | VMDK | VHD | RAW | other] [‑‑variant=Standard|Fixed|Split2G|Stream|ESX...]
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VBoxManage closemedium [disk | dvd | floppy] <uuid | filename> [‑‑delete]
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VBoxManage storageattach <uuid | vmname> <‑‑storagectl=name> [‑‑bandwidthgroup=name | none] [‑‑comment=text] [‑‑device=number] [‑‑discard=on | off] [‑‑encodedlun=lun] [‑‑forceunmount] [‑‑hotpluggable=on | off] [‑‑initiator=initiator] [‑‑intnet] [‑‑lun=lun] [‑‑medium=none | emptydrive | additions | uuid | filename | host:drive | iscsi] [‑‑mtype=normal | writethrough | immutable | shareable | readonly | multiattach] [‑‑nonrotational=on | off] [‑‑passthrough=on | off] [‑‑passwordfile=file] [‑‑password=password] [‑‑port=number] [‑‑server=name | ip] [‑‑setparentuuid=uuid] [‑‑setuuid=uuid] [‑‑target=target] [‑‑tempeject=on | off] [‑‑tport=port] [‑‑type=dvddrive | fdd | hdd] [‑‑username=username]
+| VBoxManage storagectl <uuid | vmname> <‑‑name=controller‑name> [‑‑add=floppy | ide | pcie | sas | sata | scsi | usb] [‑‑controller=BusLogic | I82078 | ICH6 | IntelAhci | LSILogic | LSILogicSAS | NVMe | PIIX3 | PIIX4 | USB | VirtIO] [‑‑bootable=on | off] [‑‑hostiocache=on | off] [‑‑portcount=count] [‑‑remove] [‑‑rename=new‑controller‑name]
+|_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VBoxManage startvm [‑‑putenv=name[=value]] [‑‑type=<gui|headless|sdl|separate>] [‑‑password=file] [‑‑password‑id=password‑identifier] <uuid | vmname...>
+|_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+
+ _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+| VBoxManage controlvm <uuid | vmname> pause
+| VBoxManage controlvm <uuid | vmname> resume
+| VBoxManage controlvm <uuid | vmname> reset
+| VBoxManage controlvm <uuid | vmname> poweroff
+| VBoxManage controlvm <uuid | vmname> savestate
+| VBoxManage controlvm <uuid | vmname> acpipowerbutton
+| VBoxManage controlvm <uuid | vmname> acpisleepbutton
+| VBoxManage controlvm <uuid | vmname> reboot
+| VBoxManage controlvm <uuid | vmname> shutdown [‑‑force]
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VBoxManage controlvm <uuid | vmname> keyboardputscancode <hex> [hex...]
+| VBoxManage controlvm <uuid | vmname> keyboardputstring <string> [string...]
+| VBoxManage controlvm <uuid | vmname> keyboardputfile <filename>
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VBoxManage controlvm <uuid | vmname> setlinkstateN <on | off>
+| VBoxManage controlvm <uuid | vmname> nicN <null | nat | bridged | intnet | hostonly | generic | natnetwork> [device‑name]
+| VBoxManage controlvm <uuid | vmname> nictraceN <on | off>
+| VBoxManage controlvm <uuid | vmname> nictracefileN <filename>
+| VBoxManage controlvm <uuid | vmname> nicpropertyN <prop‑name=prop‑value>
+| VBoxManage controlvm <uuid | vmname> nicpromiscN <deny | allow‑vms | allow‑all>
+| VBoxManage controlvm <uuid | vmname> natpfN <[rulename],<tcp|udp>,[host‑IP],hostport,[guest‑IP],guestport>
+| VBoxManage controlvm <uuid | vmname> natpfNdelete <rulename>
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VBoxManage controlvm <uuid | vmname> guestmemoryballoon <balloon‑size>
+| VBoxManage controlvm <uuid | vmname> usbattach <uuid | address> [‑‑capturefile=filename]
+| VBoxManage controlvm <uuid | vmname> usbdetach <uuid | address>
+| VBoxManage controlvm <uuid | vmname> audioin <on | off>
+| VBoxManage controlvm <uuid | vmname> audioout <on | off>
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VBoxManage controlvm <uuid | vmname> clipboard mode <disabled | hosttoguest | guesttohost | bidirectional>
+| VBoxManage controlvm <uuid | vmname> clipboard filetransfers <on | off>
+| VBoxManage controlvm <uuid | vmname> draganddrop <disabled | hosttoguest | guesttohost | bidirectional>
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VBoxManage controlvm <uuid | vmname> vrde <on | off>
+| VBoxManage controlvm <uuid | vmname> vrdeport <port>
+| VBoxManage controlvm <uuid | vmname> vrdeproperty <prop‑name=prop‑value>
+| VBoxManage controlvm <uuid | vmname> vrdevideochannelquality <percentage>
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VBoxManage controlvm <uuid | vmname> setvideomodehint <xres> <yres> <bpp> [display [ <yes | no> [ x‑origin y‑origin]]]
+| VBoxManage controlvm <uuid | vmname> setscreenlayout <display> <on | primary x‑origin y‑origin x‑resolution y‑resolution bpp | off>
+| VBoxManage controlvm <uuid | vmname> screenshotpng <filename> [display]
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VBoxManage controlvm <uuid | vmname> setcredentials <username> ‑‑passwordfile=<filename | password> <domain‑name> ‑‑allowlocallogon=<yes | no>
+| VBoxManage controlvm <uuid | vmname> teleport <‑‑host=host‑name> <‑‑port=port‑name> [‑‑maxdowntime=msec] [‑‑passwordfile=filename | ‑‑password=password]
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VBoxManage controlvm <uuid | vmname> plugcpu <ID>
+| VBoxManage controlvm <uuid | vmname> unplugcpu <ID>
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VBoxManage controlvm <uuid | vmname> cpuexecutioncap <num>
+| VBoxManage controlvm <uuid | vmname> vm‑process‑priority <default | flat | low | normal | high>
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VBoxManage controlvm <uuid | vmname> webcam attach [pathname [settings]]
+| VBoxManage controlvm <uuid | vmname> webcam detach [pathname]
+| VBoxManage controlvm <uuid | vmname> webcam list
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VBoxManage controlvm <uuid | vmname> addencpassword <ID> <password‑file | ‑> [‑‑removeonsuspend=yes | no]
+| VBoxManage controlvm <uuid | vmname> removeencpassword <ID>
+| VBoxManage controlvm <uuid | vmname> removeallencpasswords
+| VBoxManage controlvm <uuid | vmname> changeuartmodeN disconnected | server pipe‑name | client pipe‑name | tcpserver port | tcpclient hostname:port | file filename | device‑name
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VBoxManage controlvm <uuid | vmname> autostart‑enabledN on | off
+| VBoxManage controlvm <uuid | vmname> autostart‑delay <seconds>
+|_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+
+
+
+ _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+| VBoxManage modifyvm <uuid | vmname> [‑‑name=name] [‑‑groups=group [,group...]] [‑‑description=description] [‑‑os‑type=OS‑type] [‑‑icon‑file=filename] [‑‑memory=size‑in‑MB] [‑‑page‑fusion=on | off] [‑‑vram=size‑in‑MB] [‑‑acpi=on | off] [‑‑ioapic=on | off] [‑‑hardware‑uuid=UUID] [‑‑cpus=CPU‑count] [‑‑cpu‑hotplug=on | off] [‑‑plug‑cpu=CPU‑ID] [‑‑unplug‑cpu=CPU‑ID] [‑‑cpu‑execution‑cap=number] [‑‑x86‑pae=on | off] [‑‑x86‑long‑mode=on | off] [‑‑ibpb‑on‑vm‑exit=on | off] [‑‑ibpb‑on‑vm‑entry=on | off] [‑‑spec‑ctrl=on | off] [‑‑l1d‑flush‑on‑sched=on | off] [‑‑l1d‑flush‑on‑vm‑entry=on | off] [‑‑mds‑clear‑on‑sched=on | off] [‑‑mds‑clear‑on‑vm‑entry=on | off] [‑‑cpu‑profile=host | Intel 8086 | Intel 80286 | Intel 80386] [‑‑x86‑hpet=on | off] [‑‑hwvirtex=on | off] [‑‑triple‑fault‑reset=on | off] [‑‑apic=on | off] [‑‑x86‑x2apic=on | off] [‑‑paravirt‑provider=none | default | legacy | minimal | hyperv | kvm] [‑‑paravirt‑debug=key=value[,key=value...]] [‑‑nested‑paging=on | off] [‑‑large‑pages=on | off] [‑‑x86‑vtx‑vpid=on | off] [‑‑x86‑vtx‑ux=on | off] [‑‑nested‑hw‑virt=on | off] [‑‑virt‑vmsave‑vmload=on | off] [‑‑accelerate‑3d=on | off] [‑‑accelerate‑2d‑video=on | off] [‑‑chipset=ich9 | piix3 | armv8virtual] [‑‑iommu=none | automatic | amd | intel] [‑‑tpm‑type=none | 1.2 | 2.0 | host | swtpm] [‑‑tpm‑location=location] [‑‑firmware‑logo‑fade‑in=on | off] [‑‑firmware‑logo‑fade‑out=on | off] [‑‑firmware‑logo‑display‑time=msec] [‑‑firmware‑logo‑image‑path=pathname] [‑‑firmware‑boot‑menu=disabled | menuonly | messageandmenu] [‑‑firmware‑apic=disabled | apic | x2apic] [‑‑firmware‑system‑time‑offset=msec] [‑‑firmware‑pxe‑debug=on | off] [‑‑system‑uuid‑le=on | off] [‑‑bootX= none | floppy | dvd | disk | net] [‑‑rtc‑use‑utc=on | off] [‑‑graphicscontroller=none | vboxvga | vmsvga | vboxsvga | qemuramfb] [‑‑snapshot‑folder=default | pathname] [‑‑firmware=bios | efi | efi32 | efi64] [‑‑guest‑memory‑balloon=size‑in‑MB] [‑‑default‑frontend=default | name] [‑‑vm‑process‑priority=default | flat | low | normal | high] [‑‑vm‑execution‑engine=default | hm | hwvirt | nem | native‑api | interpreter | recompiler]
+| VBoxManage modifyvm <uuid | vmname> [‑‑nicN= none | null | nat | bridged | intnet | hostonly | hostonlynet | generic | natnetwork | cloud] [‑‑nic‑typeN= Am79C970A | Am79C973 | 82540EM | 82543GC | 82545EM | virtio] [‑‑cable‑connectedN= on | off] [‑‑nic‑traceN= on | off] [‑‑nic‑trace‑fileN=filename] [‑‑nic‑propertyN=name= [value]] [‑‑nic‑speedN=kbps] [‑‑nic‑boot‑prioN=priority] [‑‑nic‑promiscN= deny | allow‑vms | allow‑all] [‑‑nic‑bandwidth‑groupN= none | name] [‑‑bridge‑adapterN= none | device‑name] [‑‑cloud‑networkN=network‑name] [‑‑host‑only‑adapterN= none | device‑name] [‑‑host‑only‑netN=network‑name] [‑‑intnetN=network‑name] [‑‑nat‑networkN=network‑name] [‑‑nic‑generic‑drvN=driver‑name] [‑‑mac‑addressN= auto | MAC‑address]
+| VBoxManage modifyvm <uuid | vmname> [‑‑nat‑netN= network | default] [‑‑nat‑pfN= [rule‑name],tcp | udp,[host‑IP],hostport,[guest‑IP],guestport] [‑‑nat‑pfN=delete=rule‑name] [‑‑nat‑tftp‑prefixN=prefix] [‑‑nat‑tftp‑fileN=filename] [‑‑nat‑tftp‑serverN=IP‑address] [‑‑nat‑bind‑ipN=IP‑address] [‑‑nat‑dns‑pass‑domainN= on | off] [‑‑nat‑dns‑proxyN= on | off] [‑‑nat‑dns‑host‑resolverN= on | off] [‑‑nat‑localhostreachableN= on | off] [‑‑nat‑settingsN=[mtu],[socksnd],[sockrcv],[tcpsnd],[tcprcv]] [‑‑nat‑alias‑modeN= default | [log],[proxyonly],[sameports]]
+|---------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VBoxManage modifyvm <uuid | vmname> [‑‑mouse=ps2 | usb | usbtablet | usbmultitouch | usbmtscreenpluspad] [‑‑keyboard=ps2 | usb] [‑‑uartN= off | IO‑base IRQ] [‑‑uart‑modeN= disconnected | serverpipe | clientpipe | tcpserverport | tcpclienthostname:port | filefilename | device‑name] [‑‑uart‑typeN= 16450 | 16550A | 16750] [‑‑lpt‑modeN=device‑name] [‑‑lptN= off | IO‑base IRQ] [‑‑audio‑controller=ac97 | hda | sb16] [‑‑audio‑codec=stac9700 | ad1980 | stac9221 | sb16] [‑‑audio‑driver=none | default | null | dsound | was | oss | alsa | pulse | coreaudio] [‑‑audio‑enabled=on | off] [‑‑audio‑in=on | off] [‑‑audio‑out=on | off] [‑‑clipboard‑mode=disabled | hosttoguest | guesttohost | bidirectional] [‑‑clipboard‑file‑transfers=enabled | disabled] [‑‑drag‑and‑drop=disabled | hosttoguest | guesttohost | bidirectional] [‑‑monitor‑count=number] [‑‑usb‑ehci=on | off] [‑‑usb‑ohci=on | off] [‑‑usb‑xhci=on | off] [‑‑usb‑rename=old‑name new‑name]
+| VBoxManage modifyvm <uuid | vmname> [‑‑recording=on | off] [‑‑recording‑screens=all | none | screen‑ID[,screen‑ID...]] [‑‑recording‑file=filename] [‑‑recording‑max‑size=MB] [‑‑recording‑max‑time=msec] [‑‑recording‑opts= key=value[,key=value...]] [‑‑recording‑video‑fps=fps] [‑‑recording‑video‑rate=rate] [‑‑recording‑video‑res=widthxheight]
+| VBoxManage modifyvm <uuid | vmname> [‑‑vrde=on | off] [‑‑vrde‑property=property‑name= [property‑value]] [‑‑vrde‑extpack=default | name] [‑‑vrde‑port=port] [‑‑vrde‑address=hostip] [‑‑vrde‑auth‑type=null | external | guest] [‑‑vrde‑auth‑library=default | name] [‑‑vrde‑multi‑con=on | off] [‑‑vrde‑reuse‑con=on | off] [‑‑vrde‑video‑channel=on | off] [‑‑vrde‑video‑channel‑quality=percent]
+| VBoxManage modifyvm <uuid | vmname> [‑‑teleporter=on | off] [‑‑teleporter‑port=port] [‑‑teleporter‑address=address | empty] [‑‑teleporter‑password=password] [‑‑teleporter‑password‑file=filename | stdin] [‑‑cpuid‑portability‑level=level] [‑‑cpuid‑set=leaf [:subleaf] eax ebx ecx edx] [‑‑cpuid‑remove=leaf [:subleaf]] [‑‑cpuid‑remove‑all]
+| VBoxManage modifyvm <uuid | vmname> [‑‑tracing‑enabled=on | off] [‑‑tracing‑config=string] [‑‑tracing‑allow‑vm‑access=on | off]
+| VBoxManage modifyvm <uuid | vmname> [‑‑usb‑card‑reader=on | off]
+| VBoxManage modifyvm <uuid | vmname> [‑‑autostart‑enabled=on | off] [‑‑autostart‑delay=seconds]
+| VBoxManage modifyvm <uuid | vmname> [‑‑guest‑debug‑provider=none | native | gdb | kd] [‑‑guest‑debug‑io‑provider=none | tcp | udp | ipc] [‑‑guest‑debug‑address=IP‑Address | path] [‑‑guest‑debug‑port=port]
+| VBoxManage modifyvm <uuid | vmname> [‑‑pci‑attach=host‑PCI‑address [@guest‑PCI‑bus‑address]] [‑‑pci‑detach=host‑PCI‑address]
+| VBoxManage modifyvm <uuid | vmname> [‑‑testing‑enabled=on | off] [‑‑testing‑mmio=on | off] [‑‑testing‑cfg‑dwordidx=value]
+|_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+
+ _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+| VBoxManage unattended detect <‑‑iso=install‑iso> [‑‑machine‑readable]
+| VBoxManage unattended install <uuid | vmname> <‑‑iso=install‑iso> [‑‑user=login] [‑‑user‑password=password] [‑‑admin‑password=password] [‑‑password‑file=file] [‑‑full‑user‑name=name] [‑‑key=product‑key] [‑‑install‑additions] [‑‑no‑install‑additions] [‑‑additions‑iso=add‑iso] [‑‑install‑txs] [‑‑no‑install‑txs] [‑‑validation‑kit‑iso=testing‑iso] [‑‑locale=ll_CC] [‑‑country=CC] [‑‑time‑zone=tz] [‑‑hostname=fqdn] [‑‑package‑selection‑adjustment=keyword] [‑‑dry‑run] [‑‑auxiliary‑base‑path=path] [‑‑image‑index=number] [‑‑script‑template=file] [‑‑post‑install‑template=file] [‑‑post‑install‑command=command] [‑‑extra‑install‑kernel‑parameters=params] [‑‑language=lang] [‑‑start‑vm=session‑type]
+|_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+
+ _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+| VBoxManage convertfromraw <inputfile> <outputfile> [‑‑format=VDI | VMDK | VHD] [‑‑uuid=uuid] [‑‑variant=Standard|Fixed|Split2G|Stream|ESX...]
+| VBoxManage convertfromraw stdin <outputfile> <bytes> [‑‑format=VDI | VMDK | VHD] [‑‑uuid=uuid] [‑‑variant=Standard|Fixed|Split2G|Stream|ESX...]
+|_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+
+ _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+| VBoxManage natnetwork add [‑‑disable | ‑‑enable] <‑‑netname=name> <‑‑network=network> [‑‑dhcp=on|off] [‑‑ipv6=on|off] [‑‑loopback‑4=rule] [‑‑loopback‑6=rule] [‑‑port‑forward‑4=rule] [‑‑port‑forward‑6=rule]
+| VBoxManage natnetwork list [filter‑pattern]
+| VBoxManage natnetwork modify [‑‑dhcp=on|off] [‑‑disable | ‑‑enable] <‑‑netname=name> <‑‑network=network> [‑‑ipv6=on|off] [‑‑loopback‑4=rule] [‑‑loopback‑6=rule] [‑‑port‑forward‑4=rule] [‑‑port‑forward‑6=rule]
+| VBoxManage natnetwork remove <‑‑netname=name>
+| VBoxManage natnetwork start <‑‑netname=name>
+| VBoxManage natnetwork stop <‑‑netname=name>
+|_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+
+ _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+| VBoxManage hostonlyif ipconfig <ifname> [‑‑dhcp | ‑‑ip=IPv4‑address ‑‑netmask=IPv4‑netmask | ‑‑ipv6=IPv6‑address ‑‑netmasklengthv6=length]
+| VBoxManage hostonlyif create
+| VBoxManage hostonlyif remove <ifname>
+| VBoxManage hostonlynet add <‑‑name=netname> [‑‑id=netid] <‑‑netmask=mask> <‑‑lower‑ip=address> <‑‑upper‑ip=address> [‑‑enable | ‑‑disable]
+| VBoxManage hostonlynet modify <‑‑name=netname | ‑‑id=netid> [‑‑lower‑ip=address] [‑‑upper‑ip=address] [‑‑netmask=mask] [‑‑enable | ‑‑disable]
+| VBoxManage hostonlynet remove <‑‑name=netname | ‑‑id=netid>
+|_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+
+ _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+| VBoxManage bandwidthctl <uuid | vmname> add <bandwidth‑group‑name> <‑‑limit=bandwidth‑limit[k|m|g|K|M|G]> <‑‑type=disk | network>
+| VBoxManage bandwidthctl <uuid | vmname> list [‑‑machinereadable]
+| VBoxManage bandwidthctl <uuid | vmname> remove <bandwidth‑group‑name>
+| VBoxManage bandwidthctl <uuid | vmname> set <bandwidth‑group‑name> <‑‑limit=bandwidth‑limit[k|m|g|K|M|G]>
+|_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+
+ _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+| VBoxManage dhcpserver add <‑‑network=netname | ‑‑interface=ifname> <‑‑server‑ip=address> <‑‑netmask=mask> <‑‑lower‑ip=address> <‑‑upper‑ip=address> <‑‑enable | ‑‑disable> [ [‑‑global] [‑‑set‑opt=dhcp‑opt‑no value...] [‑‑set‑opt‑hex=dhcp‑opt‑no hexstring...] [‑‑force‑opt=dhcp‑opt‑no...] [‑‑suppress‑opt=dhcp‑opt‑no...] [‑‑min‑lease‑time=seconds] [‑‑default‑lease‑time=seconds] [‑‑max‑lease‑time=seconds]...] [ <‑‑group=name> [‑‑set‑opt=dhcp‑opt‑no value...] [‑‑set‑opt‑hex=dhcp‑opt‑no hexstring...] [‑‑force‑opt=dhcp‑opt‑no...] [‑‑suppress‑opt=dhcp‑opt‑no...] [‑‑incl‑mac=address...] [‑‑excl‑mac=address...] [‑‑incl‑mac‑wild=pattern...] [‑‑excl‑mac‑wild=pattern...] [‑‑incl‑vendor=string...] [‑‑excl‑vendor=string...] [‑‑incl‑vendor‑wild=pattern...] [‑‑excl‑vendor‑wild=pattern...] [‑‑incl‑user=string...] [‑‑excl‑user=string...] [‑‑incl‑user‑wild=pattern...] [‑‑excl‑user‑wild=pattern...] [‑‑min‑lease‑time=seconds] [‑‑default‑lease‑time=seconds] [‑‑max‑lease‑time=seconds]...] [ <‑‑vm=name|uuid> [‑‑nic=1‑N] [‑‑set‑opt=dhcp‑opt‑no value...] [‑‑set‑opt‑hex=dhcp‑opt‑no hexstring...] [‑‑force‑opt=dhcp‑opt‑no...] [‑‑suppress‑opt=dhcp‑opt‑no...] [‑‑min‑lease‑time=seconds] [‑‑default‑lease‑time=seconds] [‑‑max‑lease‑time=seconds] [‑‑fixed‑address=address]...] [ <‑‑mac‑address=address> [‑‑set‑opt=dhcp‑opt‑no value...] [‑‑set‑opt‑hex=dhcp‑opt‑no hexstring...] [‑‑force‑opt=dhcp‑opt‑no...] [‑‑suppress‑opt=dhcp‑opt‑no...] [‑‑min‑lease‑time=seconds] [‑‑default‑lease‑time=seconds] [‑‑max‑lease‑time=seconds] [‑‑fixed‑address=address]...]
+| VBoxManage dhcpserver modify <‑‑network=netname | ‑‑interface=ifname> [‑‑server‑ip=address] [‑‑lower‑ip=address] [‑‑upper‑ip=address] [‑‑netmask=mask] [‑‑enable | ‑‑disable] [ [‑‑global] [‑‑del‑opt=dhcp‑opt‑no...] [‑‑set‑opt=dhcp‑opt‑no value...] [‑‑set‑opt‑hex=dhcp‑opt‑no hexstring...] [‑‑force‑opt=dhcp‑opt‑no...] [‑‑unforce‑opt=dhcp‑opt‑no...] [‑‑suppress‑opt=dhcp‑opt‑no...] [‑‑unsuppress‑opt=dhcp‑opt‑no...] [‑‑min‑lease‑time=seconds] [‑‑default‑lease‑time=seconds] [‑‑max‑lease‑time=seconds] [‑‑remove‑config]...] [ <‑‑group=name> [‑‑set‑opt=dhcp‑opt‑no value...] [‑‑set‑opt‑hex=dhcp‑opt‑no hexstring...] [‑‑force‑opt=dhcp‑opt‑no...] [‑‑unforce‑opt=dhcp‑opt‑no...] [‑‑suppress‑opt=dhcp‑opt‑no...] [‑‑unsuppress‑opt=dhcp‑opt‑no...] [‑‑del‑mac=address...] [‑‑incl‑mac=address...] [‑‑excl‑mac=address...] [‑‑del‑mac‑wild=pattern...] [‑‑incl‑mac‑wild=pattern...] [‑‑excl‑mac‑wild=pattern...] [‑‑del‑vendor=string...] [‑‑incl‑vendor=string...] [‑‑excl‑vendor=string...] [‑‑del‑vendor‑wild=pattern...] [‑‑incl‑vendor‑wild=pattern...] [‑‑excl‑vendor‑wild=pattern...] [‑‑del‑user=string...] [‑‑incl‑user=string...] [‑‑excl‑user=string...] [‑‑del‑user‑wild=pattern...] [‑‑incl‑user‑wild=pattern...] [‑‑excl‑user‑wild=pattern...] [‑‑zap‑conditions] [‑‑min‑lease‑time=seconds] [‑‑default‑lease‑time=seconds] [‑‑max‑lease‑time=seconds] [‑‑remove‑config]...] [ <‑‑vm=name|uuid> [‑‑nic=1‑N] [‑‑del‑opt=dhcp‑opt‑no...] [‑‑set‑opt=dhcp‑opt‑no value...] [‑‑set‑opt‑hex=dhcp‑opt‑no hexstring...] [‑‑force‑opt=dhcp‑opt‑no...] [‑‑unforce‑opt=dhcp‑opt‑no...] [‑‑suppress‑opt=dhcp‑opt‑no...] [‑‑unsuppress‑opt=dhcp‑opt‑no...] [‑‑min‑lease‑time=seconds] [‑‑default‑lease‑time=seconds] [‑‑max‑lease‑time=seconds] [‑‑fixed‑address=address] [‑‑remove‑config]...] [ <‑‑mac‑address=address> [‑‑del‑opt=dhcp‑opt‑no...] [‑‑set‑opt=dhcp‑opt‑no value...] [‑‑set‑opt‑hex=dhcp‑opt‑no hexstring...] [‑‑force‑opt=dhcp‑opt‑no...] [‑‑unforce‑opt=dhcp‑opt‑no...] [‑‑suppress‑opt=dhcp‑opt‑no...] [‑‑unsuppress‑opt=dhcp‑opt‑no...] [‑‑min‑lease‑time=seconds] [‑‑default‑lease‑time=seconds] [‑‑max‑lease‑time=seconds] [‑‑fixed‑address=address] [‑‑remove‑config]...]
+| VBoxManage dhcpserver remove <‑‑network=netname | ‑‑interface=ifname>
+| VBoxManage dhcpserver start <‑‑network=netname | ‑‑interface=ifname>
+| VBoxManage dhcpserver restart <‑‑network=netname | ‑‑interface=ifname>
+| VBoxManage dhcpserver stop <‑‑network=netname | ‑‑interface=ifname>
+| VBoxManage dhcpserver findlease <‑‑network=netname | ‑‑interface=ifname> <‑‑mac‑address=mac>
+|_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+
+ _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+| VBoxManage encryptmedium <uuid | filename> [‑‑cipher=cipher‑ID] [‑‑newpassword=password] [‑‑newpasswordid=password‑ID] [‑‑oldpassword=password]
+| VBoxManage encryptvm <uuid | vmname> setencryption ‑‑old‑passwordfile ‑‑ciphercipher‑identifier ‑‑new‑passwordfile ‑‑new‑password‑idpassword‑identifier ‑‑force
+| VBoxManage encryptvm <uuid | vmname> checkpassword <file>
+| VBoxManage encryptvm <uuid | vmname> addpassword ‑‑passwordfile ‑‑password‑idpassword‑identifier
+| VBoxManage encryptvm <uuid | vmname> removepassword <password‑identifier>
+|_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+
+ _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+| VBoxManage clonevm <vmname|uuid> [‑‑basefolder=basefolder] [‑‑groups=group,...] [‑‑mode=machine | ‑‑mode=machinechildren | ‑‑mode=all] [‑‑name=name] [‑‑options=option,...] [‑‑register] [‑‑snapshot=snapshot‑name] [‑‑uuid=uuid]
+| VBoxManage movevm <uuid | vmname> [‑‑type=basic] [‑‑folder=folder‑name]
+|_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+
+ _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+| VBoxManage import <ovfname | ovaname> [‑‑dry‑run] [‑‑options=keepallmacs | keepnatmacs | importtovdi] [‑‑vsys=n] [‑‑ostype=ostype] [‑‑vmname=name] [‑‑settingsfile=filename] [‑‑basefolder=folder] [‑‑group=group] [‑‑memory=MB] [‑‑cpus=n] [‑‑description=text] [‑‑eula=show | accept] [‑‑unit=n] [‑‑ignore] [‑‑scsitype=BusLogic | LsiLogic] [‑‑disk=path] [‑‑controller=index] [‑‑port=n]
+| VBoxManage import OCI:// ‑‑cloud [‑‑ostype=ostype] [‑‑vmname=name] [‑‑basefolder=folder] [‑‑memory=MB] [‑‑cpus=n] [‑‑description=text] <‑‑cloudprofile=profile> <‑‑cloudinstanceid=id> [‑‑cloudbucket=bucket]
+| 
+| VBoxManage export <machines> <‑‑output=name> [‑‑legacy09 | ‑‑ovf09 | ‑‑ovf10 | ‑‑ovf20] [‑‑manifest] [‑‑options=manifest | iso | nomacs | nomacsbutnat...] [‑‑vsys=virtual‑system‑number] [‑‑description=description‑info] [‑‑eula=license‑text] [‑‑eulafile=filename] [‑‑product=product‑name] [‑‑producturl=product‑URL] [‑‑vendor=vendor‑name] [‑‑vendorurl=vendor‑URL] [‑‑version=version‑info] [‑‑vmname=vmname]
+| VBoxManage export <machine> <‑‑output=cloud‑service‑provider> [‑‑opc10] [‑‑vmname=vmname] [‑‑cloud=virtual‑system‑number] [‑‑cloudprofile=cloud‑profile‑name] [‑‑cloudshape=cloud‑shape‑name] [‑‑clouddomain=cloud‑domain] [‑‑clouddisksize=disk‑size‑in‑GB] [‑‑cloudbucket=bucket‑name] [‑‑cloudocivcn=OCI‑VCN‑ID] [‑‑cloudocisubnet=OCI‑subnet‑ID] [‑‑cloudkeepobject=true | false] [‑‑cloudlaunchinstance=true | false] [‑‑cloudlaunchmode=EMULATED | PARAVIRTUALIZED] [‑‑cloudpublicip=true | false]
+|_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+
+ _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+| VBoxManage snapshot <uuid | vmname>
+| VBoxManage snapshot <uuid | vmname> take <snapshot‑name> [‑‑description=description] [‑‑live] [‑‑uniquename Number,Timestamp,Space,Force]
+| VBoxManage snapshot <uuid | vmname> delete <snapshot‑name>
+| VBoxManage snapshot <uuid | vmname> restore <snapshot‑name>
+| VBoxManage snapshot <uuid | vmname> restorecurrent
+| VBoxManage snapshot <uuid | vmname> edit <snapshot‑name | ‑‑current> [‑‑description=description] [‑‑name=new‑name]
+| VBoxManage snapshot <uuid | vmname> list [‑‑details | ‑‑machinereadable]
+| VBoxManage snapshot <uuid | vmname> showvminfo <snapshot‑name>
+|_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+
+ _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+| VBoxManage extpack install [‑‑replace] [‑‑accept‑license=sha256] <tarball>
+| VBoxManage extpack uninstall [‑‑force] <name>
+| VBoxManage extpack cleanup
+| VBoxManage getextradata <global | uuid | vmname> <keyword | enumerate>
+|_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+
+ _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+| VBoxManage guestcontrol <uuid | vmname> run [‑‑arg0=argument 0] [‑‑domain=domainname] [‑‑dos2unix] [‑‑exe=filename] [‑‑ignore‑orphaned‑processes] [‑‑no‑wait‑stderr | ‑‑wait‑stderr] [‑‑no‑wait‑stdout | ‑‑wait‑stdout] [‑‑passwordfile=password‑file | ‑‑password=password] [‑‑profile] [‑‑putenv=var‑name=[value]] [‑‑quiet] [‑‑timeout=msec] [‑‑unix2dos] [‑‑unquoted‑args] [‑‑username=username] [‑‑cwd=directory] [‑‑verbose] <‑‑[argument...]>
+| VBoxManage guestcontrol <uuid | vmname> start [‑‑arg0=argument 0] [‑‑domain=domainname] [‑‑exe=filename] [‑‑ignore‑orphaned‑processes] [‑‑passwordfile=password‑file | ‑‑password=password] [‑‑profile] [‑‑putenv=var‑name=[value]] [‑‑quiet] [‑‑timeout=msec] [‑‑unquoted‑args] [‑‑username=username] [‑‑cwd=directory] [‑‑verbose] <‑‑[argument...]>
+| VBoxManage guestcontrol <uuid | vmname> copyfrom [‑‑dereference] [‑‑domain=domainname] [‑‑passwordfile=password‑file | ‑‑password=password] [‑‑quiet] [‑‑no‑replace] [‑‑recursive] [‑‑target‑directory=host‑destination‑dir] [‑‑update] [‑‑username=username] [‑‑verbose] <guest‑source0> guest‑source1[...] <host‑destination>
+| VBoxManage guestcontrol <uuid | vmname> copyto [‑‑dereference] [‑‑domain=domainname] [‑‑passwordfile=password‑file | ‑‑password=password] [‑‑quiet] [‑‑no‑replace] [‑‑recursive] [‑‑target‑directory=guest‑destination‑dir] [‑‑update] [‑‑username=username] [‑‑verbose] <host‑source0> host‑source1[...]
+| VBoxManage guestcontrol <uuid | vmname> mkdir [‑‑domain=domainname] [‑‑mode=mode] [‑‑parents] [‑‑passwordfile=password‑file | ‑‑password=password] [‑‑quiet] [‑‑username=username] [‑‑verbose] <guest‑directory...>
+| VBoxManage guestcontrol <uuid | vmname> rmdir [‑‑domain=domainname] [‑‑passwordfile=password‑file | ‑‑password=password] [‑‑quiet] [‑‑recursive] [‑‑username=username] [‑‑verbose] <guest‑directory...>
+| VBoxManage guestcontrol <uuid | vmname> rm [‑‑domain=domainname] [‑‑force] [‑‑passwordfile=password‑file | ‑‑password=password] [‑‑quiet] [‑‑username=username] [‑‑verbose] <guest‑directory...>
+| VBoxManage guestcontrol <uuid | vmname> mv [‑‑domain=domainname] [‑‑passwordfile=password‑file | ‑‑password=password] [‑‑quiet] [‑‑username=username] [‑‑verbose] <source...> <destination‑directory>
+| VBoxManage guestcontrol <uuid | vmname> mktemp [‑‑directory] [‑‑domain=domainname] [‑‑mode=mode] [‑‑passwordfile=password‑file | ‑‑password=password] [‑‑quiet] [‑‑secure] [‑‑tmpdir=directory‑name] [‑‑username=username] [‑‑verbose] <template‑name>
+| VBoxManage guestcontrol <uuid | vmname> mount [‑‑passwordfile=password‑file | ‑‑password=password] [‑‑username=username] [‑‑verbose]
+| VBoxManage guestcontrol <uuid | vmname> fsinfo [‑‑domain=domainname] [‑‑passwordfile=password‑file | ‑‑password=password] [‑‑human‑readable] [‑‑quiet] [‑‑total] [‑‑username=username] [‑‑verbose] <path>
+| VBoxManage guestcontrol <uuid | vmname> stat [‑‑domain=domainname] [‑‑passwordfile=password‑file | ‑‑password=password] [‑‑quiet] [‑‑username=username] [‑‑verbose] <filename>
+| VBoxManage guestcontrol <uuid | vmname> list <all | files | processes | sessions> [‑‑quiet] [‑‑verbose]
+| VBoxManage guestcontrol <uuid | vmname> closeprocess [‑‑session‑id=ID | ‑‑session‑name=name‑or‑pattern] [‑‑quiet] [‑‑verbose] <PID...>
+| VBoxManage guestcontrol <uuid | vmname> closesession [‑‑all | ‑‑session‑id=ID | ‑‑session‑name=name‑or‑pattern] [‑‑quiet] [‑‑verbose]
+| VBoxManage guestcontrol <uuid | vmname> updatega [‑‑quiet] [‑‑verbose] [‑‑source=guest‑additions.ISO] [‑‑wait‑start] [‑‑[argument...]]
+| VBoxManage guestcontrol <uuid | vmname> watch [‑‑quiet] [‑‑verbose]
+|_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+| VBoxManage guestproperty get <uuid | vmname> <property‑name> [‑‑verbose]
+| VBoxManage guestproperty enumerate <uuid | vmname> [‑‑no‑timestamp] [‑‑no‑flags] [‑‑relative] [‑‑old‑format] [patterns...]
+| VBoxManage guestproperty set <uuid | vmname> <property‑name> [property‑value [‑‑flags=flags]]
+| VBoxManage guestproperty unset <uuid | vmname> <property‑name>
+| VBoxManage guestproperty wait <uuid | vmname> <patterns> [‑‑timeout=msec] [‑‑fail‑on‑timeout]
+|_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+
+
+
+
+
+
+
+
+
+## 📡 Networking
+
+| VBoxManage modifyvm "VM_Name" --nic1 nat                         | Set network to NAT (default). |
+| VBoxManage modifyvm "VM_Name" --nic1 bridged                     | Set network to Bridged Adapter. |
+| VBoxManage modifyvm "VM_Name" --nic1 hostonly                    | Set network to Host-Only. |
+| VBoxManage modifyvm "VM_Name" --natpf1 "Name,protocol,hostIP,hostPort,guestIP,guestPort" | Port forwarding from host (port 2222) to guest (port 22). |
+| VBoxManage modifyvm "VM_Name" --natpf1 "guestssh,tcp,,2222,,22"                          | Port forwarding from host (port 2222) to guest (port 22). |
+| VBoxManage modifyvm "VM_Name" --natpf1 "NGINX,TCP,,8000,,80"                             | Port forwarding from host (port 8000) to guest (port 80). |
+
+VBoxManage bandwidthctl "MyVM" add LimitNet --limit=5m --type=network
+VBoxManage modifyvm "MyVM" --nicbandwidthgroup1 LimitNet
+
+VBoxManage modifyvm "my-vm-1" --nicbandwidthgroup1 none
+VBoxManage bandwidthctl "my-vm-1" remove LimitNet
+
+
+VBoxManage modifyvm "VM name" --natpf1 "guestssh,tcp,,2222,10.0.2.19,22"
+VBoxManage modifyvm "VM name" --natpf1 "guestssh,tcp,127.0.0.1,2222,,22"
+VBoxManage modifyvm "VM name" --natpf1 delete "guestssh"              
+
+
+
+
+VBoxManage natnetwork add --netname natnet1 --network "192.168.15.0/24" --enable
+VBoxManage natnetwork add --netname natnet1 --network "192.168.15.0/24" --enable --dhcp on
+VBoxManage natnetwork modify --netname natnet1 --dhcp on
+VBoxManage natnetwork modify --netname natnet1 --dhcp off
+
+VBoxManage natnetwork start --netname natnet1
+VBoxManage natnetwork stop --netname natnet1
+
+
+VBoxManage natnetwork remove --netname natnet1
+
+VBoxManage natnetwork modify --netname natnet1 --port-forward-4 "ssh:tcp:[]:1022:[192.168.15.5]:22"
+VBoxManage natnetwork modify --netname natnet1 --port-forward-4 delete ssh
+
+VBoxManage list natnetworks
+
+## 📡 Grouping
+
+| VBoxManage modifyvm "vm01" --groups "/TestGroup" | This command creates a group TestGroup and attaches the VM vm01 to that group.
+| VBoxManage modifyvm "vm01" --groups "" | Detach a VM from the group, and delete the group if empty.
+| VBoxManage modifyvm "vm01" --groups "/TestGroup,/TestGroup2" | This command creates the groups TestGroup and TestGroup2, if they do not exist, and attaches the VM vm01 to both of them.
+| VBoxManage modifyvm "vm01" --groups "/TestGroup/TestGroup2" | This command attaches the VM vm01 to the subgroup TestGroup2 of the TestGroup group.

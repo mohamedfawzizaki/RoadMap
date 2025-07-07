@@ -1,0 +1,119 @@
+_________________________________________________________________________________________________________________________________________________________________________ 
+                                                     Package Manager
+                                                     ===============
+
+
+
+                                                     
+_________________________________________________________________________________________________________________________________________________________________________ 
+                                            1.RPM (Red Hat Package Manager)
+                                            ===============================
+ _________________________________________________________________________________________________________________________________________
+|     Option       |             Example                 |                           Description                                          |
+|__________________|_____________________________________|________________________________________________________________________________|
+| -i               | rpm -i package.rpm                  | Install a new package.                                                         |
+| --force          | rpm -i --force package.rpm          | Force the installation of a package, even if conflicts exist.                  |
+| --nodeps         | rpm -i --nodeps package.rpm         | Install a package without checking for dependencies.                           |
+|------------------|-------------------------------------|--------------------------------------------------------------------------------|
+| -U               | rpm -U package.rpm                  | Upgrade a package (install if not present).                                    |
+| -F               | rpm -F package.rpm                  | Freshen a package (only upgrades if it’s already installed).                   |
+|------------------|-------------------------------------|--------------------------------------------------------------------------------|
+| -e               | rpm -e package-name                 | Remove an installed package.                                                   |
+|------------------|-------------------------------------|--------------------------------------------------------------------------------|
+| -qi              | rpm -qi package-name                | Display detailed information about an installed package.                       |
+| -qa              | rpm -qa                             | List all installed packages.                                                   |
+| -qc              | rpm -qc package-name                | List configuration files installed by a package.                               |
+| -qR              | rpm -qR package-name                | List dependencies required by a package.                                       |
+| -ql              | rpm -ql package-name                | List files installed by a package.                                             |
+| -qpi             | rpm -qpi package.rpm                | Show information about a package file (without installing it).                 |
+| -qpl             | rpm -qpl package.rpm                | List the contents of a package file (without installing it).                   |
+|------------------|-------------------------------------|--------------------------------------------------------------------------------|
+| -q               | rpm -q package-name                 | Query if a specific package is installed.                                      |
+| -qf              | rpm -qf /path/to/file               | Find out which package owns a specific file.                                   |
+|------------------|-------------------------------------|--------------------------------------------------------------------------------|
+| -V               | rpm -V package-name                 | Verify the integrity of an installed package.                                  |
+| --rebuilddb      | rpm --rebuilddb                     | Rebuild the RPM database.                                                      |
+| --test           | rpm -i --test package.rpm           | Test an installation without making changes.                                   |
+|------------------|-------------------------------------|--------------------------------------------------------------------------------|
+| --nosignature    | rpm -K --nosignature package.rpm    | Skip signature verification when checking or installing a package.             |
+| --import         | rpm --import /path/to/key           | Import a GPG key for verifying signed packages.                                |
+|__________________|_____________________________________|________________________________________________________________________________|
+
+
+
+
+_________________________________________________________________________________________________________________________________________________________________________ 
+                                                    2.DNF (Dandified Yum)
+                                                    =====================
+ ___________________________________________________________________________________________________________________________________________________
+|       Option         |              Example                      |                           Description                                          |
+|______________________|___________________________________________|________________________________________________________________________________|
+| check-update         | dnf check-update                          | Check for available updates without installing them.                           |
+| update / upgrade     | dnf update / dnf upgrade                  | Update installed packages to the latest available version.                     |
+| downgrade            | dnf downgrade package-name                | Downgrade a package to an earlier version.                                     |
+|----------------------|-------------------------------------------|--------------------------------------------------------------------------------|
+| install              | dnf install package-name                  | Install a package (resolves dependencies automatically).                       |
+| reinstall            | dnf reinstall package-name                | Reinstall an already installed package.                                        |
+| group install        | dnf group install "Development Tools"     | Install a group of related packages.                                           |
+|----------------------|-------------------------------------------|--------------------------------------------------------------------------------|
+| remove               | dnf remove package-name                   | Remove a package along with its dependencies.                                  |
+| group remove         | dnf group remove "Development Tools"      | Remove a group of related packages.                                            |
+| autoremove           | dnf autoremove                            | Remove orphaned packages that are no longer needed by any installed package.   |
+| clean                | dnf clean all                             | Clean cached metadata and packages.                                            |
+|----------------------|-------------------------------------------|--------------------------------------------------------------------------------|
+| info                 | dnf info package-name                     | Display detailed information about a package.                                  |
+| list                 | dnf list installed                        | List all installed packages.                                                   |
+| list available       | dnf list available                        | List all available packages in repositories.                                   |
+| group list           | dnf group list                            | List all available package groups.                                             |
+| history              | dnf history                               | Show the transaction history of package installations and updates.             |
+|----------------------|-------------------------------------------|--------------------------------------------------------------------------------|
+| search               | dnf search keyword                        | Search for packages matching a keyword.                                        |
+| provides             | dnf provides /path/to/file                | Find which package provides a specific file or dependency.                     |
+|----------------------|-------------------------------------------|--------------------------------------------------------------------------------|
+| makecache            | dnf makecache                             | Create or update metadata cache for faster package queries.                    |
+|----------------------|-------------------------------------------|--------------------------------------------------------------------------------|
+| repoquery            | dnf repoquery package-name                | Query information about a package from repositories.                           |
+| config-manager       | dnf config-manager --set-enabled repo-id  | Enable or disable repositories.                                                |
+|______________________|___________________________________________|________________________________________________________________________________|
+
+
+
+
+
+
+_________________________________________________________________________________________________________________________________________________________________________ 
+                                            3.YUM (Yellowdog Updater Modified)
+                                            ==================================
+ _______________________________________________________________________________________________________________________________________________
+|       Option         |                  Example                  |                              Description                                   |
+|______________________|___________________________________________|____________________________________________________________________________|
+| install              | yum install package-name                  | Install a package (resolves dependencies automatically).                   |
+| reinstall            | yum reinstall package-name                | Reinstall an already installed package.                                    |
+| groupinstall         | yum groupinstall "Development Tools"      | Install a group of related packages.                                       |
+|----------------------|-------------------------------------------|----------------------------------------------------------------------------|
+| update               | yum update                                | Update installed packages to the latest available versions.                |
+| upgrade              | yum upgrade                               | Similar to update, but also handles obsolete packages.                     |
+| downgrade            | yum downgrade package-name                | Downgrade a package to an earlier version.                                 |
+|----------------------|-------------------------------------------|----------------------------------------------------------------------------|
+| remove               | yum remove package-name                   | Remove a package along with its dependencies.                              |
+| groupremove          | yum groupremove "Development Tools"       | Remove a group of related packages.                                        |
+| autoremove           | yum autoremove                            | Remove orphaned packages that are no longer needed by any installed package|
+| clean                | yum clean all                             | Clean cached metadata and packages.                                        |
+|----------------------|-------------------------------------------|----------------------------------------------------------------------------|
+| info                 | yum info package-name                     | Display detailed information about a package.                              |
+| list                 | yum list installed                        | List all installed packages.                                               |
+| list available       | yum list available                        | List all available packages in repositories.                               |
+| grouplist            | yum grouplist                             | List all available package groups.                                         |
+| history              | yum history                               | Show the transaction history of package installations and updates.         |
+|----------------------|-------------------------------------------|----------------------------------------------------------------------------|
+| search               | yum search keyword                        | Search for packages matching a keyword.                                    |
+| provides             | yum provides /path/to/file                | Find which package provides a specific file or dependency.                 |
+|----------------------|-------------------------------------------|----------------------------------------------------------------------------|
+| check-update         | yum check-update                          | Check for available updates without installing them.                       |
+| makecache            | yum makecache                             | Generate or update metadata cache for faster package queries.              |
+|----------------------|-------------------------------------------|----------------------------------------------------------------------------|
+| repoinfo             | yum repoinfo                              | Display information about enabled repositories.                            |
+| repository-packages  | yum repository-packages repo-id list      | Perform operations on packages within a specific repository.               |
+|______________________|___________________________________________|____________________________________________________________________________|
+
+_________________________________________________________________________________________________________________________________________________________________________ 

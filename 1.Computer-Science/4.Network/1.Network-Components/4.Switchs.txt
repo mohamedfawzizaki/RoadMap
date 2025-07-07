@@ -1,0 +1,22 @@
+_______________________________________________________________________________________________________________________________________
+                                                      4.Switch
+                                                      --------
+- Definition: 
+      - A network device that connects devices and intelligently forwards
+         data to the correct destination based on MAC addresses.
+- Types:
+      1.Managed   Switch: Provides configuration options and monitoring.
+      2.Unmanaged Switch: Simple plug-and-play with no configuration.
+- Functions:
+      - Operates at the data link layer (Layer 2) of the OSI model.
+      - Uses MAC address tables to forward data only to the intended recipient.
+      - Reduces collisions compared to hubs.
+- Advantages:
+      - Faster and more efficient than hubs.
+      - Supports VLANs (Virtual LANs) and Quality of Service (QoS).
+- Disadvantages:
+      - More expensive than hubs.
+- Usage:
+      - Used in modern LANs for efficient communication.
+_______________________________________________________________________________________________________________________________________
+ 

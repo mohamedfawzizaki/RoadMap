@@ -1,0 +1,18 @@
+
+ ___________________________________________________________________________________________________________________________________________
+|            Command            |                                            Description                                                                                             
+| ------------------------------|----------------------------------------------------------------------------------------------------------- 
+| docker version                | Show the Docker version information.
+| docker system info            | Displays system-wide information about the Docker installation, including drivers, resources, and versions. 
+| docker system df              | Shows disk usage by Docker objects (images, containers, volumes, etc.).                                     
+| docker system events          | Displays real-time event stream from the Docker daemon. Useful for monitoring.                                                                                             
+| docker system prune [OPTIONS] | Removes unused data (containers, networks, images, build cache). Great for cleaning up disk space.          
+|                                 Option	    Default	Description
+|                                 -a, --all		Remove all unused images not just dangling ones
+|                                 --filter		API 1.28+ Provide filter values (e.g. label=<key>=<value>)
+|                                 -f, --force   Do not prompt for confirmation
+|                                 --volumes		Prune anonymous volumes
+|                                                 By default, volumes aren't removed to prevent important data from being deleted
+|                                                 if there is currently no container using the volume. 
+|                                                 Use the --volumes flag when running the command to prune anonymous volumes as well
+|___________________________________________________________________________________________________________________________________________

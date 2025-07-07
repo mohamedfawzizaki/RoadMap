@@ -1,0 +1,177 @@
+________________________________________________________________________________________________________________________________________________________________
+                                                                        Storage/Volumes Management
+                                                          (Write "docker volume" to list all volume commands):
+    
+ ____________________________________________________________________________________________________________________________________________________________________________________________________________
+|                               Command                                                      |                                     Description                                                               |
+|____________________________________________________________________________________________|_______________________________________________________________________________________________________________|
+| docker volume ls                                                                           | Lists all volumes available on the Docker host.                                                               |
+| docker volume inspect <volume_name>                                                        | Provides detailed information about a specific volume, such as mount paths and usage by containers.           |
+|--------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| docker volume create <volume-name>                                                         | Creates a new volume. Without options, Docker stores it in its default location.                              |
+| docker volume create --driver <driver-name> <volume-name>                                  | Creates a volume using a specific volume driver.                                                              |
+|--------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| docker run -it --volume <volume-name> <image>                                              | Runs a container and attaches an existing volume to it.                                                       |
+| docker run -it --volume <volume-name:myCustomPathIntheVolumeDriver> <image>                | Runs a container and mounts the volume to a custom path inside the container.                                 |
+|--------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| docker container run -it -v myVolume:/app/myCode --name my-container python:latest         | Attaches a volume (myVolume) to /app/myCode inside the container.                                             |
+| docker container run -it -v myDirectoryinHost:/app/myCode --name my-container python:latest| Uses a bind mount to attach a directory from the host (myDirectoryinHost) to /app/myCode inside the container.|
+|--------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| docker volume prune                                                                        | Removes all unused (unattached) volumes.                                                                                   |
+| docker volume rm <volume-name-or-id>                                                       | Deletes a specific volume. Make sure no container is using it, or the removal will fail.                      |
+|____________________________________________________________________________________________|_______________________________________________________________________________________________________________|
+
+ 
+
+
+docker run --mount type=bind,source=/HOST/PATH,target=/CONTAINER/PATH,readonly nginx
+
+
+he --mount flag offers more advanced features and granular control, making it suitable for complex mount scenarios or production deployments. If you use --mount to bind-mount a file or directory that doesn't yet exist on the Docker host, the docker run command doesn't automatically create it for you but generates an error.
+
+
+
+File permissions for Docker access to host files
+When using bind mounts, it's crucial to ensure that Docker has the necessary permissions to access the host directory. To grant read/write access, you can use the :ro flag (read-only) or :rw (read-write) with the -v or --mount flag during container creation. For example, the following command grants read-write access permission.
+
+
+ docker run -v HOST-DIRECTORY:/CONTAINER-DIRECTORY:rw nginx
+
+
+ Read-only bind mounts let the container access the mounted files on the host for reading, but it can't change or delete the files. With read-write bind mounts, containers can modify or delete mounted files, and these changes or deletions will also be reflected on the host system. Read-only bind mounts ensures that files on the host can't be accidentally modified or deleted by a container.
+
+
+
+
+The following are examples of a named volume and a bind mount using --mount:
+
+Named volume: type=volume,src=my-volume,target=/usr/local/data
+Bind mount: type=bind,src=/path/to/data,target=/usr/local/data
+
+
+To mount a volume with the docker run command, you can use either the --mount or --volume flag.
+
+
+ docker run --mount type=volume,src=<volume-name>,dst=<mount-path>
+ docker run --volume <volume-name>:<mount-path>
+
+
+Options for --mount
+The --mount flag consists of multiple key-value pairs, separated by commas and each consisting of a <key>=<value> tuple. The order of the keys isn't significant.
+
+
+ docker run --mount type=volume[,src=<volume-name>],dst=<mount-path>[,<key>=<value>...]
+Valid options for --mount type=volume include:
+
+Option	Description
+source, src	The source of the mount. For named volumes, this is the name of the volume. For anonymous volumes, this field is omitted.
+destination, dst, target	The path where the file or directory is mounted in the container.
+volume-subpath	A path to a subdirectory within the volume to mount into the container. The subdirectory must exist in the volume before the volume is mounted to a container. See Mount a volume subdirectory.
+readonly, ro	If present, causes the volume to be mounted into the container as read-only.
+volume-nocopy	If present, data at the destination isn't copied into the volume if the volume is empty. By default, content at the target destination gets copied into a mounted volume if empty.
+volume-opt	Can be specified more than once, takes a key-value pair consisting of the option name and its value.
+Example
+
+ docker run --mount type=volume,src=myvolume,dst=/data,ro,volume-subpath=/foo
+
+
+Options for --volume
+The --volume or -v flag consists of three fields, separated by colon characters (:). The fields must be in the correct order.
+
+
+ docker run -v [<volume-name>:]<mount-path>[:opts]
+In the case of named volumes, the first field is the name of the volume, and is unique on a given host machine. For anonymous volumes, the first field is omitted. The second field is the path where the file or directory is mounted in the container.
+
+The third field is optional, and is a comma-separated list of options. Valid options for --volume with a data volume include:
+
+Option	Description
+readonly, ro	If present, causes the volume to be mounted into the container as read-only.
+volume-nocopy	If present, data at the destination isn't copied into the volume if the volume is empty. By default, content at the target destination gets copied into a mounted volume if empty.
+
+
+
+
+Use a bind mount with Docker Compose
+A single Docker Compose service with a bind mount looks like this:
+
+
+services:
+  frontend:
+    image: node:lts
+    volumes:
+      - type: bind
+        source: ./static
+        target: /opt/app/static
+volumes:
+  myapp:
+
+
+  
+    ------------------------------------------------------------------------------------------------------------------------------
+    Volumes in Docker are a mechanism for persisting data generated and used by Docker containers. 
+    Unlike bind mounts or temporary container filesystems, volumes are managed directly by Docker and stored in Docker's filesystem. 
+    They are independent of the container's lifecycle, meaning data stored in a volume will persist even if the container is deleted.
+
+    Why Use Docker Volumes?
+        Data Persistence       : Volumes ensure that data remains available even after a container is removed.
+        Container Independence : Volumes are not tied to a specific container and can be shared across multiple containers.
+        Performance            : Volumes often perform better than bind mounts when used with Docker Desktop or on remote filesystems.
+        Backup & Migration     : Volumes can be easily backed up or moved between Docker hosts.
+    Types of Storage in Docker
+        Volumes       : Managed by Docker and stored in /var/lib/docker/volumes/.
+        Bind Mounts   : Link host directories/files directly into the container.
+        tmpfs Mounts  : Temporary storage in the host's RAM.
+        
+
+
+    Use Cases for Docker Volumes
+        1. Persistent Storage for Databases
+                Scenario: Running a MySQL database in a container.
+                Problem : Without a volume, database data will be lost if the container stops or is removed.
+                Solution:
+
+                        docker volume create mysql_data
+                        docker run -d --name db -v mysql_data:/var/lib/mysql mysql:latest
+
+                This ensures all database data is stored in the mysql_data volume.
+                Even if the container is deleted, the data remains intact.   
+
+        2. Shared Storage Between Containers
+                Scenario: Multiple containers need access to the same configuration or data files.
+                Solution: 
+
+                        docker volume create shared_data
+                        docker run -d --name app1 -v shared_data:/data app_image:latest
+                        docker run -d --name app2 -v shared_data:/data app_image:latest
+
+                Both app1 and app2 can now read and write to /data, sharing configurations or data.    
+
+        3. Backup and Restore of Critical Data
+                Scenario: Backing up a volume’s data for disaster recovery.
+                Solution:
+                    Backup: 
+                        docker run --rm -v mysql_data:/data -v $(pwd):/backup busybox tar cvf /backup/mysql_backup.tar /data
+                    Restore: 
+                        docker run --rm -v mysql_data:/data -v $(pwd):/backup busybox tar xvf /backup/mysql_backup.tar -C /data        
+
+        4. Temporary Storage with Anonymous Volumes
+                Scenario: Containers require temporary storage that is not persistent.
+                Solution:
+                        docker run -d -v /data my_image
+                Docker automatically creates an anonymous volume and mounts it to /data.
+                Once the container is removed, the volume becomes "dangling" and can be pruned.
+
+        5. Testing Applications
+                Scenario: Running multiple test environments with isolated data.
+                Solution: 
+                        docker volume create test_data
+                        docker run -d --name test_env -v test_data:/app/data app_image:latest  
+
+        6. Custom Volume Drivers
+                Scenario: Using cloud storage or network-based storage systems.
+                Solution:
+                With NFS: 
+                        docker volume create --driver local --opt type=nfs --opt o=addr=192.168.1.100,rw --opt device=:/path/to/dir my_nfs_volume
+                        docker run -d -v my_nfs_volume:/data my_image                      
+    ------------------------------------------------------------------------------------------------------------------------------
+________________________________________________________________________________________________________________________________________________________________

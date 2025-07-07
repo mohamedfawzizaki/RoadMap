@@ -1,0 +1,74 @@
+_______________________________________________________________________________________________________________________________________
+                                                   7.Firewall
+                                                   ==========
+
+Definition:
+      - A firewall is a security system that monitors and controls network traffic based on predetermined security rules.
+      - It acts as a barrier between trusted internal networks 
+         and untrusted external networks, such as the internet, protecting systems from cyber threats.
+      - Acts on Network/Transport layer
+
+Types of Firewalls
+      1.Hardware Firewall:
+            - A standalone device that protects an entire network.
+            - Often used in enterprises for robust network protection.
+            - Examples: Cisco ASA, Fortinet FortiGate.
+
+      2.Software Firewall:
+            - Installed on individual devices, such as computers or servers.
+            - Protects the specific device where it is installed.
+            - Examples: Windows Defender Firewall, ZoneAlarm.
+
+      3.Cloud Firewall:
+            - Also known as a firewall-as-a-service (FWaaS).
+            - Deployed in cloud environments to protect cloud-based systems.
+            - Examples: Zscaler, Palo Alto Prisma Cloud.
+
+      4.Network Firewall:
+            - Protects an entire network and is deployed at the perimeter.
+            - Monitors all inbound and outbound traffic for the network.
+
+      5.Next-Generation Firewall (NGFW):
+            - Includes advanced features like deep packet inspection,
+              intrusion prevention systems (IPS), and application-level traffic analysis.
+            - Capable of detecting modern threats, such as advanced persistent threats (APTs).
+
+      6.Web Application Firewall (WAF):
+            - Specifically protects web applications from common vulnerabilities
+              like SQL injection, cross-site scripting (XSS), and DDoS attacks.
+
+Functions of a Firewall
+      1.Packet Filtering:
+            - Examines packets at the network layer and allows or blocks them based on IP addresses, ports, and protocols.
+
+      2.Stateful Inspection:
+            - Keeps track of active connections and ensures packets belong to an existing connection before allowing them.
+
+      3.Proxying:
+            - Acts as an intermediary between the user and the external server, hiding the internal network.
+
+      4.Intrusion Detection and Prevention:
+            - Monitors for unusual activities and blocks potential attacks.
+
+      5.URL Filtering:
+            - Blocks access to specific websites based on URL patterns.
+
+      6.VPN Support:
+            - Ensures secure remote connections to the network.
+
+Advantages of Firewalls
+      - Protects against unauthorized access.
+      - Monitors and controls network traffic.
+      - Helps prevent malware and hacking attempts.
+      - Can enforce organizational security policies.
+
+Disadvantages of Firewalls
+      - Improper configuration can lead to vulnerabilities.
+      - High-end firewalls can be expensive.
+      - May slow down traffic if overloaded or misconfigured.
+
+Use Cases
+      - Enterprises securing their networks from external threats.
+      - Homes using routers with built-in firewalls to block malicious websites.
+      - Cloud environments for protecting virtual servers.
+_______________________________________________________________________________________________________________________________________

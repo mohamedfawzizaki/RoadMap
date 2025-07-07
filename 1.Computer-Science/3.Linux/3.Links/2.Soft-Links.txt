@@ -1,0 +1,134 @@
+_________________________________________________________________________________________________________________________________________________________________________
+                                                         Soft Link (Symbolic Link)
+                                                         =========================
+
+A soft link (also known as a symbolic link or symlink)
+ is a special type of file that points to another file or directory.
+
+Unlike hard links, soft links do not share the same inode as
+ the target file; instead, they store a path to the target file.
+
+---------------------------------------------------------------------------------------------------------
+Characteristics of Soft Links
+
+1.Different Inode:  
+            - A soft link has its own inode and stores the path to the original file.
+
+2.Can Link Directories:  
+            - Soft links can be created for both files and directories.
+
+3.Can Cross Filesystems:  
+            - Since a soft link stores a path rather than referencing an inode,
+              it can link files across different filesystems.
+
+4.Broken Links:  
+            - If the target file is deleted or moved, the soft link becomes broken and no longer works.
+
+5.File Size:  
+            - The size of a soft link is the length of the path it points to, not the size of the original file.
+
+---------------------------------------------------------------------------------------------------------
+Syntax
+
+         ````````````````````````````````````````
+         ln -s [target_file_or_directory] [link_name]
+         ````````````````````````````````````````
+
+---------------------------------------------------------------------------------------------------------
+Example
+
+1.Create a Soft Link to a File
+         ````````````````````````````````````````
+         touch original.txt
+         echo "Hello, world!" > original.txt
+         ln -s original.txt softlink.txt
+         ````````````````````````````````````````
+
+2.Check the Link
+         ````````````````````````````````````````
+         ls -l
+         ````````````````````````````````````````
+         Output:
+         ````````````````````````````````````````
+         -rw-r--r--  1 user user   13 Jan 12 12:00 original.txt
+         lrwxrwxrwx  1 user user   12 Jan 12 12:01 softlink.txt -> original.txt
+         ````````````````````````````````````````
+         The `softlink.txt` is shown with a `→` symbol pointing to `original.txt`, indicating it's a symlink.
+
+3.Follow the Link
+         ````````````````````````````````````````
+         cat softlink.txt
+         ````````````````````````````````````````
+         Output:
+         ````````````````````````````````````````
+         Hello, world!
+         ````````````````````````````````````````
+
+4.Check Inode Numbers
+         ````````````````````````````````````````
+         ls -i original.txt softlink.txt
+         ````````````````````````````````````````
+         Output:
+         ````````````````````````````````````````
+         123456 original.txt
+         654321 softlink.txt
+         ````````````````````````````````````````
+         The inode numbers are different, confirming that the soft link is a separate file.
+
+5.Broken Link Example
+         ````````````````````````````````````````
+         rm original.txt
+         cat softlink.txt
+         ````````````````````````````````````````
+         Output:
+         ````````````````````````````````````````
+         cat: softlink.txt: No such file or directory
+         ````````````````````````````````````````
+
+---------------------------------------------------------------------------------------------------------
+Soft Link for a Directory
+
+1.Create a Directory and a Soft Link
+         ````````````````````````````````````````
+         mkdir mydir
+         ln -s mydir mydir_link
+         ````````````````````````````````````````
+
+2.Check the Link
+         ````````````````````````````````````````
+         ls -l
+         ````````````````````````````````````````
+         Output:
+         ````````````````````````````````````````
+         drwxr-xr-x  2 user user 4096 Jan 12 12:00 mydir
+         lrwxrwxrwx  1 user user    5 Jan 12 12:01 mydir_link -> mydir
+         ````````````````````````````````````````
+
+---------------------------------------------------------------------------------------------------------
+Use Cases for Soft Links
+- Shortcuts:  
+         - Create shortcuts to files or directories in different locations.
+  
+- Shared Resources:  
+         - Link shared configuration files across different applications.
+  
+- Cross-Filesystem Linking:  
+         - Link files or directories across different mounted filesystems.
+
+---------------------------------------------------------------------------------------------------------
+
+ Difference Between Hard Link and Soft Link
+ ________________________________________________________________________________________________
+|       Feature       |             Hard Link               |             Soft Link              |
+|_____________________|_____________________________________|____________________________________|
+| Inode               | Same as the original file           | Different from the original file   |
+| Can link directories| No                                  | Yes                                |
+| Cross-filesystem    | No                                  | Yes                                |
+| File size           | Same as the original file           | Size of the link (path length)     |
+| Broken link         | Never (until all links are deleted) | Becomes broken if target is deleted|
+| Command             | `ln [target] [link_name]`           | `ln -s [target] [link_name]`       |
+|_____________________|_____________________________________|____________________________________|
+
+---------------------------------------------------------------------------------------------------------
+
+_________________________________________________________________________________________________________________________________________________________________________

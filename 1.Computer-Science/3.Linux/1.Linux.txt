@@ -1,0 +1,276 @@
+______________________________________________________________________________________________________________________________________
+                                                       History
+                                                     ============= 
+
+                                                     Philosophies
+                                                     ============= 
+______________________________________________________________________________________________________________________________________
+                                                Distributions - Derivatives
+                                              ===============================
+
+A Linux distribution (distro) is a complete operating system built around the Linux kernel.
+It includes the kernel, system libraries, utilities, software, a package manager, and a user interface.
+---------------------------------------------------------------------------------------------------------
+                                                   1.Distributions
+                                                   ===============
+These are the base systems built directly from the Linux kernel and a set of core utilities.
+They are typically designed for different use cases such as desktops, servers, embedded systems, and cloud environments.
+
+Popular Linux Distributions
+      1.Debian  
+         - Known for stability and extensive software repositories.
+         - Package manager: `APT` (Advanced Package Tool) using `.deb` packages.
+         - Used as a base for many other distributions (e.g., Ubuntu, Kali Linux).
+         
+      2.Red Hat Enterprise Linux (RHEL)  
+         - Designed for enterprise environments with a focus on stability and long-term support.
+         - Package manager: `YUM`/`DNF` using `.rpm` packages.
+         - Used as a base for CentOS, Fedora, AlmaLinux, and Rocky Linux.
+         
+      3.Arch Linux  
+         - A minimalist, rolling-release distro aimed at advanced users who want control over their system.
+         - Package manager: `pacman`.
+         
+      4.Slackware  
+         - One of the oldest Linux distributions, known for its simplicity and minimalism.
+         
+      5.Gentoo  
+         - A source-based distribution where users compile software from source code using `Portage`.
+
+---------------------------------------------------------------------------------------------------------
+                                                   2.Derivatives
+                                                   =============
+A derivative is a distribution based on another distribution,
+ usually with modifications in terms of software, user experience, or specific use cases.
+
+ Examples of Derivatives
+ __________________________________________________________________________________________________________________________
+| Base Distro        | Derivative                          | Purpose                                                       |
+|____________________|_____________________________________|_______________________________________________________________|
+| Debian             | Ubuntu                              | General-purpose desktop and server OS                         |
+| Ubuntu             | Linux Mint                          | Aimed at beginners with a more traditional desktop experience |
+| Debian             | Kali Linux                          | Security and penetration testing                              |
+| Debian             | Raspberry Pi OS                     | Optimized for Raspberry Pi hardware                           |
+| RHEL               | CentOS (now AlmaLinux, Rocky Linux) | Community-supported enterprise OS                             |
+| Arch Linux         | Manjaro                             | User-friendly Arch derivative                                 |
+| Slackware          | Porteus                             | Lightweight and portable                                      |
+|____________________|_____________________________________|_______________________________________________________________|
+---------------------------------------------------------------------------------------------------------
+Choosing a Distribution
+      1.For Beginners:
+            - Ubuntu, Linux Mint, Zorin OS
+      2.For Developers:
+            - Fedora, Debian, Arch Linux
+      3.For Servers:
+            - Debian, RHEL, Ubuntu Server, CentOS
+      4.For Security Professionals:
+            - Kali Linux, Parrot Security OS
+      5.For Power Users:
+            - Arch Linux, Gentoo, Slackware
+---------------------------------------------------------------------------------------------------------
+Key Differences Between Distributions:
+ __________________________________________________________________________________________
+| Feature         | Debian             | RHEL               | Arch Linux                   |
+|_________________|____________________|____________________|______________________________|
+| Stability       | Very stable        | Enterprise-grade   | Rolling release, less stable |
+| Package Format  | `.deb`             | `.rpm`             | Source or binary (`pacman`)  |
+| Target Users    | General users      | Enterprises        | Advanced users               |
+| Release Model   | Fixed              | Fixed              | Rolling                      |
+|_________________|____________________|____________________|______________________________|
+______________________________________________________________________________________________________________________________________
+Concepts:
+      - Cgroup:
+            - Cgroups is a Linux kernel feature that allows 
+               you to manage and limit the resources available to a process or a group of processes.
+            
+            - It provides a way to control the resources such 
+               as CPU memory, and I/O bandwidth that are available to a process or a group of processes.
+      - Ulimits:
+______________________________________________________________________________________________________________________________________
+                                                       Command Flow
+                                --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                User - Terminal ->  Shell  -> Kernel  ->  Hardware.   
+                                                           -> System Calls ->  Kernel  ->  Hardware.     
+                                --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 1.Hardware : 
+        - It refers to the physical components of a computer system, 
+          such as the CPU, memory, storage devices, and input/output devices.
+ 2.Kernel
+        - Definition: The kernel is the core of the operating system, It acts as a bridge between the hardware and software.
+        - Role:
+               - Manages hardware resources (CPU, memory, devices).
+               - Provides low-level services to user applications through system calls.
+        - Handles process management, memory management, file systems, and device drivers.
+        - Types: 
+               - Linux uses a monolithic kernel, meaning all core functions
+                (file systems, device drivers, memory management) run in kernel space.
+ 
+ 3.System Calls in Linux
+        - A system call is a mechanism that allows user-level programs to request services from the operating system’s kernel.
+        - Since user programs cannot directly interact with hardware,
+          they rely on the kernel to handle low-level tasks like accessing files, memory, and devices.
+
+        - Why System Calls Are Important
+               - They provide a controlled interface for user applications to access hardware and system resources.
+               - They ensure security and stability by preventing user programs from executing privileged operations directly.     
+         
+ 
+ 4.Shell
+        - Definition: 
+               - A shell is a command-line interpreter that provides an interface between the user and the kernel.
+        - Role:
+               - Takes commands from the user, interprets them, and sends them to the kernel for execution.
+               - Provides scripting capabilities, allowing automation of tasks.
+        - Types of Shells:
+               - Bash (Bourne Again Shell)         – the most common default shell in Linux.
+               - Zsh  (Z Shell)                    – offers advanced features like improved tab completion.
+               - Fish (Friendly Interactive Shell) – focuses on user-friendliness.
+               - sh, csh, ksh, etc.
+
+ 5.Terminal
+        - Definition: 
+               - A terminal (or terminal emulator) is a program that provides a graphical interface for interacting with the shell.
+        - Role:
+               - Acts as a window through which the user communicates with the shell.
+               - Displays output from the shell and allows input to be sent.
+        - Examples:
+               - GNOME Terminal, Konsole, xterm, Alacritty, Terminator.
+
+ 
+ How They Work Together:
+        1.User interacts with the terminal (the graphical program).
+        2.The terminal sends commands to the shell, which interprets them.
+        3.The shell communicates with the kernel via system calls.
+        4.The kernel performs the requested operations and sends the output back to the shell, which displays it on the terminal.
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                        Flow Example
+                                                        ============
+--------------------------------------------------------------------
+User - Terminal ->  Shell  -> Kernel  ->  Hardware.   
+                           -> System Calls ->  Kernel  ->  Hardware.
+--------------------------------------------------------------------
+
+Yes, this is an accurate representation of how Linux works! Let’s break it down step by step:
+---------------------------------------------------------------------------------------------------------
+ 1.User → Terminal
+        - The user interacts with the terminal, which provides a graphical or text-based interface.
+        - The terminal allows users to input commands and view the output of those commands.
+---------------------------------------------------------------------------------------------------------
+ 2.Terminal → Shell
+        - The terminal passes user commands to the shell.
+        - The shell is a command-line interpreter (like Bash, Zsh, or Fish) that:
+                  1.Parses the command.
+                  2.Checks if it’s an internal shell command (like `cd`, `export`).
+                  3.If it’s an external program (like `ls`, `cat`, or any compiled binary),
+                    the shell uses system calls to execute it by invoking the kernel.
+---------------------------------------------------------------------------------------------------------
+ 3.Shell → System Calls
+        - If the command is an external program or operation requiring
+          kernel resources (e.g., accessing files, creating processes, or interacting with devices),
+          the shell invokes the necessary system calls.
+        - Example system calls:
+                  - `execve()` – To execute a new program.
+                  - `open()`   – To open a file.
+                  - `read()`   – To read data from a file.
+                  - `write()`  – To write data to a file.
+---------------------------------------------------------------------------------------------------------
+ 4.System Calls → Kernel
+        - The kernel receives the system call and performs the requested operation.
+        - Since the kernel has full control over hardware and system resources, it handles:
+                  - Process management: Creating and scheduling processes.
+                  - Memory management : Allocating and freeing memory.
+                  - Device management : Communicating with hardware devices (like disk drives, network interfaces).
+                  - File systems      : Reading/writing data from/to storage devices.
+---------------------------------------------------------------------------------------------------------
+ 5.Kernel → Hardware
+        - The kernel communicates directly with the hardware using device drivers.
+        - It performs low-level operations such as reading data from a disk, sending network packets, or writing data to memory.
+---------------------------------------------------------------------------------------------------------
+Flow Example
+Command: `ls`
+            1.User types `ls` in the terminal.
+            2.The terminal sends the `ls` command to the shell.
+            3.The shell checks if `ls` is an internal command (it’s not) and looks for the `ls` binary.
+            4.The shell uses the `execve()` system call to ask the kernel to execute the `ls` binary.
+            5.The kernel loads the `ls` binary into memory and starts executing it.
+            6.The ls program might use system calls like `open()`, `read()`,
+              and `write()` to read the directory and display its contents.
+            7.The kernel interacts with the filesystem and hardware to retrieve directory information.
+            8.The kernel sends the output back to the shell, which is displayed by the terminal.
+______________________________________________________________________________________________________________________________________
+                                       Login Shells vs. Non-Login Shells 
+
+In Bash (and other shells), a login shell and a non-login shell behave differently,
+ especially in terms of which startup scripts they execute.
+
+---
+ 1️⃣ Login Shell
+A login shell is a shell session that starts when a user logs into the system directly, such as:
+- Logging in via TTY (Ctrl+Alt+F1...F6)
+- Logging in via SSH (`ssh user@server`)
+- Using `su - username` (note the `-`, which starts a new login shell)
+- Opening a terminal emulator with `--login` (e.g., `bash --login`)
+
+ Files Executed by a Login Shell
+
+| File                  | Scope                       | Notes |
+|-----------------------|-----------------------------|--------------------------------------|
+| `/etc/profile`        | System-wide                 | Runs scripts in `/etc/profile.d/`    |
+| `~/.bash_profile`     | User-specific               | Preferred for login setup            |
+| `~/.bash_login`       | User-specific (alternative) | Used if `~/.bash_profile` is missing |
+| `~/.profile`          | User-specific (fallback)    | Used if neither of the above exist   |
+
+---
+ 2️⃣ Non-Login Shell
+A non-login shell is any interactive shell session that does not require authentication. This typically includes:
+- Opening a new terminal window in a GUI (GNOME Terminal, Konsole, etc.)
+- Running a new shell inside another shell (`bash`, `zsh`, etc.)
+- Using `su username` (without `-`, which does not start a login shell)
+- Running shell scripts (`bash script.sh`)
+
+                     Files Executed by a Non-Login Shell
+                     
+| File               | Scope           | Notes                                    |
+|--------------------|-----------------|------------------------------------------|
+| `/etc/bash.bashrc` | System-wide     | Runs for all non-login shells            |
+| `~/.bashrc`        | User-specific   | Used for aliases, functions, and settings|
+
+---
+
+ How to Check if Your Shell is a Login Shell
+Run:
+```bash
+shopt -q login_shell && echo "Login Shell" || echo "Non-Login Shell"
+```
+or check with:
+```bash
+echo $0
+```
+- If it shows `-bash`, it’s a login shell.
+- If it shows just `bash`, it’s a non-login shell.
+
+---
+
+ Practical Example
+Suppose you add this to your `~/.bash_profile`:
+```bash
+echo "This is a login shell!"
+```
+And this to your `~/.bashrc`:
+```bash
+echo "This is a non-login shell!"
+```
+- If you log in via SSH → You’ll see `This is a login shell!`
+- If you open a new terminal → You’ll see `This is a non-login shell!`
+
+---
+
+                   Conclusion: When to Modify Which File?
+
+|               Task                      |             Modify                  |
+|-----------------------------------------|-------------------------------------|
+| Set environment variables (PATH)        | `~/.bash_profile` or `/etc/profile` |
+| Define aliases/functions                | `~/.bashrc`                         |
+| Change prompt (PS1)                     | `~/.bashrc`                         |
+| Run startup commands on login           | `~/.bash_profile`                   |
+| Run scripts when opening a new terminal | `~/.bashrc`                         |

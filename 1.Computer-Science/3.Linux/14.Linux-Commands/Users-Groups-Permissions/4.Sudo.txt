@@ -1,0 +1,61 @@
+_________________________________________________________________________________________________________________________________________________________________________________________# 
+                                                       sudo   
+                                                    ============
+ 
+sudo [command]
+sudo [options] [command] 
+                _________________________________________________________________________________________________________________________________________________________
+               | Options             |              Example                            |                                        Usage                                                               
+               |_____________________|_________________________________________________|_________________________________________________________________________________         
+               |                     | sudo                              command       |              
+               |  (no option)	     | sudo apt update	                               | Runs the command apt update with superuser (root) privileges.
+               |   -b	             | sudo -b                           command	   | Runs the specified command in the background.
+               |   -u	             | sudo -u username 	             command       | Runs the command as the specified user (default is root).
+               |   -H	             | sudo -H  	                     command       | Sets the HOME environment variable to the target user's home directory (typically root) before executing the command.
+               |   -p	             | sudo -p  "Enter admin password: " command	   | Customizes the password prompt text.
+               |   -n	             | sudo -n   	                     command       | Runs the command without prompting for a password. If a password is needed, it fails instead.
+               |   -A	             | sudo -A   	                     command       | Uses an external helper program to ask for the password.
+               |   -C	             | sudo -C 4 	                     command       | Limits the number of file descriptors opened by the command to 4.
+               |   --non-interactive | sudo --non-interactive 	         command       | Runs the command without asking for user input (useful for scripts).
+               |   --preserve-env	 | sudo --preserve-env=PATH 	     command       | Preserves the specified environment variables when running the command.
+               |   -l	             | sudo -l	                                       | Lists the allowed (and forbidden) commands for the current user based on the /etc/sudoers configuration.
+               |   -v	             | sudo -v	                                       | Extends the time before the user's sudo password expires (validates the session without running a command).
+               |   -k	             | sudo -k	                                       | Invalidates the current sudo timestamp, forcing a password prompt on the next sudo command.
+               |   -i	             | sudo -i	                                       | Starts a login shell as root, simulating a root login session.
+               |   -s	             | sudo -s	                                       | Starts a shell with root privileges using the current shell environment.
+               |   --version	     | sudo --version	                               | Displays version information about sudo.
+               |   --help	         | sudo --help	                                   | Displays help information for the sudo command.
+               |_____________________|_________________________________________________|_________________________________________________________________________________         
+
+_________________________________________________________________________________________________________________________________________________________________________________________# 
+                                                        su   
+                                                    ============
+
+sudo su
+sudo su [options] [command] 
+                _________________________________________________________________________________________________________________________________________________________
+               | Options                       |              Example                  |                                        Usage                                                               
+               |_______________________________|_______________________________________|_________________________________________________________________________________         
+               | (no option)	               | su	                                   | Switches to the root user account. Requires the root password.
+               |  -	                           | su -	                               | Switches to the root user with a login shell, loading root's environment variables.
+               | (no option)	               | su	  <user-name>                      | Switches to the user account. Requires the user password.
+               |  -	                           | su - <user-name>	                   | Switches to the user with a login shell, loading user's environment variables.
+               |_______________________________|_______________________________________|_________________________________________________________________________________         
+               |  -c	                       | su -c "whoami"	                       | Runs a specific command (whoami) as the target user and then exits.
+               |  -s	                       | su -s /bin/bash user1	               | Specifies a different shell to use when switching users (e.g., /bin/bash).
+               |  -l	                       | su -l user1	                       | Switches to the specified user and simulates a full login shell session (loads the user's environment).
+               |_______________________________|_______________________________________|_________________________________________________________________________________         
+               |  --help	                   | su --help	                           | Displays help information for the su command.
+               |  --version	                   | su --version	                       | Displays the version of the su command.
+               |_______________________________|_______________________________________|_________________________________________________________________________________         
+               |  -m or --preserve-environment | su -m	                               | Same as -p; does not reset environment variables like PATH or HOME.
+               |  -p or --preserve-environment | su -p	                               | Preserves the environment variables of the current user when switching to the target user.
+               |_______________________________|_______________________________________|_________________________________________________________________________________         
+
+
+2.Logging Out  
+        Use the `exit` command to log out and return to the previous user session:
+        `````````````````````````````````````````````````
+        exit
+        `````````````````````````````````````````````````
+_________________________________________________________________________________________________________________________________________________________________________________________

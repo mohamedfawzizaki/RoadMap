@@ -1,0 +1,37 @@
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                           ssh  -  scp  - ftp  - sftp  - rsync                        
+                                           ===================================
+                                           ssh   [options]  user@hostname
+                                           scp   [options]  source destination
+                                           ftp   [options]  [hostname]
+                                           sftp  [options]  user@hostname
+                                           rsync [options]  source destination             
+         __________________________________________________________________________________________________________________________________________________
+        | Command  |  Options    | Example                                 |                                        Usage                                                               
+        |__________|_____________|_________________________________________|________________________________________________________________________________         
+        |          |      -p	 |  ssh -p 2222 user@hostname	           | Specifies the port number to use for the SSH connection.
+        |          |      -i     | 	ssh -i /path/to/key user@hostname	   | Specifies the private key file to use for authentication.
+        |  ssh     |      -v     | 	ssh -v user@hostname	               | Enables verbose mode, showing detailed information for debugging the connection.
+        |          |      -X     | 	ssh -X user@hostname	               | Enables X11 forwarding for running graphical applications over SSH.
+        |          |      -C     | 	ssh -C user@hostname	               | Compresses data during the SSH session, which can improve speed over slow connections.
+        |__________|_____________|_________________________________________|________________________________________________________________________________  
+        |          |      -r     | 	scp -r dir user@hostname:/path/	       | Recursively copies an entire directory.
+        |   scp    |      -P     | 	scp -P 2222 file user@hostname:/path/  | Specifies the port for the SSH connection (note that it uses uppercase P).
+        |          |      -v     | 	scp -v file user@hostname:/path/	   | Enables verbose mode for debugging.
+        |          |      -i     | 	scp -i /path/to/key file user@hostname:/path/	| Specifies a private key for authentication.
+        |__________|_____________|_________________________________________|________________________________________________________________________________  
+        |          |      -v	 |  ftp -v hostname	                       | Enables verbose mode to display detailed transfer information.
+        |   ftp    |      -i     | 	ftp -i hostname	                       | Turns off interactive mode to automatically accept file transfers without prompts.
+        |          |      -n     | 	ftp -n hostname	                       | Prevents automatic login (useful when running FTP commands in scripts).
+        |__________|_____________|_________________________________________|________________________________________________________________________________ 
+        |          |      -P	 |  sftp -P 2222 user@hostname	           | Specifies the port number to use for the SFTP connection.
+        |   sftp   |      -i     | 	sftp -i /path/to/key user@hostname	   | Specifies the private key for authentication.
+        |          |      -v     | 	sftp -v user@hostname	               | Enables verbose mode to show debugging information.
+        |__________|_____________|_________________________________________|________________________________________________________________________________   
+        |          |      -a     | 	rsync -a dir/ user@hostname:/path/	   | Enables archive mode (preserves permissions, timestamps, symbolic links, etc.).
+        |          |      -v     | 	rsync -v file user@hostname:/path/	   | Enables verbose output to show file transfer progress.
+        |   rsync  |      -z     | 	rsync -z file user@hostname:/path/	   | Compresses data during transfer (useful over slow networks).
+        |          |      -P     | 	rsync -P file user@hostname:/path/	   | Enables partial transfers and shows progress (useful for large files).
+        |          |  --delete	 |  rsync --delete dir/ user@hostname:/path/|Deletes files in the destination directory that no longer exist in the source directory.
+        |__________|_____________|_________________________________________|________________________________________________________________________________  
+#_________________________________________________________________________________________________________________________________________________________________________# 

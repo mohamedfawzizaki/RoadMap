@@ -1,0 +1,178 @@
+_________________________________________________________________________________________________________________________________________________________________________
+                                                    wget [options] [URL]
+                                                    ====================
+
+
+
+
+ ___________________________________________________________________________________________________________________________________________________________
+|       Option          |           Example             |                               Description                                                         |
+|_______________________|_______________________________|___________________________________________________________________________________________________|
+|  -O <file>            |  wget  -O file.html      URL  | Specifies the output file name.                                                                   |
+|  -c                   |  wget  -c                URL  | Resumes partially downloaded files.                                                               |
+|  -r                   |  wget  -r                URL  | Enables recursive downloading.                                                                    |
+|  -l <level>           |  wget  -r -l 2           URL  | Sets the maximum recursion depth level (used with `-r`).                                          |
+|  -b                   |  wget  -b                URL  | Runs the download in the background.                                                              |
+|  -q                   |  wget  -q                URL  | Runs in quiet mode (no output).                                                                   |
+|  -v                   |  wget  -v                URL  | Runs in verbose mode (default, shows detailed output).                                            |
+|  -nd                  |  wget  -r -nd            URL  | No directories – saves all files in the current directory (useful for recursive downloads).       |
+|  -np                  |  wget  -r -np            URL  | No parent – prevents downloading files from parent directories during recursive downloads.        |
+|  -i <file>            |  wget  -i urls.txt`           | Downloads files listed in a file (one URL per line).                                              |
+|  --limit-rate=<rate>  |  wget  --limit-rate=100k URL  | Limits the download speed (e.g., `100k` for 100 KB/s).                                            |
+|  --tries=<number      |  wget  --tries=5         URL  | Sets the number of retry attempts.                                                                |
+|  --user=<username>    |  wget  --user=admin      URL  | Specifies the username for authentication (useful for password-protected URLs).                   |
+|  --password=<pass>    |  wget  --password=secret URL  | Specifies the password for authentication.                                                        |
+|_______________________|_______________________________|___________________________________________________________________________________________________|
+
+
+
+
+
+
+
+
+
+
+
+_________________________________________________________________________________________________________________________________________________________________________
+
+                                        `wget` – Non-interactive Network Downloader
+                                        ===========================================
+
+`wget` is a command-line utility in Linux used to download files from the web.
+It supports a variety of protocols such as HTTP, HTTPS,
+ and FTP, and can handle recursive downloads, proxy servers, and resuming of interrupted downloads.
+ 
+It is non-interactive, meaning it can run in the background without user intervention, making it ideal for automated scripts.
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                                      Common Use Cases
+                                                      ================
+
+1.Download a Single File
+
+         `````````````````````````````````````````````````bash
+         wget https://example.com/file.zip
+         `````````````````````````````````````````````````
+         This downloads `file.zip` from the given URL to the current directory.
+
+2.Download a File with a Different Name
+
+         `````````````````````````````````````````````````bash
+         wget -O new_name.zip https://example.com/file.zip
+         `````````````````````````````````````````````````
+         This saves the downloaded file as `new_name.zip`.
+
+3.Resume a Partially Downloaded File
+
+         `````````````````````````````````````````````````bash
+         wget -c https://example.com/largefile.iso
+         `````````````````````````````````````````````````
+         The `-c` option allows resuming a download if it was interrupted.
+
+4.Recursive Download of a Website
+
+         `````````````````````````````````````````````````bash
+         wget -r https://example.com
+         `````````````````````````````````````````````````
+         This downloads the entire website recursively, preserving the directory structure.
+
+5.Limit Download Speed
+
+         `````````````````````````````````````````````````bash
+         wget --limit-rate=100k https://example.com/largefile.zip
+         `````````````````````````````````````````````````
+         This limits the download speed to 100 KB/s.
+
+6.Download Files from a List
+
+         `````````````````````````````````````````````````bash
+         wget -i filelist.txt
+         `````````````````````````````````````````````````
+         Where `filelist.txt` contains a list of URLs (one per line) to be downloaded.
+
+7.Download in the Background
+
+         `````````````````````````````````````````````````bash
+         wget -b https://example.com/largefile.zip
+         `````````````````````````````````````````````````
+         This downloads the file in the background.Progress can be checked using `tail -f wget-log`.
+
+8.Set Number of Retry Attempts
+
+         `````````````````````````````````````````````````bash
+         wget --tries=10 https://example.com/file.zip
+         `````````````````````````````````````````````````
+         This sets the number of retry attempts to 10 in case of download failure.
+
+9.Download Files via FTP
+
+         `````````````````````````````````````````````````bash
+         wget ftp://example.com/file.zip
+         `````````````````````````````````````````````````
+_________________________________________________________________________________________________________________________________________________________________________
+                                                 Example: Downloading a Website
+                                                 ==============================
+
+To download an entire website for offline browsing:
+
+         `````````````````````````````````````````````````bash
+         wget -r -p -k -E https://example.com
+         `````````````````````````````````````````````````
+
+         - `-r`: Recursive download.
+         - `-p`: Download all necessary files for the page to be properly displayed (images, CSS, JS, etc.).
+         - `-k`: Convert links to local for offline viewing.
+         - `-E`: Adjust file extensions (e.g., `.html`).
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                               Example: Using with Proxy
+                                               =========================
+
+         `````````````````````````````````````````````````bash
+         export http_proxy=http://proxy.example.com:8080
+         wget https://example.com/file.zip
+         `````````````````````````````````````````````````
+
+You can also specify the proxy directly:
+
+         `````````````````````````````````````````````````bash
+         wget --proxy=on --proxy-user=USERNAME --proxy-password=PASSWORD https://example.com/file.zip
+         `````````````````````````````````````````````````
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                             Example: Authentication
+                                             =======================
+
+If the URL requires authentication:
+
+         `````````````````````````````````````````````````bash
+         wget --user=username --password=secret https://example.com/protected/file.zip
+         `````````````````````````````````````````````````
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                                      Advantages of `wget`
+                                                      ===================
+
+1.Non-Interactive    : Can run in the background, ideal for scripts and automation.
+2.Resuming Support   : Can resume downloads that were interrupted.
+3.Recursive Downloads: Supports downloading entire directories or websites.
+4.Protocol Support   : Works with HTTP, HTTPS, FTP, and proxies.
+5.Bandwidth Control  : Can limit download speeds.
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                                         Limitations
+                                                         ===========
+
+- Does not support parallel downloads natively (use `aria2` for parallel downloads).
+- The recursive download can be slow for large websites with deep structures.
+- Limited support for dynamic websites (e.g., sites heavily reliant on JavaScript).
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                                         Conclusion
+                                                         ==========
+
+`wget` is a powerful and flexible tool for downloading files from the web.
+Whether you want to download a single file, resume an interrupted download,
+ or mirror an entire website, `wget` provides a robust solution with a wide array of options to fit various needs.
+_________________________________________________________________________________________________________________________________________________________________________

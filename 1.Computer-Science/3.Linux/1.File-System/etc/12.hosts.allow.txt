@@ -1,0 +1,130 @@
+==================================================================================================================
+                                                 `/etc/host.allow`
+
+The `/etc/host.allow` file is used to control access to services on a Linux system based on the client's host. 
+It is part of a system of access control files (`/etc/hosts.deny` and `/etc/host.allow`) that
+ manage which hosts are allowed or denied access to various services.
+
+These files are primarily used by TCP Wrappers (a tool that can control access to Internet services)
+ to secure network services by checking the source IP addresses or hostnames against allowed or denied lists before allowing or rejecting connections.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Purpose of `/etc/host.allow`
+
+- The `/etc/host.allow` file specifies which clients (identified by IP address or hostname) are permitted to access certain services on the system.
+- It works alongside the `/etc/hosts.deny` file, where connections are rejected unless explicitly allowed in `/etc/host.allow`.
+
+The key principle is that if a service is not listed in `/etc/host.allow`, but it is listed in `/etc/hosts.deny`, the client will be denied access. 
+If both files are empty, all access is allowed.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Basic Syntax
+
+The general syntax for entries in the `/etc/host.allow` file is as follows:
+
+```plaintext
+service : host1, host2, ..., hostN
+```
+
+- `service`: The name of the service that you are controlling access to (e.g., `sshd`, `telnet`, etc.).
+- `host1, host2, ..., hostN`: A comma-separated list of hostnames, IP addresses, or address ranges that are allowed to access the service.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Example Configuration in `/etc/host.allow`
+
+Here is an example of what you might find in the `/etc/host.allow` file:
+
+```plaintext
+# Allow SSH connections from a specific host or subnet
+sshd : 192.168.1.100
+
+# Allow FTP connections from a specific subnet
+ftp : 192.168.1.0/24
+
+# Allow HTTP access from any host
+httpd : ALL
+
+# Allow all services from a specific host
+ALL : 192.168.1.50
+```
+
+In this example:
+- SSH (`sshd`) access is allowed from the IP address `192.168.1.100`.
+- FTP access is allowed from all hosts in the `192.168.1.0/24` subnet.
+- HTTP (`httpd`) access is allowed from any host (`ALL`).
+- All services are allowed from the host `192.168.1.50`.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Special Keywords
+
+- `ALL`: This keyword allows access for all hosts.
+- `LOCAL`: This allows access from all local hosts (localhost).
+- `UNKNOWN`: Denies access from hosts that cannot be resolved by DNS.
+- `PARANOID`: A very restrictive setting where the connection is only allowed if the IP address matches the hostname.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Order of Evaluation
+
+The access control system first checks the `/etc/host.allow` file to see if the host is allowed to access the service. #
+If no matching entry is found, it then checks `/etc/hosts.deny` to see if access is explicitly denied.
+
+- Allow: If a service and host match an entry in `/etc/host.allow`, the connection is allowed.
+- Deny: If a service and host match an entry in `/etc/hosts.deny`, the connection is denied.
+- If a service is neither explicitly allowed nor denied, the default behavior is typically to allow the connection.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Relationship with `/etc/hosts.deny`
+
+- `/etc/host.allow` specifies which hosts are allowed to access services.
+- `/etc/hosts.deny` specifies which hosts are denied access to services.
+
+It is important to note that access is granted by default unless explicitly denied in `/etc/hosts.deny`,
+ and only hosts explicitly allowed in `/etc/host.allow` will be granted access. 
+ 
+The rule of thumb is:
+
+1. Allow access for specific hosts in `/etc/host.allow`.
+2. Deny access for others in `/etc/hosts.deny`.
+3. If no entries exist, access is allowed.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Example of `/etc/hosts.deny`
+
+To work in tandem with `/etc/host.allow`, you might configure the `/etc/hosts.deny` file as follows:
+
+```plaintext
+# Deny all hosts by default (except those allowed in host.allow)
+ALL : ALL
+```
+
+With this setup:
+- All access is denied by default.
+- Only hosts explicitly allowed in `/etc/host.allow` will be able to access the system.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Logging and Monitoring
+
+- TCP Wrappers logs all attempts to access services. 
+  By default, any connection attempt to a service covered by TCP Wrappers (such as `sshd`, `telnet`, `ftp`, etc.) is logged.
+- These logs can be found in `/var/log/auth.log` or `/var/log/secure` (depending on your distribution).
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Conclusion
+
+- `/etc/host.allow` is used in Linux systems to control access to network services based on the host. 
+- It works in conjunction with `/etc/hosts.deny`.
+- It's primarily used for security purposes, ensuring that only trusted hosts can connect to services.
+- It is part of the TCP Wrappers system, and access control is based on matching entries for services and hosts in `/etc/host.allow` and `/etc/hosts.deny`.
+- It's especially useful for limiting access to sensitive services like SSH, FTP, and HTTP based on IP addresses or hostnames.
+
+
+===================================================================================================================

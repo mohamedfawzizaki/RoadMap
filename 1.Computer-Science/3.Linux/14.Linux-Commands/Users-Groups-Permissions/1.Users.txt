@@ -1,0 +1,125 @@
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                                     User Management
+                                                     ===============
+                     _____________________________________________________________________________________
+                    | Command               |                 Description                                 |
+                    |_______________________|_____________________________________________________________|
+                    | `useradd`             | Create a new user.                                          |
+                    | `userdel`             | delete a user.                                              |
+                    | `usermod`             | modify a user.                                              |
+                    |_______________________|_____________________________________________________________|
+                    | `passwd`              | Manage user's password.                                     |
+                    | `chage`               | Manage user's password.                                     |
+                    |_______________________|_____________________________________________________________|
+                    | `whoami`              | Show the current user.                                      |
+                    | `id`                  | Show user and group IDs.                                    |
+                    | `w`                   | Show who is logged in and what they are doing.              |
+                    | `last`                | Show the last logins of users.                              |
+                    |_______________________|_____________________________________________________________|
+
+
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                                       Details
+                                                       =======           
+
+sudo useradd [options] <user-name>
+                __________________________________________________________________________________________________________________________________________________
+               | Options  |              Example                                 |                                        Usage                                                               
+               |__________|______________________________________________________|________________________________________________________________________________         
+               |   -p     | useradd -p $(openssl passwd 'password') <user-name>  | Encrypted password of the new account.                                         
+               |   -u     | useradd -u 1500                      <user-name>     | User ID of the new account.                                                    
+               |   -U     | useradd -U                           <user-name>     | Create a group with the same name as the user.                                 
+               |   -N     | useradd -N                           <user-name>     | Do not create a group with the same name as the user.                          
+               |   -g     | useradd -g developers                <user-name>     | Name or ID of the primary group of the new account.                              
+               |   -G     | useradd -G sudo,admin                <user-name>     | List of supplementary groups of the new account.                               
+               |   -c     | useradd -c "Mohamed Salah"           <user-name>     | GECOS field of the new account.                                                
+               |   -m     | useradd -m                           <user-name>     | Create the user's home directory.                                               
+               |   -M     | useradd -M                           <user-name>     | Do not create the user's home directory.                                       
+               |   -b     | useradd -b /mnt/home                 <user-name>     | Base directory for the home directory of new account.                           
+               |   -d     | useradd -d /custom/home/<user-name>  <user-name>     | Home directory of the new account.                                             
+               |   -s     | useradd -s /bin/zsh                  <user-name>     | Login shell of the new account.                                                
+               |   -o     | useradd -o -u 1000 duplicateuser                     | Allow creating users with duplicate (non-unique) UID.                           
+               |--------------------------------------------------------------------------------------------------------------------------------------------------
+               |   -r     | useradd -r systemuser                                | Create a system account.                                                        
+               |--------------------------------------------------------------------------------------------------------------------------------------------------
+               |   -e     | useradd -e 2025-01-31                <user-name>     | Expiration date of the new account.                                             
+               |   -f     | useradd -f 7                         <user-name>     | Password inactivity period of the new account (in days).                       
+               |--------------------------------------------------------------------------------------------------------------------------------------------------
+               |   -D     | useradd -D                                           | Print or change default useradd configuration.                                 
+               |   -h     | useradd -h                                           | Display this help message and exit.                                             
+               |__________|______________________________________________________|________________________________________________________________________________  
+
+sudo userdel [options] <user-name>
+                __________________________________________________________________________________________________________________________________________________
+               | Options  |              Example                                 |                                        Usage                                                               
+               |__________|______________________________________________________|________________________________________________________________________________  
+               |   -f	  | userdel -f             <user-name>	                 |  Force removal of a user account, even if the user is currently logged in.      
+               |   -r	  | userdel -r             <user-name>	                 |  Remove the user’s home directory and mail spool along with the account.       
+               |   -Z	  | userdel -Z             <user-name>	                 |  Remove any SELinux user mapping associated with the user account.             
+               |--------------------------------------------------------------------------------------------------------------------------------------------------
+               |          | ps -u <user-name>                                    |  Check for running processes before deletion                                   
+               |          | cp -r /home/<user-name> /backup/                     |  Backup data before deletion                                                   
+               |__________|______________________________________________________|________________________________________________________________________________       
+
+sudo usermod [options] <user-name>     
+                __________________________________________________________________________________________________________________________________________________
+               | Options |              Example                                  |                                        Usage                                                               
+               |_________|_______________________________________________________|________________________________________________________________________________  
+               |   -l	 | usermod -l  newname              <user-name>	         | Changes the login name of the user.
+               |   -u	 | usermod -u  2001                 <user-name>	         | Changes the UID (User ID) of the user.
+               |   -p	 | usermod -p  encrypted_pass       <user-name>	         | Sets an encrypted password for the user.
+               |   -c	 | usermod -c  "New Comment"        <user-name>	         | Changes the GECOS (comment) field of the user account.
+               |   -d	 | usermod -d  /newhome/<user-name> <user-name>	         | Changes the home directory of the user.
+               |   -g	 | usermod -g  devgroup             <user-name>	         | Changes the primary group of the user.
+               |   -a	 | usermod -aG wheel                <user-name>	         | Appends the user to additional groups (used with -G).
+               |   -G	 | usermod -G  sudo,developers      <user-name>	         | Sets supplementary groups for the user.
+               |   -s	 | usermod -s  /bin/zsh             <user-name>	         | Changes the login shell of the user.
+               |------------------------------------------------------------------------------------------------------------------------------------------------
+               |   -e	 | usermod -e  2025-01-31           <user-name>	         | Sets the account expiration date in YYYY-MM-DD format.
+               |   -f	 | usermod -f  10                   <user-name>	         | Sets the number of days after password expiration before disabling the account.
+               |------------------------------------------------------------------------------------------------------------------------------------------------
+               |   -L	 | usermod -L                       <user-name>	         | Locks the user account (prevents login).
+               |   -U	 | usermod -U                       <user-name>	         | Unlocks the user account (allows login).
+               |_________|_______________________________________________________|________________________________________________________________________________               
+ 
+sudo passwd  [options] <user-name>     
+                __________________________________________________________________________________________________________________________________________________
+               | Options  |              Example                                 |                                        Usage                                                               
+               |__________|______________________________________________________|________________________________________________________________________________  
+               |      	  | passwd                           <user-name>         | Set the password to the user.
+               |   -a	  | passwd -a                       	                 | Displays password information for all users (when used with --status).
+               |   -d	  | passwd -d                        <user-name>	     | Deletes the user’s password, allowing login without a password (if PAM allows it).
+               |   -e	  | passwd -e                        <user-name>	     | Forces the user to change their password at the next login.
+               |   -i	  | passwd -i 3                      <user-name>	     | Sets the number of inactive days after password expiration before the account is disabled.
+               |   -k	  | passwd -k                        <user-name>	     | Prevents the user from changing their password before the minimum age set in /etc/login.defs.
+               |   -l	  | passwd -l                        <user-name>	     | Locks the user’s password, preventing login with the current password.
+               |   -n	  | passwd -n 5                      <user-name>	     | Sets the minimum number of days between password changes.
+               |   -S	  | passwd -S                        <user-name>	     | Displays the password status of the user (e.g., locked, expired).
+               |   -u	  | passwd -u                        <user-name>	     | Unlocks the user’s password, allowing login again.
+               |   -x	  | passwd -x 90                     <user-name>	     | Sets the maximum number of days a password remains valid before expiration.
+               | --status | passwd --status                  <user-name>	     | Shows detailed password status information for the user.
+               |__________|______________________________________________________|________________________________________________________________________________
+                
+sudo chage   [options] <user-name>     
+                __________________________________________________________________________________________________________________________________________________
+               | Options  |              Example                                 |                                        Usage                                                               
+               |__________|______________________________________________________|________________________________________________________________________________  
+               |   -d	  | chage -d 0                       <user-name>	     | Forces the user <user-name> to change their password on the next login.
+               |   -E	  | chage -E 2025-12-31              <user-name>	     | Sets the account expiration date for <user-name> to 31st December 2025.
+               |   -I	  | chage -I 5                       <user-name>	     | Sets the number of inactive days (5) after password expiry before the account is locked.
+               |   -l	  | chage -l                         <user-name>	     | Lists the current password aging information for the user <user-name>.
+               |   -m	  | chage -m 7                       <user-name>	     | Sets the minimum number of days (7) before a user can change their password again.
+               |   -M	  | chage -M 90                      <user-name>	     | Sets the maximum number of days (90) a password remains valid before the user must change it.
+               |   -W	  | chage -W 10                      <user-name>	     | Sets the number of days (10) before password expiration that a warning will be shown.
+               |   -h	  | chage -h	                                         | Displays help information for the chage command.
+               |__________|______________________________________________________|________________________________________________________________________________
+                
+Display User information:                
+               
+                __________________________________________________________________________________________________________________________________________________
+               | whoami   |                                                      |  – Show the current user.
+               | id       |                                                      |  – Show user and group IDs.
+               | w        |                                                      |  – Show who is logged in and what they are doing.
+               | last     |                                                      |  – Show the last logins of users.
+               |__________|______________________________________________________|________________________________________________________________________________ 
+_________________________________________________________________________________________________________________________________________________________________________# 

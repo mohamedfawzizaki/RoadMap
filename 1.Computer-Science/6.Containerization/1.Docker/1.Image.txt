@@ -1,0 +1,60 @@
+________________________________________________________________________________________________________________________________________________________________________________
+                                                        Image Management:
+                                         (Write "docker image" to list all image commands)
+ ________________________________________________________________________________________________________________________________________________________________________
+|                                   Command                                                     |                                     Description                        |
+|_______________________________________________________________________________________________|________________________________________________________________________|
+| docker search <ImageNameOrID>                                                                 | Searches for images in Docker Hub.                                     |
+| docker image ls                                                                               | Lists all images.                                                      |
+| docker image ls -q                                                                            | Lists all images' IDs.                                                 |
+| docker image inspect <ImageNameOrID>                                                          | Displays detailed information about an image.                          |
+| docker image history <ImageNameOrID>                                                          | List the image's layers 
+| docker image history --no-trunc <ImageNameOrID>                                               | If you add the --no-trunc flag, you'll get the full output.
+|-----------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
+| docker init                                                                                   | Builds an image from docker init in the root directory of your project.|
+| docker image build -t <name>:<tag> .                                                          | Builds an image from a Dockerfile.                                     |
+| docker image build -t [HOST[:PORT_NUMBER]/]PATH[:TAG] .                                                          | Builds an image from a Dockerfile.                                     |
+| docker image build -t myapp:v1 -f MyDockerfile .                                              | Builds an image using a specific Dockerfile.                           |
+| docker image build -t myapp:v1 --no-cache .                                                   | Builds an image without using cache.                                   |
+| docker container commit <container_id_or_name> <new_image_name>:<tag>                         | Creates an image from a running container.                             |
+| docker container commit abcd1234 myapp:v1                                                     | Example of committing a container to an image.                         |
+| docker commit -m "Added necessary configurations" -a "Your Name" <container_id_or_name> <tag> | Adds metadata and author info while committing a container to an image.|
+| docker commit -m "Updated app dependencies" -a "Mohamed Fawzi Zaki" abcd1234 myapp:updated    | Example of a commit with metadata.                                     |
+|-----------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
+| docker image tag <Image-nameOrRepo-name:ImageTag> <username>/<Image-nameOrRepo-name:ImageTag> | Tags an image to prepare it for pushing to a registry.                 |
+| docker tag myapp:latest mohamedfawzizaki/myapp:latest                                         | Example of tagging an image.                                           |
+| docker image push <username>/<Image-nameOrRepo-name:ImageTag>                                 | Uploads an image to a registry.                                        |
+| docker image push mohamedfawzizaki/myapp:latest                                               | Example of pushing an image to Docker Hub.                             |
+| docker image pull <image>                                                                     | Pulls an official image from Docker Hub.                               |
+| docker image pull nginx:latest                                                                | Example of pulling an official image.                                  |
+| docker image pull <username>/<Image-nameOrRepo-name:ImageTag>                                 | Pulls a non-official image from Docker Hub.                            |
+| docker image pull mohamedfawzizaki/myapp:latest                                               | Example of pulling a non-official image.                               |
+|-----------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
+| docker image rmi <image_id> -f                                                                | Removes a specific image.                                              |
+| docker image rm $(docker image ls -q) -f                                                      | Removes all images.                                                    |
+| docker image prune                                                                            | Removes unused images to free up space.                                |
+|_______________________________________________________________________________________________|________________________________________________________________________|
+
+
+[HOST[:PORT_NUMBER]/]PATH[:TAG]
+
+HOST: The optional registry hostname where the image is located. If no host is specified, Docker's public registry at docker.io is used by default.
+PORT_NUMBER: The registry port number if a hostname is provided
+PATH: The path of the image, consisting of slash-separated components. For Docker Hub, the format follows [NAMESPACE/]REPOSITORY, where namespace is either a user's or organization's name. If no namespace is specified, library is used, which is the namespace for Docker Official Images.
+TAG: A custom, human-readable identifier that's typically used to identify different versions or variants of an image. If no tag is specified, latest is used by default.
+
+
+Some examples of image names include:
+
+nginx, equivalent to docker.io/library/nginx:latest: this pulls an image from the docker.io registry, the library namespace, the nginx image repository, and the latest tag.
+docker/welcome-to-docker, equivalent to docker.io/docker/welcome-to-docker:latest: this pulls an image from the docker.io registry, the docker namespace, the welcome-to-docker image repository, and the latest tag
+ghcr.io/dockersamples/example-voting-app-vote:pr-311: this pulls an image from the GitHub Container Registry, the dockersamples namespace, the example-voting-app-vote image repository, and the pr-311 tag
+To tag an image during a build, add the -t or --tag flag
+
+
+
+
+ghcr.io/dockersamples/example-voting-app-vote:pr-311: this pulls an image from the GitHub Container Registry, the dockersamples namespace, the example-voting-app-vote image repository, and the pr-311 tag
+
+docker/welcome-to-docker, equivalent to docker.io/docker/welcome-to-docker:latest: this pulls an image from the docker.io registry, the docker namespace, the welcome-to-docker image repository, and the latest tag
+________________________________________________________________________________________________________________________________________________________________________________

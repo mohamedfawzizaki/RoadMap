@@ -1,0 +1,213 @@
+_______________________________________________________________________________________________________________________________________
+                    The `nginx.conf` file is the main configuration file for Nginx, located at:  
+
+📂 Path: `/etc/nginx/nginx.conf`
+
+It controls global settings, worker processes, event handling, and HTTP configurations.
+
+_______________________________________________________________________________________________________________________________________
+
+ 1. Basic Structure of `nginx.conf`
+A typical `nginx.conf` file looks like this:
+
+````````````````````````````````````````````````````````````````````nginx
+# MAIN BLOCK (Outermost Scope)
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+
+# Load additional modules
+include /etc/nginx/modules-enabled/*.conf;
+
+# EVENTS BLOCK (Manages connections)
+events {
+    worker_connections 1024;
+    use epoll;
+    multi_accept on;
+}
+
+# HTTP BLOCK (Web server settings)
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                    '$status $body_bytes_sent "$http_referer" '
+                    '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log /var/log/nginx/access.log main;
+    error_log /var/log/nginx/error.log warn;
+
+    sendfile on;
+    tcp_nopush on;
+    tcp_nodelay on;
+    keepalive_timeout 65;
+
+    gzip on;
+
+    include /etc/nginx/conf.d/*.conf;
+    include /etc/nginx/sites-enabled/;
+}
+
+# STREAM BLOCK (For TCP/UDP services like databases or mail)
+#stream {
+#    upstream database_backend {
+#        server db1.example.com:3306;
+#        server db2.example.com:3306 backup;
+#    }
+#}
+
+
+_______________________________________________________________________________________________________________________________________
+
+ 2. Sections of `nginx.conf`
+Let's break down the key sections:
+
+ (1) Global Settings
+````````````````````````````````````````````````````````````````````nginx
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/.conf;
+````````````````````````````````````````````````````````````````````
+- `user www-data;` → Runs Nginx processes as the `www-data` user (default in Ubuntu).
+- `worker_processes auto;` → Sets worker processes automatically based on CPU cores.
+- `pid /run/nginx.pid;` → Stores the process ID (PID) of the Nginx master process.
+- `include /etc/nginx/modules-enabled/*.conf;` → Loads dynamic modules.
+
+_______________________________________________________________________________________________________________________________________
+
+ (2) `events` Block
+````````````````````````````````````````````````````````````````````nginx
+events {
+    worker_connections 1024;
+}
+````````````````````````````````````````````````````````````````````
+- `worker_connections 1024;` → Maximum simultaneous connections per worker.
+- Handles network events and requests.
+
+_______________________________________________________________________________________________________________________________________
+
+ (3) `http` Block
+The `http` block controls web server behavior.
+
+# (3.1) File Handling & Performance
+````````````````````````````````````````````````````````````````````nginx
+sendfile on;
+tcp_nopush on;
+tcp_nodelay on;
+keepalive_timeout 65;
+types_hash_max_size 2048;
+````````````````````````````````````````````````````````````````````
+- `sendfile on;` → Enables efficient file transfers.
+- `tcp_nopush on;` → Sends headers before body to improve performance.
+- `tcp_nodelay on;` → Reduces latency by sending small packets immediately.
+- `keepalive_timeout 65;` → Time (in seconds) to keep connections open.
+- `types_hash_max_size 2048;` → Defines max hash table size for MIME types.
+
+_______________________________________________________________________________________________________________________________________
+
+# (3.2) MIME Types
+````````````````````````````````````````````````````````````````````nginx
+include /etc/nginx/mime.types;
+default_type application/octet-stream;
+````````````````````````````````````````````````````````````````````
+- Includes MIME types from `/etc/nginx/mime.types`.
+- `default_type application/octet-stream;` → Default file type if unknown.
+
+_______________________________________________________________________________________________________________________________________
+
+# (3.3) Logging
+````````````````````````````````````````````````````````````````````nginx
+access_log /var/log/nginx/access.log;
+error_log /var/log/nginx/error.log;
+````````````````````````````````````````````````````````````````````
+- Logs HTTP requests (`access.log`) and errors (`error.log`).
+
+_______________________________________________________________________________________________________________________________________
+
+# (3.4) Gzip Compression
+````````````````````````````````````````````````````````````````````nginx
+gzip on;
+gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+````````````````````````````````````````````````````````````````````
+- Enables Gzip compression for faster page loads.
+- Compresses HTML, CSS, JavaScript, XML, and JSON files.
+
+_______________________________________________________________________________________________________________________________________
+
+# (3.5) Including Extra Configurations
+````````````````````````````````````````````````````````````````````nginx
+include /etc/nginx/conf.d/*.conf;
+include /etc/nginx/sites-enabled/;
+````````````````````````````````````````````````````````````````````
+- Includes extra config files from:
+  - `/etc/nginx/conf.d/*.conf`  → Custom settings (e.g., security, caching).
+  - `/etc/nginx/sites-enabled/` → Virtual host configurations (enabled websites).
+
+_______________________________________________________________________________________________________________________________________
+
+ 3. Additional Settings (Optional)
+ SSL Settings (For HTTPS)
+````````````````````````````````````````````````````````````````````nginx
+ssl_protocols TLSv1.2 TLSv1.3;
+ssl_ciphers HIGH:!aNULL:!MD5;
+````````````````````````````````````````````````````````````````````
+- Forces secure SSL/TLS connections.
+- Prevents weak ciphers (e.g., MD5).
+
+_______________________________________________________________________________________________________________________________________
+
+ Load Balancing (Reverse Proxy)
+````````````````````````````````````````````````````````````````````nginx
+upstream backend {
+    server backend1.example.com;
+    server backend2.example.com;
+}
+
+server {
+    listen 80;
+    server_name mysite.com;
+
+    location / {
+        proxy_pass http://backend;
+    }
+}
+````````````````````````````````````````````````````````````````````
+- Distributes traffic to multiple backend servers.
+- Used for microservices and scaling.
+
+_______________________________________________________________________________________________________________________________________
+
+ 4. Commands to Manage `nginx.conf`
+ Check for Errors:
+````````````````````````````````````````````````````````````````````bash
+sudo nginx -t
+````````````````````````````````````````````````````````````````````
+ Reload Configuration (No Downtime)
+````````````````````````````````````````````````````````````````````bash
+sudo systemctl reload nginx
+````````````````````````````````````````````````````````````````````
+ Restart Nginx
+````````````````````````````````````````````````````````````````````bash
+sudo systemctl restart nginx
+````````````````````````````````````````````````````````````````````
+ Stop Nginx
+````````````````````````````````````````````````````````````````````bash
+sudo systemctl stop nginx
+````````````````````````````````````````````````````````````````````
+ View Nginx Status
+````````````````````````````````````````````````````````````````````bash
+sudo systemctl status nginx
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 5. Common Issues & Fixes
+| Issue                                         | Solution 
+| `nginx: [emerg] duplicate listen`             | Ensure no duplicate `listen` directives. 
+| `nginx: [emerg] bind() to 0.0.0.0:80 failed`  | Another service (Apache) might be using port 80. Stop it using `sudo systemctl stop apache2`. |
+| SSL errors                                    | Check certificate paths and `ssl_certificate` settings. 
+| 403 Forbidden                                 | Ensure correct file permissions (`chmod -R 755 /var/www/html`). 
+
+_______________________________________________________________________________________________________________________________________

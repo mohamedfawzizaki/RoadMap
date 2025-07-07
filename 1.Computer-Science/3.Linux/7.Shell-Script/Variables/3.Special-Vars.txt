@@ -1,0 +1,120 @@
+____________________________________________________________________________________________________________________________________________________________
+                                                    Special shell variables
+                                                    =======================
+
+Special shell variables are predefined by the shell and are used to provide
+ information about the execution environment, such as the script's arguments, exit status, and process IDs. 
+ 
+These variables are often read-only and are essential for scripting and automation.
+
+____________________________________________________________________________________________________________________________________________________________
+                                                    List of Special Variables
+ __________________________________________________________________________________________________________________________________
+|     Variable    |         Example         |                                 Description                                          |
+|_________________|_________________________|______________________________________________________________________________________|
+| `$0`            | `echo $0`               | Name of the current script or shell.                                                 |
+| `$1`, `$2`, ... | `echo $1 $2`            | Positional parameters for the script or function arguments.                          |
+| `$#`            | `echo $#`               | The number of positional parameters passed to the script or function.                |
+| `$@`            | `echo $@`               | All positional parameters as separate quoted strings.                                |
+| `$*`            | `echo $*`               | All positional parameters as a single string (unquoted, subject to word splitting).  |
+| `$?`            | `ls && echo $?`         | Exit status of the last executed command (0 for success, non-zero for failure).      |
+| `$$`            | `echo $$`               | Process ID (PID) of the current shell.                                               |
+| `$_`            | `echo $_`               | The last argument or option of the last executed command.                                      |
+| `$!`            | `sleep 10 & echo $!`    | PID of the last background job.                                                      |
+| `$-`            | `echo $-`               | Current shell options, as set by the `set` command.                                  |
+| `$LINENO`       | `echo $LINENO`          | Current line number in the script.                                                   |
+| `$PWD`          | `echo $PWD`             | The current working directory.                                                       |
+| `$OLDPWD`       | `cd / && echo $OLDPWD`  | The previous working directory.                                                      |
+| `$HOME`         | `echo $HOME`            | The current user's home directory.                                                   |
+| `$USER`         | `echo $USER`            | The current logged-in user's name.                                                   |
+| `$SHELL`        | `echo $SHELL`           | The current shell's pathname.                                                        |
+| `$HOSTNAME`     | `echo $HOSTNAME`        | The name of the system or host.                                                      |
+| `$IFS`          | `echo "$IFS"`           | Internal Field Separator used for word splitting. Default is space, tab, and newline.|
+| `$PATH`         | `echo $PATH`            | A colon-separated list of directories searched for commands.                         |
+| `$BASH`         | `echo $BASH`            | Full pathname of the Bash shell.                                                     |
+| `$RANDOM`       | `echo $RANDOM`          | Generates a random number between 0 and 32767.                                       |
+| `$SECONDS`      | `echo $SECONDS`         | The number of seconds the shell has been running.                                    |
+| `$PS1`          | `echo $PS1`             | The primary prompt string for interactive shells.                                    |
+| `$PS2`          | `echo $PS2`             | The secondary prompt string (used for multi-line commands).                          |
+|_________________|_________________________|______________________________________________________________________________________|
+
+____________________________________________________________________________________________________________________________________________________________
+                                                          Detailed Examples
+
+1. Positional Parameters
+        ``````````````````````````````````````````bash
+        #!/bin/bash
+        echo "Script name: $0"
+        echo "First argument: $1"
+        echo "Second argument: $2"
+        echo "Number of arguments: $#"
+``````````````````````````````````````````
+- Run the script: `./script.sh arg1 arg2`
+- Output:
+        ``````````````````````````````````````````
+        Script name: ./script.sh
+        First argument: arg1
+        Second argument: arg2
+        Number of arguments: 2
+        ``````````````````````````````````````````
+
+2. Exit Status with `$?`
+        ``````````````````````````````````````````bash
+        #!/bin/bash
+        ls /nonexistent_directory
+        echo "Exit status: $?"
+        ``````````````````````````````````````````
+- Output:
+        ``````````````````````````````````````````
+        ls: cannot access '/nonexistent_directory': No such file or directory
+        Exit status: 2
+        ``````````````````````````````````````````
+
+3. PID Variables: `$$` and `$!`
+        ``````````````````````````````````````````bash
+        #!/bin/bash
+        echo "Current shell PID: $$"
+        sleep 10 &
+        echo "Background job PID: $!"
+        ``````````````````````````````````````````
+- Output:
+        ``````````````````````````````````````````
+        Current shell PID: 12345
+        Background job PID: 12346
+        ``````````````````````````````````````````
+
+4. `$@` vs. `$*`
+        ``````````````````````````````````````````bash
+        #!/bin/bash
+        echo "Using \$@: $@"
+        echo "Using \$*: $*"
+        ``````````````````````````````````````````
+- Run: `./script.sh "arg1" "arg2"`
+- Output:
+        ``````````````````````````````````````````
+        Using $@: arg1 arg2
+        Using $*: arg1 arg2
+        ``````````````````````````````````````````
+
+5. Random Number with `$RANDOM`
+        ``````````````````````````````````````````bash
+        #!/bin/bash
+        echo "Random number: $RANDOM"
+        ``````````````````````````````````````````
+- Output:
+        ``````````````````````````````````````````
+        Random number: 18529
+        ``````````````````````````````````````````
+
+____________________________________________________________________________________________________________________________________________________________
+                                                             Best Practices
+1. Use `$@` for Positional Parameters:
+        - Preserves individual arguments, especially when quoted.
+2. Handle `$?` Carefully:
+        - Always check the exit status of critical commands.
+3. Avoid Overwriting Special Variables:
+        - Do not redefine variables like `$PATH`, `$HOME`, etc., without caution.
+4. Debugging with `$LINENO`:
+        - Use `$LINENO` to track the script's execution.
+
+____________________________________________________________________________________________________________________________________________________________

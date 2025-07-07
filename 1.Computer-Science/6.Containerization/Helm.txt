@@ -1,0 +1,12 @@
+
+
+
+
+
+| Object          | Description                               | Example Use                         |
+| --------------- | ----------------------------------------- | ----------------------------------- |
+| `.Values`       | User-defined config from values.yaml      | image, replicas, ports              |
+| `.Chart`        | Metadata from Chart.yaml                  | name, version, maintainers          |
+| `.Release`      | Runtime info about this Helm release      | name, namespace, isInstall          |
+| `.Capabilities` | Kubernetes version & API awareness        | version checks, API compatibility   |
+| `.Files`        | Access to non-template files in the chart | ConfigMaps, secrets, injected files |

@@ -1,0 +1,194 @@
+_________________________________________________________________________________________________________________________________________________________________________
+                                               `known_hosts`
+                                              =================== 
+
+The `known_hosts` file is part of the OpenSSH client and is used to track 
+ and verify the identity of SSH servers during connection attempts.
+ 
+It stores the host keys of previously connected servers, enabling the client
+ to detect possible impersonation (man-in-the-middle) attacks.
+
+-------------------------------------------------------------------------------------------------------------------------------
+Location
+
+The file is typically located in the user’s SSH configuration directory:
+
+````````````````````````````````````bash
+~/.ssh/known_hosts
+````````````````````````````````````
+
+On a system-wide level (for all users), it may also be located at:
+
+````````````````````````````````````bash
+/etc/ssh/ssh_known_hosts
+````````````````````````````````````
+
+-------------------------------------------------------------------------------------------------------------------------------
+Purpose
+
+1.Verify Server Identity:  
+   When a user connects to an SSH server, the client checks the server’s host key against the keys listed in `known_hosts`. 
+   
+   - If the key matches, the connection proceeds.
+   - If the key does not match, a warning is issued, and the user can decide whether to continue.
+
+2.Prevent MITM Attacks:  
+   By ensuring that the host key has not changed unexpectedly, the `known_hosts`
+    file helps prevent man-in-the-middle (MITM) attacks, where an attacker might try to impersonate the SSH server.
+
+-------------------------------------------------------------------------------------------------------------------------------
+Format of `known_hosts`
+
+Each line in the `known_hosts` file represents a single SSH server and its public host key.The format is:
+
+      ````````````````````````````````````plaintext
+      hostname,ip_address key_type key_value [comment]
+      ````````````````````````````````````
+
+- hostname, ip_address:  
+      The hostname or IP address of the server.Multiple values can be separated by commas. 
+      Example:  
+      ````````````````````````````````````plaintext
+      example.com,192.168.1.100
+      ````````````````````````````````````
+
+- key_type:  
+      The type of the SSH key used by the server.Common values are:
+      - `ssh-rsa`
+      - `ecdsa-sha2-nistp256`
+      - `ssh-ed25519`
+
+- key_value:  
+      The base64-encoded public key of the server.
+
+- comment (optional):  
+      A human-readable comment or identifier (not mandatory).
+
+Example line in `known_hosts`:
+
+      ````````````````````````````````````bash
+      example.com,192.168.1.100 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEArpjz... user@hostname
+      ````````````````````````````````````
+
+-------------------------------------------------------------------------------------------------------------------------------
+Managing the `known_hosts` File
+
+ Adding an Entry
+
+The `known_hosts` file is automatically updated when the user connects to a server for the first time,
+ unless strict host key checking is disabled.The following prompt appears on the first connection:
+
+      ````````````````````````````````````bash
+      The authenticity of host 'example.com (192.168.1.100)' can't be established.
+      ECDSA key fingerprint is SHA256:WkS4hXX+y7z+0lOjfOnj...
+      Are you sure you want to continue connecting (yes/no)?
+      ````````````````````````````````````
+
+When the user types `yes`, the server’s host key is added to `~/.ssh/known_hosts`.
+
+-------------------------------------------------------------------------------------------------------------------------------
+Checking Host Key Fingerprints
+
+To verify the fingerprint of a remote host before connecting:
+
+````````````````````````````````````bash
+ssh-keygen -l -F <hostname>
+````````````````````````````````````
+
+Example:
+
+````````````````````````````````````bash
+ssh-keygen -l -F example.com
+````````````````````````````````````
+
+-------------------------------------------------------------------------------------------------------------------------------
+Removing a Host
+
+If a server’s host key changes (e.g., due to a server reinstall or SSH configuration update),
+ SSH will refuse to connect and display an error like:
+
+````````````````````````````````````bash
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+````````````````````````````````````
+
+To remove the outdated key and allow the connection:
+
+1.Manually edit `known_hosts` and delete the corresponding line.
+2.Use the `ssh-keygen` command to remove the specific entry:
+
+   ````````````````````````````````````bash
+   ssh-keygen -R <hostname>
+   ````````````````````````````````````
+
+   Example:
+
+   ````````````````````````````````````bash
+   ssh-keygen -R example.com
+   ````````````````````````````````````
+
+-------------------------------------------------------------------------------------------------------------------------------
+Hashing Hostnames for Privacy
+
+By default, `known_hosts` stores hostnames in plain text, which may expose information about servers you frequently connect to.
+To enhance privacy, you can enable hostname hashing.
+
+1.Enable Hashing:  
+   Add the following line to your SSH client configuration file (`~/.ssh/config`):
+
+   ````````````````````````````````````bash
+   HashKnownHosts yes
+   ````````````````````````````````````
+
+2.Rehash Existing `known_hosts`:  
+   Convert existing entries to hashed format using:
+
+   ````````````````````````````````````bash
+   ssh-keygen -H
+   ````````````````````````````````````
+
+   This replaces plain-text hostnames with hashed values.
+
+Example of a hashed entry:
+
+````````````````````````````````````bash
+|1|j7kjO3O8F...= ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEArpjz...
+````````````````````````````````````
+
+-------------------------------------------------------------------------------------------------------------------------------
+Disabling Host Key Checking
+
+If you are connecting to a large number of servers and do not want to track host keys (e.g., in automation scripts),
+ you can disable strict host key checking.However, this is insecure and should only be done in trusted environments.
+
+Add the following option when running `ssh`:
+
+````````````````````````````````````bash
+ssh -o StrictHostKeyChecking=no user@hostname
+````````````````````````````````````
+
+Alternatively, add the following to `~/.ssh/config`:
+
+````````````````````````````````````bash
+Host 
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+````````````````````````````````````
+
+-------------------------------------------------------------------------------------------------------------------------------
+Best Practices
+
+1.Verify Host Keys:  
+   Always verify host keys before adding them to `known_hosts`.
+   
+2.Use Hashing:  
+   Enable hostname hashing to protect server information in case `known_hosts` is leaked.
+   
+3.Regularly Audit `known_hosts`:  
+   Remove unused or outdated keys periodically to reduce clutter and potential security risks.
+
+4.Use `ssh-keygen` Commands:  
+   Use `ssh-keygen` to efficiently manage entries instead of manual edits.
+_________________________________________________________________________________________________________________________________________________________________________

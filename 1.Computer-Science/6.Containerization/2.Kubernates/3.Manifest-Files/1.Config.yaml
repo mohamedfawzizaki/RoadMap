@@ -1,0 +1,57 @@
+# --------------------------------------------------------------------------------------------------
+# Kubernetes Kubeconfig File
+# --------------------------------------------------------------------------------------------------
+# PURPOSE:
+# This file is used by `kubectl` and other Kubernetes clients to connect securely to a cluster.
+# It defines:
+#   - Clusters: Kubernetes API servers and their certificates
+#   - Users: Credentials for authenticating to the cluster (certs, tokens, etc.)
+#   - Contexts: Links a user and a cluster, optionally sets a default namespace
+#   - current-context: Specifies which context kubectl uses by default
+#
+# USE CASES:
+# - Manage multiple Kubernetes clusters and environments (dev, staging, prod)
+# - Authenticate different users with different privileges
+# - Switch easily between clusters/contexts using `kubectl config use-context`
+#
+# NOTES:
+# - The default location for kubeconfig is: ~/.kube/config
+# - You can override it using `--kubeconfig` or the `KUBECONFIG` environment variable
+# - Always ensure your client certificates and keys are kept secure
+# --------------------------------------------------------------------------------------------------
+
+apiVersion: v1
+kind: Config
+
+# -------------------------------
+# Define the Kubernetes cluster
+# -------------------------------
+clusters:
+- name: my-cluster                            # A logical name for this cluster (used in context)
+  cluster:
+    server: https://my-cluster.example.com    # Kubernetes API server endpoint (must be HTTPS)
+    certificate-authority: /path/to/ca.crt    # Path to the cluster CA certificate (verifies TLS)
+
+# -------------------------------
+# Define the user/credential
+# -------------------------------
+users:
+- name: my-user                               # Logical name for the user credentials
+  user:
+    client-certificate: /path/to/client.crt   # X.509 client cert for TLS auth to the API server
+    client-key: /path/to/client.key           # Private key associated with the client certificate
+
+# -------------------------------
+# Define the context (cluster + user + namespace)
+# -------------------------------
+contexts:
+- name: my-context                            # A logical context name for use with kubectl
+  context:
+    cluster: my-cluster                       # References the cluster above
+    user: my-user                             # References the user above
+    namespace: default                        # Default namespace when using this context
+
+# -------------------------------
+# Set the current active context
+# -------------------------------
+current-context: my-context                   # The context that will be used by default

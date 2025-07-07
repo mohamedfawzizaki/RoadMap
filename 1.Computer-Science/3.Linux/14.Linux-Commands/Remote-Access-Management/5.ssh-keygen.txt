@@ -1,0 +1,24 @@
+_________________________________________________________________________________________________________________________________________________________________________ 
+                                                     User Management
+                                                     ===============
+ 
+ _________________________________________________________________________________________________________________________________________________________
+|     Option     |                Example                      |                             Description                                                         
+|________________|_____________________________________________|__________________________________________________________________________________________
+| ssh-keygen     | ssh-keygen                                  | Generates a new SSH key pair (private and public).                                                  
+|----------------|---------------------------------------------|------------------------------------------------------------------------------------------ 
+| -t             | ssh-keygen -t rsa                           | Specifies the type of key to create (e.g., rsa, dss, ecdsa, ed25519).                        
+| -b             | ssh-keygen -b 4096                          | Specifies the number of bits in the key. For example, 4096 for stronger encryption.              
+| -f             | ssh-keygen -f ~/.ssh/id_rsa                 | Specifies the file to save the key to (default is ~/.ssh/id_rsa).                                
+| -N             | ssh-keygen -N "your_passphrase"             | Sets a passphrase for the private key (adds encryption to protect the private key).                  
+| -C             | ssh-keygen -C "user@example.com"            | Adds a comment to the key, often used for identifying the key (e.g., an email address).              
+| -y             | ssh-keygen -y -f ~/.ssh/id_rsa              | Extracts the public key from a private key file.                                                      
+| -p             | ssh-keygen -p -f ~/.ssh/id_rsa              | Changes the passphrase of the private key (if it is encrypted).                                     
+| -l             | ssh-keygen -l -f ~/.ssh/id_rsa              | Displays the fingerprint of the specified public key file.                                           
+| -E             | ssh-keygen -E md5 -l -f ~/.ssh/id_rsa       | Displays the fingerprint of the key using the specified hash algorithm (e.g., md5, sha256).      
+| -v             | ssh-keygen -v                               | Verbose mode, provides more details during key generation.                                           
+| -h             | ssh-keygen -h                               | Displays help and usage information for the ssh-keygen command.                                    
+|________________|_____________________________________________|__________________________________________________________________________________________
+ 
+
+_________________________________________________________________________________________________________________________________________________________________________

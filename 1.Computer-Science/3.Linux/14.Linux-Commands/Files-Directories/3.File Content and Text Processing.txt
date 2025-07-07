@@ -1,0 +1,91 @@
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                           head/tail  -  more/less
+                                           =======================
+
+         __________________________________________________________________________________________________________________________________________________
+        | Command  |  Options    | Example                                 |                                        Usage                                                               
+        |__________|_____________|_________________________________________|________________________________________________________________________________         
+        |          |             |  head           logfile.txt	           | Displays the first 10 lines of the file.
+        |          |   -n N	     |  head   -n  5   logfile.txt	           | Displays the first N lines of the file.
+        |          |   -c N	     |  head   -c  20  logfile.txt	           | Displays the first N bytes of the file.
+        |   head   |   -q	     |  head   -q      file1.txt file2.txt	   | Suppresses file name headers when multiple files are specified.
+        |          |   -v	     |  head   -v      logfile.txt	           | Always prints file name headers, even if only one file is specified.
+        |__________|_____________|_________________________________________|________________________________________________________________________________  
+        |          |             |  tail           logfile.txt	           | Displays the last 10 lines of the file.
+        |          |   -n N      |  tail   -n  5   logfile.txt	           | Displays the last N lines of the file.
+        |   tail   |   -c N      |  tail   -c  50  logfile.txt	           | Displays the last N bytes of the file.
+        |          |   -f	     |  tail   -f      logfile.txt	           | Continuously follows the file and shows new lines as they are added.
+        |__________|_____________|_________________________________________|________________________________________________________________________________  
+        |          |   -N	     | less    -N       file.txt	           | Displays line numbers.
+        |   more   |   +F	     | less    +F       logfile.txt	           | Starts less in "follow" mode (similar to tail -f).
+        |   less   |   -p        | less    -p error file.txt	           | Opens file.txt and positions it at the first occurrence of error.
+        |          |   +n	     | more    +5       file.txt	           | Starts displaying the file from the n-th line.
+        |__________|_____________|_________________________________________|________________________________________________________________________________  
+ 
+
+
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                           cut - tr  -  wc - sort - uniq 
+                                           =============================
+        __________________________________________________________________________________________________________________________________________________
+        | Command  |  Options    | Example                                 |                                        Usage                                                               
+        |__________|_____________|_________________________________________|________________________________________________________________________________         
+        |          |  -b	     |  cut  -b  1-5  file.txt	               | Select bytes 1 to 5.
+        |          |  -c         |	cut  -c  1-5  file.txt	               | Select characters 1 to 5.
+        |   cut    |  -f         |	cut  -f  1,3  file.txt	               | Select fields (columns) separated by a delimiter.
+        |          |  -d         |	cut  -d  ":" -f 1,3 /etc/passwd	       | Specify a delimiter (default is tab).
+        |          |  --         |  cut -d ":" -f 1,3 --output-delimiter","| Change the delimiter used in the output.
+        |__________|_____________|_________________________________________|________________________________________________________________________________  
+        |          |  -d	     |  tr   -d  'a-z'	                       | Delete characters from the specified range.
+        |   tr     |  -s         |	tr   -s  '[:space:]'	               | Squeeze repeated characters (useful for collapsing spaces).
+        |          |  -c         |	tr   -c  '[:digit:]' 'X'	           | Complement the specified set and transform remaining chars.
+        |__________|_____________|_________________________________________|________________________________________________________________________________  
+        |          |  -l	     |  wc   -l  file.txt	                   | Counts the number of lines.
+        |          |  -w         |	wc   -w  file.txt	                   | Counts the number of words.
+        |   wc     |  -c         |	wc   -c  file.txt	                   | Counts the number of bytes/characters.
+        |          |  -m         |	wc   -m  file.txt	                   | Counts the number of characters (useful for multibyte characters).
+        |__________|_____________|_________________________________________|________________________________________________________________________________   |          |   -N	     | less    -N       file.txt	           | Displays line numbers.
+        |          |  -n	     |  sort -n   numbers.txt	               | Sorts numerically (useful for sorting numbers).
+        |          |  -r         |	sort -r   file.txt	                   | Sorts in reverse order.
+        |          |  -u         |	sort -u   file.txt	                   | Sorts and removes duplicate lines (unique).
+        |          |  -k         |	sort -k 2 file.txt	                   | Sort by the second column.
+        |   sort   |  -t         |	sort -t ',' -k 2 file.csv	           | Specify a delimiter (in this case a comma).
+        |__________|_____________|_________________________________________|________________________________________________________________________________   |          |   -N	     | less    -N       file.txt	           | Displays line numbers.
+        |          |  -c	     |  uniq -c   file.txt	                   | Prefixes each line with the number of occurrences.
+        |          |  -d         |	uniq -d   file.txt	                   | Only shows duplicate lines.
+        |          |  -u         |	uniq -u   file.txt	                   | Only shows unique lines (lines that do not have duplicates).
+        |__________|_____________|_________________________________________|________________________________________________________________________________  
+ 
+
+
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                                diff    -    cmp 
+                                                ================
+                                          diff [options] file1 file2
+                                          cmp  [options] file1 file2  
+         
+         __________________________________________________________________________________________________________________________________________________
+        | Command  |  Options    | Example                                 |                                        Usage                                                               
+        |__________|_____________|_________________________________________|________________________________________________________________________________         
+        |          |   -u        |	diff  -u   file1  file2                | Unified format output, which shows the differences along with some context (more human-readable).
+        |          |   -c        |	diff  -c   file1  file2                | Context format output, which shows lines before and after differences (helpful for patches).
+        |          |   -w        |	diff  -w   file1  file2                | Ignores all white space (spaces and tabs) when comparing files.
+        |  diff    |   -i        |	diff  -i   file1  file2                | Ignores case differences in text (case-insensitive comparison).
+        |          |   -q        |	diff  -q   file1  file2                | Suppresses the output of differences, showing only whether the files are the same or different.
+        |          |   -y        |	diff  -y   file1  file2                | Displays a side-by-side comparison of the files.
+        |          |   -r        |	diff  -r   dir1   dir2	               | Recursively compares directories and their contents.
+        |__________|_____________|_________________________________________|________________________________________________________________________________  
+        |          |   -l        |	cmp   -l   file1  file2                | Displays the byte offsets and the byte values of the first differences.
+        |          |   -b        |	cmp   -b   file1  file2                | Displays the differences in a human-readable format with both byte numbers and byte values.
+        |  cmp     |   -s        |	cmp   -s   file1  file2                | Suppresses output and only returns an exit status.
+        |          |   -i        |	cmp   -i   file1  file2                | Compares the files in a case-insensitive manner.
+        |__________|_____________|_________________________________________|________________________________________________________________________________  
+ 
+
+
+
+
+
+            
+
+#_________________________________________________________________________________________________________________________________________________________________________# 

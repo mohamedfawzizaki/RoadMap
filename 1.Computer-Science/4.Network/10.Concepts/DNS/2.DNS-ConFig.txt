@@ -1,0 +1,228 @@
+_______________________________________________________________________________________________________________________________________
+                                               DNS configuration files
+                                               =======================
+_______________________________________________________________________________________________________________________________________
+                                                1. `/etc/resolv.conf`
+
+This file specifies the DNS servers used by the system to resolve domain names into IP addresses.
+
+Format:
+Each line has the format:
+            ```````````````````````````````````````````plaintext
+            nameserver <DNS server's IP address>
+            search     <domain>
+            options    <keyword>
+            ```````````````````````````````````````````
+
+Directives:
+- `nameserver`: 
+              - Specifies a DNS server's IP address. Up to three nameservers can be listed.
+- `search`: 
+              - Defines a search list of domain suffixes. 
+              - When a hostname is queried without a domain, the system appends these suffixes.
+- `options`: 
+              - Allows additional options, such as timeout and retry settings.
+
+Example:
+            ```````````````````````````````````````````plaintext
+            nameserver 8.8.8.8
+            nameserver 8.8.4.4
+            search example.com
+            options timeout:2 attempts:3
+            ```````````````````````````````````````````
+
+- Explanation:
+  - The system queries Google’s public DNS servers (`8.8.8.8` and `8.8.4.4`).
+  - If you query `webserver`, the system tries `webserver.example.com`.
+  - The `timeout` option specifies that the system waits 2 seconds before retrying.
+  - The `attempts` option specifies up to 3 retry attempts before failing.
+
+_______________________________________________________________________________________________________________________________________
+                                                      2. `/etc/hosts`
+
+This file allows manual mapping of hostnames to IP addresses, bypassing DNS queries.
+
+Format:
+Each line consists of:
+            ```````````````````````````````````````````plaintext
+            <IP address> <hostname> [alias...]
+            ```````````````````````````````````````````
+
+Example:
+            ```````````````````````````````````````````plaintext
+            127.0.0.1   localhost
+            192.168.1.10 myserver.local  myserver
+            10.0.0.5    webserver.example.com  webserver
+            ```````````````````````````````````````````
+
+- Explanation:
+  - `127.0.0.1 localhost`: 
+                  - The loopback IP address is mapped to `localhost`.
+  - `192.168.1.10 myserver.local myserver`: 
+                  - The private IP `192.168.1.10` is mapped to `myserver.local`, and `myserver` is an alias.
+  - `10.0.0.5 webserver.example.com webserver`: 
+                  - The IP `10.0.0.5` is mapped to `webserver.example.com`, with `webserver` as a shorthand alias.
+
+_______________________________________________________________________________________________________________________________________
+                                                    3. `/etc/nsswitch.conf`
+
+This file controls the order in which various name resolution methods are applied. 
+It specifies whether the system should first check local files (like `/etc/hosts`) or query DNS.
+
+Relevant Line:
+            ```````````````````````````````````````````plaintext
+            hosts: files dns
+            ```````````````````````````````````````````
+
+- Explanation:
+  - `files`: The system first checks the `/etc/hosts` file.
+  - `dns`: If no match is found in `/etc/hosts`, the system queries DNS servers specified in `/etc/resolv.conf`.
+
+_______________________________________________________________________________________________________________________________________
+                                        4. `/etc/network/interfaces` (Debian-based systems)
+
+This file defines network interfaces and can include DNS server settings.
+
+ Example:
+            ```````````````````````````````````````````plaintext
+            auto eth0
+            iface eth0 inet static
+                address 192.168.1.100
+                netmask 255.255.255.0
+                gateway 192.168.1.1
+                dns-nameservers 8.8.8.8 8.8.4.4
+            ```````````````````````````````````````````
+
+- Explanation:
+  - `dns-nameservers`: Specifies the DNS servers to use for this interface (`eth0`).
+  - This configuration is useful for static IP addresses.
+
+_______________________________________________________________________________________________________________________________________
+                                        5. `/etc/systemd/resolved.conf` (systemd-based systems)
+
+For systems using `systemd-resolved`, this file is used to configure DNS settings.
+
+Example:
+            ```````````````````````````````````````````plaintext
+            [Resolve]
+            DNS=8.8.8.8 8.8.4.4
+            FallbackDNS=1.1.1.1 1.0.0.1
+            Domains=example.com
+            DNSSEC=yes
+            ```````````````````````````````````````````
+
+- Explanation:
+  - `DNS`: 
+          - Specifies the primary DNS servers.
+  - `FallbackDNS`: 
+          - Specifies fallback DNS servers to use if the primary ones fail.
+  - `Domains`: 
+          - Appends the specified domain (`example.com`) when a partial hostname is queried.
+  - `DNSSEC`: 
+          - Enables DNS Security Extensions (DNSSEC) for secure DNS resolution.
+
+To apply changes, restart `systemd-resolved`:
+            ```````````````````````````````````````````bash
+            sudo systemctl restart systemd-resolved
+            ```````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+                                          6. `/etc/dhcp/dhclient.conf`
+
+This file controls how the DHCP client requests IP addresses and DNS information from a DHCP server.
+
+ Example:
+            ```````````````````````````````````````````plaintext
+            option domain-name "example.com";
+            option domain-name-servers 8.8.8.8, 8.8.4.4;
+            ```````````````````````````````````````````
+
+- Explanation:
+  - `option domain-name`: Specifies the domain name to use.
+  - `option domain-name-servers`: Lists the DNS servers provided by the DHCP server.
+  
+To apply changes, restart the network interface:
+            ```````````````````````````````````````````bash
+            sudo dhclient -r eth0
+            sudo dhclient eth0
+            ```````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+                                        7. `/etc/bind/named.conf.options` (for BIND DNS server)
+
+This file is used when configuring a local DNS server using BIND (Berkeley Internet Name Domain).
+
+ Example:
+            ```````````````````````````````````````````plaintext
+            options {
+                directory "/var/cache/bind";
+                forwarders {
+                    8.8.8.8;
+                    8.8.4.4;
+                };
+                dnssec-validation auto;
+                listen-on-v6 { any; };
+            };
+            ```````````````````````````````````````````
+
+- Explanation:
+  - `forwarders`: 
+          - Specifies external DNS servers for forwarding queries.
+  - `dnssec-validation`: 
+          - Enables automatic DNSSEC validation.
+  - `listen-on-v6`: 
+          - Allows the DNS server to listen on any IPv6 address.
+
+_______________________________________________________________________________________________________________________________________
+                                      8. `/etc/bind/named.conf.local` (for BIND DNS zones)
+
+This file is used to define local DNS zones for the BIND server.
+
+ Example:
+            ```````````````````````````````````````````plaintext
+            zone "example.com" {
+                type master;
+                file "/etc/bind/db.example.com";
+            };
+            ```````````````````````````````````````````
+
+- Explanation:
+  - This defines a DNS zone for `example.com`, with the zone data stored in `/etc/bind/db.example.com`.
+
+_______________________________________________________________________________________________________________________________________
+                                        Summary of Common DNS Configuration Files
+
+|            File              |                                      Purpose                                                    |
+| `/etc/resolv.conf`           | Specifies DNS servers for name resolution.                                                      |
+| `/etc/hosts`                 | Provides local hostname-to-IP mapping.                                                          |
+| `/etc/nsswitch.conf`         | Specifies the order of name resolution (local files or DNS).                                    |
+| `/etc/network/interfaces`    | Configures network interfaces and can include DNS settings.                                     |
+| `/etc/systemd/resolved.conf` | Configures DNS servers and domains for `systemd-resolved`.                                      |
+| `/etc/dhcp/dhclient.conf`    | Controls how the DHCP client requests DNS settings from a DHCP server.                          |
+| `/etc/bind/named.conf.`      | Used when configuring a local DNS server with BIND (e.g., defining zones and forwarding rules). |
+_______________________________________________________________________________________________________________________________________
+                                Example Task: Configuring a Static IP and Custom DNS Server
+
+1. Edit `/etc/network/interfaces`:
+              ```````````````````````````````````````````bash
+              sudo nano /etc/network/interfaces
+              ```````````````````````````````````````````
+   Add the following:
+              ```````````````````````````````````````````plaintext
+              auto eth0
+              iface eth0 inet static
+                  address 192.168.1.100
+                  netmask 255.255.255.0
+                  gateway 192.168.1.1
+                  dns-nameservers 1.1.1.1 1.0.0.1
+              ```````````````````````````````````````````
+2. Restart the network service:
+              ```````````````````````````````````````````bash
+              sudo systemctl restart networking
+              ```````````````````````````````````````````
+
+3. Verify DNS settings:
+              ```````````````````````````````````````````bash
+              cat /etc/resolv.conf
+              ```````````````````````````````````````````
+_______________________________________________________________________________________________________________________________________

@@ -1,0 +1,114 @@
+_________________________________________________________________________________________________________________________________________________________________________
+                                                `/etc/cron.deny`
+                                              ===================  
+
+The `/etc/cron.deny` file is used to control access to the cron system by specifying
+ which users are denied permission to create and manage cron jobs.
+ 
+It works as an alternative to `/etc/cron.allow` and provides a way to explicitly block users from using cron.
+
+______________________________________________________________________________________________________________________________________
+Purpose of `/etc/cron.deny`
+
+- The file lists users who are denied access to the `crontab` command.
+- If a user is listed in `/etc/cron.deny`, they cannot schedule or manage their own cron jobs using the `crontab` command.
+- If a user is not listed in `/etc/cron.deny`, they are allowed to use
+  the `crontab` command (assuming `/etc/cron.allow` does not exist).
+
+______________________________________________________________________________________________________________________________________
+Behavior Based on File Existence
+
+1.If `/etc/cron.allow` exists:
+        - Only users explicitly listed in `/etc/cron.allow` can use the `crontab` command. 
+          The existence of `/etc/cron.deny` is ignored in this case.
+
+2.If `/etc/cron.allow` does not exist but `/etc/cron.deny` exists:
+        - Users not listed in `/etc/cron.deny` can create and manage cron jobs.
+        - Users listed in `/etc/cron.deny` are denied access to `crontab`.
+
+3.If neither `/etc/cron.allow` nor `/etc/cron.deny` exists:
+        - By default, all users are allowed to create and manage cron jobs.
+
+______________________________________________________________________________________________________________________________________
+Format of `/etc/cron.deny`
+
+- Each line in the file contains the username of a user who is denied access.
+- Comments are not allowed in this file.
+- Example `/etc/cron.deny` file:
+
+            ```````````````````````````````````````plaintext
+            guest
+            testuser
+            ```````````````````````````````````````
+            In this example:
+            - The users `guest` and `testuser` are denied permission to use the `crontab` command.
+            - All other users are allowed to use `cron`.
+
+______________________________________________________________________________________________________________________________________
+Example: Testing `/etc/cron.deny`
+
+Step 1: Create the `/etc/cron.deny` file
+            ```````````````````````````````````````bash
+            sudo nano /etc/cron.deny
+            ```````````````````````````````````````
+
+            Add the following lines:
+            ```````````````````````````````````````plaintext
+            guest
+            mary
+            ```````````````````````````````````````
+
+Step 2: Test cron access for users
+
+            1.For a denied user (e.g., `guest`):
+                        ```````````````````````````````````````bash
+                        su - guest
+                        crontab -e
+                        ```````````````````````````````````````
+                        Output:
+                        ```````````````````````````````````````plaintext
+                        You (guest) are not allowed to use this program (crontab)
+            See crontab(1) for more information
+                        ```````````````````````````````````````
+
+                        2.For an allowed user (e.g., `john`):
+                        ```````````````````````````````````````bash
+                        su - john
+                        crontab -e
+                        ```````````````````````````````````````
+                        This user will be able to edit their cron jobs normally.
+
+______________________________________________________________________________________________________________________________________
+Managing Cron Access with `/etc/cron.deny`
+
+- To deny a user:  
+        Add the username to `/etc/cron.deny`.
+
+- To allow a previously denied user:  
+        Remove the username from `/etc/cron.deny`.
+
+______________________________________________________________________________________________________________________________________
+Security Considerations
+
+1.Limit Cron Access to Necessary Users  
+        Denying unnecessary users reduces the risk of resource misuse, accidental overload,
+         and potential security issues caused by unauthorized background tasks.
+
+2.File Permissions  
+        To ensure that the `/etc/cron.deny` file
+         is protected from unauthorized changes:
+        ```````````````````````````````````````bash
+        sudo chmod 600 /etc/cron.deny
+        sudo chown root:root /etc/cron.deny
+        ```````````````````````````````````````
+
+______________________________________________________________________________________________________________________________________
+Comparison of `/etc/cron.allow` and `/etc/cron.deny`
+ __________________________________________________________________________________________________________
+|      File         |              Purpose                          |            Precedence                |
+|___________________|_______________________________________________|______________________________________|
+| `/etc/cron.allow` | Explicitly allows users to use `crontab`.     | Takes precedence if it exists.       |
+| `/etc/cron.deny`  | Explicitly denies users from using `crontab`. | Ignored if `/etc/cron.allow` exists. |
+|___________________|_______________________________________________|______________________________________|
+
+_________________________________________________________________________________________________________________________________________________________________________

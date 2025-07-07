@@ -1,0 +1,12 @@
+_______________________________________________________________________________________________________________________________________
+Client-to-Server Networks:
+        - Networks where clients request services from a central server.
+        
+        - Characteristics:
+            - Centralized architecture.
+            - Server manages resources and provides services to clients.
+        
+        - Examples:
+            - Web servers and clients (HTTP).
+            - Online banking and e-commerce platforms.
+_______________________________________________________________________________________________________________________________________

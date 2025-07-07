@@ -1,0 +1,124 @@
+______________________________________________________________________________________________________________________________________
+                                    Cgroup  - Namespaces  -  Ulimits - Deamon - Services
+                                    ====================================================
+
+Linux provides powerful mechanisms for managing system resources and isolating processes.
+These are achieved through cgroups, namespaces, and ulimits.
+Each of these features is part of the broader Linux containerization technology,
+ allowing for efficient management, isolation, and resource allocation.
+---------------------------------------------------------------------------------------------------------
+                                        Cgroups (Control Groups)
+                                        ========================
+
+Cgroups are a Linux kernel feature that allows you to allocate,
+ limit, and track resources (such as CPU, memory, disk IO) for groups of processes.
+They enable you to control how resources are distributed among different tasks, processes, or containers.
+Cgroups are critical in environments like Docker, where multiple containers are running on the same host.
+
+Key Features of Cgroups:
+        - Resource Limiting: Set limits on resources like CPU usage, memory, and IO.
+        - Prioritization   : Control the order in which processes get access to resources.
+        - Accounting       : Track the usage of resources by processes.
+        - Control          : Enable or disable resource usage.
+
+ Common Cgroup Subsystems:
+        1.cpu    : Controls CPU scheduling.
+        2.memory : Manages memory usage, limits, and swapping.
+        3.blkio  : Manages block device IO.
+        4.pids   : Limits the number of processes.
+        5.net_cls: Allows grouping for network traffic management.
+
+Example of Cgroup Usage:
+        To create a cgroup that limits the memory usage of processes:
+        ```bash
+        mkdir sysfscgroupmemorymy_cgroup
+        echo 100M > sysfscgroupmemorymy_cgroupmemory.limit_in_bytes
+        echo $$ > sysfscgroupmemorymy_cgroupcgroup.procs             Add current process to cgroup
+        ```
+---------------------------------------------------------------------------------------------------------
+                                                    Namespaces
+                                                    ==========
+
+Linux namespaces are used for process isolation, enabling the creation of
+ isolated environments in which a group of processes can run independently from the rest of the system.
+Each namespace provides isolation for one particular type of resource, such as the network stack, process IDs, and file systems.
+
+Types of Namespaces:
+        1.PID     Namespace: Isolates process IDs, allowing containers to have their own process ID space.
+        2.Network Namespace: Provides isolation of network interfaces, IP addresses, and ports.
+        3.Mount   Namespace: Isolates the filesystem, so processes can have different views of the filesystem.
+        4.UTS     Namespace: Isolates hostname and domain name.
+        5.IPC     Namespace: Isolates inter-process communication resources such as semaphores, message queues, and shared memory.
+        6.User    Namespace: Isolates user IDs and group IDs, enabling processes to have different user identities inside containers.
+        7.Cgroup  Namespace: Isolates cgroup hierarchies, ensuring processes
+                             in different containers can't interfere with each other's cgroups.
+
+Example of Using Namespaces:
+        To create a new network namespace and start a process with it:
+        ```bash
+        ip netns add mynamespace                    Create a network namespace
+        ip netns exec mynamespace ping google.com   Run a command in the new namespace
+        ```
+
+---------------------------------------------------------------------------------------------------------
+                                                Ulimits (User Limits)
+                                                =====================
+
+Ulimits are settings in Linux that define the limits on resources for processes running in the system.
+These limits are applied per user or per session,
+ and they control things like the maximum number of open files, the maximum file size, and memory usage.
+Ulimits are set using the `ulimit` command or by modifying `etcsecuritylimits.conf` for persistent changes.
+
+Common Ulimit Parameters:
+        1.`ulimit -c`: Maximum core dump size.
+        2.`ulimit -d`: Maximum data area size.
+        3.`ulimit -f`: Maximum size of files created by the shell.
+        4.`ulimit -l`: Maximum size of locks.
+        5.`ulimit -m`: Maximum physical memory available.
+        6.`ulimit -n`: Maximum number of open file descriptors.
+        7.`ulimit -u`: Maximum number of processes available to a user.
+        8.`ulimit -v`: Maximum virtual memory available.
+
+Example of Setting Ulimits:
+        To set the maximum number of open files for the current session:
+        ```bash
+        ulimit -n 10000
+        ```
+
+        To set permanent limits for a user, you can edit `etcsecuritylimits.conf`:
+        ```bash
+        user_name soft nofile 10000
+        user_name hard nofile 20000
+        ```
+---------------------------------------------------------------------------------------------------------
+                                Integration of Cgroups, Namespaces, and Ulimits
+                                ===============================================
+
+In containerized environments like Docker: cgroups, namespaces,
+ and ulimits work together to ensure that containers run in isolated environments with controlled resource usage.
+
+- Cgroups are used to allocate and limit resources (e.g., memory, CPU).
+- Namespaces isolate system resources (e.g., processes, network interfaces) to ensure containers are independent.
+- Ulimits define the resource limits for the processes running within the containers.
+
+Example in Docker:
+        When running a Docker container, you can set resource limits, namespaces, and ulimits:
+
+        ```bash
+        docker run -d --name mycontainer --memory="500m" --cpus="1.0" --ulimit nofile=4096:8192 myimage
+        ```
+
+        This runs a container with:
+                - 500 MB of memory limit.
+                - 1 CPU core assigned.
+                - Ulimit set for open files (`nofile`) with a soft limit of 4096 and a hard limit of 8192.
+---------------------------------------------------------------------------------------------------------
+Conclusion
+
+- Cgroups help in controlling and limiting resource usage by processes.
+- Namespaces provide process isolation by creating separate environments for processes to run in.
+- Ulimits set resource limits on processes at the user or session level, ensuring system stability and security.
+
+These features are essential for managing multi-tenant systems,
+ such as containers or virtual machines, and play a vital role in system resource management, isolation, and security.
+______________________________________________________________________________________________________________________________________

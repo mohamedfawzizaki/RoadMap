@@ -1,0 +1,39 @@
+_______________________________________________________________________________________________________________________________________
+
+                         _____________________________________________________________________________
+                        |         Command                |                Description                 |
+                        |________________________________|____________________________________________|
+                        | `nginx`                        | Starts Nginx.                              |
+                        |________________________________|____________________________________________|
+                        | `nginx -v`                     | Shows the version of Nginx.                |
+                        | `nginx -V`                     | Shows detailed version info with modules.  |
+                        | `nginx -t`                     | Tests configuration syntax.                |
+                        | `nginx -T`                     | Displays the full configuration file.      |
+                        |________________________________|____________________________________________|
+                        | `nginx -s stop`                | Immediately stops Nginx.                   |
+                        | `nginx -s quit`                | Gracefully stops Nginx.                    |
+                        | `nginx -s reload`              | Reloads Nginx configuration.               |
+                        | `nginx -s reopen`              | Reopens log files.                         |
+                        |________________________________|____________________________________________|
+                        | `nginx -c /path/to/nginx.conf` | Uses a custom configuration file.          |
+                        | `nginx -g "directive;"`        | Overrides configuration directives.        |
+                        | `nginx -g "daemon off;"`       | Runs Nginx in the foreground instead of as a daemon (useful for debugging). |
+                        | `nginx -p /path/to/prefix`     | Uses a different directory prefix.         |
+                        | `systemctl start nginx`        | Starts Nginx via systemd.                  |
+                        | `systemctl restart nginx`      | Restarts Nginx.                            |
+                        | `systemctl reload nginx`       | Reloads configuration via systemd.         |
+                        | `service  nginx reload `       | Reloads configuration via systemd.         |
+                        | `service  nginx reload `       | Reloads configuration via systemd.         |
+                        | `service  nginx reload `       | Reloads configuration via systemd.         |
+                        | `service  nginx reload `       | Reloads configuration via systemd.         |
+                        | `ps aux | grep nginx`          | Finds running Nginx processes.             |
+                        | `kill -9 <PID>`                | Forcefully stops a process.                |
+                        | `journalctl -xeu nginx`        | Shows detailed logs for Nginx.             |
+                        |_____________________________________________________________________________|
+
+                                                    -?,-h         : this help
+                            -q            : suppress non-error messages during configuration testing   
+                            -e filename   : set error log file (default: /var/log/nginx/error.log)     
+                            -c filename   : set configuration file (default: /etc/nginx/nginx.conf)
+                        
+_______________________________________________________________________________________________________________________________________

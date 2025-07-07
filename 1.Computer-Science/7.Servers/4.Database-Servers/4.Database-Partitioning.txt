@@ -1,0 +1,224 @@
+_____________________________________________________________________________________________________________________________________
+                                                    
+                                                    Database Partitioning  
+_____________________________________________________________________________________________________________________________________
+
+                                                1. What is Database Partitioning?  
+
+Database partitioning is a technique used to divide a large table into smaller,
+ more manageable partitions to improve performance, scalability, and manageability. 
+ 
+Each partition stores a subset of the data, making queries and maintenance operations more efficient.
+
+Unlike sharding, which distributes data across multiple servers, partitioning occurs within a single database instance.
+
+_____________________________________________________________________________________________________________________________________
+                                                2. Why Use Database Partitioning? 
+
+Partitioning is used to optimize database performance, reduce query response times, and enhance data management.
+
+ Benefits of Partitioning  
+✔ Faster Queries: Queries access only relevant partitions instead of scanning the entire table.  
+✔ Efficient Data Management: Makes it easier to delete, archive, and maintain large datasets.  
+✔ Better Load Balancing: Distributes queries across partitions to avoid bottlenecks.  
+✔ Improved Index Performance: Each partition has its own index, reducing index size and lookup time.  
+✔ Optimized Storage: Frequently accessed data can be stored in fast storage, while old data can be archived.  
+
+ Challenges of Partitioning  
+❌ Complexity: Designing and maintaining partitions require careful planning.  
+❌ Query Optimization: Applications must be aware of the partitioning scheme to optimize queries.  
+❌ Partition Pruning Issues: If queries are not optimized, they may scan multiple partitions instead of just one.  
+❌ Increased Storage Overhead: Partitioned indexes and metadata require additional storage.
+
+_____________________________________________________________________________________________________________________________________
+                                                   3. Types of Partitioning 
+
+There are several types of partitioning, each with different use cases.
+
+___________________________________________________________
+ a. Range Partitioning  
+- Data is divided into partitions based on a range of values.  
+- Commonly used for time-series data (e.g., logs, transactions).  
+
+✅ Pros: Efficient for queries filtering by range (e.g., date-based queries).  
+❌ Cons: If some partitions have more data than others, it may lead to unbalanced loads.  
+
+Example:  
+A sales table partitioned by year:  
+````````````````````````````````````````````````````````sql
+CREATE TABLE sales (
+    id INT,
+    sale_date DATE,
+    amount DECIMAL(10,2)
+) PARTITION BY RANGE (YEAR(sale_date)) (
+    PARTITION p2022 VALUES LESS THAN (2023),
+    PARTITION p2023 VALUES LESS THAN (2024),
+    PARTITION p2024 VALUES LESS THAN (2025)
+);
+````````````````````````````````````````````````````````
+- `p2022` stores all sales from 2022.
+- `p2023` stores all sales from 2023.
+
+___________________________________________________________
+
+ b. List Partitioning  
+- Data is divided into partitions based on specific values in a column.  
+- Useful when categorical data is well-defined.  
+
+✅ Pros: Allows clear segmentation of data (e.g., by region, department).  
+❌ Cons: Requires manual assignment of values, leading to complex maintenance.  
+
+Example:  
+A customer table partitioned by country:  
+````````````````````````````````````````````````````````sql
+CREATE TABLE customers (
+    id INT,
+    name VARCHAR(100),
+    country VARCHAR(50)
+) PARTITION BY LIST (country) (
+    PARTITION p_USA VALUES IN ('USA'),
+    PARTITION p_CANADA VALUES IN ('Canada'),
+    PARTITION p_UK VALUES IN ('UK')
+);
+````````````````````````````````````````````````````````
+- Queries like `SELECT * FROM customers WHERE country='USA';` will only scan partition `p_USA`.
+
+___________________________________________________________
+
+ c. Hash Partitioning  
+- Uses a hash function to distribute data evenly across partitions.  
+- Ensures balanced partitions, avoiding hotspots.  
+
+✅ Pros: Evenly distributes data, making it useful for unpredictable distributions.  
+❌ Cons: Range queries are inefficient because data is randomly distributed.  
+
+Example:  
+A users table partitioned by user_id:
+````````````````````````````````````````````````````````sql
+CREATE TABLE users (
+    id INT PRIMARY KEY,
+    name VARCHAR(100)
+) PARTITION BY HASH (id) PARTITIONS 4;
+````````````````````````````````````````````````````````
+- Each `id` is hashed and stored in one of the 4 partitions.
+
+To determine the partition:
+````````````````````````````````````````````````````````sql
+SELECT * FROM users PARTITION (p1) WHERE id = 12345;
+````````````````````````````````````````````````````````
+- 12345 is hashed and mapped to one of the partitions.
+
+___________________________________________________________
+
+ d. Composite Partitioning (Sub-Partitioning)  
+- Combines two partitioning strategies (e.g., Range + Hash).  
+- Useful for complex data distributions.  
+
+✅ Pros: Provides better flexibility and efficiency.  
+❌ Cons: More complex query and indexing management.  
+
+Example:  
+- Range partitioning by year.  
+- Hash sub-partitioning by user ID.  
+````````````````````````````````````````````````````````sql
+CREATE TABLE orders (
+    id INT,
+    order_date DATE,
+    user_id INT
+) PARTITION BY RANGE (YEAR(order_date)) 
+SUBPARTITION BY HASH (user_id) SUBPARTITIONS 4 (
+    PARTITION p2022 VALUES LESS THAN (2023),
+    PARTITION p2023 VALUES LESS THAN (2024)
+);
+````````````````````````````````````````````````````````
+- Data is first partitioned by year, then sub-partitioned into 4 sub-groups using hashing.
+
+_____________________________________________________________________________________________________________________________________
+                                    4. Partition Pruning (Query Optimization in Partitioning)  
+
+Partition pruning is a process where the database engine automatically scans only the necessary partitions instead of the entire table.
+
+Example:  
+````````````````````````````````````````````````````````sql
+SELECT * FROM sales WHERE sale_date >= '2023-01-01' AND sale_date < '2024-01-01';
+````````````````````````````````````````````````````````
+- The query only scans `p2023`, skipping other partitions.
+
+Without pruning, the database scans all partitions, making the query slow.
+
+_____________________________________________________________________________________________________________________________________
+                                             5. Implementing Partitioning in MySQL
+
+___________________________________________________________
+ Step 1: Creating a Partitioned Table
+Example: Partitioning orders table by year:
+````````````````````````````````````````````````````````sql
+CREATE TABLE orders (
+    id INT NOT NULL,
+    order_date DATE NOT NULL,
+    amount DECIMAL(10,2),
+    PRIMARY KEY (id, order_date)
+) PARTITION BY RANGE (YEAR(order_date)) (
+    PARTITION p2021 VALUES LESS THAN (2022),
+    PARTITION p2022 VALUES LESS THAN (2023),
+    PARTITION p2023 VALUES LESS THAN (2024)
+);
+````````````````````````````````````````````````````````
+
+___________________________________________________________
+
+ Step 2: Inserting Data
+````````````````````````````````````````````````````````sql
+INSERT INTO orders VALUES (1, '2022-05-10', 200.00);
+INSERT INTO orders VALUES (2, '2023-07-15', 500.00);
+````````````````````````````````````````````````````````
+- The first row goes to p2022.
+- The second row goes to p2023.
+
+___________________________________________________________
+
+ Step 3: Query Optimization Using Partition Pruning
+````````````````````````````````````````````````````````sql
+EXPLAIN PARTITIONS SELECT * FROM orders WHERE order_date = '2023-07-15';
+````````````````````````````````````````````````````````
+- The database only searches `p2023`, making it faster.
+
+_____________________________________________________________________________________________________________________________________
+                                                6. Managing Partitions
+
+ Adding a New Partition
+````````````````````````````````````````````````````````sql
+ALTER TABLE orders ADD PARTITION (PARTITION p2024 VALUES LESS THAN (2025));
+````````````````````````````````````````````````````````
+
+ Dropping an Old Partition
+````````````````````````````````````````````````````````sql
+ALTER TABLE orders DROP PARTITION p2021;
+````````````````````````````````````````````````````````
+- Useful for archiving old data.
+
+ Merging Partitions
+````````````````````````````````````````````````````````sql
+ALTER TABLE orders REORGANIZE PARTITION p2022, p2023 INTO (
+    PARTITION p_merged VALUES LESS THAN (2025)
+);
+````````````````````````````````````````````````````````
+
+_____________________________________________________________________________________________________________________________________
+                                                7. Partitioning vs Sharding
+                         ________________________________________________________________________________
+                        |     Feature        |     Partitioning          |        Sharding               |
+                        |____________________|___________________________|_______________________________|
+                        | Scope              | Within a single database  | Across multiple databases     |
+                        | Scaling            | Vertical (within one DB)  | Horizontal (multiple servers) |
+                        | Query Optimization | Uses partition pruning    | Requires cross-shard queries  |
+                        | Complexity         | Easier to manage          | Harder to implement           |
+                        |____________________|___________________________|_______________________________|
+
+_____________________________________________________________________________________________________________________________________
+                                                       Conclusion
+
+Partitioning is a powerful technique for scaling large databases while keeping queries fast. 
+Choosing the right partitioning strategy depends on your data structure, query patterns, and workload.
+
+_____________________________________________________________________________________________________________________________________

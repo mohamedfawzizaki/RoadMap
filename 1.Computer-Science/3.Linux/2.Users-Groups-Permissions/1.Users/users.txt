@@ -1,0 +1,400 @@
+______________________________________________________________________________________________________________________________________
+                                                          Users 
+                                                          =====
+Breif:
+        - In Linux, users are a fundamental part of the system's security and resource management.
+        - Every action performed on a Linux system is associated with a user, whether it's a person or a system process.
+        - This detailed guide covers the key concepts related to users in Linux.
+
+______________________________________________________________________________________________________________________________________
+                                                        1.User Types
+
+ a.Root User
+        - The root user is the superuser who has unlimited privileges on the system.
+        
+        - The root user can perform any administrative tasks such as managing
+          users, installing software, changing file permissions, and modifying system files.
+        
+        - The root user’s username is typically `root`, and their home directory is `/root`.
+
+ b.Regular Users
+        - Regular users are created by the system administrator (root).
+        - Each regular user has a unique UID (User ID) and home directory (usually `/home/username`).
+        
+        - Regular users have limited privileges—they can only modify 
+          files (content and name) they own and perform actions within their permission levels.
+
+ c.System Users
+        - System users are non-human users created by the system for running services and background processes.
+        
+        - Examples include users like `www-data` (for web servers like Apache and Nginx),
+          `mail` (for mail services), and `nobody` (a minimal-privilege user for certain processes).
+        
+        - Their UID is usually less than 1000 (or 500, depending on the distribution).
+
+______________________________________________________________________________________________________________________________________
+                                                   2.User Management Files
+
+a.`/etc/passwd`
+      - The primary file that stores user account information.
+      - Each line represents a user and contains fields separated by colons (`:`):
+        `````````````````````````````````````````````````
+        username:x:UID:GID:comment:home_directory:shell
+        `````````````````````````````````````````````````
+        Example:
+        ````````````````````````````````````````````````````
+        mohamed:x:1001:1001:my name is Mohamed:/home/mohamed:/bin/bash
+        ````````````````````````````````````````````````````
+        - username      : The name of the user.
+        - x             : Placeholder indicating that the password is stored in `/etc/shadow`.
+        - UID           : User ID.
+        - GID           : Group ID.
+        - comment       : An optional description of the user.
+        - home_directory: The user’s home directory.
+        - shell         : The default shell assigned to the user.
+
+b.`/etc/shadow`
+        - This file stores encrypted passwords and password-related information.
+        - It is readable only by the root user for security purposes.
+
+c.`/etc/group`
+        - This file defines the groups on the system.
+        - It maps group names to GIDs (Group IDs) and lists users belonging to each group.
+
+d.`/etc/sudoers`
+  `/etc/sudoers.d/`
+        - This file defines the sudoers on the system.
+        - It maps users to their allowed commands and permissions.
+
+______________________________________________________________________________________________________________________________________
+                                                   4.User IDs and Groups
+
+- UID (User ID):  
+        Each user is assigned a unique ID number. 
+        - UID 0              : Reserved for the root user.
+        - UIDs 1–999         : Reserved for system users.
+        - UIDs 1000 and above: Used for regular users.
+
+- GID (Group ID):  
+        Each user belongs to a primary group, identified by a GID.
+        Additional groups can be assigned to a user for shared permissions.
+        
+______________________________________________________________________________________________________________________________________
+                                                   3.User Commands
+
+a.`whoami`
+        Displays the current logged-in user:
+        `````````````````````````````````````````````````
+        whoami
+        `````````````````````````````````````````````````
+
+b.`who`
+        Displays all logged-in users:
+        `````````````````````````````````````````````````
+        who
+        `````````````````````````````````````````````````
+c.`id`
+        Displays user ID, group ID, and associated groups:
+        `````````````````````````````````````````````````
+        id username
+        `````````````````````````````````````````````````
+
+
+d.`adduser` / `useradd`
+        Used to create a new user.
+        - `adduser` is more user-friendly and interactive.
+        - Example:
+          `````````````````````````````````````````````````
+          sudo adduser mohamed
+          `````````````````````````````````````````````````
+
+        - `useradd` is a lower-level command.
+          Example:
+          `````````````````````````````````````````````````
+          sudo useradd -m -s /bin/bash mohamed
+          `````````````````````````````````````````````````
+
+e.`passwd`
+        Used to set or change a user’s password.
+        `````````````````````````````````````````````````
+        sudo passwd mohamed
+        `````````````````````````````````````````````````
+
+f.`usermod`
+        Modifies user properties such as shell, home directory, and groups.
+        Example: Change the shell for a user:
+        `````````````````````````````````````````````````
+        sudo usermod -s /bin/zsh mohamed
+        `````````````````````````````````````````````````
+
+g.`deluser` / `userdel`
+        Used to delete a user.
+        `````````````````````````````````````````````````
+        sudo deluser mohamed
+        `````````````````````````````````````````````````
+        or
+        `````````````````````````````````````````````````
+        sudo userdel mohamed
+        `````````````````````````````````````````````````
+
+______________________________________________________________________________________________________________________________________
+                                                   5.Switching and Running Commands as Another User
+
+a.`su` (Substitute User)
+        - Allows switching to another user account.
+        - Example: Switch to the root user:
+          `````````````````````````````````````````````````
+          su -
+          `````````````````````````````````````````````````
+        - Example: Switch to a specific user:
+          `````````````````````````````````````````````````
+          su mohamed
+          `````````````````````````````````````````````````
+
+b.`sudo` (Superuser Do)
+        - Allows a regular user to run commands with superuser privileges.
+        - Example: Run a command as root:
+          `````````````````````````````````````````````````
+          sudo apt update
+          `````````````````````````````````````````````````
+
+        - To allow a user to use `sudo`, they must be added to the sudoers file or the sudo group:
+          `````````````````````````````````````````````````
+          sudo usermod -aG sudo mohamed
+          `````````````````````````````````````````````````
+
+______________________________________________________________________________________________________________________________________
+                                                   6.User Home Directory
+
+- Each user has a home directory under `/home/username`.
+- The home directory contains user-specific files and settings.
+- Important files in the home directory:
+        - `.bashrc` : Contains user-specific shell configurations.
+        - `.profile`: Contains user-specific environment variables.
+
+______________________________________________________________________________________________________________________________________
+                                                   7.User Groups
+
+Groups are used to manage permissions for multiple users.
+Each user can belong to one or more groups.
+
+Primary Group
+        - The group specified in `/etc/passwd` for the user.
+
+Supplementary Groups
+        - Additional groups the user belongs to.
+
+Group Management Commands
+
+        - Create a group:
+          `````````````````````````````````````````````````
+          sudo groupadd developers
+          `````````````````````````````````````````````````
+        - Add a user to a group:
+          `````````````````````````````````````````````````
+          sudo usermod -aG developers mohamed
+          `````````````````````````````````````````````````
+          sudo chown mohamed:developers file.txt
+          `````````````````````````````````````````````````
+          `````````````````````````````````````````````````
+        - List all groups:
+          `````````````````````````````````````````````````
+          groups
+          `
+          g1 g2 g3
+          `
+
+          `````````````````````````````````````````````````
+        - List groups for a user:
+          `````````````````````````````````````````````````
+          groups username
+          `
+          username : g1 g2
+          `
+          `````````````````````````````````````````````````
+
+______________________________________________________________________________________________________________________________________
+                                                   8.User Permission and Ownership
+
+- File ownership:  
+        Each file or directory is owned by a user and a group.
+        Use `ls -l` to display file ownership:
+        `````````````````````````````````````````````````
+        ls -l file.txt
+        `````````````````````````````````````````````````
+        Example output:
+        `````````````````````````````````````````````````
+        -rw-r--r-- 1 mohamed developers 1024 Jan 10 12:00 file.txt
+        `````````````````````````````````````````````````
+
+        - The file is owned by user `mohamed` and group `developers`.
+        - The first character `-` indicates that the file is a regular file.
+        - The next three characters `rw-` indicate the permissions for the owner (read and write).
+        - The next three characters `r--` indicate the permissions for the group (read only).
+        - The last three characters `r--` indicate the permissions for others (read only).
+        - The number `1` indicates that the file is owned by a single user.
+        - The number `1024` indicates the file size in bytes.
+        - The date `Jan 10 12:00` indicates the last modification time.
+
+
+- Change ownership:  
+        `````````````````````````````````````````````````
+        sudo chown mohamed:developers file.txt
+        `````````````````````````````````````````````````
+
+
+______________________________________________________________________________________________________________________________________
+                                                 Login vs Non-login Accounts in Linux
+
+In Linux, user accounts can be broadly categorized into login accounts
+ and non-login accounts based on how they are intended to be used and whether they are allowed to directly log into the system.
+
+---------------------------------------------------------------------------------------------------------------------------------------
+                                                       1. Login Accounts
+
+A login account is a user account created for a human user to log in and interact with the system. 
+These accounts are designed for people who need direct access to the system, either via a terminal, SSH, or GUI.
+
+### Characteristics of Login Accounts
+- Home Directory: 
+        - Each login account typically has a home directory under `/home/username`.
+- Shell Access: 
+        - Login accounts are assigned a valid interactive shell (like `/bin/bash`, `/bin/zsh`, etc.)
+           that allows users to execute commands.
+- Password Authentication: 
+        - Login accounts require passwords for authentication, which are stored in a secure, encrypted format in `/etc/shadow`.
+- UID Range: 
+        - In most Linux distributions, login accounts have UIDs (User IDs) starting from 1000 and above.
+        - These UIDs are reserved for human users by convention.
+- Purpose: 
+        - Primarily used by human users who need access to the system for tasks such as file management,
+           software development, and system administration.
+
+### Examples
+- A developer with the username `john` who logs in to work on a project.
+- A system administrator who uses the account `admin` for system maintenance.
+
+### How to Create a Login Account
+You can create a login account using the `adduser` or `useradd` command:
+```bash
+sudo adduser john
+```
+This command:
+- Creates a home directory at `/home/john`.
+- Sets a login shell (default: `/bin/bash`).
+- Prompts for a password.
+- Adds the user to necessary groups (like `john` and `sudo`, if specified).
+
+---------------------------------------------------------------------------------------------------------------------------------------
+                                                        2. Non-login Accounts
+
+A non-login account is a system account that does not permit direct login by a human user. 
+These accounts are primarily used by system services and applications that need to run processes
+ under a specific user identity but do not require interactive access.
+
+### Characteristics of Non-login Accounts
+- No Home Directory: 
+        - Non-login accounts may not have a home directory, or if they do,
+           it is typically a generic directory like `/var/lib/service-name`.
+- Shell: 
+        - Non-login accounts are assigned a non-interactive shell, usually `/usr/sbin/nologin` or `/bin/false`. 
+        - This prevents users from logging in interactively via a terminal or SSH.
+- No Password: 
+        - Non-login accounts do not require a password, and their entries in `/etc/shadow` often have
+           a placeholder (`*` or `!`) indicating that the account is locked and cannot be used for login.
+- UID Range: 
+        - Non-login accounts typically have UIDs in the range of 1–999 (or 1–499 on some older systems),
+        -  which are reserved for system users and services.
+- Purpose: 
+        - These accounts are used for running specific services or daemons,
+           ensuring that processes have the necessary permissions while limiting potential security risks.
+
+### Examples
+- `root`: 
+        - The superuser account with UID 0, used for administrative tasks. 
+        - While it is a login account by default, it can be disabled for direct login on many systems for security reasons.
+- `daemon`: 
+        - A system account used by various background services.
+- `nobody`: 
+        - A special system account used by processes that require minimal privileges.
+- `www-data`: 
+        - A non-login account used by web servers like Apache and Nginx.
+- `mysql`: 
+        - A non-login account used by the MySQL database server.
+
+### How to Create a Non-login Account
+To create a non-login account, you can use the `useradd` command with specific options:
+```bash
+sudo useradd -r -s /usr/sbin/nologin -d /var/lib/myapp myapp
+```
+Explanation:
+- `-r`: Creates a system account (with UID below 1000).
+- `-s /usr/sbin/nologin`: Sets the shell to `nologin`, preventing interactive login.
+- `-d /var/lib/myapp`: Specifies a home directory, even though it's not used interactively.
+
+---
+
+## 3. Summary Table
+ ________________________________________________________________________________________________________________________
+| Feature                | Login Accounts                         | Non-login Accounts                     
+|________________________|________________________________________|______________________________________________________
+| Purpose                | Used by human users for direct login   | Used by system services and daemons    
+| Home Directory         | Typically under `/home/username`       | Often not required or generic (`/var/...`) 
+| Shell                  | Interactive (`/bin/bash`, `/bin/zsh`)  | Non-interactive (`/usr/sbin/nologin`, `/bin/false`) 
+| Password               | Required                               | Not required or locked (`*`, `!`)      
+| UID Range              | 1000 and above                         | 1–999 (or 1–499 on older systems)      
+| Login Allowed          | Yes                                    | No                                     
+| Example Users          | `john`, `admin`, `student`             | `root`, `nobody`, `www-data`, `mysql`  
+|________________________|________________________________________|______________________________________________________
+
+---
+
+## 4. Why Use Non-login Accounts?
+
+Non-login accounts are essential for security and resource isolation. 
+Instead of running all services as `root` (which has full system privileges),
+ each service runs under its own limited-privilege account. 
+
+This approach provides several benefits:
+
+1. Security: 
+   - If a service is compromised, the attacker gains access only to that service's account, minimizing damage to the system.
+   - Non-login accounts often have no shell and no password, preventing unauthorized logins.
+
+2. Isolation:
+   - Services run independently of each other, each with its own set of permissions.
+   - This limits the risk of one service interfering with another.
+
+3. Accountability:
+   - By running services under specific accounts, it becomes easier to track which service performed a given action in system logs.
+
+---
+
+### 5. Checking Existing Non-login Accounts
+
+You can list system (non-login) accounts using the following command:
+```bash
+awk -F: '$3 < 1000 { print $1 }' /etc/passwd
+```
+
+This command prints all accounts with UIDs below 1000, which are typically non-login accounts.
+
+To check if a user has a non-interactive shell:
+```bash
+cat /etc/passwd | grep username
+```
+
+Example output for a non-login account:
+```bash
+mysql:x:106:113:MySQL Server,,,:/nonexistent:/usr/sbin/nologin
+```
+- `/usr/sbin/nologin` indicates that the account cannot log in interactively.
+
+---
+______________________________________________________________________________________________________________________________________
+                                                   Conclusion
+
+Understanding users in Linux is essential for managing system security and multi-user environments.
+Proper user management ensures that system resources are accessed appropriately, maintaining both security and efficiency.
+Login accounts are used by human users to interact with the system, while non-login accounts are used by services and processes. Understanding the distinction between these account types is crucial for managing Linux systems securely and efficiently. By properly setting up non-login accounts with minimal permissions, system administrators can enhance the overall security of the system.
+______________________________________________________________________________________________________________________________________

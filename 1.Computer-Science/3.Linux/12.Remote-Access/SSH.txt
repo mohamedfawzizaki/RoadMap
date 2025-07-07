@@ -1,0 +1,244 @@
+_________________________________________________________________________________________________________________________________________________________________________
+                                               Secure Shell (SSH)
+                                              ===================
+
+- The Secure Shell (SSH) protocol is a method for securely sending commands to a computer over an unsecured network. 
+- SSH uses cryptography to authenticate and encrypt connections between devices. 
+- SSH also allows for tunneling, or port forwarding, which is when
+  data packets are able to cross networks that they would not otherwise be able to cross. 
+- SSH is often used for controlling servers remotely, for managing infrastructure, and for transferring files.
+
+- When traveling, the owner of a store might give their employees
+   instructions from afar to ensure the store runs smoothly while they are gone. 
+- Similarly, SSH allows administrators to manage servers and devices from afar. 
+- Older remote management protocols like Telnet transported administrators' commands in a form that anyone could see.
+- (Imagine if the employees put the store owner on speakerphone during a call;
+   all the customers in the store could overhear private instructions.) Unlike Telnet, SSH is secure — hence the name Secure Shell.
+_________________________________________________________________________________________________________________________________________________________________________
+                                                  What does SSH do?
+                                                 ===================
+- Remote encrypted connections: SSH sets up a connection between a user's device and a faraway machine, often a server. 
+- It uses encryption to scramble the data that traverses the connection. 
+- An intercepting party would only find something like static — random data that means nothing unless it is decrypted.
+- (SSH uses encryption methods that make decryption prohibitively difficult for outsiders.)
+
+The ability to tunnel: In networking, tunneling is a method for moving packets
+  across a network using a protocol or path they would not ordinarily be able to use. 
+- Tunneling works by wrapping data packets* with additional information — called headers — to change their destination. 
+- SSH tunnels use a technique called port forwarding to send packets from one machine to another. 
+- Port forwarding is explained in more detail below.
+
+*All data that crosses a network is broken down into smaller chunks; these chunks are called "packets."
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                                  How does SSH work?
+                                                 ===================
+
+TCP/IP
+- SSH runs on top of the TCP/IP protocol suite — which much of the Internet relies upon. 
+- TCP stands for Transmission Control Protocol and IP stands for Internet Protocol. 
+- TCP/IP pairs those two protocols in order to format, route, and deliver packets. 
+- IP indicates, among other information, which IP address a packet should
+   go to (think of a mailing address), while TCP indicates which port a packet
+   should go to at each IP address (think of the floor of a building or an apartment number).
+
+- TCP is a transport layer protocol: it is concerned with the transportation and delivery of data packets. 
+- Usually, additional protocols are used on top of TCP/IP in
+   order to put the transmitted data in a form that applications can use. 
+- SSH is one such protocol. (Other examples include HTTP, FTP, and SMTP.)
+_________________________________________________________________________________________________________________________________________________________________________
+                                                  Public key cryptography
+                                                 =========================
+- SSH is "secure" because it incorporates encryption and authentication via a process called public key cryptography. 
+- Public key cryptography is a way to encrypt data, or sign data, with two different keys. 
+- One of the keys, the public key, is available for anyone to use. The other key, the private key, is kept secret by its owner. 
+- Because the two keys correspond to each other, establishing
+   the key owner's identity requires possession of the private key that goes with the public key.
+
+- These "asymmetric" keys — so called because they have different
+   values — also make it possible for the two sides of the connection to negotiate identical,
+   shared symmetric keys for further encryption over the channel. 
+ 
+- Once this negotiation is complete, the two sides use the symmetric keys to encrypt the data they exchange.
+
+- In an SSH connection, both sides have a public/private key pair, and each side authenticates the other using these keys. 
+- This differentiates SSH from HTTPS, which in most
+   implementations only verifies the identity of the web server in a client-server connection. 
+
+- (Other differences include that HTTPS usually does not allow the client to access
+   the server's command line, and that firewalls sometimes block SSH but almost never block HTTPS.)
+
+Authentication
+- While public key cryptography authenticates the connected devices
+   in SSH, a properly secured computer will still require authentication from the person using SSH.
+- Often this takes the form of entering a username and password.
+
+- Once authentication is complete, the person can execute commands on the
+  remote machine as if they were doing so on their own local machine.
+_________________________________________________________________________________________________________________________________________________________________________
+                                             SSH tunneling, or 'port forwarding'
+                                             ===================================
+- Port forwarding is like forwarding a message between two people. 
+- Bob may send a message to Alice, who in turn passes it to Dave. 
+- Similarly, port forwarding sends data packets directed at an IP address and
+   port on one machine to an IP address and port on a different machine.
+
+
+- For example, imagine an administrator wants to make a change on a server inside
+   a private network they manage, and they want to do so from a remote location.
+- However, for security reasons, that server only receives data packets from other computers within the private network. 
+- The administrator could instead connect to a second server within 
+   the network — one that is open to receiving Internet traffic — 
+   and then use SSH port forwarding to connect to the first server.
+- From the first server's perspective, the administrator's data packets are coming from inside the private network.
+
+Using SSH
+- Linux and Mac operating systems come with SSH built in. 
+- Windows machines may need to have an SSH client application installed. 
+- On Mac and Linux computers, users can open the Terminal application and directly enter SSH commands.
+_________________________________________________________________________________________________________________________________________________________________________
+                                                 What is SSH used for?
+                                                 =====================
+- Technically, SSH can transmit any arbitrary data over a network,
+   and SSH tunneling can be set up for a myriad of purposes. 
+ 
+- However, the most common SSH use cases are:
+
+        - Remotely managing servers, infrastructure, and employee computers
+        - Securely transferring files (SSH is more secure than unencrypted protocols like FTP)
+        - Accessing services in the cloud without exposing a local machine's ports to the Internet
+        - Connecting remotely to services in a private network
+        - Bypassing firewall restrictions
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                                 What port does SSH use?
+                                                 =======================
+
+- Port 22 is the default port for SSH. Sometimes, firewalls may block
+   access to certain ports on servers behind the firewall, but leave port 22 open. 
+
+- SSH is therefore useful for accessing servers on the other side of the firewall:
+   packets directed to port 22 are not blocked, and can then be forwarded to any other port.
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                Are there any security risks associated with SSH?
+                                =================================================
+
+- Any protocol can be abused by malicious parties,
+   and SSH's encrypted nature and tunneling capabilities make it particularly appealing to attackers. 
+
+- SSH has been used in a number of documented attacks in order to extract 
+   private data, open backdoor routes into a secure network, and even gain root access on servers.
+
+Certain types of attacks can also steal SSH keys in order to access private computers and servers. 
+- In fact, SSH key management is a major security problem for large organizations, as their 
+   many servers may use thousands or even millions of keys, and tracking and updating those keys is close to impossible. 
+- Once an attacker gains a key, they may have persistent access for months or years.
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                How does SSH contrast with other protocols for tunneling?
+                                =========================================================
+- One of the main differences between SSH and other tunneling protocols is the OSI layer at which they operate. 
+- GRE, IP-in-IP, and IPsec are all network layer protocols. 
+- As such, they are not aware of ports (a transport layer concept), instead operating between IP addresses. 
+- (SSH's exact OSI layer is not strictly defined, but most sources describe it as a layer 7/application layer protocol.)
+
+- Another difference is SSH's use of TCP. TCP, as described above,
+   is a transport layer protocol, and one of the main ones used on the Internet. 
+- Another widely used transport layer protocol is UDP, the User Datagram Protocol.
+- UDP is a "best-effort" transport protocol — sending packets
+   without ensuring their delivery — which makes it faster but sometimes results in packet loss. 
+ 
+- Although TCP is slower than UDP, it guarantees delivery of all packets in order, and is therefore more reliable.
+
+IPsec exclusively uses UDP instead of TCP in order to enable IPsec packets to pass through firewalls. 
+Therefore, IPsec tunnels are typically faster than SSH tunnels, but can lose packets in transit.
+GRE and IP-in-IP can be used with either TCP or UDP.
+
+Finally, SSH only encrypts one application at a time, not all traffic going to and from a device. 
+This differentiates SSH from IPsec, which encrypts all network traffic, no matter which application it comes from. 
+For this reason, SSH is not used for setting up VPNs.
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                   How does Cloudflare Zero Trust make SSH more secure?
+                                   ====================================================
+- While SSH is in wide use, exposing a server's ports to the Internet is always risky. 
+- Cloudflare Zero Trust allows organizations to make their SSH servers available over the
+   Internet without the risk of opening those inbound ports.
+- The servers can be securely connected to the Cloudflare network.
+- Administrators and other users can then access the server through 
+  Cloudflare by installing a Cloudflare WARP client on their device; learn more here.
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                                  Using Public Key Authentication
+                                                  ===============================
+
+Public key authentication is more secure than password-based authentication.
+It uses a key pair (private and public keys) for authentication.
+
+ Step 1: 
+            - Generate an SSH Key Pair
+            On the client machine:
+            ````````````````````````````````````bash
+            ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+            ````````````````````````````````````
+            - `-t rsa`: Specifies the type of key (RSA).
+            - `-b 4096`: Specifies the key length (4096 bits for better security).
+            - `-C "your_email@example.com"`: Adds a comment to identify the key.
+
+            The command will generate two files:
+            - `~/.ssh/id_rsa`: Private key (keep this secure).
+            - `~/.ssh/id_rsa.pub`: Public key (to be shared with the server).
+
+Step 2: 
+            - Copy the Public Key to the Remote Server
+            ````````````````````````````````````bash
+            ssh-copy-id username@remote_ip_or_hostname
+            ````````````````````````````````````
+
+            Alternatively, you can manually copy the public key:
+            ````````````````````````````````````bash
+            cat ~/.ssh/id_rsa.pub | ssh username@remote_ip_or_hostname "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"
+            ````````````````````````````````````
+
+Step 3: 
+            Connect Using the SSH Key
+            Now you can connect without a password:
+            ````````````````````````````````````bash
+            ssh username@remote_ip_or_hostname
+            ````````````````````````````````````
+_________________________________________________________________________________________________________________________________________________________________________
+                                                    SSH Best Practices
+                                                    ==================
+
+1.Disable Root Login  
+            Edit `/etc/ssh/sshd_config` and set:
+            ````````````````````````````````````plaintext
+            PermitRootLogin no
+            ````````````````````````````````````
+
+2.Change the Default SSH Port  
+            Change the default port `22` to something else:
+            ````````````````````````````````````plaintext
+            Port 2222
+            ````````````````````````````````````
+
+3.Use SSH Keys Instead of Passwords  
+            Disable password authentication by setting:
+            ````````````````````````````````````plaintext
+            PasswordAuthentication no
+            ````````````````````````````````````
+
+4.Restrict User Access  
+            Use the `AllowUsers` or `DenyUsers` directive to control which users can log in via SSH:
+            ````````````````````````````````````plaintext
+            AllowUsers john admin
+            ````````````````````````````````````
+
+5.Enable Firewall Rules  
+            Ensure only the chosen SSH port is open:
+            ````````````````````````````````````bash
+            sudo ufw allow 2222/tcp
+            ````````````````````````````````````   
+_________________________________________________________________________________________________________________________________________________________________________
+                                           

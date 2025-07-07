@@ -1,0 +1,94 @@
+_______________________________________________________________________________________________________________________________
+                                      Man-in-the-Middle (MITM) Attack 
+
+ 1. What is a MITM Attack?  
+A Man-in-the-Middle (MITM) attack occurs when an attacker secretly intercepts
+ and alters communication between two parties without their knowledge.  
+
+ 📌 What Can an Attacker Do in a MITM Attack?
+✅ Eavesdrop on sensitive data (passwords, credit card details, emails).  
+✅ Modify messages before they reach the recipient.  
+✅ Impersonate one of the parties to steal credentials or inject malware.  
+
+----------------------------------------------------------------------------------------
+
+ 2. How Does a MITM Attack Work?  
+1. Interception – The attacker places themselves between two communicating parties.  
+2. Decryption (if needed) – The attacker bypasses encryption (e.g., using SSL stripping).  
+
+3. Manipulation – The attacker can alter or inject malicious content.  
+4. Data Theft – The victim unknowingly sends sensitive data to the attacker.  
+
+----------------------------------------------------------------------------------------
+
+ 3. Common Types of MITM Attacks  
+
+ 🔵 1. Network-Based Attacks (Local & Remote)
+ 🔹 a) ARP Spoofing (Local Network)
+- Exploits Address Resolution Protocol (ARP) to redirect traffic to the attacker.  
+- Common in public Wi-Fi and corporate networks.  
+- Example:  
+  - Attacker sends fake ARP replies to trick devices into thinking they are the router.  
+
+ 🔹 b) DNS Spoofing (Cache Poisoning)
+- The attacker poisons the victim’s DNS cache to redirect them to a fake website.  
+- Can steal login credentials by imitating real banking or email sites.  
+
+ 🔹 c) Wi-Fi Eavesdropping (Evil Twin Attack)
+- The attacker creates a fake Wi-Fi hotspot with a name similar to a legitimate one.  
+- Victims connect and unknowingly send their data to the attacker.  
+
+----------------------------------------------------------------------------------------
+
+ 🟠 2. HTTPS & Browser-Based Attacks
+ 🔹 a) SSL Stripping
+- Downgrades HTTPS to HTTP, forcing users to send data unencrypted.  
+- Tools like sslstrip can intercept login credentials.  
+
+ 🔹 b) Session Hijacking
+- Attacker steals session cookies (e.g., after login) to impersonate users.  
+- Can be done using packet sniffing or cross-site scripting (XSS).  
+
+ 🔹 c) Email & Chat Interception
+- MITM attackers can alter messages in real-time in apps like WhatsApp, Telegram, or email.  
+
+----------------------------------------------------------------------------------------
+
+ 4. Real-World Examples of MITM Attacks
+| Year | Attack             | Impact                                                      |
+| 2011 | Comodo Hack        | Fake SSL certificates issued for Google, Yahoo, Microsoft.  |
+| 2017 | KRACK Attack       | Exploited WPA2 Wi-Fi encryption.                            |
+| 2023 | EvilProxy Campaign | Used reverse proxies to bypass 2FA security.                |
+
+----------------------------------------------------------------------------------------
+
+ 5. How to Prevent MITM Attacks  
+
+ 🛡️ 1. Secure Your Network
+✅ Use Encrypted Connections (HTTPS, TLS 1.3) – Avoid HTTP sites.  
+✅ Disable ARP Broadcasting – Prevents ARP spoofing.  
+✅ Use DNSSEC (DNS Security Extensions) – Protects against DNS hijacking.  
+
+----------------------------------------------------------------------------------------
+
+ 🛡️ 2. Protect Against Wireless MITM
+✅ Avoid Public Wi-Fi – Use VPN if necessary.  
+✅ Use WPA3 Encryption – More secure than WPA2.  
+✅ Disable Automatic Wi-Fi Connection – Prevents "Evil Twin" attacks.  
+
+----------------------------------------------------------------------------------------
+
+ 🛡️ 3. Harden Web Security
+✅ HSTS (HTTP Strict Transport Security) – Forces HTTPS.  
+✅ Multi-Factor Authentication (MFA) – Protects against session hijacking.  
+✅ Cookie Security (Secure & HttpOnly Flags) – Prevents session theft.  
+
+----------------------------------------------------------------------------------------
+
+ 🛡️ 4. Detect MITM Attacks
+✅ Look for HTTPS Warnings – Never ignore browser security warnings.  
+✅ Use Intrusion Detection Systems (IDS) – Detects unusual ARP or DNS activity.  
+✅ Monitor Network Traffic – Use tools like Wireshark to spot anomalies.  
+
+----------------------------------------------------------------------------------------
+_______________________________________________________________________________________________________________________________

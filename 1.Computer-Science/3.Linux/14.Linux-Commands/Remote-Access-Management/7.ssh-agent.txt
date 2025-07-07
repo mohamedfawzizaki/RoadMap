@@ -1,0 +1,19 @@
+_________________________________________________________________________________________________________________________________________________________________________ 
+                                                     User Management
+                                                     ===============
+ _________________________________________________________________________________________________________________________________________________________________
+|      Command      |                     Example           |                            Description                                                                                                     
+|___________________|_______________________________________|_____________________________________________________________________________________________________
+|-------------------|---------------------------------------|----------------------------------------------------------------------------------------------------- 
+| ssh-agent         | ssh-agent bash                        | Starts the ssh-agent program in the background, initializing a new shell session with agent support.   
+| ssh-add           | ssh-add ~/.ssh/id_rsa                 | Adds a private key to the ssh-agent so it can be used for authentication.                                           
+| ssh-add -l        | ssh-add -l                            | Lists the fingerprints of the currently loaded keys in ssh-agent.                                                     
+| ssh-add -d        | ssh-add -d ~/.ssh/id_rsa              | Removes a specific private key from ssh-agent.                                                                         
+| ssh-add -D        | ssh-add -D                            | Removes all keys from ssh-agent.                                                                                        
+| ssh-agent -k      | ssh-agent -k                          | Kills the current ssh-agent process and terminates its environment.                                                   
+| ssh-agent -s      | ssh-agent -s                          | Starts the ssh-agent process and returns environment variables to be sourced.                                         
+| env | grep SSH    | env | grep SSH                        | Display environment variables set by ssh-agent (e.g., SSH_AUTH_SOCK, SSH_AGENT_PID).                             
+|___________________|_______________________________________|_____________________________________________________________________________________________________
+ 
+
+_________________________________________________________________________________________________________________________________________________________________________

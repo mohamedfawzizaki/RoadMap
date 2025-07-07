@@ -1,0 +1,41 @@
+# ================================================================================
+# 📘 ClusterRoleBinding: Grants cluster-wide access by binding subjects to a ClusterRole
+# --------------------------------------------------------------------------------
+# A ClusterRoleBinding binds a ClusterRole (cluster-wide permissions) to a subject:
+#   - User (external identity)
+#   - Group (from auth provider)
+#   - ServiceAccount (internal automation or workload)
+#
+# ✅ Used when you need access across all namespaces or to non-namespaced resources (e.g., nodes).
+# 🔐 Common for CI/CD systems, cluster admins, monitoring agents, etc.
+# ================================================================================
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: ci-clusterrolebinding                   # 🆔 Logical name
+subjects:
+  - kind: ServiceAccount                        # 👤 Can also be: User or Group
+    name: jenkins-sa                            # 🤖 ServiceAccount in a namespace
+    namespace: cicd                             # 🔁 Must be specified for ServiceAccounts
+roleRef:
+  kind: ClusterRole                             # 🔗 Binding to a cluster-wide role
+  name: ci-clusterrole                          # 🔐 Role must exist (see ClusterRole manifest)
+  apiGroup: rbac.authorization.k8s.io
+
+
+---
+
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: mon-clusterrolebinding                   # 🆔 Logical name
+subjects:
+  - kind: ServiceAccount
+    name: prometheus                            # 🧪 Name of ServiceAccount
+    namespace: monitoring                       # 🔁 Required for ServiceAccounts
+roleRef:
+  kind: ClusterRole                             # 🔗 Binding to a cluster-wide role
+  name: mon-clusterrole                          # 🔐 Role must exist (see ClusterRole manifest)
+  apiGroup: rbac.authorization.k8s.io

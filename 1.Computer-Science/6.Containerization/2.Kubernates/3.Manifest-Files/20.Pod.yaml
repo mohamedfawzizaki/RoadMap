@@ -1,0 +1,528 @@
+# ---------------------------------------------------------------------------------------------------------
+# Kubernetes Pod Manifest
+# ---------------------------------------------------------------------------------------------------------
+# PURPOSE:
+# - A Pod is the smallest deployable unit in Kubernetes.
+# - It encapsulates one or more containers that share storage, network, and a specification.
+# - Typically, pods are managed by higher-level controllers (like Deployments, ReplicaSets, etc.),
+#   but this manifest demonstrates how to create and run a single standalone pod manually.
+# ---------------------------------------------------------------------------------------------------------
+apiVersion: v1                      # Specifies the API version used to create the Pod object. 
+                                    # 'v1' is for core resources like Pods, Services, etc.
+kind: Pod                           # Defines the type of Kubernetes object; here, it’s a Pod.
+metadata:                           # Metadata provides identifying information about the object.
+  namespace: dev-environment        # The namespace this Pod belongs to. Useful for scoping and isolation.
+  name: my-enhanced-pod             # Unique name for the Pod within the namespace.
+  labels:                           # Key-value pairs used to organize, select, and filter Kubernetes objects.
+    app: myapp                      # Label identifying the application this Pod is part of.
+    tier: backend                   # Label specifying the application's tier (e.g., frontend, backend, db).
+  annotations:                      # Key-value pairs for storing arbitrary metadata that tools can use.
+    description: "This pod runs the backend service"  # Human-readable description of what the Pod does.
+    git-commit-sha: "a1b2c3d4"                        # Useful for tracking the Git commit related to this deployment.
+  finalizers:                                         # Prevents Kubernetes from deleting the object until these cleanup steps complete.
+    - foregroundDeletion.kubernetes.io                # Ensures child resources are deleted before the parent object.
+  ownerReferences:                                    # Defines what owns this object (for cascading deletion and UI hierarchy).
+    - apiVersion: apps/v1                             # API version of the owning object (typically a controller).
+      kind: Deployment                                # Kind of the owner object (e.g., Deployment, StatefulSet).
+      name: myapp-deployment                          # Name of the owning Deployment.
+      uid: 12345678-1234-1234-1234-123456789abc       # UID of the owner; must match exactly for Kubernetes to recognize the ownership.
+      controller: true                                # Marks this owner as the managing controller of the Pod.
+      blockOwnerDeletion: true                        # Prevents deletion of the owner until the Pod is deleted (adds safety in cascading deletions).
+spec:                                                 # Defines the desired behavior and configuration of the Pod.
+  #------------------------------------------------------------------------------------------------------------------------------
+  imagePullSecrets:
+    - name: regcred                                   
+    - name: another-registry-secret 
+    # Refers to a Secret containing credentials for a private container registry.                  
+    # Another Secret for authenticating to a different registry if needed.
+    # These secrets must be present in the same namespace as the Pod.
+    # you can put this secret in the service account manifest file.
+  serviceAccountName: my-app-service-account  
+    # Specifies which ServiceAccount this Pod uses for permissions (RBAC).
+    # Determines what actions the Pod can perform within the cluster (e.g., access secrets, list pods).
+    # If omitted, Kubernetes defaults to using the "default" ServiceAccount in the same namespace.
+  automountServiceAccountToken: true
+    # If true (default), the ServiceAccount’s token is automatically mounted as a volume inside the container.
+    # This is used for authenticating to the Kubernetes API from inside the Pod.
+    # Setting this to false is a security best practice when the API access is not needed.
+  restartPolicy: Always
+    # Controls the Pod’s restart behavior if a container fails:
+    # - Always: the container is always restarted (only valid for non-init containers).
+    # - OnFailure: restart only if it exits with a non-zero status.
+    # - Never: do not restart; the Pod will just fail.
+  terminationGracePeriodSeconds: 60
+    # The number of seconds Kubernetes waits before forcibly terminating the Pod after sending a SIGTERM signal.
+    # Gives the application time to perform graceful shutdown logic like closing DB connections or flushing logs.
+  activeDeadlineSeconds: 300
+    # The total lifespan of the Pod, in seconds. If this time elapses, the Pod is killed and marked as Failed.
+    # Useful for limiting job duration or ensuring cleanup of long-running Pods.
+  enableServiceLinks: true
+    # Automatically injects environment variables for each Service in the same namespace.
+    # E.g., `MY_SERVICE_SERVICE_HOST`, `MY_SERVICE_SERVICE_PORT`.
+    # Can be disabled for performance or to avoid env clutter.
+  priorityClassName: priorityClass-name
+    # Assigns a priority to this Pod which affects scheduling and eviction order.
+    # Pods with higher priority are scheduled before lower-priority ones, and are less likely to be evicted.
+    # Requires a PriorityClass object to be defined in the cluster.
+  #------------------------------------------------------------------------------------------------------------------------------
+  hostname: "my-custom-host" 
+    # Sets the Pod's hostname inside the container. This overrides the default hostname (which would be the Pod name).
+    # Useful when you want predictable hostnames for intra-Pod communication or logging.
+  subdomain: "app" 
+    # Used to construct a fully qualified domain name (FQDN) for the Pod.
+    # The complete FQDN becomes: my-custom-host.app.dev-environment.svc.cluster.local
+    # This is useful for enabling DNS-based service discovery within the cluster.
+    # It requires a **headless service** (with `clusterIP: None`) named `app` in the same namespace.
+  hostAliases: 
+    # Allows static hostname-to-IP address mappings to be added to the Pod's `/etc/hosts` file.
+    # This is helpful for local overrides, legacy systems, or development/testing without DNS changes.
+    - ip: "127.0.0.1"
+      hostnames:
+        - "foo.local"  # Maps foo.local to 127.0.0.1 inside the Pod
+        - "bar.local"  # Maps bar.local to 127.0.0.1 inside the Pod
+    - ip: "192.168.1.100"
+      hostnames:
+        - "db.internal"  # Maps db.internal to 192.168.1.100 inside the Pod
+  dnsPolicy: ClusterFirst 
+    # Controls how DNS is configured for the Pod:
+    # - ClusterFirst: Use cluster DNS first (CoreDNS), fallback to node's DNS.
+    # - Default: Use node’s DNS config without modification.
+    # - None: No DNS configuration by Kubernetes; rely entirely on `dnsConfig` (used for special cases).
+    # - ClusterFirstWithHostNet: Like ClusterFirst but used with `hostNetwork: true`.
+  dnsConfig: 
+    # Provides additional DNS configuration for the Pod; works with or overrides `dnsPolicy`.
+    # Commonly used when `dnsPolicy: None` is set to provide full custom DNS, or with ClusterFirst to augment it.
+    nameservers:
+      - 8.8.8.8  # Adds Google's public DNS server as a resolver.
+    searches:
+      - custom.svc.cluster.local  # Sets the search domain for short DNS names. This is appended to DNS queries.
+    options:
+      - name: ndots
+        value: "2" 
+        # Specifies how many dots ('.') must be in a name before it is considered FQDN.
+        # Lower value means more names are tried with the search domain appended.
+      - name: single-request-reopen
+        # Helps mitigate issues with DNS queries when using `glibc` with certain upstream nameservers.
+        # Forces resolver to use a single socket for A and AAAA queries, avoiding delays.
+  #------------------------------------------------------------------------------------------------------------------------------
+  # hostNetwork: true
+    # If true, the Pod will use the node's network namespace.
+    # This means the container can bind to the same network interfaces as the host.
+    # Use this if your container needs a static IP, or to bind to host ports.
+    # It disables DNS `ClusterFirst` policy unless explicitly set to `ClusterFirstWithHostNet`.
+
+  # hostPID: true
+    # If true, the Pod shares the host’s process ID namespace.
+    # Processes in the container can see (and potentially signal/kill) processes running on the host.
+    # Useful for debugging or monitoring host processes (e.g., via `ps`, `top`, `kill`).
+
+  # hostIPC: false
+    # If true, the Pod shares the host’s inter-process communication (IPC) namespace.
+    # Containers in the Pod can use shared memory (`/dev/shm`) with the host.
+    # Generally required only by applications that use shared memory or named semaphores across containers or with the host.
+
+  # shareProcessNamespace: false
+    # If true, all containers in the Pod share the same process namespace.
+    # This means containers can see and signal each other’s processes (like `ps aux` showing processes from other containers).
+    # Useful for tightly coupled multi-container applications (e.g., sidecar containers monitoring or interacting with app containers).
+  #------------------------------------------------------------------------------------------------------------------------------
+  # 🐧 Restricts scheduling to Linux-based nodes only
+  os:
+    name: linux   
+  # 📌 Basic node filtering based on labels (less expressive than affinity)
+  nodeSelector:  
+    # Matches nodes labeled with the OS type "linux"
+    kubernetes.io/os: linux  
+    # Matches any node with the "worker" role label (value is ignored)
+    node-role.kubernetes.io/worker: ""  
+  # 🎯 (Optional override) Schedule the Pod to a specific node by name — overrides affinity and nodeSelector
+  # nodeName: worker-node-01  
+
+  # 🔧 Advanced scheduling rules using Affinity/Anti-Affinity logic
+  affinity:  
+    # 🧭 Used to target nodes based on complex label expressions
+    nodeAffinity:  
+      # ❗ Hard constraint — must be true to schedule the Pod
+      requiredDuringSchedulingIgnoredDuringExecution:  
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/e2e-az-name  # Label to match (e.g., availability zone)
+                operator: In                    # Condition type — node must be in one of the listed values
+                values:
+                  - e2e-az1
+                  - e2e-az2
+
+    # 🤝 Prefer to schedule with other Pods (co-location)
+    podAffinity:  
+      # 💡 Soft rule — preferred but not enforced
+      preferredDuringSchedulingIgnoredDuringExecution:  
+        - weight: 100  # Higher weight = higher preference
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app: frontend  # Look for Pods with this label
+            topologyKey: "kubernetes.io/hostname"  # 🧩 Must be on the same node (same hostname) for this affinity to match
+
+    # 🚫 Prefer to avoid scheduling with other Pods (anti-co-location, e.g., for redundancy)
+    podAntiAffinity:  
+      # ❗ Hard constraint — Pod cannot be scheduled unless this is satisfied
+      requiredDuringSchedulingIgnoredDuringExecution: 
+        - labelSelector:
+            matchLabels:
+              app: frontend  # Avoid nodes already running Pods with this label
+          topologyKey: "kubernetes.io/hostname"  # Use the node hostname to define anti-affinity domain
+
+  # ✅ Let this Pod run on tainted nodes if it tolerates the taint
+  tolerations:  
+    - key: "dedicated"
+      operator: "Equal"      # Match must be exact (key and value)
+      value: "redis"
+      effect: "NoSchedule"   # ⚠️ Taint normally blocks scheduling; this toleration overrides that
+
+    - key: "maintenance"
+      operator: "Exists"     # Only the key must match — value doesn't matter
+      effect: "NoExecute"    # ⚠️ Without toleration, Pod would be evicted immediately
+      tolerationSeconds: 60  # ⏱ Pod will be evicted 60 seconds after taint is applied unless it is removed
+
+  #------------------------------------------------------------------------------------------------------------------------------
+  securityContext:
+    runAsUser: 1000           # 👤 All processes in the container will run with UID 1000
+    runAsGroup: 1000          # 👥 All processes will use GID 1000 as their primary group
+    runAsNonRoot: true        # ✅ Ensures the container won't start if runAsUser is root (UID 0), adds a layer of security
+    fsGroup: 2000             # 📁 Any volume mounted will be owned by this GID (e.g., useful for shared storage like PVCs)
+    seccompProfile:
+      type: RuntimeDefault    # 🔐 Enables default seccomp profile — restricts syscalls to a safe set
+    appArmorProfile:
+      type: RuntimeDefault    # 🛡️ Enables AppArmor with the default enforcement profile if supported by the host OS
+    supplementalGroups:       # ➕ Additional group IDs added to the container's process — used for volume/file permissions
+      - 3000
+      - 4000
+  #------------------------------------------------------------------------------------------------------------------------------
+  #------------------------------------------------------------------------------------------------------------------------------
+  initContainers:
+    - name: init-myservice
+      image: busybox:1.28
+      command: ['sh', '-c', "until nslookup myservice.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+      resources:
+        limits:
+          cpu: "100m"
+          memory: "64Mi"
+        requests:
+          cpu: "50m"
+          memory: "32Mi"
+    - name: init-mydb
+      image: busybox:1.28
+      command: ['sh', '-c', "until nslookup mydb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done"]
+      resources:
+        limits:
+          cpu: "100m"
+          memory: "64Mi"
+        requests:
+          cpu: "50m"
+          memory: "32Mi"
+  #------------------------------------------------------------------------------------------------------------------------------
+  #------------------------------------------------------------------------------------------------------------------------------
+  containers:
+    - name: my-container                    # 🏷️ Unique name for this container within the pod
+      image: registry.example.com/myimage:tag # 📦 Full image reference including registry and tag
+                                            # Example: nginx:1.25.3 or custom image
+      imagePullPolicy: IfNotPresent         # 🔄 Policy for pulling image from registry:
+  #------------------------------------------------------------------------------------------------------------------------------
+                                            # - Always: Pull every time pod starts
+                                            # - IfNotPresent: Pull only if not already cached (recommended for fixed tags)
+                                            # - Never: Use only local image
+      workingDir: /usr/src/app              # 📁 Default working directory for the container processes
+      command: ["nginx"]                    # 🏁 Overrides ENTRYPOINT in the Docker image
+                                            # Specifies what binary/executable to run
+      args: ["-g", "daemon off;"]           # 🧩 Overrides CMD in the Docker image
+                                            # Passes arguments to the `nginx` command
+  #------------------------------------------------------------------------------------------------------------------------------
+      # stdin: true                         # 📥 Allocates a buffer for `stdin`. Required for interactive debugging.
+      # stdinOnce: true                     # 📥🔒 Close stdin after first attach (used with `stdin`)
+      # tty: true                           # 🖥️ Allocate a TTY (interactive shell). Required for terminal-based tools.
+  #------------------------------------------------------------------------------------------------------------------------------
+      ports:
+        - name: http                        # 🌐 Name of the port (used by Services for targeting)
+          containerPort: 80                 # 📌 Internal container port to expose
+          protocol: TCP                     # 📡 Transport protocol (TCP is default; can be UDP/SCTP)
+          # hostPort: 80                    # 🌍 Expose this container port directly on the host (not recommended unless needed)
+          # hostIP: 0.0.0.0                 # 🔗 Host IP to bind to if `hostPort` is specified (rarely needed)
+  #------------------------------------------------------------------------------------------------------------------------------
+      resources:
+        requests:                           # 🧢 Guaranteed minimum resources for container scheduling
+          memory: "64Mi"                    # Minimum 64MiB of RAM will be reserved
+          cpu: "250m"                       # 250 millicores (0.25 CPU) will be reserved
+        limits:                             # 🚦 Maximum allowed resources the container can consume
+          memory: "128Mi"                   # Up to 128MiB of RAM
+          cpu: "500m"                       # Up to 500 millicores (0.5 CPU)
+  #------------------------------------------------------------------------------------------------------------------------------
+      # The env field allows you to inject environment variables into containers.
+      env:
+        # Static Value
+        - name: LOG_LEVEL                   # 📛 Name of the environment variable
+          value: "debug"                    # 📥 Hardcoded static value (simple key-value)
+
+        # From ConfigMap (single key)
+        - name: CONFIG_ENV                  # 📛 Name of env variable to inject from ConfigMap
+          valueFrom:                        # 📦 Use dynamic source instead of hardcoded value
+            configMapKeyRef:                # 🎯 Refers to a specific key from a ConfigMap
+              name: app-config              # 🧾 ConfigMap name (must exist in same namespace)
+              key: ENV                      # 🔑 Specific key in the ConfigMap
+              optional: false               # ❗ If false and key is missing, pod will fail to start
+
+        # From Secret (single key)
+        - name: DB_PASSWORD                 # 🔐 Store secrets securely using env vars
+          valueFrom:
+            secretKeyRef:
+              name: db-secret               # 🗝️ Secret name
+              key: password                 # 🔐 Specific key in that secret (e.g., password)
+              optional: false               # ❗ Must be present, otherwise pod fails to start
+
+        # From Pod Fields (fieldRef)
+        - name: POD_NAME                    # 🔄 Populate with Pod’s own metadata
+          valueFrom:
+            fieldRef:                       # 🧭 Uses a special field from pod metadata/status
+              fieldPath: metadata.name      # 🧾 e.g., pod name, namespace, labels, etc.
+
+        # From Resource Requests/Limits
+        - name: CPU_LIMIT                   # 💡 Get container’s declared CPU limit as env var
+          valueFrom:
+            resourceFieldRef:               # 📊 Access container resource (e.g., cpu/memory)
+              resource: limits.cpu          # 🔧 Pull value from resource limits (e.g., cpu, memory)
+
+  #------------------------------------------------------------------------------------------------------------------------------
+      envFrom:
+        # Import all key-values from a ConfigMap
+        - configMapRef:
+            name: my-config                 # 🧾 Inject all entries from this ConfigMap as env vars
+
+        # Import all key-values from a Secret
+        - secretRef:
+            name: my-secret                 # 🔐 Inject all key-values from Secret as env vars
+
+        # Import all key-values with prefix
+        - configMapRef:
+            name: prefixed-config           # 🧾 Same as above but applies a prefix
+          prefix: APP_                      # 🏷️ All keys become APP_<KEY>, e.g., APP_DB_HOST
+
+  #------------------------------------------------------------------------------------------------------------------------------
+      lifecycle:
+        postStart:                          # 📌 Hook that runs immediately *after* the container starts, but *before* the main command (e.g., CMD/ENTRYPOINT)
+          exec:                             # 🛠 Executes a command inside the container
+            command: ["/bin/sh", "-c", "echo Hello from postStart > /usr/share/message"]
+                                            # 🧾 Writes a message to a file to signal startup success or for debugging/logging
+          sleep:
+            seconds: 10                     # 💤 Sleep action after the exec runs (custom SleepAction, non-standard in most production clusters)
+        preStop:                            # 📌 Hook that runs right *before* the container is terminated (useful for graceful shutdown)
+          exec:
+            command: ["/bin/sh", "-c", "sleep 5"]
+                                            # ⏱ Waits 5 seconds to simulate cleanup or shutdown delay (e.g., closing DB connections, flushing logs)
+      stopSignal: "SIGTERM"                 # 🚦 Tells the container runtime which signal to send for graceful termination (e.g., SIGTERM, SIGINT)
+                                            # Overrides the default signal (typically SIGTERM) sent to PID 1 inside the container.
+                                            # Must be supported by container runtime and only applies if `spec.os.name` is set.
+      terminationMessagePath: "/dev/termination-log"
+                                            # 📄 File path where Kubernetes writes termination messages (e.g., exit reason, app logs)
+                                            # Limited to 4KiB per container; default is `/dev/termination-log`.
+      terminationMessagePolicy: "FallbackToLogsOnError"
+                                            # 📋 How Kubernetes should populate the termination message:
+                                            # - `File`: uses only the contents of `terminationMessagePath`.
+                                            # - `FallbackToLogsOnError`: if the termination message file is empty and the container exits with an error,
+                                            #   it grabs the last ~2KB or 80 lines of logs to help diagnose failures.
+  #------------------------------------------------------------------------------------------------------------------------------
+                          #   you can not declare more than one handler in the same probe.
+      startupProbe:                         # 🔄 Initial probe to determine when the application has fully started.
+                                            # Only after it succeeds will liveness/readiness probes start running.
+        tcpSocket:                          # ✅ Uses TCP socket check to see if the app is listening on a port.
+          port: 80                          # 📍 Port to check. Success = connection established.
+        failureThreshold: 30                # ❌ If the check fails 30 times consecutively...
+        periodSeconds: 10                   # 🕒 ...and it checks every 10s...
+                                            # ➡ It allows the app up to 5 minutes (30 × 10s) to start before restarting the container.
+      livenessProbe:                        # ❤️‍🔥 Checks if the app is alive (not deadlocked, stuck, or hung).
+                                            # If this fails, the container is killed and restarted.
+        httpGet:                            # 🌐 Probes via HTTP GET request.
+          scheme: HTTP                      # 🔗 Use HTTP (can also be HTTPS).
+          host: localhost                   # 🖥 Probes `localhost` inside the container. (defaults to Pod IP if omitted)
+          path: /healthz                    # 📥 Path to probe; app must serve this endpoint for the probe to succeed.
+          port: 80                          # 📍 Port to probe on.
+          httpHeaders:                      # 📄 Optional custom HTTP headers
+            - name: Custom-Header
+              value: Awesome
+        initialDelaySeconds: 10             # ⏱ Wait 10 seconds after container starts before the first probe.
+        periodSeconds: 5                    # 🔁 Probe every 5 seconds.
+        timeoutSeconds: 2                   # ⌛ Fail the probe if no response within 2 seconds.
+        failureThreshold: 3                 # ❌ If 3 consecutive failures occur, container is restarted.
+        successThreshold: 1                 # ✅ Only 1 successful response is needed to consider it "live".
+      readinessProbe:                       # 🟢 Checks if the app is ready to serve requests.
+                                            # If this fails, the container is removed from service endpoints but not restarted.
+        exec:                               # 🖥 Executes a command inside the container.
+          command: ["cat", "/tmp/ready"]    # 📄 Checks for presence/content of `/tmp/ready`; success if exit code = 0.
+        initialDelaySeconds: 5              # ⏱ Wait 5 seconds after container starts before checking.
+        periodSeconds: 10                   # 🔁 Probe every 10 seconds.
+        failureThreshold: 3                 # ❌ After 3 consecutive failures, container marked unready (removed from service).
+  #------------------------------------------------------------------------------------------------------------------------------
+      volumeMounts:
+        - name: data-volume                 # 🔗 The name of the Volume to mount (must match a volume declared in the `volumes:` section of the Pod spec)
+          mountPath: /app/data              # 📁 Path inside the container where the volume will be mounted
+          readOnly: true                    # 🔒 If true, the container will only have read access to the mounted volume
+          subPath: logs                     # 📂 Only the `logs` sub-directory inside the volume is mounted to /app/data (instead of the full volume)
+                                            # Useful when sharing a volume across containers but each only needs access to a specific sub-path
+      volumeDevices:
+        - name: block-volume                # 📦 Name of a volume that references a PersistentVolumeClaim with volumeMode: Block (i.e., raw block device)
+          devicePath: /dev/xvda             # 💽 The device path inside the container where the block device will appear (like a physical disk)
+                                            # The container is expected to handle the raw block device directly (e.g., mount it, format it, etc.)
+  volumes:
+  # ---------------------------------------------------------------------------------------------------------
+  # 1. emptyDir (RAM-backed Temporary Storage)
+  # ---------------------------------------------------------------------------------------------------------
+  # - Creates a temporary directory that exists as long as the Pod runs.
+  # - Default: Disk-backed; can be made RAM-backed via `medium: Memory` (tmpfs).
+  # - Shared across all containers in the Pod.
+  # - Use Cases: cache, scratch space, intermediate build artifacts.
+  - name: cache
+    # emptyDir: {}           # Disk-backed scratch space, (default) uses disk 
+    emptyDir:
+      medium: Memory         # Uses tmpfs (RAM). Faster than disk, automatically deleted with Pod.
+      sizeLimit: "64Mi"      # Optional size limit to prevent memory overuse (esp. on Memory medium)
+  # ---------------------------------------------------------------------------------------------------------
+  # 2. hostPath (Access Host Node's File System)
+  # ---------------------------------------------------------------------------------------------------------
+  # - Mounts a file or directory from the underlying host into the container.
+  # - Powerful and dangerous — can expose host internals.
+  # - Use Cases: system-level tools, log scraping, diagnostics, privileged apps.
+  - name: host-logs
+    hostPath:
+      path: /var/log          # Absolute path on the host node's file system.
+      type: Directory         # Ensures path exists and is a directory.
+                              # Other options include: DirectoryOrCreate, File, Socket, BlockDevice, etc.
+  # ---------------------------------------------------------------------------------------------------------
+  # 3. local (Node-specific, high-performance disk)
+  # ---------------------------------------------------------------------------------------------------------
+  # - Mounts a local disk that is physically attached to the node.
+  # - Node-affinity: Pod must run on the same node that owns the disk.
+  # - Use Cases: databases, log processing, low-latency access to local SSDs.
+  - name: local-storage
+    local:
+      path: /mnt/disks/ssd1   # Path to the mounted SSD or other local disk.
+  # ---------------------------------------------------------------------------------------------------------
+  # 4. configMap (Inject Configuration Files)
+  # ---------------------------------------------------------------------------------------------------------
+  # - Mounts data from a ConfigMap as files in the container.
+  # - Use Cases: application configuration (YAML, JSON, ENV files), runtime flags, settings.
+  - name: config-volume
+    configMap:
+      name: app-config        # Name of the ConfigMap in the same namespace.
+  # ---------------------------------------------------------------------------------------------------------
+  # 5. secret (Inject Sensitive Data as Files)
+  # ---------------------------------------------------------------------------------------------------------
+  # - Mounts data from a Secret as files (base64 decoded).
+  # - Data is read-only and secure (in-memory, not written to disk).
+  # - Use Cases: passwords, API keys, TLS certs, tokens.
+  - name: secret-volume
+    secret:
+      secretName: app-secret  # Must be an existing Secret.
+  # ---------------------------------------------------------------------------------------------------------
+  # 6. downwardAPI (Expose Pod Metadata to the Container)
+  # ---------------------------------------------------------------------------------------------------------
+  # - Injects runtime data about the Pod (e.g., labels, annotations, name).
+  # - Available as mounted files (vs. env vars).
+  # - Use Cases: telemetry, debugging, logging context, dynamic behavior based on labels.
+  - name: podinfo
+    downwardAPI:
+      items:
+        - path: "labels"             # File inside the container: /etc/podinfo/labels
+          fieldRef:
+            fieldPath: metadata.labels  # Injects all Pod labels as JSON-formatted string.
+  # ---------------------------------------------------------------------------------------------------------
+  # 7. persistentVolumeClaim (Bind to PersistentVolume via PVC)
+  # ---------------------------------------------------------------------------------------------------------
+  # - Attaches persistent storage provisioned via a PersistentVolumeClaim (PVC).
+  # - PVC must be created beforehand and reference a suitable StorageClass.
+  # - Use Cases: databases, file uploads, stateful applications.
+  - name: my-pvc
+    persistentVolumeClaim:
+      claimName: my-pvc-claim   # PVC name in the same namespace.
+      readOnly: false           # Can be true for safety if no writes are required.
+  # ---------------------------------------------------------------------------------------------------------
+  # 8. nfs (Network File System Volume)
+  # ---------------------------------------------------------------------------------------------------------
+  # - Mounts an NFS export from a remote server.
+  # - Shared storage accessible across Pods and even nodes.
+  # - Use Cases: legacy storage, shared home directories, team-shared volumes.
+  - name: nfs-storage
+    nfs:
+      server: 192.168.1.100     # Hostname or IP of the NFS server.
+      path: /exports/website    # NFS export path.
+      readOnly: false           # Default is read-write access.
+  # ---------------------------------------------------------------------------------------------------------
+  # 9. ephemeral (Inline Dynamic PVC created per Pod)
+  # ---------------------------------------------------------------------------------------------------------
+  # - Introduced in Kubernetes 1.21 as a way to create throwaway PVCs inline in Pod specs.
+  # - Automatically deleted with the Pod.
+  # - Combines PVC + volume definition without pre-creating PVC manually.
+  # - Use Cases: CI jobs, temporary uploads, short-lived stateful apps.
+  - name: ephemeral-vol
+    ephemeral:
+      volumeClaimTemplate:
+        metadata:
+          name: ephemeral-vol
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 1Gi     # Size of the temporary volume
+  # ---------------------------------------------------------------------------------------------------------
+  # 10. projected (Combine Secret, ConfigMap, Downward API, ServiceAccountToken)
+  # ---------------------------------------------------------------------------------------------------------
+  # - Mounts multiple volume sources into a single volume.
+  # - Reduces volume sprawl by aggregating secrets, configMaps, pod metadata, and tokens.
+  # - Use Cases: complex app config, injected auth tokens, runtime context.
+  - name: all-in-one
+    projected:
+      defaultMode: 0444         # Read-only permissions (octal); can be changed.
+      sources:
+        # -- Injects secret data as files inside container --
+        - secret:
+            name: my-secret
+            items:
+              - key: username
+                path: credentials/username.txt
+              - key: password
+                path: credentials/password.txt
+            optional: false     # Fail pod if the Secret or keys don't exist
+        # -- Injects configMap data as files --
+        - configMap:
+            name: my-config
+            items:
+              - key: config.yaml
+                path: config/settings.yaml
+            optional: false
+        # -- Injects Pod metadata (name, namespace) --
+        - downwardAPI:
+            items:
+              - path: pod-name.txt
+                fieldRef:
+                  fieldPath: metadata.name
+              - path: pod-namespace.txt
+                fieldRef:
+                  fieldPath: metadata.namespace
+        # -- Injects service account token as file (used for API authentication) --
+        - serviceAccountToken:
+            path: sa-token/token.jwt      # File path where token will be written
+            audience: example-api         # Token is intended for this API (aud claim)
+            expirationSeconds: 3600       # Token TTL; kubelet will auto-rotate
+
+
+    # | Type                    | Backed By        | Persist? | Use Case                            |
+    # | ----------------------- | ---------------- | -------- | ----------------------------------- |
+    # | `emptyDir`              | RAM/Disk         | No       | Scratch, sharing between containers |
+    # | `hostPath`              | Node filesystem  | No       | Access node resources               |
+    # | `configMap`             | K8s ConfigMap    | No       | App configs                         |
+    # | `secret`                | K8s Secret       | No       | Secure data                         |
+    # | `downwardAPI`           | Pod metadata     | No       | Monitoring, annotations             |
+    # | `projected`             | Multiple sources | No       | Composite config                    |
+    # | `persistentVolumeClaim` | External storage | Yes      | Databases, uploads                  |
+    # | `nfs`                   | NFS server       | Yes      | Shared storage                      |
+    # | `csi`                   | CSI driver       | Yes      | Cloud/on-prem storage               |
+    # | `ephemeral`             | Inline PVC       | No       | Scratch space with PVC capabilities |
+
+  #------------------------------------------------------------------------------------------------------------------------------

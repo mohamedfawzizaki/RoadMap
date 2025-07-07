@@ -1,0 +1,65 @@
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                                     Process Management 
+                                                     ==================
+ _____________________________________________________________________________________________________________________________________________________
+|       Command          |                        Example                 |                                        Usage                              |
+|________________________|________________________________________________|___________________________________________________________________________|
+|  ps                    |   ps aux                                       | Display information about running processes.                              |
+|  ps                    |   ps aux`                                      | Displays a snapshot of all running processes with detailed information (user, CPU usage, etc.). |
+|  ps                    |   ps -eo pid,%cpu,command --sort=-%cpu`        | Lists processes sorted by CPU usage.                                      |                         
+|  ps                    |   ps -fp $(cat /var/run/nginx.pid)             | Display information about processes by its id.                                      |                         
+|________________________|________________________________________________|___________________________________________________________________________|
+|  top                   |   top                                          | Interactive real-time view of system processes.                           |
+|  htop                  |   htop                                         | Interactive process viewer with user-friendly interface.                  |
+|  pstree                |   pstree                                       | Display a tree of processes, showing parent-child relationships.          |
+|  cat /proc/{PID}/status|   cat /proc/1234/status                        | Display detailed status information about a specific process.             |
+|  lsof                  |   lsof -p 1234                                 | List open files by a process.
+|  lsof                  |   lsof -i :80                                  | find out which process is occupying port 80;
+|                        |   sudo netstat -tulnp | grep ':80'
+|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+|  pgrep                 |   pgrep -u username sshd                       | Search for processes by name or attributes.                               |
+|  pidof                 |   pidof apache2                                | Find the process ID (PID) of a running program.                           |
+|  [Command]  $$         |   vi $$                                        | to get the PID of the current process.                                    |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+|  kill                  |   kill    -9 1234                              | Send a signal (e.g., terminate) to a process by PID.                      |
+|  pkill                 |   pkill   -9 apache2                           | Kill processes by name (supports signal options).                         |
+|  killall               |   killall -9 apache2                           | Kill all processes by name.                                               |
+|  CTRL + C              |   (Press)                                      | Interrupt and terminate the current foreground process.                   |
+                            sudo kill -QUIT <PID>
+                            sudo kill -HUP  <PID>
+                            sudo kill -TERM <PID>
+|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+|  nice                  |   nice -n 10 ./script.sh                       | Start a process with a specific priority (niceness value).                |
+|  renice                |   renice -n 5 -p 1234                          | Change the priority of a running process.                                 |
+|  pidwatch        	     |   pidwatch -n 5 1234	                          | Monitor a process and notify when it terminates or changes state.
+|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+|  jobs                  |   jobs                                         | List active jobs in the current session.                                  |
+|  bg                    |   bg %1                                        | Resume a suspended job in the background.                                 |
+|  fg                    |   fg %1                                        | Bring a background job to the foreground.                                 |
+|  CTRL + Z              |   (Press)                                      | Suspend the current foreground job.                                       |
+|  [Command]  &          |   vi &                                         | to run the process in the background.                                     |
+|  [Command]  $$         |   vi $$                                        | to get the PID of the current process.                                    |
+|  disown                |   disown -h %1                                 | Remove jobs from the shell's job table, preventing SIGHUP signal.         |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+|  fork                  |   (Programmatic) fork()                        | Create a new child process (used in programming).                         |
+|  exec                  |   exec ls                                      | Replace the current shell process with the specified command.             |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+|  nohup                 |   nohup ./script.sh &                          | Run a command immune to hangups, with output to a file.                   |
+|  watch                 |   watch -n 5 'ps aux | grep apache2'           | Run a command repeatedly at a specified interval.                         |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+|  systemctl             |   systemctl status apache2                     | Manage system services (start, stop, restart, enable, disable).           |
+|  service               |   service apache2 restart                      | Start, stop, restart, or check the status of services.                    |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+|  uptime                |   uptime                                       | Display system uptime and load averages.                                  |
+|  vmstat                |   vmstat 5                                     | Report system performance statistics.                                     |
+|  iostat                |   iostat -x 5                                  | Display CPU and I/O statistics.                                           |
+|  dstat                 |   dstat                                        | Display CPU, memory, disk, network, and other statistics in real time.    |
+|  free                  |   free -h                                      | Display memory usage (in human-readable format).                          |
+|  pidstat               |   pidstat -p 1234 5                            | Monitor individual process statistics over time.                          |
+|  pmap                  |   pmap -x 1234                                 | Display memory map of a process.                                          |
+|  mpstat                |   mpstat -P ALL 5                              | Display CPU usage per processor.                                          |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+|  strace                |   strace -p 1234                               | Trace system calls made by a process.                                     |
+|________________________|________________________________________________|___________________________________________________________________________|
+
+#_________________________________________________________________________________________________________________________________________________________________________# 

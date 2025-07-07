@@ -1,0 +1,18 @@
+_________________________________________________________________________________________________________________________________________________________________________ 
+                                                     User Management
+                                                     ===============
+ ___________________________________________________________________________________________________________________________________________________
+|    Option    |           Example                 |                           Description                                                                  
+|______________|___________________________________|________________________________________________________________________________________________
+|--------------|-----------------------------------|------------------------------------------------------------------------------------------------
+| -l           | ssh-add -l                        | List fingerprints of all identities currently loaded in the agent.              
+| -L           | ssh-add -L                        | Display public keys of all identities currently loaded in the agent.            
+| -d           | ssh-add -d ~/.ssh/id_rsa          | Remove a specific identity from the agent.                                       
+| -D           | ssh-add -D                        | Remove all identities from the agent.                                            
+| -t           | ssh-add -t 3600 ~/.ssh/id_rsa     | Add a key to the agent with a specified expiration time (in seconds).            
+| -k           | ssh-add -k ~/.ssh/id_rsa          | Add a key and use a key with an option to specify whether to allow a key with an expiry date.  
+| -v           | ssh-add -v                        | Show verbose output when adding keys.                                            
+| -h           | ssh-add -h                        | Display help message about usage and options for ssh-add.                      
+|______________|___________________________________|________________________________________________________________________________________________
+ 
+_________________________________________________________________________________________________________________________________________________________________________ 

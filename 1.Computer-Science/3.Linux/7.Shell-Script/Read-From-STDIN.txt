@@ -1,0 +1,209 @@
+____________________________________________________________________________________________________________________________________________________________
+                                                    Reading from stdin
+                                                    ==================
+In Linux and shell scripting, reading from stdin (standard input) allows a
+ script or command to accept input from the user, a file, or even another command. 
+ 
+This is commonly done using the `read` command or through redirection and pipelines.
+
+________________________________________________________________________________________________________________________________
+                                                 Using `read` to Capture Input
+                                                 =============================
+
+The `read` command reads a single line of input from stdin and assigns it to one or more variables.
+
+Syntax
+        ``````````````````````````````````````````bash
+        read [options] variable_name
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                    Options for `read`
+                                                    ==================
+                   _____________________________________________________________________________________
+                  |    Option   |                            Description                                |
+                  |_____________|_______________________________________________________________________|
+                  | `-p`        | Displays a prompt to the user before waiting for input.               |
+                  | `-s`        | Hides input (useful for passwords).                                   |
+                  | `-t`        | Sets a timeout in seconds for waiting for input.                      |
+                  | `-n`        | Reads only a specific number of characters.                           |
+                  | `-r`        | Disables backslash (`\`) interpretation, which is enabled by default. |
+                  | `-a`        | Assigns words read from stdin to an array.                            |
+                  |_____________|_______________________________________________________________________|
+
+________________________________________________________________________________________________________________________________
+                                                Examples of Reading from stdin
+                                                ==============================
+
+1. Basic Input
+        ``````````````````````````````````````````bash
+        #!/bin/bash
+        echo "Enter your name:"
+        read name
+        echo "Hello, $name!"
+        ``````````````````````````````````````````
+
+- Usage:
+        ``````````````````````````````````````````bash
+        ./script.sh
+        ``````````````````````````````````````````
+  Output:
+        ``````````````````````````````````````````
+        Enter your name:
+        John
+        Hello, John!
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                               2. Reading Input with a Prompt
+                                               ==============================
+      ``````````````````````````````````````````bash
+      #!/bin/bash
+      read -p "Enter your age: " age
+      echo "Your age is $age."
+      ``````````````````````````````````````````
+
+- Usage:
+      ``````````````````````````````````````````bash
+      ./script.sh
+      ``````````````````````````````````````````
+  Output:
+      ``````````````````````````````````````````
+      Enter your age: 25
+      Your age is 25.
+      ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                3. Hiding Input (Password Input)
+                                                ================================
+      ``````````````````````````````````````````bash
+      #!/bin/bash
+      read -s -p "Enter your password: " password
+      echo
+      echo "Password is saved."
+      ``````````````````````````````````````````
+
+- Usage:
+      ``````````````````````````````````````````bash
+      ./script.sh
+      ``````````````````````````````````````````
+  Output:
+      ``````````````````````````````````````````
+      Enter your password: 
+      Password is saved.
+      ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                4. Reading Input with a Timeout
+                                                ===============================
+      ``````````````````````````````````````````bash
+      #!/bin/bash
+      if read -t 5 -p "Enter something within 5 seconds: " input; then
+          echo "You entered: $input"
+      else
+          echo "Timeout!"
+      fi
+      ``````````````````````````````````````````
+
+- Usage:
+      ``````````````````````````````````````````bash
+      ./script.sh
+      ``````````````````````````````````````````
+  Output:
+      ``````````````````````````````````````````
+      Enter something within 5 seconds: Hello
+      You entered: Hello
+      ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                5. Reading Input into an Array
+                                                ==============================
+      ``````````````````````````````````````````bash
+      #!/bin/bash
+      echo "Enter multiple words:"
+      read -a words
+      echo "You entered: ${words[@]}"
+      ``````````````````````````````````````````
+
+- Usage:
+      ``````````````````````````````````````````bash
+      ./script.sh
+      ``````````````````````````````````````````
+  Output:
+      ``````````````````````````````````````````
+      Enter multiple words:
+      Linux Shell Scripting
+      You entered: Linux Shell Scripting
+      ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                Reading Input from a File
+                                                =========================
+
+You can use input redirection (`<`) to read from a file.
+
+Example
+      ``````````````````````````````````````````bash
+      #!/bin/bash
+      while read line; do
+          echo "Line: $line"
+      done < file.txt
+      ``````````````````````````````````````````
+
+- Usage:
+  Assuming `file.txt` contains:
+      ``````````````````````````````````````````
+      Hello
+      World
+      ``````````````````````````````````````````
+  Output:
+      ``````````````````````````````````````````
+      Line: Hello
+      Line: World
+      ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                Reading Input from a Pipeline
+                                                =============================
+
+Input can be piped into a script or command.
+
+Example
+      ``````````````````````````````````````````bash
+      #!/bin/bash
+      while read line; do
+          echo "Received: $line"
+      done
+      ``````````````````````````````````````````
+
+- Usage:
+      ``````````````````````````````````````````bash
+      echo "Hello from pipeline" | ./script.sh
+      ``````````````````````````````````````````
+  Output:
+      ``````````````````````````````````````````
+      Received: Hello from pipeline
+      ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                Best Practices
+                                                ==============
+
+1. Validate Input:
+   - Ensure user input matches expected formats.
+   - Example:
+          ``````````````````````````````````````````bash
+          if [[ $age =~ ^[0-9]+$ ]]; then
+              echo "Valid age: $age"
+          else
+              echo "Invalid input."
+          fi
+          ``````````````````````````````````````````
+
+2. Handle Timeouts Gracefully:
+   - Use `-t` for time-sensitive scripts and provide appropriate fallback behavior.
+
+3. Combine with `case` or `if`:
+   - Handle different inputs dynamically.
+
+________________________________________________________________________________________________________________________________

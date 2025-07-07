@@ -1,0 +1,161 @@
+_______________________________________________________________________________________________________________________________________
+                                             OSI Model (Open Systems Interconnection Model)
+                                             https://aws.amazon.com/what-is/osi-model/
+                                             ==============================================
+
+The OSI (Open Systems Interconnection) model is a conceptual framework used to understand network interactions in seven layers.
+The OSI model helps in standardizing and explaining how different network protocols
+ interact and work together to provide communication between devices on a network.
+ 
+The model was developed by the International Organization for Standardization (ISO) in the 1980s.
+
+Each of the seven layers has specific functions, and each layer communicates with the layers directly above and below it.
+
+Here's a detailed breakdown of each layer:
+---------------------------------------------------------------------------------------------------------
+1.Physical Layer (Layer 1)
+
+- Purpose: The Physical layer is responsible for the physical connection between devices on a network.
+           It defines the hardware elements involved in the transmission and reception of data.
+           This includes cables, switches, network cards, and electrical signals.
+- Functionality:
+  - Transmission of raw bitstreams over a physical
+     medium (e.g., electrical impulses over copper cables or light pulses over fiber-optic cables).
+  
+  - Defines the physical properties of the network, such as voltage levels, timing, and the layout of physical connections.
+  - Handles the bit-level transmission between devices.
+  - Specifies the type of cables, connectors, and network interface cards (NICs).
+
+- Examples of Technologies:
+  - Ethernet cables (Cat5e, Cat6, fiber-optic cables).
+  - Wi-Fi (wireless transmission).
+  - Modems, repeaters, and network interface cards (NICs).
+
+---------------------------------------------------------------------------------------------------------
+2.Data Link Layer (Layer 2)
+
+- Purpose: The Data Link layer is responsible for error detection and correction 
+            and ensuring reliable data transfer across the physical network link.
+           It packages the raw bits into frames and handles communication between devices on the same network.
+
+- Functionality:
+  - Organizes bits into frames for transmission.
+  - Provides MAC (Media Access Control) addressing to uniquely identify devices within the same network.
+  - Error detection and correction using CRC (Cyclic Redundancy Check) and checks for any data transmission errors.
+  - Flow control to manage the rate of data transmission and prevent congestion.
+  - Ensures data is sent correctly between devices on the same network.
+
+- Examples of Technologies:
+  - Ethernet (IEEE 802.3).
+  - Wi-Fi (IEEE 802.11).
+  - PPP (Point-to-Point Protocol), Frame Relay, ATM (Asynchronous Transfer Mode).
+---------------------------------------------------------------------------------------------------------
+3.Network Layer (Layer 3)
+
+- Purpose: The Network layer is responsible for routing data across different networks.
+           It manages logical addressing and packet forwarding to ensure data reaches its destination across multiple hops,
+            especially when networks are interconnected.
+
+- Functionality:
+  - Logical addressing (such as IP addressing) to identify devices uniquely across different networks.
+  - Routing of packets between devices on different networks using routing tables.
+  - Fragmentation and reassembly of packets to accommodate different network sizes and MTU (Maximum Transmission Unit).
+  - Ensures data is routed efficiently and reaches its destination, even if it passes through multiple routers.
+
+- Examples of Technologies:
+  - IP (Internet Protocol), IPv4, IPv6.
+  - Routers and routing protocols (e.g., RIP, OSPF, BGP).
+  - ICMP (Internet Control Message Protocol) for diagnostics (ping, traceroute).
+---------------------------------------------------------------------------------------------------------
+4.Transport Layer (Layer 4)
+
+- Purpose: The Transport layer ensures reliable data transfer between devices by providing end-to-end communication.
+           It handles data segmentation, error control, and flow control between two devices on a network.
+
+- Functionality:
+  - Segmentation and reassembly of data into manageable units (called segments or datagrams).
+  - Ensures reliable data transfer with mechanisms like error detection, flow control, and retransmission.
+  - Provides end-to-end communication between processes running on different devices, ensuring the entire message is delivered correctly.
+  - Two primary protocols are used at this layer: 
+      - TCP: 
+           - Provides reliable, connection-oriented communication with error detection,
+             flow control, and retransmission (used in applications like web browsing, email, file transfers).
+      - UDP: 
+           - Provides connectionless communication with lower overhead and no
+             guarantee of delivery (used in applications like video streaming, VoIP).
+
+- Examples of Technologies:
+  - TCP, UDP.
+  - Port numbers (e.g., HTTP uses port 80, HTTPS uses port 443).
+  - TLS/SSL for encrypted connections.
+---------------------------------------------------------------------------------------------------------
+5.Session Layer (Layer 5)
+
+- Purpose: The Session layer is responsible for managing and controlling the dialog between two devices.
+           It establishes, maintains, and terminates connections or "sessions" between applications.
+
+- Functionality:
+  - Establishes, maintains, and terminates sessions (persistent connections between applications).
+  - Handles dialogue control (full-duplex or half-duplex communication).
+  - Synchronizes data and manages the exchange of information between two devices or applications.
+  - It provides checkpoints to allow the session to resume from a specific point in case of a failure.
+
+- Examples of Technologies:
+  - NetBIOS, RPC (Remote Procedure Call).
+  - Session management in applications (e.g., HTTP sessions).
+---------------------------------------------------------------------------------------------------------
+6.Presentation Layer (Layer 6)
+
+- Purpose: The Presentation layer is responsible for translating data between the application layer and the lower layers.
+           It ensures that the data is in a usable format for the receiving system, handling encoding, encryption, and compression.
+
+- Functionality:
+  - Data translation: Converts data between different formats, such as from ASCII to EBCDIC or from Unicode to UTF-8.
+  - Data encryption : Encrypts or decrypts data to ensure security (e.g., SSL/TLS encryption).
+  - Data compression: Compresses data to reduce bandwidth usage or decompresses data for interpretation by the application.
+  - Ensures that data sent from the application layer is in a format understandable by the receiver.
+
+- Examples of Technologies:
+  - SSL/TLS encryption.
+  - JPEG, GIF, MPEG (image, video, and audio formats).
+  - Data translation protocols like ASCII, EBCDIC, or XML.
+---------------------------------------------------------------------------------------------------------
+7.Application Layer (Layer 7)
+
+- Purpose: The Application layer is the topmost layer and provides the interface between the network and the end-user applications.
+           It directly interacts with the software applications used by the user, such as web browsers,
+            email clients, and file transfer applications.
+
+- Functionality:
+  - Provides a user interface for network services.
+  - Implements application protocols for communication (e.g., HTTP, FTP, SMTP).
+  - Facilitates the transfer of data between applications across the network.
+  - Ensures the application can access the network and use the services provided by the lower layers.
+
+- Examples of Technologies:
+  - HTTP, FTP, SMTP, DNS, SNMP, Telnet.
+  - Web browsers, email clients, FTP clients.
+---------------------------------------------------------------------------------------------------------
+OSI Model Summary
+ ____________________________________________________________________________________________________________________
+| Layer |      Name     |                     Purpose                                | Example Protocols/Technologies|
+|_______|_______________|____________________________________________________________|_______________________________|
+| 7     | Application   | Provides network services directly to applications         | HTTP, FTP, SMTP, DNS, Telnet  |
+| 6     | Presentation  | Data translation, encryption, and compression              | SSL/TLS, JPEG, ASCII, UTF-8   |
+| 5     | Session       | Manages sessions, dialogues between applications           | NetBIOS, RPC                  |
+| 4     | Transport     | Provides end-to-end communication and error handling       | TCP, UDP, TLS/SSL             |
+| 3     | Network       | Handles routing, logical addressing, and packet forwarding | IP, ICMP, Routing protocols   |
+| 2     | Data Link     | Organizes bits into frames and ensures error-free transfer | Ethernet, Wi-Fi, PPP, MAC     |
+| 1     | Physical      | Transmits raw bits over a physical medium                  | Ethernet cables, fiber optics |
+|_______|_______________|____________________________________________________________|_______________________________|
+---------------------------------------------------------------------------------------------------------
+Conclusion
+
+The OSI model is a critical framework that divides network functions into seven 
+ distinct layers, each responsible for specific tasks in the network communication process.
+ 
+This model provides a common understanding for network professionals to diagnose, design, and troubleshoot networks.
+
+By clearly defining the roles of different layers, the OSI model enables
+ interoperability between different technologies and vendors in a standardized way.
+_______________________________________________________________________________________________________________________________________

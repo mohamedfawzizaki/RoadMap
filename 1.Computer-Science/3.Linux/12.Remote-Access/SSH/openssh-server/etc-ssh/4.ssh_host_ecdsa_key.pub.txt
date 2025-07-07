@@ -1,0 +1,75 @@
+
+#### 📌 **What is `ssh_host_ecdsa_key.pub`?**  
+- It is the **public key** corresponding to the **private host key** (`ssh_host_ecdsa_key`).  
+- This key is used to **authenticate the server** during SSH connections.  
+- Clients use it to verify the server’s identity when connecting.
+
+---
+
+### 📂 **Where is it Located?**  
+- The public key is stored in:
+  ```bash
+  /etc/ssh/ssh_host_ecdsa_key.pub
+  ```
+- The private key (`ssh_host_ecdsa_key`) is in the same directory.
+
+---
+
+### 🔑 **Key Properties**  
+| Property | Value |
+|----------|-------|
+| **Algorithm** | ECDSA (Elliptic Curve Digital Signature Algorithm) |
+| **File Type** | Public Key |
+| **Permissions** | Should be **644** (`-rw-r--r--`) |
+| **Location** | `/etc/ssh/ssh_host_ecdsa_key.pub` |
+| **Purpose** | Server authentication for SSH |
+
+---
+
+### 🛠 **How is it Used?**  
+When a client connects to an SSH server:
+1. The server sends its **public key** (`ssh_host_ecdsa_key.pub`) to the client.
+2. The client checks if the key matches a previously saved key in `~/.ssh/known_hosts`.
+3. If the key matches, the client trusts the server and establishes a secure connection.
+
+---
+
+### 🔍 **Checking the Key**  
+You can view the public key using:
+```bash
+cat /etc/ssh/ssh_host_ecdsa_key.pub
+```
+The output will look something like this:
+```
+ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJxt...
+```
+
+To check file permissions:
+```bash
+ls -l /etc/ssh/ssh_host_ecdsa_key.pub
+```
+Expected output:
+```bash
+-rw-r--r-- 1 root root 162 Aug 25 10:00 /etc/ssh/ssh_host_ecdsa_key.pub
+```
+
+---
+
+### ⚠️ **Security Notes**  
+✅ **It is safe to share the public key (`ssh_host_ecdsa_key.pub`).**  
+✅ Ensure file permissions are **644**:
+```bash
+sudo chmod 644 /etc/ssh/ssh_host_ecdsa_key.pub
+```
+✅ **Do NOT modify the key manually** unless regenerating SSH host keys.
+
+---
+
+### 🔄 **Regenerating SSH Host Keys (If Needed)**  
+If the host keys are missing or compromised, you can regenerate them:
+```bash
+sudo ssh-keygen -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key -N ""
+sudo systemctl restart ssh
+```
+
+---

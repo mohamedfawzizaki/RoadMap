@@ -1,0 +1,216 @@
+___________________________________________________________________________________________________________________________________
+                                                     Mysql Database Setup
+                                                    =====================
+
+                                       To set up a MySQL database on Ubuntu, follow these detailed steps:
+___________________________________________________________________________________________________________________________________
+
+                                                     Summary of Commands
+                         _____________________________________________________________________________________________
+                        |        Task         |             Command                                                   |
+                        |_____________________|_______________________________________________________________________|
+                        |---------------------|-----------------------------------------------------------------------|
+                        | Update system       | sudo apt update && sudo apt upgrade -y                                |
+                        |---------------------|-----------------------------------------------------------------------|
+                        | Install MySQL Server| sudo apt install mysql-server -y                                      |
+                        | Secure MySQL        | sudo mysql_secure_installation                                        |
+                        |---------------------|-----------------------------------------------------------------------|
+                        | Start MySQL         | sudo systemctl start mysql                                            |
+                        | Enable MySQL on boot| sudo systemctl enable mysql                                           |
+                        | Check status        | sudo systemctl status mysql                                           |
+                        |---------------------|-----------------------------------------------------------------------|
+                        | Log in to MySQL'root| sudo mysql                                                            |
+                        | Log in to MySQL'root| sudo mysql -u root -p                                                 |
+                        | Log in to MySQL'user| sudo mysql -u username -p                                             |
+                        |---------------------|-----------------------------------------------------------------------|
+                        | Create database     | CREATE DATABASE my_database;                                          |
+                        | Create user         | CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'StrongPassword';     |
+                        | Grant privileges    | GRANT ALL PRIVILEGES ON *.* TO 'newuser'@'localhost' WITH GRANT OPTION;|
+                        |---------------------|-----------------------------------------------------------------------|
+                        | Allow remote access | Edit `mysqld.cnf`, update bind-address, restart MySQL                 |
+                        |_____________________|_______________________________________________________________________|
+
+___________________________________________________________________________________________________________________________________
+
+                                             Step 1: Update Package Repository
+
+Before installing MySQL, update the system’s package index:
+
+````````````````````````````````````````bash
+sudo apt update && sudo apt upgrade -y
+````````````````````````````````````````
+
+___________________________________________________________________________________________________________________________________
+
+                                               Step 2: Install MySQL Server
+Install the MySQL server package:
+
+````````````````````````````````````````bash
+sudo apt install mysql-server -y
+````````````````````````````````````````
+
+This installs MySQL but does not prompt for a root password.
+
+___________________________________________________________________________________________________________________________________
+
+                                             Step 3: Secure MySQL Installation
+Run the security script to remove default settings and improve security:
+
+````````````````````````````````````````bash
+sudo mysql_secure_installation
+````````````````````````````````````````
+
+You will be asked to configure:
+1. VALIDATE PASSWORD COMPONENT  
+   - Choose a password validation policy:  
+     - 0 (LOW): No password strength enforcement.  
+     - 1 (MEDIUM): At least 8 characters, including numbers, uppercase, lowercase, and special characters.  
+     - 2 (STRONG): More strict rules.
+   - If prompted, enter and confirm the root password.
+
+2. Remove anonymous users – Type `Y`
+3. Disallow root login remotely – Type `Y`
+4. Remove test database – Type `Y`
+5. Reload privilege tables – Type `Y`
+
+___________________________________________________________________________________________________________________________________
+
+                                             Step 4: Check MySQL Service Status
+Verify that MySQL is running:
+
+````````````````````````````````````````bash
+sudo systemctl status mysql
+````````````````````````````````````````
+
+If it's not running, start it:
+
+````````````````````````````````````````bash
+sudo systemctl start mysql
+````````````````````````````````````````
+
+Enable MySQL to start on boot:
+
+````````````````````````````````````````bash
+sudo systemctl enable mysql
+````````````````````````````````````````
+
+___________________________________________________________________________________________________________________________________
+
+                                              Step 5: Access MySQL Command Line
+Use the following command to access MySQL:
+
+````````````````````````````````````````bash
+sudo mysql
+````````````````````````````````````````
+
+To exit MySQL:
+
+````````````````````````````````````````sql
+EXIT;
+````````````````````````````````````````
+
+___________________________________________________________________________________________________________________________________
+
+                                           Step 6: Create a New MySQL User (Optional)
+For security, it’s better not to use the root account for database operations. 
+You can create a new MySQL user:
+
+````````````````````````````````````````sql
+CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'StrongPassword';
+SELECT user, host FROM mysql.user;
+SELECT user, host FROM mysql.user WHERE user = 'newuser';
+GRANT ALL PRIVILEGES ON *.* TO 'newuser'@'localhost' WITH GRANT OPTION;
+SHOW GRANTS FOR 'newuser'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+````````````````````````````````````````
+
+To log in as the new user:
+
+````````````````````````````````````````bash
+mysql -u newuser -p
+Enter password: 
+````````````````````````````````````````
+
+___________________________________________________________________________________________________________________________________
+
+                                                 Step 7: Create a Database
+After logging in to MySQL:
+
+````````````````````````````````````````sql
+CREATE DATABASE my_database;
+````````````````````````````````````````
+
+To list all databases:
+
+````````````````````````````````````````sql
+SHOW DATABASES;
+````````````````````````````````````````
+
+To use a database:
+
+````````````````````````````````````````sql
+USE my_database;
+````````````````````````````````````````
+
+___________________________________________________________________________________________________________________________________
+
+                                         Step 8: Allow Remote Access to MySQL (Optional)
+By default, MySQL listens on `localhost` only. To allow remote connections:
+
+1. Edit MySQL Configuration File  
+   Open the MySQL configuration file:
+
+   ````````````````````````````````````````bash
+   sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+   ````````````````````````````````````````
+
+   Find the line:
+
+   ````````````````````````````````````````
+   bind-address = 127.0.0.1
+   ````````````````````````````````````````
+
+   Change it to:
+
+   ````````````````````````````````````````
+   bind-address = 0.0.0.0
+   ````````````````````````````````````````
+
+2. Restart MySQL Service  
+   ````````````````````````````````````````bash
+   sudo systemctl restart mysql
+   ````````````````````````````````````````
+
+3. Allow MySQL Port in Firewall  
+   If you have UFW (Uncomplicated Firewall) enabled, allow MySQL connections:
+
+   ````````````````````````````````````````bash
+   sudo ufw allow 3306/tcp
+   ````````````````````````````````````````
+
+   Verify the rule:
+
+   ````````````````````````````````````````bash
+   sudo ufw status
+   ````````````````````````````````````````
+
+4. Grant Remote Access to a User  
+   If you want to allow a user to connect remotely:
+
+   ````````````````````````````````````````sql
+   CREATE USER 'newuser'@'%' IDENTIFIED BY 'StrongPassword';
+   GRANT ALL PRIVILEGES ON *.* TO 'newuser'@'%' WITH GRANT OPTION;
+   FLUSH PRIVILEGES;
+   ````````````````````````````````````````
+
+___________________________________________________________________________________________________________________________________
+
+                                               Step 9: Test MySQL Connection
+To test the connection from another machine:
+
+````````````````````````````````````````bash
+mysql -u newuser -h your-server-ip -p
+````````````````````````````````````````
+
+___________________________________________________________________________________________________________________________________

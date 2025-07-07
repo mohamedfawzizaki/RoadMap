@@ -1,0 +1,149 @@
+_____________________________________________________________________________________________________________________________________
+                                                🔹 Rate Limiting in API Gateway  
+
+ 📌 What is Rate Limiting?  
+Rate limiting controls the number of API requests a client can make within a specific timeframe. 
+
+This prevents:  
+✅ API abuse (e.g., DoS attacks, brute-force login attempts).  
+✅ Overloading backend services and database queries.  
+✅ Unfair resource usage (ensuring fair access to all clients).  
+
+_____________________________________________________________________________________________________________________________________
+                                                🔹 Types of Rate Limiting  
+
+ ✅ 1. Fixed Window Limiting  
+- Limits requests based on a fixed time window (e.g., 10 requests per second).  
+- Issue: If many requests come at the end of a window, the next window allows another burst immediately.  
+
+ ✅ 2. Sliding Window Limiting  
+- Uses a moving time window to smooth out request spikes.  
+- More even distribution of requests over time.  
+
+ ✅ 3. Token Bucket Limiting  
+- Each client gets tokens added at a fixed rate (e.g., 1 token per second).  
+- Requests consume tokens; when empty, requests are rejected.  
+- Allows bursts while ensuring a long-term rate limit.  
+
+ ✅ 4. Leaky Bucket Limiting  
+- Requests pass through a queue at a steady rate.  
+- If requests exceed capacity, they get dropped.  
+- Best for smoothing traffic spikes.  
+
+_____________________________________________________________________________________________________________________________________
+                                       🔹 How to Implement Rate Limiting in API Gateway?  
+
+Nginx uses the limit_req_zone and limit_req directives for rate limiting. 
+
+The process works like this:
+
+    1.limit_req_zone    : defines a shared memory zone to store states (like IPs).
+    2.limit_req         : applies the rate limiting rules to specific routes or locations.
+    3.limit_req_status  : By default, Nginx returns 503 Service Unavailable for limited requests. 
+                          You can customize this with: limit_req_status 429;
+                          To return 429 Too Many Requests.
+    4.limit_req_log_level:
+                          This directive controls the log level of messages generated when requests are limited by limit_req.
+                          By default, such messages are logged at the error level,
+                           which can clutter your logs or raise unnecessary alerts. 
+                            ----------------------------------------------------------
+                            debug   – Very detailed (not recommended in production)
+                            info    – Helpful but still verbose
+                            notice  – ⚡ Recommended: useful and not too noisy
+                            warn
+                            error   – Default, might be too harsh unless it’s critical
+_________________________________________________________________________
+ ✅ 1. Basic Rate Limiting in Nginx  
+
+Limits requests to 10 per second with a burst capacity of 20.
+
+```````````````````````````````````````````````````````nginx
+http {
+    limit_req_zone $binary_remote_addr zone=api_limit:10m rate=10r/s;
+    limit_req_log_level notice;
+    
+    server {
+        listen 80;
+        server_name api.example.com;
+
+        location /api/ {
+            limit_req zone=api_limit burst=20 nodelay;
+            proxy_pass http://backend_service;
+        }
+    }
+}
+```````````````````````````````````````````````````````
+✅ Explanation:  
+- `limit_req_zone $binary_remote_addr zone=api_limit:10m rate=10r/s;`  
+  - Creates a rate-limiting zone (`api_limit`) of 10MB.  
+  - Limits 10 requests per second per IP.  
+- `limit_req zone=api_limit burst=20 nodelay;`  
+  - Allows 20 extra burst requests before rejecting.  
+  - `nodelay` ensures no artificial delay (drops excess requests).  
+
+_________________________________________________________________________
+ ✅ 2. Custom Error Response for Rate Limiting  
+
+When a user exceeds the limit, return 429 Too Many Requests.
+
+```````````````````````````````````````````````````````nginx
+location /api/ {
+    limit_req zone=api_limit burst=20 nodelay;
+
+    error_page 429 = @rate_limit_exceeded;
+}
+
+location @rate_limit_exceeded {
+    return 429 "Too Many Requests. Slow down!";
+}
+```````````````````````````````````````````````````````
+✅ This returns a user-friendly error message instead of the default.  
+
+_________________________________________________________________________
+ ✅ 3. Different Limits for Login & General API Requests 
+
+Stricter limits for login endpoints (to prevent brute-force attacks).
+
+```````````````````````````````````````````````````````nginx
+location /api/login {
+    limit_req zone=login_limit burst=5 nodelay;
+    proxy_pass http://auth_service;
+}
+
+location /api/ {
+    limit_req zone=api_limit burst=20 nodelay;
+    proxy_pass http://backend_service;
+}
+```````````````````````````````````````````````````````
+✅ Prevents excessive login attempts while keeping general API access flexible.  
+
+_________________________________________________________________________
+ ✅ 4. Rate Limits Based on API Keys (for Better Control) 
+
+Instead of limiting by IP, use API keys for individual limits.
+
+```````````````````````````````````````````````````````nginx
+map $http_api_key $limit_key {
+    default $binary_remote_addr;
+    "user-123" "user-123";
+    "user-456" "user-456";
+}
+
+limit_req_zone $limit_key zone=api_key_limit:10m rate=5r/s;
+
+location /api/ {
+    limit_req zone=api_key_limit burst=10 nodelay;
+    proxy_pass http://backend_service;
+}
+```````````````````````````````````````````````````````
+✅ Allows different users to have different rate limits.  
+
+_____________________________________________________________________________________________________________________________________
+                                                        🔹 Summary  
+                                                        
+✅ Fixed Window – Simple, but can cause burst issues.  
+✅ Sliding Window – Smooth rate limiting.  
+✅ Token Bucket – Allows short bursts while maintaining an overall limit.  
+✅ Leaky Bucket – Ensures a steady flow of requests.  
+✅ Nginx Rate Limiting – Implements API request control efficiently.  
+_____________________________________________________________________________________________________________________________________

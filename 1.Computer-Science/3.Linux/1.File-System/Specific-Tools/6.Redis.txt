@@ -1,0 +1,224 @@
+______________________________________________________________________________________________________________________________________
+                                             Redis Files and Directories in Linux
+                                             ====================================
+
+Redis is an open-source, in-memory data structure store that is often used as a cache, database, or message broker.
+When Redis is installed on a Linux system,
+ it creates several directories and files related to configuration, data storage, and logs.
+Below is an overview of the key Redis files and directories in a typical Linux setup.
+---------------------------------------------------------------------------------------------------------
+Key Redis Directories and Files
+
+1.`/etc/redis/` (Configuration Directory)
+   - This directory contains the configuration files for Redis.
+   - Files:
+     - `/etc/redis/redis.conf`: 
+               - The primary configuration file for Redis.
+               - This file contains settings for how the Redis server operates, 
+                 including memory limits, persistence options, logging configuration, and more.
+     - `/etc/redis/sentinel.conf`: 
+               - The configuration file for Redis Sentinel, which is a system used 
+                 to manage Redis instances for high availability and failover.
+
+2.`/var/lib/redis/` (Data Directory)
+   - This directory is used by Redis to store its data.
+   - Contents:
+     - `/var/lib/redis/dump.rdb`: 
+                        The default Redis database file where the dataset is stored if persistence is enabled (RDB snapshots).
+     - `/var/lib/redis/appendonly.aof`: 
+                        If Append-Only File (AOF) persistence is enabled, Redis stores all write operations in this file.
+     - Redis may store other files here based on the configuration for persistence, replication, or clustering.
+
+3.`/var/log/redis/` (Log Directory)
+   - This directory contains the log files for Redis.
+   - Files:
+     - `/var/log/redis/redis-server.log`: 
+               - The Redis server log file.This file records any errors, warnings, and general server activities.
+     - `/var/log/redis/redis-sentinel.log`: 
+               - The log file for Redis Sentinel.
+               - It logs the operations of Redis Sentinel instances if high availability is enabled.
+
+4.`/usr/bin/redis-server` (Redis Server Binary)
+   - This is the Redis server executable file.Running this binary starts the Redis server.
+   
+   To start the Redis server manually:
+   ```bash
+   redis-server /etc/redis/redis.conf
+   ```
+
+5.`/usr/bin/redis-cli` (Redis Command Line Interface)
+   - This is the Redis command-line client that allows you to interact with the Redis server.
+   - You can use it to send commands, manage data, and perform administrative tasks.
+   ```bash
+   redis-cli
+   ```
+
+6.`/usr/share/redis/` (Shared Files)
+   - This directory contains additional resources related to Redis.
+   - It may include example configuration files, documentation, or other support files.
+
+7.`/tmp/` (Temporary Directory)
+   - Redis may use the `/tmp/` directory for temporary files during operations like dumps or background save operations.
+---------------------------------------------------------------------------------------------------------
+Important Redis Configuration Files
+
+1.`/etc/redis/redis.conf`:
+   - This is the central configuration file for Redis.You can modify this file to configure
+     Redis' behavior, such as memory limits, persistence, and security.
+   
+   Example `redis.conf` content:
+   ```ini
+    Redis Configuration File Example
+
+    General Configuration
+   bind 127.0.0.1
+   port 6379
+   daemonize yes
+   logfile /var/log/redis/redis-server.log
+
+    Persistence Settings
+   save 900 1
+   save 300 10
+   save 60 10000
+
+   appendonly yes
+   appendfsync everysec
+
+    Memory Management
+   maxmemory 256mb
+   maxmemory-policy allkeys-lru
+   ```
+
+2.Persistence Settings:
+   - `dump.rdb`: 
+            - Redis can save its dataset to disk in RDB format (Redis Database format) 
+              at regular intervals, as specified by the `save` directive in the configuration file.
+   - AOF (Append-Only File): 
+            - Redis also supports append-only file persistence, where every write operation
+              is appended to a file (`appendonly.aof`), ensuring durability across restarts.
+
+3.`/etc/redis/sentinel.conf`:
+   - If you're using Redis Sentinel for high availability, this configuration file is used to 
+     configure Redis Sentinel, which monitors Redis instances and performs automatic failover in case of server failures.
+   
+   Example `sentinel.conf` content:
+   ```ini
+   port 26379
+   dir /var/lib/redis/sentinel
+
+   sentinel monitor mymaster 127.0.0.1 6379 2
+   sentinel down-after-milliseconds mymaster 30000
+   sentinel failover-timeout mymaster 180000
+   ```
+---------------------------------------------------------------------------------------------------------
+Service Control (Systemd)
+
+- Start Redis:
+  ```bash
+  sudo systemctl start redis
+  ```
+
+- Stop Redis:
+  ```bash
+  sudo systemctl stop redis
+  ```
+
+- Enable Redis to Start on Boot:
+  ```bash
+  sudo systemctl enable redis
+  ```
+
+- Check Redis Status:
+  ```bash
+  sudo systemctl status redis
+  ```
+
+- Redis Service Logs:
+  To view Redis service logs and error messages:
+  ```bash
+  sudo journalctl -u redis
+  ```
+---------------------------------------------------------------------------------------------------------
+Redis Data Persistence Mechanisms
+
+1.RDB (Redis Database):
+   - Redis uses RDB snapshots to persist data periodically.
+   - This creates a binary dump of the dataset, which can be restored when Redis starts.
+   - The `save` directive in `redis.conf` defines when Redis will create an RDB snapshot.
+   
+   Example:
+   ```ini
+   save 900 1   Save the DB if at least 1 key changes within 900 seconds
+   save 300 10  Save the DB if at least 10 keys change within 300 seconds
+   ```
+
+2.AOF (Append-Only File):
+   - Redis can also use an append-only file (AOF) to persist every write operation.
+   - This method guarantees durability, and Redis appends every operation to a file.
+   - The `appendonly` directive in `redis.conf` enables AOF persistence.
+   - The `appendfsync` directive controls when the AOF file is flushed to disk (e.g., every operation, every second, or never).
+   
+   Example:
+   ```ini
+   appendonly yes
+   appendfsync everysec   Write operations are synced every second
+   ```
+---------------------------------------------------------------------------------------------------------
+Backup and Restore Redis Databases
+
+1.Backup Redis Database:
+   - You can back up the Redis database by copying the `dump.rdb` file or the `appendonly.aof` file.
+   
+   ```bash
+   cp /var/lib/redis/dump.rdb /path/to/backup/dump.rdb
+   cp /var/lib/redis/appendonly.aof /path/to/backup/appendonly.aof
+   ```
+
+2.Restore Redis Database:
+   - To restore a backup, simply copy the `dump.rdb` and/or `appendonly.aof` files 
+     back into the Redis data directory (`/var/lib/redis`).
+   
+   ```bash
+   cp /path/to/backup/dump.rdb /var/lib/redis/dump.rdb
+   cp /path/to/backup/appendonly.aof /var/lib/redis/appendonly.aof
+   ```
+
+3.Flush Redis Data:
+   - To clear all data in Redis (without deleting the database files), use the `flushall` command:
+   ```bash
+   redis-cli flushall
+   ```
+---------------------------------------------------------------------------------------------------------
+Redis Commands
+
+1.Start Redis CLI:
+   ```bash
+   redis-cli
+   ```
+
+2.Check Redis Server Status:
+   ```bash
+   redis-cli ping
+   ```
+
+3.Set a Key-Value Pair:
+   ```bash
+   redis-cli set mykey "Hello, Redis!"
+   ```
+
+4.Get a Key-Value Pair:
+   ```bash
+   redis-cli get mykey
+   ```
+---------------------------------------------------------------------------------------------------------
+Summary of Redis Directories
+
+- `/etc/redis/`      : Redis configuration files (e.g., `redis.conf`, `sentinel.conf`).
+- `/var/lib/redis/`  : Data directory for Redis, containing RDB and AOF files.
+- `/var/log/redis/`  : Log directory for Redis server and Sentinel logs.
+- `/usr/bin/redis-server`: Redis server binary to start the Redis server.
+- `/usr/bin/redis-cli`   : Redis command-line client used for interacting with the Redis server.
+
+Redis' file structure and configuration allow for high performance, persistence,
+ and flexibility in its use as a database, cache, or message broker.
+______________________________________________________________________________________________________________________________________

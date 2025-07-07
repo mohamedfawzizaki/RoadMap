@@ -1,0 +1,28 @@
+# ---------------------------------------------------------------------------------------------------------
+# Kubernetes IngressClass Manifest
+# ---------------------------------------------------------------------------------------------------------
+# IngressClass is a cluster-scoped resource introduced in Kubernetes v1.18+.
+# It defines a named class of Ingress controllers.
+# It tells Kubernetes which ingress controller should implement the behavior for Ingress resources that reference this class.
+# Enables multiple Ingress controllers to coexist in a cluster, each managing different Ingress resources.
+# Replaces the older convention of using the deprecated annotation kubernetes.io/ingress.class.
+# Purpose
+# Decouples the ingress controller from the Ingress resources by associating Ingresses with a class name.
+# Provides a way for Ingress controllers to advertise their class and configuration.
+# Simplifies multi-controller setups (e.g., NGINX and Traefik running side by side).
+# Helps users specify which controller should handle an Ingress via the spec.ingressClassName field.
+# ---------------------------------------------------------------------------------------------------------
+apiVersion: networking.k8s.io/v1    # API group and version for networking resources (Ingress, IngressClass, etc.)
+kind: IngressClass                  # Resource kind: defines a class of Ingress controllers
+metadata:
+  name: nginx                      # Unique name for this IngressClass; referenced by Ingress.spec.ingressClassName
+spec:
+  controller: k8s.io/ingress-nginx # Identifier for the ingress controller implementation
+                                  # This string is the controller's domain-style name
+                                  # Controllers watch IngressClass objects with matching controller strings
+
+  parameters:                      # Optional reference to configuration resource specific to this ingress controller
+    apiGroup: networking.k8s.io    # API group of the parameters resource; here it's a ConfigMap under the networking.k8s.io group
+    kind: ConfigMap                # Kind of the parameters resource; usually ConfigMap or a custom resource
+    name: nginx-configuration      # Name of the ConfigMap holding controller-specific configuration
+    namespace: ingress-nginx       # Namespace where the ConfigMap resides; usually same as the ingress controller deployment

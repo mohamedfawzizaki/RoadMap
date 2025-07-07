@@ -1,0 +1,9 @@
+express.json()
+express.raw()
+express.Router()
+express.static()
+express.text()
+express.urlencoded()
+
+router.use(middleware);
+app.use(middleware);

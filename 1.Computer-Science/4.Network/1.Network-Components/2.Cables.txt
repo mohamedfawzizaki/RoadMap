@@ -1,0 +1,28 @@
+_______________________________________________________________________________________________________________________________________
+                                                   2.Cables
+                                                   --------
+- Definition: 
+      - Physical medium that transmits data signals between devices in a network.
+- Types:
+      1.Twisted Pair:
+               - Types: 
+                        - Shielded   Twisted Pair (STP): Has shielding to reduce interference.
+                        - Unshielded Twisted Pair (UTP): Common in Ethernet networks.
+               - Categories:
+                        - Cat5e     : Supports speeds up to 1 Gbps.
+                        - Cat6/Cat6a: Supports higher speeds (up to 10 Gbps).
+      2.Coaxial Cable:
+               - Used in broadband and older Ethernet networks.
+               - Consists of a central conductor, insulating layer, and shielding.
+      3.Fiber Optic Cable:
+               - Transmits data as light signals.
+               - Types:
+                        - Single-mode: For long distances.
+                        - Multi -mode: For shorter distances.
+               - Advantages:
+                        - High speed, long distance, and immunity to interference.
+- Usage:
+      - Twisted pair for LANs.
+      - Fiber optics for high-speed internet and backbone networks.
+_______________________________________________________________________________________________________________________________________
+ 

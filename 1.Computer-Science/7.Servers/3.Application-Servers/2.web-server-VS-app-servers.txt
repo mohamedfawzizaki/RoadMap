@@ -1,0 +1,107 @@
+Great question — the distinction between **web servers** and **application servers** is subtle but important, especially when designing and deploying web applications.
+
+Let’s break it down clearly and with practical examples:
+
+---
+
+## 🕸️ Web Servers vs ⚙️ Application Servers
+
+| Feature | **Web Server** | **Application Server** |
+|--------|----------------|-------------------------|
+| **Purpose** | Handles **HTTP requests** for static content (HTML, CSS, JS, images) | Executes **business logic** and generates dynamic content |
+| **Examples** | Nginx, Apache HTTP Server, Caddy, Lighttpd | Tomcat, WildFly, RoadRunner, Gunicorn, uWSGI, PHP-FPM |
+| **Content Served** | Static content | Dynamic content (via backend code) |
+| **Language Support** | Language-agnostic | Language-specific (Java, PHP, Python, etc.) |
+| **Can run backend code?** | ❌ No (delegates to app server) | ✅ Yes |
+| **Protocols** | HTTP, HTTPS | HTTP, HTTPS, TCP, RMI, JMS (depends) |
+| **Reverse Proxy Capable** | ✅ Yes | Usually not (except in some cases like RoadRunner) |
+
+---
+
+### ✅ **Web Server – What it Does**
+
+A **web server** is designed to:
+- Accept HTTP requests from browsers
+- Serve static files quickly
+- Proxy dynamic requests to the backend (application server)
+- Handle SSL/TLS (HTTPS)
+- Load balance and cache responses
+
+#### 🔧 Common Web Servers:
+| Web Server | Key Features |
+|------------|--------------|
+| **Nginx**  | Fast, lightweight, event-driven, reverse proxy |
+| **Apache** | Modular, widely used, `.htaccess` support |
+| **Caddy**  | HTTPS by default, easy config |
+| **Lighttpd** | Lightweight, low memory usage |
+
+---
+
+### ⚙️ **Application Server – What it Does**
+
+An **application server** runs your **backend code** (e.g., Laravel, Spring, Django, Node.js). It:
+- Handles business logic
+- Communicates with databases
+- Processes user input
+- Generates dynamic HTML, JSON, XML, etc.
+
+#### 🎯 Examples by Language:
+
+| Language | App Server Examples |
+|----------|---------------------|
+| **PHP**  | PHP-FPM, Swoole, RoadRunner |
+| **Python** | Gunicorn, uWSGI, Daphne |
+| **Java** | Tomcat, WildFly, Jetty |
+| **.NET** | Kestrel |
+| **Node.js** | Built-in (http module), Express apps |
+| **Ruby** | Puma, Unicorn |
+| **Elixir** | Cowboy |
+
+---
+
+### 📦 Combined Servers (Web + App)
+
+Some tools **act as both** a web server and application server:
+
+| Tool | Notes |
+|------|-------|
+| **Tomcat** | Can serve static + dynamic content |
+| **FrankenPHP** | PHP app server with built-in HTTPS |
+| **Node.js** | Web server is part of the app |
+| **Go** (net/http) | Full server in a single binary |
+
+---
+
+## 🛠 Example Architecture
+
+### 🔁 Typical Setup with Nginx
+
+```text
+Browser
+   |
+   V
+[Nginx Web Server]
+   |
+   |-- Static files (HTML, CSS, JS)
+   |
+   V
+[Application Server]
+   |
+   V
+[Database]
+```
+
+- Nginx handles SSL, serves static files
+- Passes dynamic requests to PHP-FPM, Gunicorn, or Kestrel
+- Application server processes the logic and returns a response
+
+---
+
+## 🔄 Summary
+
+| Think of it like... |
+|---------------------|
+| **Web Server** is the **receptionist** — directs requests, serves basic info |
+| **Application Server** is the **business logic brain** — actually does the work |
+
+---

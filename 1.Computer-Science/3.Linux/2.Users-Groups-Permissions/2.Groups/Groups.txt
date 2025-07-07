@@ -1,0 +1,237 @@
+______________________________________________________________________________________________________________________________________
+                                                   User Groups 
+                                                   ===========
+Breif:
+         - In Linux, groups are a mechanism to manage access control and permissions for a collection of users.
+         - They simplify administration by allowing permissions to be assigned to a group rather than individual users.
+
+______________________________________________________________________________________________________________________________________
+                                              1.What Are User Groups?
+
+- A group is a collection of users who share the same access permissions for files, directories, and system resources.
+- Groups are useful when several users need the same level of access to certain resources, such as files or applications.
+
+- Each user can belong to one or more groups.
+- A user always has a primary group and can be part of additional supplementary groups.
+
+______________________________________________________________________________________________________________________________________
+                                              2.Types of Groups
+
+1.Primary Group  
+         - The primary group is assigned to a user when the user is created.
+         - Every file or directory that the user creates will be associated with the primary group.
+         - The primary group ID is specified in `/etc/passwd`.
+   
+2.Supplementary Groups (Secondary Groups)  
+         - These are additional groups a user can belong to.
+         - Supplementary groups grant extra access rights to files or directories that belong to those groups.
+
+______________________________________________________________________________________________________________________________________
+                                              3.Group Configuration Files
+
+a.`/etc/group`
+
+         The `/etc/group` file stores information about groups.
+         Each line in this file represents a group and follows this format:
+                     `````````````````````````````````````````````````
+                     group_name:x:GID:group_members
+                     `````````````````````````````````````````````````
+                     - group_name   : Name of the group.
+                     - x            : Placeholder for a password (rarely used).
+                     - GID          : Group ID.
+                     - group_members: A comma-separated list of users who belong to this group.
+
+         Example:
+                     `````````````````````````````````````````````````
+                     developers:x:1001:mohamed,ali,ahmed
+                     `````````````````````````````````````````````````
+                     - Group name: `developers`
+                     - GID: `1001`
+                     - Members: `mohamed`, `ali`, and `ahmed`
+
+______________________________________________________________________________________________________________________________________
+                                              4.Managing Groups
+
+a.Creating a Group
+
+         To create a new group, use the `groupadd` command:
+         `````````````````````````````````````````````````
+         sudo groupadd group_name
+         `````````````````````````````````````````````````
+         Example:
+         `````````````````````````````````````````````````
+         sudo groupadd developers
+         `````````````````````````````````````````````````
+
+b.Deleting a Group
+
+         To delete an existing group, use the `groupdel` command:
+         `````````````````````````````````````````````````
+         sudo groupdel group_name
+         `````````````````````````````````````````````````
+         Example:
+         `````````````````````````````````````````````````
+         sudo groupdel developers
+         `````````````````````````````````````````````````
+
+c.Modifying a Group
+
+         To add or remove members from a group, use the `usermod` command:
+
+         1.Add a user to a group:
+                  `````````````````````````````````````````````````
+                  sudo usermod -aG group_name username
+                  `````````````````````````````````````````````````
+                  Example:
+                  `````````````````````````````````````````````````
+                  sudo usermod -aG developers mohamed
+                  `````````````````````````````````````````````````
+                  - `-aG`: Append the user to the group without removing them from other groups.
+
+         2.Remove a user from a group:
+                  `````````````````````````````````````````````````
+                  sudo gpasswd -d username group_name
+                  `````````````````````````````````````````````````
+                  Example:
+                  `````````````````````````````````````````````````
+                  sudo gpasswd -d mohamed developers
+                  `````````````````````````````````````````````````
+
+d.Changing a User’s Primary Group
+
+         To change the primary group of a user:
+                  `````````````````````````````````````````````````
+                  sudo usermod -g new_primary_group username
+                  `````````````````````````````````````````````````
+         Example:
+                  `````````````````````````````````````````````````
+                  sudo usermod -g developers mohamed
+                  `````````````````````````````````````````````````
+
+______________________________________________________________________________________________________________________________________
+                                              5.Viewing Group Membership
+
+a.Check the Groups a User Belongs To
+
+         To view the groups a user belongs to, use the `groups` command:
+         `````````````````````````````````````````````````
+         groups username
+         `````````````````````````````````````````````````
+         Example:
+         `````````````````````````````````````````````````
+         groups mohamed
+         `````````````````````````````````````````````````
+         Output:
+         `````````````````````````````````````````````````
+         mohamed : mohamed developers sudo
+         `````````````````````````````````````````````````
+
+b.Display Group Information
+
+         To display detailed information about a group, use the `getent` command:
+         `````````````````````````````````````````````````
+         getent group group_name
+         `````````````````````````````````````````````````
+         Example:
+         `````````````````````````````````````````````````
+         getent group developers
+         `````````````````````````````````````````````````
+         Output:
+         `````````````````````````````````````````````````
+         developers:x:1001:mohamed,ali,ahmed
+         `````````````````````````````````````````````````
+
+______________________________________________________________________________________________________________________________________
+                                              6.Group Permissions
+
+Groups are often used to manage file and directory permissions.
+Every file and directory in Linux has three sets of permissions:
+
+         1.Owner  (User who owns the file)
+         2.Group  (Group that owns the file)
+         3.Others (All other users)
+
+         Use `ls -l` to view file ownership and permissions:
+         `````````````````````````````````````````````````
+         ls -l file.txt
+         `````````````````````````````````````````````````
+         Example output:
+         `````````````````````````````````````````````````
+         -rw-rw-r-- 1 mohamed developers 1024 Jan 10 12:00 file.txt
+         `````````````````````````````````````````````````
+         - Owner: `mohamed`
+         - Group: `developers`
+         - Permissions: 
+         - `rw-` for owner (read and write)
+         - `rw-` for group (read and write)
+         - `r--` for others (read-only)
+
+______________________________________________________________________________________________________________________________________
+                                              7.Changing Group Ownership
+
+To change the group ownership of a file or directory, use the `chgrp` command:
+         `````````````````````````````````````````````````
+         sudo chgrp group_name file_name
+         `````````````````````````````````````````````````
+         Example:
+         `````````````````````````````````````````````````
+         sudo chgrp developers file.txt
+         `````````````````````````````````````````````````
+
+______________________________________________________________________________________________________________________________________
+                                              8.Setting the Group ID on Directories
+
+When multiple users work on shared directories, it's helpful to set the Set Group ID (SGID) bit.
+This ensures that files created within the directory inherit the group ownership of the directory.
+
+         To set the SGID bit:
+         `````````````````````````````````````````````````
+         sudo chmod g+s directory_name
+         `````````````````````````````````````````````````
+         Example:
+         `````````````````````````````````````````````````
+         sudo chmod g+s /shared_directory
+         `````````````````````````````````````````````````
+
+         Check if the SGID bit is set using `ls -ld`:
+         `````````````````````````````````````````````````
+         ls -ld /shared_directory
+         `````````````````````````````````````````````````
+         Output:
+         `````````````````````````````````````````````````
+         drwxr-sr-x 2 mohamed developers 4096 Jan 10 12:00 /shared_directory
+         `````````````````````````````````````````````````
+         - The `s` in `drwxr-sr-x` indicates that the SGID bit is set.
+
+______________________________________________________________________________________________________________________________________
+                                              9.Adding a Password to a Group
+
+Linux allows setting a password for a group using the `gpasswd` command.
+Members can then join the group using the password.
+
+1.Set a password for a group:
+         `````````````````````````````````````````````````
+         sudo gpasswd group_name
+         `````````````````````````````````````````````````
+2.Join a password-protected group:
+         `````````````````````````````````````````````````
+         newgrp group_name
+         `````````````````````````````````````````````````
+
+______________________________________________________________________________________________________________________________________
+
+ 10.Default Group for New Files (UMASK)
+
+By default, files and directories inherit the primary group of the user who created them.
+The umask value determines the default permissions for new files and directories.
+
+You can set the default group for files in a specific directory using the SGID bit (as explained in section 8).
+
+______________________________________________________________________________________________________________________________________
+                                              Conclusion
+
+Groups in Linux provide an efficient way to manage user permissions for shared resources.
+
+By assigning users to groups and setting appropriate permissions,
+ administrators can control access to files, directories, and applications securely.
+______________________________________________________________________________________________________________________________________

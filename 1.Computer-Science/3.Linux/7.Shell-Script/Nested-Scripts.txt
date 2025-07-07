@@ -1,0 +1,155 @@
+____________________________________________________________________________________________________________________________________________________________
+                                                        Nested Script 
+                                                        =============
+
+Including one script inside another in shell scripting is 
+ a common way to reuse code or share functions and variables between scripts. 
+ 
+The `source` command (or its shorthand `.`) is used to include and execute the content of one script inside another script.
+
+________________________________________________________________________________________________________________________________
+                                             How to Include a Script Inside Another
+                                             ======================================
+
+1. Using `source` Command
+The `source` command executes the content of another script in the current shell environment.
+
+#Syntax
+        ``````````````````````````````````````````bash
+        source /path/to/script
+        ``````````````````````````````````````````
+
+2. Using `.` (Dot) Command
+The `.` command is a shorthand for `source`. It does the same thing but is shorter to type.
+
+#Syntax
+        ``````````````````````````````````````````bash
+        . /path/to/script
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                         When to Use Include
+                                                         ===================
+
+- Reusing functions: If you have a script with common functions, include it in multiple other scripts.
+- Sharing variables: A script can define environment variables that other scripts can use.
+- Modularity       : Break large scripts into smaller, reusable components.
+
+________________________________________________________________________________________________________________________________
+                                                         Examples
+                                                         ========
+
+1. Reusing Functions
+#file1.sh
+        ``````````````````````````````````````````bash
+        #!/bin/bash
+
+        # Function to greet
+        greet() {
+            echo "Hello, $1!"
+        }
+        ``````````````````````````````````````````
+
+#file2.sh
+        ``````````````````````````````````````````bash
+        #!/bin/bash
+
+        # Include file1.sh
+        source ./file1.sh
+
+        # Call the function from file1.sh
+        greet "Alice"
+        ``````````````````````````````````````````
+
+Execution:
+        ``````````````````````````````````````````bash
+        chmod +x file1.sh file2.sh
+        ./file2.sh
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Hello, Alice!
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                         2. Sharing Variables
+                                                         ====================
+#config.sh
+        ``````````````````````````````````````````bash
+        #!/bin/bash
+
+        # Define variables
+        APP_NAME="MyApp"
+        VERSION="1.0.0"
+        ``````````````````````````````````````````
+
+#main.sh
+        ``````````````````````````````````````````bash
+        #!/bin/bash
+
+        # Include config.sh
+        source ./config.sh
+
+        # Use the variables
+        echo "Application: $APP_NAME"
+        echo "Version: $VERSION"
+        ``````````````````````````````````````````
+
+Execution:
+        ``````````````````````````````````````````bash
+        chmod +x config.sh main.sh
+        ./main.sh
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Application: MyApp
+        Version: 1.0.0
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                         Error Handling
+                                                         ==============
+
+- If the included file doesn't exist or is not executable, the script will throw an error. 
+- You can check for the file's existence before including it.
+  
+#Example
+        ``````````````````````````````````````````bash
+        if [ -f ./file1.sh ]; then
+            source ./file1.sh
+        else
+            echo "file1.sh not found!"
+            exit 1
+        fi
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                         Relative vs. Absolute Paths
+                                                         ===========================
+When including scripts, consider using absolute paths to avoid errors when running from different directories.
+
+#Example
+        ``````````````````````````````````````````bash
+        source /absolute/path/to/config.sh
+        ``````````````````````````````````````````
+
+If you must use relative paths, ensure the script is executed from the correct directory or use the current script's directory:
+
+#Example
+        ``````````````````````````````````````````bash
+        source "$(dirname "$0")/config.sh"
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                         Common Use Cases
+                                                         ================
+1. Including Library Scripts
+   Useful for defining functions like logging or reusable utilities.
+2. Config Files
+   Store environment-specific variables in a configuration file and include it.
+3. Initialization Scripts
+   Run common setup or initialization code by including a script.
+
+________________________________________________________________________________________________________________________________

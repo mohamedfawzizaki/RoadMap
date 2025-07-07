@@ -1,0 +1,98 @@
+_________________________________________________________________________________________________________________________________________________________________________ 
+                                                     Package Management 
+                                                     ==================
+_________________________________________________________________________________________________________________________________________________________________________ 
+                                                        1.dpkg
+                                                ======================
+      
+                   wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+                   sudo dpkg -i google-chrome-stable_current_amd64.deb
+ _____________________________________________________________________________________________________________________________________________
+|      Options |              Example                             |                        Usage                                              |                                                                                
+|______________|__________________________________________________|___________________________________________________________________________|
+|    -l        | dpkg -l                                          | List installed packages.
+|    -L        | dpkg -L <package-name>                           | List files installed by a package.
+|    -s        | dpkg -s <package-name>                           | Display detailed information about an installed package.
+|    -i        | dpkg -i <package-name>.deb                       | Install a .deb package.
+|    -r        | dpkg -r <package-name>                           | Remove a package (but keep configuration files).
+|    -p        | dpkg -P <package-name>                           | Completely remove a package along with its configuration files.
+|______________|__________________________________________________|___________________________________________________________________________|
+
+
+
+
+
+
+_________________________________________________________________________________________________________________________________________________________________________ 
+                                                        2.apt
+                                                ======================
+ ______________________________________________________________________________________________________________________________________________________________________
+|                    Example                      |                        Usage                                                                                                                             
+|_________________________________________________|____________________________________________________________________________________________________________________
+|   sudo apt list                                 |  List packages based on package names
+|   sudo apt list --installed                     |  Displays all installed packages on the system.
+|   sudo apt depends  <package_name>              |  Lists all dependencies of a package.
+|   sudo apt rdepends <package_name>              |  Lists reverse dependencies (packages that depend on the specified package). 
+|   sudo apt show   <package_name>                |  Displays detailed information about a package, such as its description, dependencies, and source.
+|   dpkg -l <package-name>                        |  Lists the status of installed packages matching the given name (or partial name).
+|   dpkg -L <package-name>                        |  A list of file paths where the package's components are installed (e.g., binaries, configuration files, libraries).         
+|   dpkg -s <package-name>                        |  Provides detailed information about the installed package, including: Version, Status, Description, Maintainer, Architecture.
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|   sudo apt search <package_name>                |  Searches for packages matching the provided name.
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|   sudo apt update                               |  update list of available packages
+|   sudo apt upgrade                              |  upgrade the system by installing/upgrading packages
+|   sudo apt full-upgrade                         |  upgrade the system by removing/installing/upgrading packages
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|   sudo apt install <package_name>               |  install packages
+|   sudo apt install <package1> <package2>        |  Installs multiple packages at once.
+|   sudo apt install <package_name>=<version>     |  Installs a specific version of a package.
+|   sudo apt install ./path_to_file.deb           |  Installs a .deb package file while handling dependencies.
+|   sudo apt reinstall                            |  Reinstall packages
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|   sudo apt --fix-broken install                 |  Fixes and completes broken package installations.
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|   sudo apt remove <package_name>                |  Removes a package but keeps its configuration files.
+|   sudo apt purge  <package_name>                |  Removes a package and its configuration files.
+|   sudo apt autoremove                           |  automatically remove all unused packages
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|   sudo apt clean                                |  Removes all cached .deb files in /var/cache/apt/archives/.
+|   sudo apt autoclean                            |  Removes outdated .deb files no longer in repositories.         
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|   sudo add-apt-repository <repository>          |  Adds a new repository to the sources list (ubunto@myWinHostMachine:/etc/apt$ cat sources.list
+|   sudo apt edit-sources                         |  edit the source information file
+|   sudo apt satisfy                              |  satisfy dependency strings
+|_________________________________________________|____________________________________________________________________________________________________________________
+|   -y                                            |  Automatically answers "yes" to all prompts during package installation or removal.
+|   --assume-no:                                  |  Automatically answers "no" to all prompts.
+|   --force-yes:                                  |  Forces the operation even if it might cause issues.Use with caution!
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|   -h, --help:                                   |  Displays the help message and usage instructions for the apt command.
+|   -v, --version:                                |  Displays the version of apt currently installed on your system.
+|                                                 |  Example: apt --force-yes install risky-package
+|_________________________________________________|____________________________________________________________________________________________________________________
+
+
+
+_________________________________________________________________________________________________________________________________________________________________________ 
+                                                       3.apt-get
+                                                ======================
+ ______________________________________________________________________________________________________________________________________________________________________
+|                    Example                      |                        Usage                                                                                                                             
+|_________________________________________________|____________________________________________________________________________________________________________________
+|   sudo apt-get  update                          |  Update the package index.
+|   sudo apt-get  upgrade                         |  Upgrade installed packages.
+|   sudo apt-get  dist-upgrade                    |  Perform a more thorough upgrade, including removing obsolete packages and installing new ones.
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|   sudo apt-get  install <package-name>          |  Install a package.
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|   sudo apt-get  remove <package-name>           |  Remove a package.
+|   sudo apt-get  purge <package-name>            |  Remove a package along with configuration files.
+|   sudo apt-get  autoremove                      |  Automatically remove unused dependencies.
+|_________________________________________________|____________________________________________________________________________________________________________________
+
+
+
+
+
+_________________________________________________________________________________________________________________________________________________________________________ 

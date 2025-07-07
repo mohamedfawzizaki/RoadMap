@@ -1,0 +1,92 @@
+_______________________________________________________________________________________________________________________________________
+                                            📌 List of All `http` Block Directives in Nginx
+
+The `http` block in Nginx is used to handle HTTP and HTTPS traffic. 
+It contains directives for handling requests, setting up security, compression, caching, proxying, and logging.
+
+_______________________________________________________________________________________________________________________________________
+ 🔹 1️⃣ Core Directives
+| Directive                 | Description                                   | Syntax Example 
+| `server`                  | Defines a virtual host inside `http`.         | `server { listen 80; server_name example.com; }` 
+| `include`                 | Loads external configuration files.           | `include /etc/nginx/mime.types;` 
+| `default_type`            | Sets the default MIME type for responses.     | `default_type text/html;` 
+| `sendfile`                | Enables efficient file transfers.             | `sendfile on;`            
+| `tcp_nopush`              | Optimizes packet delivery for large files.    | `tcp_nopush on;` 
+| `tcp_nodelay`             | Optimizes sending small packets.              | `tcp_nodelay on;` 
+| `keepalive_timeout`       | Sets the timeout for persistent connections.  | `keepalive_timeout 65;` 
+_______________________________________________________________________________________________________________________________________
+ 🔹 2️⃣ Logging & Debugging
+| `access_log`              | Specifies the access log file.                | `access_log /var/log/nginx/access.log;` 
+| `error_log`               | Specifies the error log file and level.       | `error_log /var/log/nginx/error.log warn;` 
+| `log_format`              | Defines a custom log format.                  | `log_format main '$remote_addr - $remote_user [$time_local] "$request"';` 
+_______________________________________________________________________________________________________________________________________
+ 🔹 3️⃣ Request Handling
+| `client_max_body_size`    | Limits the max request body size.             | `client_max_body_size 10M;` 
+| `send_timeout`            | Timeout for sending response to the client.   | `send_timeout 30s;` 
+| `keepalive_requests`      | Maximum requests per keepalive connection.    | `keepalive_requests 100;` 
+| `limit_except`            | Restricts allowed HTTP methods.               | `limit_except GET { deny all; }` 
+_______________________________________________________________________________________________________________________________________
+ 🔹 4️⃣ Compression & Performance
+| `gzip`                    | Enables gzip compression.                     | `gzip on;` 
+| `gzip_types`              | Specifies MIME types to compress.             | `gzip_types text/plain application/json;` 
+| `gzip_comp_level`         | Sets compression level (1-9).                 | `gzip_comp_level 6;` 
+| `etag`                    | Enables ETag headers for caching.             | `etag on;` 
+_______________________________________________________________________________________________________________________________________
+ 🔹 5️⃣ Proxy & Load Balancing
+| `proxy_pass`              | Passes request to backend server.             | `proxy_pass http://backend;` 
+| `proxy_set_header`        | Modifies headers sent to the backend.         | `proxy_set_header Host $host;` 
+| `proxy_connect_timeout`   | Timeout for connecting to the backend.        | `proxy_connect_timeout 30s;` 
+| `proxy_read_timeout`      | Timeout for reading backend responses.        | `proxy_read_timeout 60s;` 
+| `proxy_buffer_size`       | Sets buffer size for proxy responses.         | `proxy_buffer_size 16k;` 
+_______________________________________________________________________________________________________________________________________
+ 🔹 6️⃣ SSL & Security
+| `ssl`                     | Enables SSL/TLS for HTTPS.                    | `ssl on;` 
+| `ssl_certificate`         | Specifies the SSL certificate file.           | `ssl_certificate /etc/nginx/ssl/server.crt;` 
+| `ssl_certificate_key`     | Specifies the private key for SSL.            | `ssl_certificate_key /etc/nginx/ssl/server.key;` 
+| `ssl_protocols`           | Defines supported SSL/TLS versions.           | `ssl_protocols TLSv1.2 TLSv1.3;` 
+| `ssl_ciphers`             | Defines encryption algorithms.                | `ssl_ciphers HIGH:!aNULL:!MD5;` 
+_______________________________________________________________________________________________________________________________________
+ 🔹 7️⃣ Caching & Session Handling
+| `expires`                 | Sets cache expiration for static files.       | `expires 30d;` 
+| `add_header`              | Adds custom HTTP headers to responses.        | `add_header X-Frame-Options DENY;` 
+| `cache_control`           | Controls caching behavior.                    | `add_header Cache-Control "public, max-age=3600";` 
+| `fastcgi_cache`           | Enables caching for FastCGI responses.        | `fastcgi_cache my_cache;` 
+_______________________________________________________________________________________________________________________________________
+ 🔹 8️⃣ Rate Limiting & Access Control
+| `limit_req_zone`          | Defines rate limit zones.                     | `limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;` 
+| `limit_conn_zone`         | Limits concurrent connections per IP.         | `limit_conn_zone $binary_remote_addr zone=addr:10m;` 
+| `allow` / `deny`          | Controls access via IP whitelisting/blocking. | `allow 192.168.1.0/24; deny all;` 
+_______________________________________________________________________________________________________________________________________
+
+
+
+
+
+
+ 📌 Example: `http` Block in `nginx.conf`
+````````````````````````````````````````````````````````````````````nginx
+http {
+    sendfile on;
+    tcp_nopush on;
+    keepalive_timeout 65;
+    
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript;
+    
+    server {
+        listen 80;
+        server_name example.com;
+        
+        access_log /var/log/nginx/access.log;
+        error_log /var/log/nginx/error.log warn;
+        
+        location / {
+            proxy_pass http://backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+    }
+}
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________

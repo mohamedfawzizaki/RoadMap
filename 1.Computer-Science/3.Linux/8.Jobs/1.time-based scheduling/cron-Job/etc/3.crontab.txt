@@ -1,0 +1,135 @@
+_________________________________________________________________________________________________________________________________________________________________________
+                                                `/etc/crontab`
+                                              ===================   
+The `/etc/crontab` file is a system-wide cron configuration file used to schedule tasks on the system. 
+It is different from the user-specific crontab files (accessible via `crontab -e`),
+ as it allows scheduling tasks that are run as specific users and can be managed by administrators.
+
+______________________________________________________________________________________________________________________________________
+Purpose of `/etc/crontab`
+
+- It allows administrators to schedule cron jobs for any user on the system (not just the user who creates the cron job).
+- The cron jobs listed in `/etc/crontab` are executed by the cron daemon (crond) on behalf of the specified users.
+- The `/etc/crontab` file is used for tasks that require system-wide
+  scheduling or tasks that need to run as specific users other than the cron daemon’s default user.
+
+______________________________________________________________________________________________________________________________________
+Format of `/etc/crontab`
+
+The `/etc/crontab` file uses the following structure:
+
+```````````````````````````````````````plaintext
+ Minute  Hour  Day of Month  Month  Day of Week  User  Command
+  1       2     3              4      5           6     7
+```````````````````````````````````````
+
+Where:
+- Minute: 0-59 (e.g., 30 means at the 30th minute of the hour).
+- Hour: 0-23 (e.g., 14 means 2 PM).
+- Day of Month: 1-31 (e.g., 1 means the first day of the month).
+- Month: 1-12 (e.g., 12 means December).
+- Day of Week: 0-6 (0 is Sunday, 6 is Saturday).
+- User: The user to execute the command as (this is unique to `/etc/crontab` and differs from individual crontab files).
+- Command: The command to run (can be a script, a binary, or a complex command).
+
+______________________________________________________________________________________________________________________________________
+Detailed Example of `/etc/crontab`
+
+Here is an example of a typical `/etc/crontab` file:
+
+```````````````````````````````````````plaintext
+ m h dom mon dow user  command
+  30 2 * * * root /usr/local/bin/backup.sh
+  15 4 * * 1 user /home/user/scripts/monthly_cleanup.sh
+  0 6 * * * root /usr/sbin/rotate_logs
+```````````````````````````````````````
+
+In this example:
+1. `30 2 * * * root /usr/local/bin/backup.sh`
+   - At 2:30 AM every day (`30 2`), the script `/usr/local/bin/backup.sh` will be executed by the `root` user.
+  
+2. `15 4 * * 1 user /home/user/scripts/monthly_cleanup.sh`
+   - On every Monday at 4:15 AM (`15 4 * * 1`), the script `/home/user/scripts/monthly_cleanup.sh`
+     will be executed by the user `user`.
+
+3. `0 6 * * * root /usr/sbin/rotate_logs`
+   - Every day at 6:00 AM (`0 6`), the `root` user will execute the command `/usr/sbin/rotate_logs`.
+
+______________________________________________________________________________________________________________________________________
+Special Strings in `/etc/crontab`
+
+There are several special strings that can be used in place of specific time/date values to make scheduling easier. 
+These special strings can replace the minute, hour, day of the month, month, and day of the week.
+                         ___________________________________________________________
+                        |   String   |             Description                      |
+                        |____________|______________________________________________|
+                        | `@reboot`  | Run the command at system boot.              |
+                        | `@yearly`  | Run once a year, equivalent to `0 0 1 1 *`.  |
+                        | `@monthly` | Run once a month, equivalent to `0 0 1 * *`. |
+                        | `@weekly`  | Run once a week, equivalent to `0 0 * * 0`.  |
+                        | `@daily`   | Run once a day, equivalent to `0 0 * * *`.   |
+                        | `@hourly`  | Run once an hour, equivalent to `0 * * * *`. |
+                        |____________|______________________________________________|
+
+Example:
+```````````````````````````````````````plaintext
+@daily root /usr/bin/clean_temp
+@reboot root /usr/bin/start_daemon
+```````````````````````````````````````
+These are equivalent to:
+```````````````````````````````````````plaintext
+0 0 * * * root /usr/bin/clean_temp
+@reboot root /usr/bin/start_daemon
+```````````````````````````````````````
+
+______________________________________________________________________________________________________________________________________
+Managing `/etc/crontab`
+
+1. Editing `/etc/crontab`
+   - Open the file using any text editor with superuser privileges:
+     ```````````````````````````````````````bash
+     sudo nano /etc/crontab
+     ```````````````````````````````````````
+   - Add or modify cron jobs as needed. Be sure to follow the correct format.
+
+2. Reloading Cron Daemon After Editing
+   - After editing `/etc/crontab`, it is necessary to reload the cron daemon for the changes to take effect. 
+   - This can be done using:
+     ```````````````````````````````````````bash
+     sudo systemctl reload cron
+     ```````````````````````````````````````
+   - Or on systems using `crond`:
+     ```````````````````````````````````````bash
+     sudo systemctl reload crond
+     ```````````````````````````````````````
+
+3. Checking Cron Jobs
+   - To verify cron jobs that are currently scheduled, including those from `/etc/crontab`,
+     you can check the system cron logs or use the following:
+     ```````````````````````````````````````bash
+     sudo grep CRON /var/log/syslog
+     ```````````````````````````````````````
+   - This command will display logs related to cron jobs, including those from `/etc/crontab`.
+
+______________________________________________________________________________________________________________________________________
+Permissions and Security Considerations
+
+- File Ownership and Permissions:
+  - Ensure that the `/etc/crontab` file is owned by `root` and
+    has appropriate permissions to prevent unauthorized modifications:
+    ```````````````````````````````````````bash
+    sudo chown root:root /etc/crontab
+    sudo chmod 644 /etc/crontab
+    ```````````````````````````````````````
+
+- Allowing or Denying User Cron Jobs:  
+  - In some systems, you can control user access to cron jobs using `/etc/cron.allow` and `/etc/cron.deny`.
+  -  These files are typically used in conjunction with `/etc/crontab` to manage cron job access.
+
+______________________________________________________________________________________________________________________________________
+Summary of Key Points
+- The `/etc/crontab` file is used to schedule system-wide cron jobs for any user.
+- The file specifies the user who will run the cron job.
+- It supports the standard cron format, with additional special strings for scheduling.
+- To modify, use `sudo` to edit and reload the cron daemon after changes.
+_________________________________________________________________________________________________________________________________________________________________________

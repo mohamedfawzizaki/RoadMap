@@ -1,0 +1,21 @@
+______________________________________________________________________________________________________________________________________
+                                        https://minikube.sigs.k8s.io/docs/commands/config/
+______________________________________________________________________________________________________________________________________
+                                            minikube config SUBCOMMAND [flags]
+                                            minikube config defaults PROPERTY_NAME [flags]
+                                            minikube config get PROPERTY_NAME [flags]
+                                            minikube config view [flags]
+                                            minikube config set PROPERTY_NAME PROPERTY_VALUE [flags]
+                                            minikube config unset PROPERTY_NAME [flags]
+
+                                            minikube config help [command] [flags]
+
+                    |               Command                     |               Description                                 |
+                    | ----------------------------------------- | --------------------------------------------------------- |
+                    | `minikube config view`                    | Shows all current persistent settings.                    |
+                    | `minikube config get PROPERTY_NAME`       | Gets the value of a specific config property.             |
+                    | `minikube config set PROPERTY_NAME VALUE` | Persists a config key/value (e.g., default driver, CPUs). |
+                    | `minikube config unset PROPERTY_NAME`     | Removes a config value.                                   |
+                    | `minikube config defaults PROPERTY_NAME`  | Shows the default (built-in) value of a config.           |
+
+______________________________________________________________________________________________________________________________________

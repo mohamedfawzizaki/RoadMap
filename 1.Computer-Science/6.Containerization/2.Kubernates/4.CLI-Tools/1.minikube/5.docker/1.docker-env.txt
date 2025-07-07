@@ -1,0 +1,69 @@
+______________________________________________________________________________________________________________________________________
+                                https://minikube.sigs.k8s.io/docs/commands/docker-env/
+______________________________________________________________________________________________________________________________________
+                                        minikube docker-env [flags]
+
+ 
+______________________________________________________________________________________________________________________________________
+
+> `minikube docker-env` is **not supported for multi-node clusters** (like your HA cluster with `-n 3`).
+
+---
+
+### 🧠 Why?
+
+The `minikube docker-env` command sets your local shell to point to the **Docker daemon inside a single-node Minikube VM**. 
+But with multi-node or HA clusters, **each node has its own Docker daemon**, and Minikube can't unify them for this command.
+
+---
+
+### ✅ **What to do instead?**
+
+Use the **Minikube built-in registry add-on**, which lets all nodes (and your host machine)
+ push/pull Docker images via a shared internal registry.
+
+---
+
+### 🔧 Step-by-Step: Enable and Use Minikube Registry
+
+#### 1. Enable the registry add-on
+
+```bash
+minikube addons enable registry -p mycluster
+```
+
+#### 2. Get the registry IP and port
+
+```bash
+kubectl -n kube-system port-forward svc/registry 5000:80
+```
+
+This will make the registry accessible at:
+
+```bash
+localhost:5000
+```
+
+#### 3. Tag and push your image to the registry
+
+```bash
+docker tag myimage localhost:5000/myimage
+docker push localhost:5000/myimage
+```
+
+#### 4. Use it in your deployment
+
+```yaml
+image: localhost:5000/myimage
+imagePullPolicy: IfNotPresent
+```
+
+---
+
+### ✅ Benefits
+
+* Works with **multi-node clusters**
+* No need to `docker-env`
+* Makes your local images available to the cluster
+
+---

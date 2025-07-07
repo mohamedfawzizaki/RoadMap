@@ -1,0 +1,9 @@
+______________________________________________________________________________________________________________________________________
+                                        https://minikube.sigs.k8s.io/docs/commands/profile/
+______________________________________________________________________________________________________________________________________
+                                            minikube profile [flags]
+                                            minikube profile [MINIKUBE_PROFILE_NAME]
+                                            minikube profile list [flags]
+
+                    You can return to the default minikube profile by running `minikube profile default` [flags]
+______________________________________________________________________________________________________________________________________

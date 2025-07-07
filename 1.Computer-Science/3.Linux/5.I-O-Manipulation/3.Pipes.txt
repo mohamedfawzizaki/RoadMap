@@ -1,0 +1,130 @@
+______________________________________________________________________________________________________________________________________
+                                                            Pipes 
+                                                            =====
+
+A pipe in Linux is a method used to pass the output of
+ one command as the input to another command, forming a chain of commands.
+It is a fundamental concept in Unix-like operating systems, allowing the output
+ of one process to be directly used by another, enabling powerful data processing workflows.
+
+Pipes are represented by the vertical bar `|` symbol.
+---------------------------------------------------------------------------------------------------------
+How Pipes Work
+
+The basic idea behind pipes is to connect two commands so that
+ the output of the first command (stdout) becomes the input to the second command (stdin).
+This allows complex operations to be broken down into smaller, simpler tasks.
+
+- Syntax:
+      ```bash
+      command1 | command2
+      ```
+
+- Example:
+      ```bash
+      echo "Hello, World!" | grep "Hello"
+      ```
+
+  In this example:
+      - `echo "Hello, World!"` generates the string `Hello, World!`.
+      - The pipe `|` sends this output as input to the `grep` command.
+      - `grep "Hello"` searches the input for the string "Hello" and prints
+        any matching lines, which in this case is `"Hello, World!"`.
+---------------------------------------------------------------------------------------------------------
+Common Use Cases for Pipes
+
+1.Filtering Output
+   Pipes are frequently used to filter the output of one command through another to search, sort, or modify the data.
+
+   - Example:
+        ```bash
+        ps aux | grep "apache"
+        ```
+        - `ps aux` lists all running processes.
+        - The pipe sends this output to `grep`, which filters and shows only lines containing "apache".
+
+2.Counting Occurrences
+   You can use pipes to count occurrences of a pattern in output.
+
+   - Example:
+        ```bash
+        ls -l | grep -c "txt"
+        ```
+        This command counts the number of files in the current directory that contain "txt" in their names.
+
+3.Sorting and Displaying Results
+   Pipes are often used to process lists or outputs and order them accordingly.
+
+   - Example:
+        ```bash
+        ls -l | sort -k 5 -n
+        ```
+        This command lists files and directories in long format (`ls -l`),
+         and then pipes the output into `sort`, which sorts the files by their size (5th field) in numerical order.
+
+4.Displaying the Last Few Lines
+   You can pipe data into `tail` to display the last few lines of the output.
+
+   - Example:
+        ```bash
+        dmesg | tail -n 10
+        ```
+        This command shows the last 10 lines of the system message buffer.
+
+5.Displaying the First Few Lines
+   Similarly, you can pipe data into `head` to display the first few lines.
+
+   - Example:
+        ```bash
+        ls -l | head -n 5
+        ```
+        This command shows the first 5 lines of the long listing of files.
+---------------------------------------------------------------------------------------------------------
+Multiple Pipelines
+
+You can chain multiple commands together by using several pipes to create a sequence of commands.
+
+- Example:
+      ```bash
+      ps aux | grep "apache" | awk '{print $1}' | sort
+      ```
+      In this example:
+      1.`ps aux` lists all running processes.
+      2.`grep "apache"` filters the output for lines containing "apache".
+      3.`awk '{print $1}'` extracts the first column (which contains the user of each process).
+      4.`sort` sorts the users alphabetically.
+---------------------------------------------------------------------------------------------------------
+Combining Pipes with Other Commands
+
+Pipes can also be combined with other features like redirection, allowing you to send output to files or discard it.
+
+- Example:
+      ```bash
+      ps aux | grep "apache" > apache_processes.txt
+      ```
+      This command finds all processes related to Apache and redirects the output to a file named `apache_processes.txt`.
+---------------------------------------------------------------------------------------------------------
+What Happens Behind the Scenes?
+
+When a pipe is used:
+      1.The shell creates a pipe buffer that holds data being passed between processes.
+      2.It then creates two processes: one for each command in the pipe.
+      3.The first command writes its output to the pipe buffer, while the second command reads from it.
+
+This is handled efficiently by the operating system's kernel, which manages inter-process communication (IPC).
+---------------------------------------------------------------------------------------------------------
+Advantages of Using Pipes
+
+- Efficiency : Pipes allow processes to communicate directly, without needing temporary files or intermediary storage.
+- Simplicity : You can create complex workflows by chaining simple commands.
+- Performance: As data is passed between commands in memory, it's typically faster than writing to and reading from disk files.
+- Flexibility: You can combine any number of commands to handle large tasks with minimal resources.
+---------------------------------------------------------------------------------------------------------
+Conclusion
+
+Pipes are one of the most powerful and frequently used features in Linux.
+By chaining commands together, you can build intricate data
+ processing pipelines that allow for efficient, flexible workflows.
+Pipes enable you to take advantage of the simplicity and modularity
+ of Unix-like systems, and they are essential for any Linux user looking to streamline their command-line tasks.
+______________________________________________________________________________________________________________________________________

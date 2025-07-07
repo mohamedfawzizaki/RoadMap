@@ -1,0 +1,12 @@
+_______________________________________________________________________________________________________________________________________
+Virtual Private Network (VPN)
+        - A Virtual Private Network uses encryption to create a secure network over a public one.
+
+        Characteristics:
+            - Provides secure remote access to private networks.
+            - Uses encryption protocols like IPsec and SSL.
+
+        Examples:
+            - Employees accessing office servers remotely.
+            - Secure internet browsing on public Wi-Fi.
+_______________________________________________________________________________________________________________________________________

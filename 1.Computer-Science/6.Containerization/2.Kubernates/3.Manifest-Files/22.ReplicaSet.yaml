@@ -1,0 +1,53 @@
+# --------------------------------------------------------------------------------------------------------
+# Kubernetes ReplicaSet
+# --------------------------------------------------------------------------------------------------------
+# PURPOSE:
+# - Ensures a specified number of pod replicas are running at any given time.
+# - Automatically replaces failed pods.
+# - Typically used by Deployments internally, but can be used standalone for simpler setups.
+#
+# NOTE:
+# - A ReplicaSet does NOT support rolling updates or rollbacks directly.
+# - For most production use cases, use a Deployment instead unless you need fine-grained control.
+# --------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------
+# Example Behavior:
+# - If one of the 3 pods dies, the ReplicaSet automatically creates a new one.
+# - If more than 3 pods with label `app: myapp` exist, the extra ones are *not* removed unless manually.
+# - If you manually delete a pod, the ReplicaSet will replace it to maintain the desired replica count.
+# --------------------------------------------------------------------------------------------------------
+
+apiVersion: apps/v1               # Required API group for ReplicaSet resources.
+kind: ReplicaSet                  # Declares this manifest is a ReplicaSet.
+
+metadata:
+  name: my-replicaset             # Unique name of the ReplicaSet within the namespace.
+  namespace: default              # Namespace where the ReplicaSet will be deployed (default if omitted).
+  labels:
+    component: web                # Optional: Labels to help identify and manage the ReplicaSet.
+
+spec:
+  replicas: 3                     # Number of desired pod replicas to run at any time.
+
+  selector:                       # Label selector to identify managed pods.
+    matchLabels:
+      app: myapp                  # Only pods with label `app: myapp` will be managed by this ReplicaSet.
+
+  template:                       # PodTemplateSpec: defines how the managed Pods are created.
+    metadata:
+      labels:
+        app: myapp                # Must match the `selector.matchLabels` above.
+    spec:
+      containers:
+        - name: nginx             # Name of the container inside each Pod.
+          image: nginx:1.21       # Docker image used by the container.
+          ports:
+            - containerPort: 80   # Exposes container's port 80 to the internal network.
+          resources:              # Optional: defines CPU/memory usage (can help with scheduling).
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "128Mi"
+

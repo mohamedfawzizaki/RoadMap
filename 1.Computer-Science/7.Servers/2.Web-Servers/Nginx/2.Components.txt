@@ -1,0 +1,119 @@
+_______________________________________________________________________________________________________________________________________
+                                                 🔹 Nginx Components & Architecture  
+
+Nginx is a modular, high-performance web server that can function as a reverse proxy, load balancer, mail proxy, and HTTP cache. 
+It is composed of multiple key components that work together to handle requests efficiently.
+
+_______________________________________________________________________________________________________________________________________
+                                                    🔹 1️⃣ Core Components of Nginx
+
+| Component                 | Description                                                                                           |
+| Master Process            | The main process that manages worker processes, reads configuration files, and handles signals.       |
+| Worker Processes          | Handle incoming connections, process requests, and serve content. Each worker operates independently. |
+| Event-Driven Architecture | Uses an asynchronous, event-driven model for handling multiple connections efficiently.               |
+| Configuration Files       | Located in `/etc/nginx/nginx.conf` and `/etc/nginx/conf.d/`, they define server behavior, routing, and modules. |
+| Modules                   | Extend Nginx functionality (e.g., caching, security, authentication, and proxying).                   |
+| Logging System            | Stores access logs (`access.log`) and error logs (`error.log`) in `/var/log/nginx/`.                  |
+
+_______________________________________________________________________________________________________________________________________
+                                                    🔹 2️⃣ Nginx Directory Structure
+
+| Path                          | Description 
+| `/etc/nginx/`                 | Main configuration directory. 
+| `/etc/nginx/nginx.conf`       | The primary Nginx configuration file. 
+| `/etc/nginx/sites-available/` | Stores available virtual host configurations. 
+| `/etc/nginx/sites-enabled/`   | Contains active virtual host configurations (linked from `sites-available`). 
+| `/etc/nginx/conf.d/`          | Additional configuration files (e.g., security, caching). 
+
+| `/usr/lib/nginx/modules/`     | Stores dynamically loaded modules. 
+
+| `/var/www/`                   | Default web root directory. 
+| `/var/log/nginx/`             | Stores logs for debugging and monitoring. 
+| `/var/cache/nginx/`           | Stores cached content for performance optimization. 
+
+_______________________________________________________________________________________________________________________________________
+                                                        🔹 3️⃣ Nginx Processes
+
+| Process                 | Description 
+| `nginx: master process` | The main process that starts worker processes and reloads configurations. 
+| `nginx: worker process` | Handles incoming HTTP requests and processes them asynchronously. 
+
+📌 Check Running Processes:  
+````````````````````````````````````````````````````````````````````bash
+ps aux | grep nginx
+````````````````````````````````````````````````````````````````````
+📌 Reload Nginx Without Restarting:  
+````````````````````````````````````````````````````````````````````bash
+sudo systemctl reload nginx
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+                                                    🔹 4️⃣ Nginx Modules
+
+Nginx can be extended with modules that provide additional functionality.
+
+ 📌 Built-in Modules:
+| Module              | Description 
+| `http_core`         | Handles core HTTP processing. 
+| `http_proxy`        | Enables reverse proxying to backend servers. 
+| `http_rewrite`      | Allows URL rewriting and redirects. 
+| `http_ssl`          | Enables SSL/TLS support for HTTPS. 
+| `http_gzip`         | Compresses responses using Gzip. 
+
+ 📌 Dynamic Modules (Loaded from `/usr/lib/nginx/modules/`):
+| Module                            | Description 
+| `ngx_http_geoip_module`           | Enables GeoIP-based access control. 
+| `ngx_http_auth_request_module`    | Handles authentication requests. 
+| `ngx_http_cache_purge_module`     | Allows cache purging for dynamic content. 
+
+📌 Check Installed Modules:  
+````````````````````````````````````````````````````````````````````bash
+nginx -V 2>&1 | grep -- 'modules'
+````````````````````````````````````````````````````````````````````
+
+📌 List Available Modules:  
+````````````````````````````````````````````````````````````````````bash
+ls /usr/lib/nginx/modules/
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+                                        🔹 5️⃣ How Nginx Handles Requests
+
+ 📌 Nginx Request Processing Flow:
+1️⃣ Client Request: A browser or API client sends an HTTP request.  
+2️⃣ Nginx Master Process: Receives the request and delegates it to a worker process.  
+3️⃣ Worker Process: Handles the request based on configuration (`server` block in `nginx.conf`).  
+4️⃣ Response Handling:  
+   - If it's a static file, Nginx serves it from `/var/www/html/`.  
+   - If it's a reverse proxy, Nginx forwards the request to a backend (e.g., PHP, Node.js).  
+   - If caching is enabled, Nginx serves the request from cache (`/var/cache/nginx/`).  
+5️⃣ Logging & Completion:  
+   - Logs the request in `/var/log/nginx/access.log`.  
+   - Returns the response to the client.  
+
+📌 Example Reverse Proxy Configuration:
+````````````````````````````````````````````````````````````````````nginx
+server {
+    listen 80;
+    server_name example.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+````````````````````````````````````````````````````````````````````
+✅ This forwards all requests to a local backend server running on port `5000`.
+
+_______________________________________________________________________________________________________________________________________
+                                                    🔹 6️⃣ Summary
+
+- Master Process manages worker processes.
+- Worker Processes handle HTTP requests asynchronously.
+- Configuration Files define server behavior (`nginx.conf`, `sites-enabled/`, `conf.d/`).
+- Logging System tracks access and errors (`/var/log/nginx/`).
+- Modules provide additional features (static, proxy, security, etc.).
+- Nginx serves static content, proxies requests, and caches responses efficiently.
+
+_______________________________________________________________________________________________________________________________________

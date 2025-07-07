@@ -1,0 +1,30 @@
+ ___________________________________________________________________________________________________________________________________
+|   vagrant plugin list [-h]
+                 --local                                    Include local project plugins    
+|___________________________________________________________________________________________________________________________________
+|   vagrant plugin expunge [-h]
+                 --force                                    Do not prompt for confirmation
+                 --local                                    Include plugins from local project for expunge
+                 --local-only                               Only expunge local project plugins
+                 --global-only                              Only expunge global plugins
+                 --reinstall                                Reinstall current plugins after expunge
+|___________________________________________________________________________________________________________________________________
+|   vagrant plugin install <name>... [-h]
+                 --entry-point NAME                         The name of the entry point file for loading the plugin.
+                 --plugin-clean-sources                     Remove all plugin sources defined so far (including defaults)
+                 --plugin-source PLUGIN_SOURCE              Add a RubyGems repository source
+                 --plugin-version PLUGIN_VERSION            Install a specific version of the plugin
+                 --local                                    Install plugin for local project only
+                 --verbose                                  Enable verbose output for plugin installation
+|___________________________________________________________________________________________________________________________________
+|   vagrant plugin uninstall <name> [<name2> <name3> ...] [-h]
+                 --local                                    Remove plugin from local project
+|___________________________________________________________________________________________________________________________________
+|   vagrant plugin repair [-h]
+                 --local                                    Repair plugins in local project
+|___________________________________________________________________________________________________________________________________
+|   vagrant plugin update [names...] [-h]
+                 --local                                    Update plugin in local project
+|___________________________________________________________________________________________________________________________________
+|   vagrant plugin license <name> <license-file> [-h]
+|___________________________________________________________________________________________________________________________________

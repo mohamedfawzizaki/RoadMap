@@ -1,0 +1,16 @@
+_________________________________________________________________________________________________________________________________________________________________________ 
+                                                     User Management
+                                                     ===============
+ _______________________________________________________________________________________________________________________________________________________________________
+| Option          | Example                                                  | Description                                                                                                       
+|_________________|__________________________________________________________|__________________________________________________________________________________________
+| ssh-copy-id     | ssh-copy-id user@remote_host                             | Copies your public SSH key to the remote server for passwordless authentication.                                      
+|-----------------|----------------------------------------------------------|------------------------------------------------------------------------------------------ 
+| -i              | ssh-copy-id -i ~/.ssh/my_custom_key.pub user@remote_host | Specifies the path to the public key you want to copy (default is ~/.ssh/id_rsa.pub).                                
+| -p              | ssh-copy-id -p 2222 user@remote_host                     | Specifies a non-default SSH port (e.g., 2222 instead of the default 22).                                           
+| -f              | ssh-copy-id -f user@remote_host                          | Forces the copying of the public key, even if it's already in the authorized_keys file.                              
+| -v              | ssh-copy-id -v user@remote_host                          | Enables verbose output, which can help in debugging and seeing more details of the process.                            
+|_________________|__________________________________________________________|__________________________________________________________________________________________
+ 
+
+_________________________________________________________________________________________________________________________________________________________________________

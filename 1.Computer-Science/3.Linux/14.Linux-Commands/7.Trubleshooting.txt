@@ -1,0 +1,51 @@
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                                    TrubleShooting  Management 
+                                                    ===========================
+
+ 
+ _________________________________________________________________________________________________________________________________________
+|    Command   |          Example              |                            Description                                                   |
+|______________|_______________________________|__________________________________________________________________________________________|
+| dmesg        |   dmesg | tail                |   Displays kernel messages, useful for diagnosing boot issues or hardware errors.        |
+| journalctl   |   journalctl -xe              |   Views detailed system logs, including errors and warnings.                             |
+| top          |   top                         |   Displays real-time CPU and memory usage by processes.                                  |
+| htop         |   htop                        |   An enhanced version of top with an interactive UI for managing processes.              |
+| vmstat       |   vmstat 2                    |   Displays CPU, memory, and IO statistics, updated at regular intervals.                 |
+| iostat       |   iostat -x 2                 |   Provides detailed disk IO statistics.                                                  |
+| free         |   free -h                     |   Shows available and used memory (RAM and swap).                                        |
+| df           |   df -h                       |   Reports disk space usage for file systems.                                             |
+| du           |   du -sh /var/log             |   Displays the size of directories or files.                                             |
+| lsblk        |   lsblk                       |   Lists information about block devices, useful for troubleshooting storage issues.      |
+| blkid        |   blkid                       |   Displays UUIDs and types of block devices, helpful for troubleshooting mounting issues.|
+| fsck         |   sudo fsck /dev/sda1         |   Checks and repairs file system errors (run in unmounted mode).                         |
+| mount        |   mount | grep /mnt           |   Verifies mounted file systems and their options.                                       |
+| netstat      |   netstat -tuln               |   Displays network connections and listening ports.                                      |
+| ss           |   ss -tuln                    |   A faster alternative to netstat for viewing network connections.                       |
+| ping         |   ping google.com             |   Checks connectivity to a remote host.                                                  |
+| traceroute   |   traceroute google.com       |   Displays the path packets take to reach a host.                                        |
+| curl         |   curl -I http://example.com  |   Tests HTTP/HTTPS connections and fetches headers.                                      |
+| wget         |   wget http://example.com     |   Downloads files and verifies remote availability.                                      |
+| ip           |   ip addr                     |   Displays network interface details and IP addresses.                                   |
+| ifconfig     |   ifconfig eth0               |   Displays or configures network interfaces (deprecated in favor of ip).                 |
+| nmcli        |   nmcli dev status            |   Manages network connections and configurations.                                        |
+| tcpdump      |   sudo tcpdump -i eth0        |   Captures network packets for analysis.                                                 |
+| systemctl    |   systemctl status sshd       |   Checks the status of system services.                                                  |
+| ps           |   ps aux | grep apache2       |   Lists running processes, filtering by specific services.                               |
+| kill         |   kill -9 <PID>               |   Terminates processes by PID.                                                           |
+| strace       |   strace -p <PID>             |   Traces system calls and signals for a process.                                         |
+| lsof         |   lsof -i :80                 |   Lists open files and network connections, such as those on a specific port.            |
+| uptime       |   uptime                      |   Shows system uptime, load averages, and logged-in users.                               |
+| who          |   who                         |   Displays users currently logged into the system.                                       |
+| last         |   last                        |   Lists login history for all users.                                                     |
+| sar          |   sar -u 2 5                  |   Monitors system performance and resource usage over time.                              |
+| uname        |   uname -a                    |   Displays system information like kernel version and architecture.                      |
+| hostnamectl  |   hostnamectl                 |   Shows or changes the system's hostname and related information.                        |
+| lsmod        |   lsmod                       |   Lists loaded kernel modules, useful for hardware troubleshooting.                      |
+| modprobe     |   sudo modprobe -r <module>   |   Adds or removes kernel modules.                                                        |
+| cat          |   cat /var/log/syslog         |   Displays the contents of a file (useful for log files).                                |
+| tail         |   tail -f /var/log/syslog     |   Continuously monitors new entries in a log file.                                       |
+| grep         |   grep "error" /var/log/syslog|   Searches for specific keywords in logs or text files.                                  |
+| uptime       |   uptime                      |   Displays how long the system has been running.                                         |
+|______________|_______________________________|__________________________________________________________________________________________|
+ 
+#_________________________________________________________________________________________________________________________________________________________________________# 

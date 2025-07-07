@@ -1,0 +1,129 @@
+#_______________________________________________________________________________________________________________________________________
+    --as='':
+        Username to impersonate for the operation. User could be a regular user or a service account in a namespace.
+        --as=<normal-user>
+        --as=system:serviceaccount:<namespace>:<sa-name>
+        kubectl delete pod mypod --namespace=demo --as=system:serviceaccount:demo:readonly-sa
+    --as-group=[]:
+        Group to impersonate for the operation, this flag can be repeated to specify multiple groups.
+        kubectl get secrets --namespace=team-a --as=alice --as-group=qa
+        Kubernetes defines some built-in groups:
+                Group	                Meaning
+        --as-group=system:authenticated	All authenticated users
+        --as-group=system:unauthenticated	All unauthenticated requests
+        --as-group=system:serviceaccounts	All service accounts across all namespaces
+        --as-group=system:serviceaccounts:<namespace>	All service accounts in a namespace
+    --as-uid='':
+        UID to impersonate for the operation.
+#_______________________________________________________________________________________________________________________________________
+    --kubeconfig='':
+        Path to the kubeconfig file to use for CLI requests.
+    --cache-dir='C:\Users\workstation\.kube\cache':
+        Default cache directory
+    -s, --server=<url>:
+        The address and port of the Kubernetes API server,
+        This flag overrides the Kubernetes API server address specified in your kubeconfig file,
+        Connecting to a different cluster than your default
+        kubectl get pods -s https://my-k8s-api.example.com:6443 --token=$TOKEN --certificate-authority=/path/to/ca.crt
+    --tls-server-name=<hostname>:
+        Server name to use for server certificate validation. If it is not provided, the hostname used to contact the server is used,
+        This flag overrides the expected hostname in the TLS certificate of the API server.
+        kubectl get pods --server=https://10.0.0.1:6443 --tls-server-name=k8s.mycompany.local --token=$(cat ./token.txt) --certificate-authority=./ca.crt
+    --context='':
+        Selects a specific context from your kubeconfig file.
+        kubectl get pods --context=dev-cluster
+    --cluster='':
+        The name of the kubeconfig cluster to use
+        Directly specifies the cluster defined in your kubeconfig, ignoring the context.
+        kubectl get nodes --cluster=prod-cluster
+    -n, --namespace='':
+        If present, the namespace scope for this CLI request
+        Overrides the namespace scope for the current CLI request.
+        kubectl get pods -n dev
+    --profile='none':
+        Name of profile to capture. One of (none|cpu|heap|goroutine|threadcreate|block|mutex)
+#_______________________________________________________________________________________________________________________________________
+    --certificate-authority='':
+        Path to a cert file for the certificate authority
+    --client-certificate='':
+        Path to a client certificate file for TLS
+    --client-key='':
+        Path to a client key file for TLS
+    --insecure-skip-tls-verify=false:
+        If true, the server's certificate will not be checked for validity. This will make your HTTPS connectionsinsecure
+        
+    kubectl get nodes \
+            --server=https://api.example.com:6443 \
+            --certificate-authority=/etc/ssl/ca.crt \
+            --client-certificate=/etc/ssl/user.crt \
+            --client-key=/etc/ssl/user.key
+#_______________________________________________________________________________________________________________________________________
+    --token=<bearer-token>:
+        Bearer token for authentication to the API server
+        A JWT token (usually base64-encoded) used to authenticate API requests.
+        kubectl get pods \
+            --server=https://192.168.1.100:6443 \
+            --token=$(cat ./sa.token) \
+            --certificate-authority=./ca.crt
+            #!/bin/bash
+            SA_NAME="ci-bot"
+            NAMESPACE="default"
+            CLUSTERROLE="view"  # or a custom ClusterRole name
+
+            echo "📌 Creating ServiceAccount: $SA_NAME"
+            kubectl create serviceaccount "$SA_NAME" --namespace "$NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
+
+            echo "🔗 Binding ServiceAccount to cluster role: $CLUSTERROLE"
+            kubectl create clusterrolebinding "${SA_NAME}-binding" \
+            --clusterrole="$CLUSTERROLE" \
+            --serviceaccount="${NAMESPACE}:${SA_NAME}" \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+            echo "🔐 Requesting token via TokenRequest API..."
+            SECRET_TOKEN=$(kubectl create token "$SA_NAME" --namespace "$NAMESPACE")
+
+            echo ""
+            echo "✅ Token for --token:"
+            echo "$SECRET_TOKEN"
+
+            echo ""
+            echo "🔁 Example:"
+            echo "kubectl get pods --token=$SECRET_TOKEN --server=<api-server-url> --certificate-authority=<ca.crt>"
+
+        kubectl get pods \
+            --token=<token-from-script> \
+            --server=https://<your-api-server>:6443 \
+            --certificate-authority=./ca.crt
+    --username='':
+        Username for basic authentication to the API server
+    --password='':
+        Password for basic authentication to the API server
+
+    --request-timeout='0':
+        The length of time to wait before giving up on a single server request. Non-zero values should contain a
+        corresponding time unit (e.g. 1s, 2m, 3h). A value of zero means don't timeout requests.
+    --user='':
+        The name of the kubeconfig user to use
+
+        | Flag         | Description                                          | Uses Credentials From | Typical Use Case                     |
+        | ------------ | ---------------------------------------------------- | --------------------- | ------------------------------------ |
+        | `--user`     | Use a **named kubeconfig user**                      | kubeconfig            | Switch between configured identities |
+        | `--as`       | **Impersonate** another identity                     | your current identity | Simulate user/group access           |
+        | `--username` | Use **basic auth** credentials (not from kubeconfig) | command line input    | Legacy auth or dev cluster           |
+#_______________________________________________________________________________________________________________________________________
+    --disable-compression=false:
+        If true, opt-out of response compression for all requests to the server
+    --log-flush-frequency=5s:
+        Maximum number of seconds between log flushes
+    --match-server-version=false:
+        Require server version to match client version
+    --profile-output='profile.pprof':
+        Name of the file to write the profile to
+    -v, --v=0:
+        number for the log level verbosity
+    --vmodule=:
+        comma-separated list of pattern=N settings for file-filtered logging (only works for the default text log
+        format)
+    --warnings-as-errors=false:
+        Treat warnings received from the server as errors and exit with a non-zero exit code
+#_______________________________________________________________________________________________________________________________________

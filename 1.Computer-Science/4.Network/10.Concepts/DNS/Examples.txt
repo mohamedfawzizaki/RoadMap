@@ -1,0 +1,170 @@
+_______________________________________________________________________________________________________________________________________
+                                 DNS Configuration Files on Unix-based Systems (Linux)
+
+When configuring DNS on Unix-based systems, several key files are involved. 
+These files control how the system performs hostname-to-IP address resolution.
+
+_______________________________________________________________________________________________________________________________________
+                                             1. `/etc/resolv.conf`  
+
+The `/etc/resolv.conf` file specifies the DNS servers that the system uses to resolve domain names into IP addresses.
+
+Format:
+- Each line begins with the keyword `nameserver`, followed by the IP address of a DNS server.
+- The system queries the listed DNS servers in the order they appear.
+
+Example of `/etc/resolv.conf`:
+```````````````````````````````````````````plaintext
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+search example.com
+```````````````````````````````````````````
+
+- Explanation:
+  - `nameserver 8.8.8.8`: This line tells the system to use Google’s public DNS server (`8.8.8.8`) for resolving domain names.
+  - `nameserver 8.8.4.4`: This line specifies an alternate DNS server (`8.8.4.4`) in case the primary server fails.
+  - `search example.com`: When a partial hostname (e.g., `webserver`) is queried,
+                           the system appends `example.com` to form the full domain name (`webserver.example.com`).
+
+Commands to Modify `/etc/resolv.conf`:
+1. Manually editing the file:
+   You can open and edit the file using any text editor, such as `nano`:
+   ```````````````````````````````````````````bash
+   sudo nano /etc/resolv.conf
+   ```````````````````````````````````````````
+2. Setting nameservers dynamically using `nmcli` (NetworkManager CLI):
+   ```````````````````````````````````````````bash
+   sudo nmcli con mod "Wired connection 1" ipv4.dns "8.8.8.8 8.8.4.4"
+   sudo nmcli con up "Wired connection 1"
+   ```````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+                                                      2. `/etc/hosts`  
+
+The `/etc/hosts` file allows manual mapping of hostnames to IP addresses. 
+This is useful for local hostname resolution, especially when DNS is not available or for testing purposes.
+
+ Format:
+- Each line consists of an IP address followed by one or more hostnames separated by spaces or tabs.
+
+ Example of `/etc/hosts`:
+```````````````````````````````````````````plaintext
+127.0.0.1   localhost
+192.168.1.10 myserver.local myserver
+10.0.0.5    webserver.example.com webserver
+```````````````````````````````````````````
+
+- Explanation:
+  - `127.0.0.1 localhost`: 
+            - Maps the loopback IP address (`127.0.0.1`) to the hostname `localhost`.
+  - `192.168.1.10 myserver.local myserver`: 
+            - Maps the private IP `192.168.1.10` to the hostname `myserver.local`. 
+            - The alias `myserver` can also be used to refer to the same IP.
+  - `10.0.0.5 webserver.example.com webserver`: 
+            - Maps the IP `10.0.0.5` to the hostname `webserver.example.com` and provides a shorthand alias `webserver`.
+
+Commands to Modify `/etc/hosts`:
+1. Manually editing the file:
+   ```````````````````````````````````````````bash
+   sudo nano /etc/hosts
+   ```````````````````````````````````````````
+2. Testing local hostname resolution:
+   After editing the file, you can test the resolution using `ping`:
+   ```````````````````````````````````````````bash
+   ping myserver.local
+   ping webserver
+   ```````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+                                                   3. `/etc/nsswitch.conf`  
+
+The `/etc/nsswitch.conf` file determines the order in which name resolution methods
+  are applied (e.g., DNS, local `/etc/hosts` file, or other services like LDAP).
+
+ Relevant line in `/etc/nsswitch.conf`:
+```````````````````````````````````````````plaintext
+hosts: files dns
+```````````````````````````````````````````
+
+- Explanation:
+  - `files`: This instructs the system to check the `/etc/hosts` file first.
+  - `dns`: If no match is found in `/etc/hosts`, the system queries the DNS servers specified in `/etc/resolv.conf`.
+
+_______________________________________________________________________________________________________________________________________
+                              Example Scenario: Configuring a Linux System for Local and DNS Resolution
+
+Task:
+1. Add a local hostname for a web server with IP `192.168.1.50`.
+2. Use Google's public DNS servers (`8.8.8.8` and `8.8.4.4`) for external name resolution.
+3. Ensure that the system first checks the local `/etc/hosts` file before querying DNS.
+
+Steps:
+1. Edit `/etc/hosts`:
+   ```````````````````````````````````````````bash
+   sudo nano /etc/hosts
+   ```````````````````````````````````````````
+   Add the following line:
+   ```````````````````````````````````````````plaintext
+   192.168.1.50 webserver.local webserver
+   ```````````````````````````````````````````
+
+2. Edit `/etc/resolv.conf`:
+   ```````````````````````````````````````````bash
+   sudo nano /etc/resolv.conf
+   ```````````````````````````````````````````
+   Add the following lines:
+   ```````````````````````````````````````````plaintext
+   nameserver 8.8.8.8
+   nameserver 8.8.4.4
+   ```````````````````````````````````````````
+
+3. Ensure the order of resolution in `/etc/nsswitch.conf`:
+   Open `/etc/nsswitch.conf` and ensure the `hosts` line reads:
+   ```````````````````````````````````````````plaintext
+   hosts: files dns
+   ```````````````````````````````````````````
+
+4. Test the Configuration:
+   - Ping the local hostname:
+     ```````````````````````````````````````````bash
+     ping webserver.local
+     ```````````````````````````````````````````
+   - Ping an external domain:
+     ```````````````````````````````````````````bash
+     ping google.com
+     ```````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+                                    4. `/etc/network/interfaces` (Debian-based systems)  
+
+On some systems, DNS settings can be included in the network interface configuration file.
+
+ Example:
+```````````````````````````````````````````plaintext
+auto eth0
+iface eth0 inet static
+    address 192.168.1.100
+    netmask 255.255.255.0
+    gateway 192.168.1.1
+    dns-nameservers 8.8.8.8 8.8.4.4
+```````````````````````````````````````````
+
+- Explanation:
+  - `dns-nameservers 8.8.8.8 8.8.4.4`: Specifies the DNS servers to use for this interface.
+  - This approach is useful for static IP configurations.
+_______________________________________________________________________________________________________________________________________
+                                                      Summary of Key Commands:
+                                                      
+1. Check current DNS settings:
+   ```````````````````````````````````````````bash
+   cat /etc/resolv.conf
+   ```````````````````````````````````````````
+2. Check `/etc/hosts` content:
+   ```````````````````````````````````````````bash
+   cat /etc/hosts
+   ```````````````````````````````````````````
+3. Flush DNS cache (if using a caching service like `systemd-resolved`):
+   ```````````````````````````````````````````bash
+   sudo systemctl restart systemd-resolved
+   ```````````````````````````````````````````
+_______________________________________________________________________________________________________________________________________

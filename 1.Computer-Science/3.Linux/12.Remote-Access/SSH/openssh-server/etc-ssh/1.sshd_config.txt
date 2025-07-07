@@ -1,0 +1,280 @@
+_________________________________________________________________________________________________________________________________________________________________________
+                                             `/etc/ssh/sshd_config`
+                                              ====================
+The `/etc/ssh/sshd_config` file is the configuration file for the OpenSSH SSH server daemon (`sshd`).
+It controls the behavior of the SSH server, including settings for authentication,
+ logging, connection management, and security.
+ 
+This file is critical for securing and customizing how SSH connections are handled on a system.
+
+Key Sections and Directives in `/etc/ssh/sshd_config`:
+-------------------------------------------------------------------------------------------------------------------------------
+1.Authentication Settings:
+
+- `PermitRootLogin`:
+  - Controls whether the root user can log in via SSH, This is a critical security setting.
+  - Options: `yes`, `no`, `without-password`, `forced-commands-only`.
+  - Example: 
+    ````````````````````````````````````````````````bash
+    PermitRootLogin no
+    ````````````````````````````````````````````````
+
+- `PasswordAuthentication`:
+  - Specifies whether password-based authentication is allowed.
+  - Options: `yes`, `no`.
+  - Example:
+    ````````````````````````````````````````````````bash
+    PasswordAuthentication yes
+    ````````````````````````````````````````````````
+
+- `PubkeyAuthentication`:
+  - Enables or disables public key authentication.
+  - Options: `yes`, `no`.
+  - Example:
+    ````````````````````````````````````````````````bash
+    PubkeyAuthentication yes
+    ````````````````````````````````````````````````
+
+- `ChallengeResponseAuthentication`:
+  - Specifies whether challenge-response authentication (e.g., for two-factor authentication) is allowed.
+  - Options: `yes`, `no`.
+  - Example:
+    ````````````````````````````````````````````````bash
+    ChallengeResponseAuthentication no
+    ````````````````````````````````````````````````
+
+- `UsePAM`:
+  - Enables or disables the use of Pluggable Authentication Modules (PAM) for authentication.
+  - Options: `yes`, `no`.
+  - Example:
+    ````````````````````````````````````````````````bash
+    UsePAM yes
+    ````````````````````````````````````````````````
+
+-------------------------------------------------------------------------------------------------------------------------------
+2.Connection Settings:
+
+- `Port`:
+  - Specifies the port number that the SSH server listens on.
+  - Default: `22`.
+  - Example:
+    ````````````````````````````````````````````````bash
+    Port 2222
+    ````````````````````````````````````````````````
+
+- `ListenAddress`:
+  - Specifies the address or addresses that the SSH daemon listens on.
+  - Example:
+    ````````````````````````````````````````````````bash
+    ListenAddress 0.0.0.0
+    ListenAddress ::
+    ````````````````````````````````````````````````
+
+- `MaxAuthTries`:
+  - Specifies the maximum number of authentication attempts before disconnecting.
+  - Example:
+    ````````````````````````````````````````````````bash
+    MaxAuthTries 3
+    ````````````````````````````````````````````````
+
+- `LoginGraceTime`:
+  - Specifies the time (in seconds) that the server will wait for a user to log in after a connection is made.
+  - Example:
+    ````````````````````````````````````````````````bash
+    LoginGraceTime 120
+    ````````````````````````````````````````````````
+
+- `AllowUsers` / `DenyUsers`:
+  - Specifies which users are allowed or denied SSH access.
+  - Example:
+    ````````````````````````````````````````````````bash
+    AllowUsers user1 user2
+    DenyUsers  user3
+    ````````````````````````````````````````````````
+
+-------------------------------------------------------------------------------------------------------------------------------
+3.Security Settings:
+
+- `AllowTcpForwarding`:
+  - Specifies whether TCP forwarding is allowed.
+  - Options: `yes`, `no`.
+  - Example:
+    ````````````````````````````````````````````````bash
+    AllowTcpForwarding no
+    ````````````````````````````````````````````````
+
+- `X11Forwarding`:
+  - Enables or disables X11 forwarding, which allows you to run graphical applications over SSH.
+  - Options: `yes`, `no`.
+  - Example:
+    ````````````````````````````````````````````````bash
+    X11Forwarding yes
+    ````````````````````````````````````````````````
+
+- `PermitEmptyPasswords`:
+  - Specifies whether SSH allows login with empty passwords.
+  - Options: `yes`, `no`.
+  - Example:
+    ````````````````````````````````````````````````bash
+    PermitEmptyPasswords no
+    ````````````````````````````````````````````````
+
+- `UseDNS`:
+  - Controls whether DNS is used to verify the host.
+  - Options: `yes`, `no`.
+  - Example:
+    ````````````````````````````````````````````````bash
+    UseDNS no
+    ````````````````````````````````````````````````
+
+- `LogLevel`:
+  - Specifies the verbosity of the log messages generated by `sshd`.
+  - Options: `QUIET`, `FATAL`, `ERROR`, `INFO`, `VERBOSE`, `DEBUG`, `DEBUG1`, `DEBUG2`, `DEBUG3`.
+  - Example:
+    ````````````````````````````````````````````````bash
+    LogLevel INFO
+    ````````````````````````````````````````````````
+
+-------------------------------------------------------------------------------------------------------------------------------
+4.Key and Encryption Settings:
+
+- `HostKey`:
+  - Specifies the location of the private key files used for the SSH server.
+  - These keys are used to authenticate the server to the client.
+  - Example:
+    ````````````````````````````````````````````````bash
+    HostKey /etc/ssh/ssh_host_rsa_key
+    HostKey /etc/ssh/ssh_host_ecdsa_key
+    ````````````````````````````````````````````````
+
+- `Ciphers`:
+  - Specifies which ciphers are allowed for encrypting SSH connections.
+  - Example:
+    ````````````````````````````````````````````````bash
+    Ciphers aes128-ctr,aes192-ctr,aes256-ctr
+    ````````````````````````````````````````````````
+
+- `MACs`:
+  - Specifies which message authentication codes (MACs) are allowed for integrity checking.
+  - Example:
+    ````````````````````````````````````````````````bash
+    MACs hmac-sha2-256,hmac-sha2-512
+    ````````````````````````````````````````````````
+
+- `KexAlgorithms`:
+  - Specifies which key exchange algorithms are allowed.
+  - Example:
+    ````````````````````````````````````````````````bash
+    KexAlgorithms diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha256
+    ````````````````````````````````````````````````
+
+-------------------------------------------------------------------------------------------------------------------------------
+5.Subsystems and Features:
+
+- `Subsystem`:
+  - Specifies the program that is used to implement the `sftp` server or other subsystems.
+  - Example:
+    ````````````````````````````````````````````````bash
+    Subsystem sftp /usr/lib/openssh/sftp-server
+    ````````````````````````````````````````````````
+
+- `Banner`:
+  - Specifies a file to display a custom message or banner to the user before login.
+  - Example:
+    ````````````````````````````````````````````````bash
+    Banner /etc/issue.net
+    ````````````````````````````````````````````````
+
+-------------------------------------------------------------------------------------------------------------------------------
+6.Timeout and Session Settings:
+
+- `ClientAliveInterval`:
+  - Specifies the time in seconds that the server waits before sending a null packet to the client to keep the connection alive.
+  - Example:
+    ````````````````````````````````````````````````bash
+    ClientAliveInterval 300
+    ````````````````````````````````````````````````
+
+- `ClientAliveCountMax`:
+  - Specifies the number of unanswered `ClientAliveInterval` packets before disconnecting the client.
+  - Example:
+    ````````````````````````````````````````````````bash
+    ClientAliveCountMax 3
+    ````````````````````````````````````````````````
+
+- `TCPKeepAlive`:
+  - Controls whether the server sends TCP keepalive messages.
+  - Options: `yes`, `no`.
+  - Example:
+    ````````````````````````````````````````````````bash
+    TCPKeepAlive yes
+    ````````````````````````````````````````````````
+
+-------------------------------------------------------------------------------------------------------------------------------
+7.Advanced Options:
+
+- `PermitTunnel`:
+  - Specifies whether SSH tunneling is allowed.
+  - Options: `yes`, `no`.
+  - Example:
+    ````````````````````````````````````````````````bash
+    PermitTunnel no
+    ````````````````````````````````````````````````
+
+- `AllowAgentForwarding`:
+  - Specifies whether the forwarding of the authentication agent connection is allowed.
+  - Options: `yes`, `no`.
+  - Example:
+    ````````````````````````````````````````````````bash
+    AllowAgentForwarding yes
+    ````````````````````````````````````````````````
+
+ Example of a `/etc/ssh/sshd_config` file:
+            
+            ````````````````````````````````````````````````bash
+            SSH Server Configuration
+
+            #Port to listen on
+            Port 22
+
+            #Allow root login only with public key
+            PermitRootLogin prohibit-password
+
+            #Use public key authentication
+            PubkeyAuthentication yes
+
+            #Disable password authentication
+            PasswordAuthentication no
+
+            #Enable X11 forwarding
+            X11Forwarding yes
+
+            #Disable empty passwords
+            PermitEmptyPasswords no
+
+            #Log level
+            LogLevel INFO
+
+            #Timeout settings
+            ClientAliveInterval 300
+            ClientAliveCountMax 3
+
+            #Banner file
+            Banner /etc/issue.net
+
+            #Host keys
+            HostKey /etc/ssh/ssh_host_rsa_key
+            HostKey /etc/ssh/ssh_host_ecdsa_key
+
+            #Subsystem for SFTP
+            Subsystem sftp /usr/lib/openssh/sftp-server
+            ````````````````````````````````````````````````
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                                            Summary
+                                                            =======
+- The `/etc/ssh/sshd_config` file is the configuration file for the SSH server.
+- It controls the server's authentication, security, connection settings, encryption, logging, and more.
+- Configuring `sshd_config` correctly is crucial for securing SSH access to a machine.
+
+_________________________________________________________________________________________________________________________________________________________________________

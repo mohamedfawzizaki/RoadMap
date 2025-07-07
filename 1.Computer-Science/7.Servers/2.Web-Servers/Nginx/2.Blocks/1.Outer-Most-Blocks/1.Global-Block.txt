@@ -1,0 +1,203 @@
+_______________________________________________________________________________________________________________________________________
+                                   Global Block in `nginx.conf` (Inside the Main Block)
+
+The global block in `nginx.conf` is the top-most part inside the main block. 
+It contains directives that affect the entire Nginx service,
+ including worker processes, user privileges, logging, and module loading.
+
+_______________________________________________________________________________________________________________________________________
+                                    🔹 Structure of the Global Block
+The global block appears before any sections (`events`, `http`, `stream`, `mail`).
+
+````````````````````````````````````````````````````````````````````nginx
+# GLOBAL BLOCK (Affects Entire Nginx)
+user www-data;               # Defines the user running Nginx
+worker_processes auto;       # Number of worker processes (auto = CPU cores)
+pid /run/nginx.pid;          # File to store the Nginx process ID
+include /etc/nginx/modules-enabled/*.conf;  # Load external modules
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+                                              🔹 Directives Inside the Global Block
+
+|           Directive                         |                         Description 
+| `user www-data;`                            | Defines the Linux user/group that runs Nginx worker processes. 
+| `worker_processes auto;`                    | Defines the number of worker processes (auto sets it to CPU cores). 
+| `pid /run/nginx.pid;`                       | Specifies the file where Nginx stores its process ID (PID). 
+| `include /etc/nginx/modules-enabled/*.conf;`| Includes external module configuration files. 
+|  worker_rlimit_nofile                       |	Limits the number of open files per worker process.
+|  worker_cpu_affinity	                      | Binds worker processes to specific CPU cores for better performance.
+|  daemon	 `off`,`on`                         | Runs Nginx as a background service (on/off).
+|  master_process	                            | Enables/disables the master process (on/off).
+|  error_log	                                | Defines the global error log file and log level.
+|  env	                                      | Sets environment variables for Nginx workers.
+|  lock_file	                                | Specifies a lock file for process management.
+|  worker_priority	                          | Sets process scheduling priority (-20 highest, 19 lowest).
+|  rlimit_core	                              | Sets the maximum core dump file size.
+|  rlimit_nofile	                            | Sets the maximum number of open files (global limit).
+|  timer_resolution	                          | Improves timing accuracy for logging and scheduling.
+_______________________________________________________________________________________________________________________________________
+                                          🛠 Detailed Explanation of Global Directives
+
+1️⃣ `user www-data;`
+   - Specifies the system user/group running Nginx.
+   - Default: `nobody` or `nginx` (depends on the system).
+   - Example:
+     ````````````````````````````````````````````````````````````````````nginx
+     user nginx;
+     ````````````````````````````````````````````````````````````````````
+   - Change if you need a specific user with permission to web files.
+
+2️⃣ `worker_processes auto;`
+   - Defines how many worker processes Nginx should use.
+   - Set to `auto` to automatically match the number of CPU cores.
+   - Example:
+     ````````````````````````````````````````````````````````````````````nginx
+     worker_processes 4;  # Manually set to 4 workers
+     ````````````````````````````````````````````````````````````````````
+
+3️⃣ `pid /run/nginx.pid;`
+   - Stores the Process ID (PID) of the main Nginx process.
+   - Useful for managing Nginx with scripts (`kill -HUP $(cat /run/nginx.pid)`).
+
+4️⃣ `include /etc/nginx/modules-enabled/*.conf;`
+   - Loads external Nginx modules dynamically.
+   - Example modules:
+     ````````````````````````````````````````````````````````````````````nginx
+     load_module modules/ngx_http_geoip_module.so;
+     load_module modules/ngx_http_brotli_filter_module.so;
+     ````````````````````````````````````````````````````````````````````
+
+
+
+ 1️⃣ `worker_rlimit_nofile` (Open File Limit)
+- Limits the number of open files per worker process.
+- Useful when handling a large number of concurrent connections.
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  worker_rlimit_nofile 65535;
+  ````````````````````````````````````````````````````````````````````
+
+ 2️⃣ `worker_cpu_affinity` (CPU Core Binding)
+- Assigns Nginx worker processes to specific CPU cores for performance optimization.
+- Example (for a quad-core CPU):
+  ````````````````````````````````````````````````````````````````````nginx
+  worker_cpu_affinity auto;  # Auto assigns cores
+  # or manually
+  worker_cpu_affinity 0101 1010;  # First worker on CPU 0 & 2, second on 1 & 3
+  ````````````````````````````````````````````````````````````````````
+
+ 3️⃣ `daemon` (Foreground or Background Mode)
+- Controls whether Nginx runs as a background service.
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  daemon off;  # Run in foreground (useful for debugging)
+  ````````````````````````````````````````````````````````````````````
+
+ 4️⃣ `master_process` (Enable/Disable Master Process)
+- Allows running Nginx without a master process (for debugging or single-process mode).
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  master_process off;
+  ````````````````````````````````````````````````````````````````````
+
+ 5️⃣ `error_log` (Global Error Logging)
+- Defines where error logs are stored and at what level.
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  error_log /var/log/nginx/error.log warn;
+  ````````````````````````````````````````````````````````````````````
+
+- Logging Levels (from least to most verbose):
+  - `emerg`   → Critical errors (server crashes).
+  - `alert`   → Alerts that require immediate action.
+  - `crit`    → Critical problems (file system issues).
+  - `error`   → Standard errors (timeouts, crashes).
+  - `warn`    → Warnings (not fatal but concerning).
+  - `notice`  → Non-critical notices.
+  - `info`    → General information.
+  - `debug`   → Detailed debugging info.
+
+ 6️⃣ `env` (Environment Variables)
+- Used to pass environment variables to worker processes.
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  env PATH;
+  env MY_ENV_VAR=myvalue;
+  ````````````````````````````````````````````````````````````````````
+
+ 7️⃣ `lock_file` (Lock File for Process Management)
+- Specifies a lock file to prevent multiple instances of Nginx from running.
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  lock_file /var/lock/nginx.lock;
+  ````````````````````````````````````````````````````````````````````
+
+ 8️⃣ `worker_priority` (Process Priority)
+- Defines the CPU scheduling priority for worker processes.
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  worker_priority -10;  # Higher priority (-20 is the highest)
+  ````````````````````````````````````````````````````````````````````
+
+ 9️⃣ `rlimit_core` (Core Dump File Size)
+- Sets a limit on the size of core dump files (used for debugging crashes).
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  rlimit_core 500M;
+  ````````````````````````````````````````````````````````````````````
+
+ 🔟 `rlimit_nofile` (Maximum Open Files - Global)
+- Similar to `worker_rlimit_nofile`, but applies globally to all processes.
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  rlimit_nofile 100000;
+  ````````````````````````````````````````````````````````````````````
+
+ 🔹 `timer_resolution` (Timing Accuracy)
+- Improves the accuracy of event timers.
+- Useful for high-performance servers with precise logging needs.
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  timer_resolution 100ms;
+  ````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+                                  📌 Full Example: Global Block with All Directives 
+
+````````````````````````````````````````````````````````````````````nginx
+# GLOBAL BLOCK
+user www-data;
+worker_processes auto;
+worker_rlimit_nofile 65535;
+worker_cpu_affinity auto;
+pid /var/run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
+
+daemon on;
+master_process on;
+error_log /var/log/nginx/error.log warn;
+env PATH;
+lock_file /var/lock/nginx.lock;
+worker_priority -10;
+rlimit_core 500M;
+rlimit_nofile 100000;
+timer_resolution 100ms;
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+                                              🔹 Summary of Global Block
+                                              
+✅ Defines system-wide settings like user privileges, process limits, and logging.  
+✅ Controls performance tuning like CPU binding and worker file limits.  
+✅ Adjusts process behavior (daemon mode, priority, master process).  
+
+
+_______________________________________________________________________________________________________________________________________
+                                                  💡 Key Takeaways
+
+✅ The global block affects the entire Nginx server.  
+✅ It controls user privileges, worker processes, PID files, and module loading.  
+✅ It is placed before the `events` and `http` blocks in `nginx.conf`.
+
+_______________________________________________________________________________________________________________________________________

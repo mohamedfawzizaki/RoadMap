@@ -1,0 +1,123 @@
+________________________________________________________________________________________________________________________________________________________________
+                                                                        Container Management
+                                                        (Write "docker container" to list all container commands)
+
+    ############################################################################################################################################################
+    ## my app container:
+    docker container run -it --name <my-container> -h <my-hostName> <Image> <command'bash'> -c "/user/local/bootstrap.sh; bash" 
+    // -c "/user/local/bootstrap.sh; bash  ------------>>>>> bootstrap.sh is a shell script used to bootstrap your services when you run your container.    
+    ############################################################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ _______________________________________________________________________________________________________________________________________________________________________________________________
+|                                Command                                                  |                                   Description                                                       |
+|_________________________________________________________________________________________|_____________________________________________________________________________________________________|
+| docker container run     <image>  <app/Command>                                         | Runs a container from an image. The <app> is the main app; exiting from it stops the container. If omitted, the image's default CMD is used.  
+| docker container run -d  <image>                                                        | Runs a container in detached mode (background).                                                     |
+| docker container run -i  <image>  <Command>	                                          | Runs a container interactively (-i) without attaching a terminal. Useful for piping data to or from the container.
+| docker container run -it <image>  bash	                                              | Runs a container interactively (-i) with a terminal attached (-t). This is used for direct interaction with the container.
+| docker container run -it  alpine:latest sleep 10                                        | Example: Runs the sleep command inside an interactive Alpine container for 10 seconds.              |
+| docker container run -i   alpine echo "hello"                                           |                                                                                                     |
+|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| docker container run -d  -p <ip:hostport:containerport> --name <my-container> <Image>   | Runs a container in detached mode with a custom name and mapped ports.                              |
+| docker container run -d  -p 0.0.0.0:8080:80 nginx                                       | Example: Runs an Nginx container in detached mode, mapping port 80 in the container to 8080 on the host.  
+| docker container run -d  -p 127.0.0.1:8080:80 nginx                                     | Example: Runs an Nginx container in detached mode, mapping port 80 in the container to 8080 on the host.  
+| docker container run -d  -p 192.168.1.100:8080:80 nginx                                 | Example: Runs an Nginx container in detached mode, mapping port 80 in the container to 8080 on the host.  
+| docker container run -d  -p 8080:80/tcp -p 8080:80/udp nginx                            | Example: Runs an Nginx container in detached mode, mapping port 80 in the container to 8080 on the host.  
+| docker container run -e "var=value" --name <my-container> <Image>                       | 
+| docker container run --env-file <file-name> --name <my-container> <Image>               | 
+| docker container run --entrypoint php <Image> artisan queue:work                        | 
+| -w /app - sets the "working directory" or the current directory that the command will run from                        | 
+docker run --rm
+|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+|                                                                                         |  Case 1: Accessing Container Shell with bash/sh                                                     |                                                
+| docker container run   -it  -p 8080:80  --name my-server  nginx:latest bash/sh          | Runs an Nginx container interactively with shell access. Exiting the shell stops the container.     |
+| docker container start -it  <container_name-or-id> bash/sh                              | Starts the stopped container interactively with shell access. Exiting the shell stops the container.|
+|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+|                                                                                         | Case 2: Executing Commands in a Running Container                                                   |                                                 
+| docker container exec  -it  <container_name-or-id> bash/sh                              | Accesses the running container's shell interactively. Exiting the shell does not stop the container.|
+| exit                                                                                    | Exits the shell without affecting the container in Case 2.                                          |
+|_________________________________________________________________________________________|_____________________________________________________________________________________________________|
+| docker container ps                                                                     | Lists running containers.                                                                           |
+| docker container ls                                                                     | Lists running containers (alias for docker container ps).                                           |
+| docker container ps -a -s                                                                 | Lists all containers, including stopped ones.                                                       |
+| docker container ls -a                                                                  | Same as docker container ps -a.                                                                     |
+| docker image inspect <container_name-or-id>                                             | Displays detailed information about the specified container or image.                               |
+|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| docker container logs  <container_name-or-id>                                           | Fetches the logs of a container.                                                                    |
+| docker container stats <container_name-or-id>                                           | Displays a live stream of container(s) resource usage statistics.                                   |
+| docker container port  <container_name-or-id>                                           | Lists port mappings or a specific mapping for the container.                                        |
+| docker container top   <container_name-or-id>                                           | Displays the running processes of a container.                                                      |
+|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| docker image pull <image>                                                               | Pulls an image from a registry.                                                                     |
+| docker container create -it --name <my-container> <ImageNameOrID> bash/sh               | Creates a container from an image.                                                                  |
+| docker container start -i <container_name-or-id>                                        | Starts a container interactively.                                                                   |
+| docker container restart <container_name-or-id>                                         | Restarts one or more containers.                                                                    |
+| docker container stop <container_name-or-id>                                            | Stops a running container.                                                                          |
+| docker container kill <container_name-or-id>                                            | Forces a container to stop immediately.                                                             |
+| docker container rename <current-name-or-id> <new-name>                                 | Renames a container.                                                                                |
+| docker container rm <container1_name-or-id> <container2_name-or-id>                     | Removes stopped containers.                                                                         |
+| docker container prune                                                                  | Removes all stopped containers.                                                                     |
+|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| docker container cp <yourDirectoryOrFilePath> <container-name>:/<path-to-container>     | Copies files from outside the container to inside the container.                                    |
+| docker container cp <container-name>:/<path-to-container> <yourDirectoryOrFilePath>     | Copies files from inside the container to outside.                                                  |
+|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| docker container commit <container_id_or_name> <new_image_name>:<tag> -m "comment"      | Builds a new image from a running container.                                                        |
+| docker container commit abcd1234 myapp:v1                                               | Example of committing a container to an image.                                                      |
+| docker container commit -c "CMD node app.js" -m "Add app" app-container sample-app      | This command not only creates a new image named sample-app,
+                                                                                             but also adds additional configuration to the image to set the default command when starting a container. 
+                                                                                             In this case, you are setting it to automatically run node app.js.
+
+|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| Restart Policies (Self-healing Containers)                                              |                                                                                                     |
+| --restart always                                                                        | Restarts the container automatically, even after a reboot.                                          |
+| --restart unless-stopped                                                                | Restarts the container unless it is explicitly stopped.                                             |
+| --restart on-failure                                                                    | Restarts the container only if it exits with a non-zero status.                                     |
+|_________________________________________________________________________________________|_____________________________________________________________________________________________________|
+
+ 
+When running a Docker container, you can set resource limits, namespaces, and ulimits:
+    --------------------------------------------------------------------------------------------------
+    docker run -d --name mycontainer --memory="500m" --cpus="1.0" --ulimit nofile=4096:8192 myimage
+    --------------------------------------------------------------------------------------------------
+    This runs a container with:
+                - 500 MB of memory limit.
+                - 1 CPU core assigned.
+                - Ulimit set for open files (nofile) with a soft limit of 4096 and a hard limit of 8192.
+_________________________________________________________________________________________________________________________________________________________________________________________________
+
+Use a restart policy
+To configure the restart policy for a container, use the --restart flag when using the docker run command. The value of the --restart flag can be any of the following:
+
+Flag	Description
+no	Don't automatically restart the container. (Default)
+on-failure[:max-retries]	Restart the container if it exits due to an error, which manifests as a non-zero exit code. Optionally, limit the number of times the Docker daemon attempts to restart the container using the :max-retries option. The on-failure policy only prompts a restart if the container exits with a failure. It doesn't restart the container if the daemon restarts.
+always	Always restart the container if it stops. If it's manually stopped, it's restarted only when Docker daemon restarts or the container itself is manually restarted. (See the second bullet listed in restart policy details)
+unless-stopped	Similar to always, except that when the container is stopped (manually or otherwise), it isn't restarted even after Docker daemon restarts.
+The following command starts a Redis container and configures it to always restart, unless the container is explicitly stopped, or the daemon restarts.
+
+
+ docker run -d --restart unless-stopped redis
+The following command changes the restart policy for an already running container named redis.
+
+
+ docker update --restart unless-stopped redis
+The following command ensures all running containers restart.
+
+
+ docker update --restart unless-stopped $(docker ps -q)

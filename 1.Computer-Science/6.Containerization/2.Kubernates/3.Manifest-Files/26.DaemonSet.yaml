@@ -1,0 +1,124 @@
+# --------------------------------------------------------------------------------------------------------
+# Kubernetes DaemonSet - Per-Node Pod Deployment
+# --------------------------------------------------------------------------------------------------------
+# PURPOSE:
+# A DaemonSet ensures that **one copy of a Pod runs on each Node** (or a subset via nodeSelectors, etc.).
+# Use cases include:
+#   - Node monitoring agents (e.g. Prometheus node exporter)
+#   - Log shippers (e.g. Fluentd, Filebeat)
+#   - System-level tools (e.g. GPU managers, CSI drivers)
+
+# BEHAVIOR:
+# - Automatically deploys the pod to every node in the cluster
+# - If a node is added, the pod will be scheduled on it automatically
+# - If a node is removed, the corresponding pod is garbage collected
+
+# KEY FIELDS:
+# - selector: must exactly match pod template labels
+# - updateStrategy: RollingUpdate (default) is safer; OnDelete requires manual intervention
+# - minReadySeconds: ensures pod stability before marking ready
+# - revisionHistoryLimit: max number of old revisions to retain (for rollback)
+# --------------------------------------------------------------------------------------------------------
+
+apiVersion: apps/v1                 # Required API version
+kind: DaemonSet                     # Declares this object as a DaemonSet
+metadata:
+  name: node-monitor                # Name of the DaemonSet
+  namespace: kube-system            # Recommended: system-level DaemonSets go here
+  labels:
+    app: node-monitor
+
+spec:                               # Desired behavior of the DaemonSet
+  selector:
+    matchLabels:
+      app: node-monitor             # MUST match template.metadata.labels
+
+  template:                         # Pod template - deployed on each matching Node
+    metadata:
+      labels:
+        app: node-monitor
+    spec:
+      containers:
+        - name: monitor
+          image: monitoring-agent:v1
+          resources:
+            limits:
+              cpu: 100m             # Limit CPU usage per agent
+              memory: 128Mi         # Limit memory usage per agent
+
+  minReadySeconds: 10               # Pod must be Ready for 10s before marked available
+
+  updateStrategy:                   # Strategy for updating DaemonSet Pods
+    type: RollingUpdate             # Safer, updates nodes one by one
+    rollingUpdate:
+      maxUnavailable: 1             # Only 1 Pod unavailable at a time during update
+      maxSurge: 0                   # No extra pods scheduled during update
+
+  revisionHistoryLimit: 10         # Keep 10 historical revisions for rollback
+
+
+
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-exporter
+  namespace: monitoring
+  labels:
+    app: node-exporter
+spec:
+  selector:
+    matchLabels:
+      app: node-exporter
+  template:
+    metadata:
+      labels:
+        app: node-exporter
+    spec:
+      hostPID: true  # Necessary for /proc access
+      containers:
+        - name: node-exporter
+          image: quay.io/prometheus/node-exporter:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9100
+              hostPort: 9100
+              protocol: TCP
+          args:
+            - '--path.procfs=/host/proc'
+            - '--path.sysfs=/host/sys'
+            - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($|/)'
+          volumeMounts:
+            - name: proc
+              mountPath: /host/proc
+              readOnly: true
+            - name: sys
+              mountPath: /host/sys
+              readOnly: true
+      volumes:
+        - name: proc
+          hostPath:
+            path: /proc
+        - name: sys
+          hostPath:
+            path: /sys
+      nodeSelector:
+        kubernetes.io/os: linux
+      tolerations:
+        - operator: Exists
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-exporter
+  namespace: monitoring
+  labels:
+    app: node-exporter
+spec:
+  selector:
+    app: node-exporter
+  ports:
+    - name: metrics
+      port: 9100
+      targetPort: 9100

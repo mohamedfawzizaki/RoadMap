@@ -1,0 +1,232 @@
+_____________________________________________________________________________________________________________________________________
+
+                                                FTP server
+                   ----------------------------------------------------------
+                   User : ftp Client -----upload   files------->>> ftp Server                              
+                   User : ftp Client <<<--download files---------- ftp Server                              
+                   ----------------------------------------------------------
+
+An FTP server (File Transfer Protocol server) is a network service that
+ allows users to transfer files between a client and a server over a TCP/IP network.
+
+FTP servers are widely used for storing, sharing, and managing files across systems.
+
+_____________________________________________________________________________________________________________________________________
+
+ 1. How FTP Works
+FTP operates using a client-server model. 
+The client initiates a connection to the server, which responds and enables file transfer. 
+It typically uses two channels:
+- Command Channel: For sending commands and receiving responses.
+- Data Channel: For transferring file data.
+
+ 1.1. Communication Ports
+- Port 21: Used for the command channel (control messages).
+- Port 20: Used for the data channel in active mode.
+
+_____________________________________________________________________________________________________________________________________
+
+ 2. Modes of Operation
+FTP servers can operate in two modes:
+
+ 2.1. Active Mode
+- The server opens a port (usually 20) and connects to the client to transfer data.
+- Requires the client to allow incoming connections.
+
+ 2.2. Passive Mode
+- The server opens a random port and waits for the client to connect for data transfer.
+- Useful for clients behind NAT or firewalls.
+
+_____________________________________________________________________________________________________________________________________
+
+ 3. Types of FTP Servers
+1. Anonymous FTP Server:
+   - Allows public access without authentication.
+   - Often used for distributing publicly available files (e.g., software, documents).
+
+2. Authenticated FTP Server:
+   - Requires a username and password for access.
+   - Provides restricted access based on user permissions.
+
+3. FTPS (FTP Secure):
+   - Adds encryption via SSL/TLS to secure data transfer.
+   - Encrypts both the command and data channels.
+
+4. SFTP (SSH File Transfer Protocol):
+   - Not a true FTP protocol but an alternative based on SSH.
+   - Provides secure file transfer and encryption.
+
+_____________________________________________________________________________________________________________________________________
+
+ 4. Key Components of FTP Servers
+1. FTP Server Software:
+   - Examples: FileZilla Server, vsftpd (Linux), ProFTPD (Linux), Microsoft IIS FTP.
+   
+2. User Management:
+   - Defines users, passwords, and permissions (read, write, execute).
+   
+3. Storage:
+   - Files are stored in directories on the server's filesystem.
+   
+4. Configuration Files:
+   - Store server settings like port numbers, user permissions, logging options, and security settings.
+
+_____________________________________________________________________________________________________________________________________
+
+ 5. FTP Commands
+FTP uses specific commands for communication. Common commands include:
+
+| Command |      Description              |
+| USER    | Specifies the username.       |
+| PASS    | Specifies the password.       |
+| LIST    | Lists files in the directory. |
+| RETR    | Downloads a file.             |
+| STOR    | Uploads a file.               |
+| QUIT    | Ends the session.             |
+
+_____________________________________________________________________________________________________________________________________
+
+ 6. Security Concerns
+1. Plaintext Data:
+   - Standard FTP transmits data, including credentials, in plaintext, making it vulnerable to interception.
+
+2. Secure Alternatives:
+   - Use FTPS or SFTP to encrypt data and credentials.
+   - Use firewalls to restrict unauthorized access.
+
+3. Account Lockdown:
+   - Implement user-based access controls.
+   - Restrict anonymous access if not needed.
+
+_____________________________________________________________________________________________________________________________________
+
+ 7. Directory Structure
+FTP servers organize files into directories and subdirectories. 
+Permissions define user access:
+
+Example Directory Layout:
+```
+/ftp
+ ├── /public          (Anonymous users)
+ ├── /private         (Restricted access)
+ └── /uploads         (Write-only for clients)
+```
+
+_____________________________________________________________________________________________________________________________________
+
+ 8. Use Cases of FTP Servers
+1. File Distribution:
+   - Share large files like software, backups, or multimedia content.
+   
+2. Backup Solutions:
+   - Centralized location for storing backups from multiple systems.
+
+3. Website Management:
+   - Upload and manage website files on a remote server.
+
+4. Collaboration:
+   - Share project files among team members.
+
+_____________________________________________________________________________________________________________________________________
+
+ 9. Setting Up an FTP Server
+ Linux (vsftpd) Setup
+1. Install vsftpd:
+   ```bash
+   sudo apt update
+   sudo apt install vsftpd
+   ```
+2. Configure vsftpd:
+   - Edit `/etc/vsftpd.conf` to enable specific features like anonymous access or passive mode.
+3. Start the Service:
+   ```bash
+   sudo systemctl start vsftpd
+   sudo systemctl enable vsftpd
+   ```
+4. Create FTP Users:
+   ```bash
+   sudo adduser ftpuser
+   sudo passwd ftpuser
+   ```
+
+ Windows (FileZilla Server) Setup
+1. Download FileZilla Server:
+   - [FileZilla Official Website](https://filezilla-project.org).
+2. Install and Configure:
+   - Follow the wizard to set up users, permissions, and directories.
+3. Start the Server:
+   - Run the FileZilla Server interface to manage connections.
+
+_____________________________________________________________________________________________________________________________________
+
+ 10. Troubleshooting FTP
+1. Connection Issues:
+   - Check firewall rules for ports 20/21 or passive ports.
+   - Ensure the FTP server is running and accessible.
+
+2. Permission Errors:
+   - Verify directory permissions for the user.
+
+3. Secure Connection Failures:
+   - Ensure SSL/TLS certificates are configured correctly for FTPS.
+
+
+
+
+
+
+
+_____________________________________________________________________________________________________________________________________
+                                       🖥️ FTP Server (File Transfer Protocol Server) Overview
+
+An FTP (File Transfer Protocol) server is a system that enables
+ the transfer of files between a client and a server over a network using the FTP protocol.
+
+🔹 How FTP Works
+1️⃣ Client Connects to the FTP Server
+
+A user (client) connects to the FTP server using an FTP client (e.g., FileZilla, WinSCP, or the ftp command in Linux).
+The connection can be anonymous or require authentication (username/password).
+2️⃣ Navigation & File Operations
+
+The client browses directories on the FTP server.
+The user can upload, download, rename, delete, or move files.
+3️⃣ Data Transfer Modes
+
+Active Mode: The server initiates the connection to the client for data transfer.
+Passive Mode: The client initiates the data connection (used in firewalled networks).
+4️⃣ File Transfer Completion
+
+The client downloads/uploads files successfully.
+Connection is closed when the session ends.
+
+
+🔹 FTP Server Components
+
+✅ FTP Server Software (Handles requests & transfers)
+            Examples: vsftpd (Linux), ProFTPD (Linux), FileZilla Server (Windows), IIS FTP Server
+
+✅ FTP Client Software (Connects to the server)
+            Examples: FileZilla, WinSCP, Cyberduck, Linux ftp command
+
+✅ Authentication Mechanism (Username/password or anonymous login)
+
+✅ File Permissions & Security (Control access to files and directories)
+
+🔹 FTP Protocol Types
+FTP (Plain FTP) → Unencrypted, insecure.
+FTPS (FTP Secure) → Uses SSL/TLS for encryption.
+SFTP (SSH File Transfer Protocol) → Secure alternative using SSH (not traditional FTP)
+
+.
+🔹 Installing an FTP Server (Example: vsftpd on Ubuntu)
+
+sudo apt update
+sudo apt install vsftpd -y
+To configure it, edit:
+
+sudo nano /etc/vsftpd.conf
+Restart the service:
+
+sudo systemctl restart vsftpd
+_____________________________________________________________________________________________________________________________________

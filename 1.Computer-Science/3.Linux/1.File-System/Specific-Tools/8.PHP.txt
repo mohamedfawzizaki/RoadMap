@@ -1,0 +1,180 @@
+______________________________________________________________________________________________________________________________________
+                                              PHP Files and Directories on Linux
+                                              ==================================
+
+PHP is a popular server-side scripting language commonly used for web development.
+When PHP is installed on a Linux system, it creates several directories
+ and files related to its core functionality, configuration, extensions, and other resources.
+---------------------------------------------------------------------------------------------------------
+Key PHP Directories and Files
+
+1.`/etc/php/` (Configuration Directory)
+   - This directory contains PHP configuration files for different versions of PHP installed on your system.
+   - Files:
+     - `/etc/php/{version}/cli/php.ini`: 
+                  - Configuration file for PHP when running from the command line interface (CLI).
+                  - This file is used to configure various PHP settings such as memory limits, file uploads, error reporting, etc.
+     - `/etc/php/{version}/apache2/php.ini`: 
+                  - Configuration file for PHP when used with Apache web server.
+                  - This file is specifically used by Apache to configure PHP settings 
+                    like execution time, file uploads, and other runtime configurations.
+     - `/etc/php/{version}/fpm/php.ini`: 
+                  - Configuration file for PHP-FPM (FastCGI Process Manager) if you are using PHP with Nginx or other web servers.
+---------------------------------------------------------------------------------------------------------
+2.`/var/www/` (Web Directory)
+   - This directory is typically used for serving web content, such as websites and PHP files.
+   - Files:
+     - `/var/www/html/`: 
+               - The default document root for Apache or Nginx.
+               - PHP files stored here can be executed when a request is made to the server.
+     - Example: `/var/www/html/index.php`
+
+3.`/usr/bin/` (Binary Executables)
+   - This directory contains executable files for PHP commands and utilities.
+   - Files:
+     - `/usr/bin/php`   : The PHP executable used for running PHP scripts from the command line interface (CLI).
+     - `/usr/bin/phpize`: A command-line tool used to prepare a PHP extension for installation.
+     - `/usr/bin/pecl`  : A command-line tool for installing and managing PHP extensions from the PEAR repository.
+---------------------------------------------------------------------------------------------------------
+4.`/usr/lib/php/` (PHP Library and Extensions Directory)
+   - This directory contains PHP libraries and extensions.
+   - Files:
+     - `/usr/lib/php/20190902/`: 
+                - This is where PHP extensions for the specific PHP version are stored.
+                - The exact directory name will vary depending on the PHP version.
+     - Example: `/usr/lib/php/20190902/mysqli.so` (the MySQLi extension for PHP).
+---------------------------------------------------------------------------------------------------------
+5.`/var/log/` (Log Directory)
+   - This directory is used to store logs for various system activities, including PHP logs.
+   - Files:
+     - `/var/log/apache2/error.log` or `/var/log/nginx/error.log`: 
+                - These log files may contain PHP-related errors when PHP is run within the Apache or Nginx web server.
+     - `/var/log/php-fpm.log`: 
+                - If PHP-FPM is used, this log file will contain PHP error logs generated during the execution of PHP scripts.
+---------------------------------------------------------------------------------------------------------
+6.`/usr/share/php/` (Shared PHP Resources)
+   - This directory contains shared PHP files, libraries, and documentation.
+   - Files:
+     - `/usr/share/php/PEAR/`    : This directory contains PEAR (PHP Extension and Application Repository) packages and libraries.
+     - `/usr/share/php/phpunit/` : This directory may contain PHPUnit (a PHP testing framework) if it is installed.
+---------------------------------------------------------------------------------------------------------
+7.`/tmp/` (Temporary Files Directory)
+   - PHP may use this directory for temporary file storage, especially for sessions or caching.
+   - Files:
+     - PHP may create session files or temporary files in `/tmp/` depending on the configuration (`session.save_path` in `php.ini`).
+---------------------------------------------------------------------------------------------------------
+Important PHP Configuration Files
+
+1.`php.ini`:
+   - The `php.ini` file is the primary configuration file for PHP.
+   - It allows you to customize PHP's behavior, such as memory limits, error handling, upload limits, and more.
+   - Common settings in `php.ini`:
+     - `memory_limit`: Defines the maximum amount of memory a script can consume.
+     - `upload_max_filesize`: Sets the maximum file size allowed for file uploads.
+     - `display_errors`: Controls whether errors are displayed in the browser.
+     - `error_log`: Specifies the file where PHP errors should be logged.
+
+2.`/etc/php/{version}/cli/php.ini` (for CLI-based PHP):
+   - Configuration for PHP when run from the command line.
+
+3.`/etc/php/{version}/apache2/php.ini` (for Apache):
+   - Configuration for PHP when used with Apache HTTP Server.
+
+4.`/etc/php/{version}/fpm/php.ini` (for PHP-FPM):
+   - Configuration for PHP when used with PHP-FPM (often used with Nginx).
+---------------------------------------------------------------------------------------------------------
+Service Control (Systemd)
+
+- Start PHP-FPM (if using PHP-FPM with Nginx or Apache):
+  ```bash
+  sudo systemctl start php{version}-fpm
+  ```
+
+- Stop PHP-FPM:
+  ```bash
+  sudo systemctl stop php{version}-fpm
+  ```
+
+- Enable PHP-FPM to Start on Boot:
+  ```bash
+  sudo systemctl enable php{version}-fpm
+  ```
+
+- Check PHP-FPM Status:
+  ```bash
+  sudo systemctl status php{version}-fpm
+  ```
+
+- PHP Error Logs:
+  If PHP is running as an Apache module, errors will typically be logged to `/var/log/apache2/error.log`.
+  If PHP-FPM is used, errors will be logged in `/var/log/php-fpm.log`.
+---------------------------------------------------------------------------------------------------------
+PHP Extensions
+
+PHP allows you to extend its functionality with extensions.Common extensions include MySQLi, PDO, and Redis.
+
+- Installing PHP Extensions:
+  On a Debian-based system (e.g., Ubuntu):
+  ```bash
+  sudo apt install php{version}-mysqli php{version}-redis php{version}-curl
+  ```
+
+  On Red Hat-based systems (e.g., CentOS, Fedora):
+  ```bash
+  sudo yum install php{version}-mysqli php{version}-redis php{version}-curl
+  ```
+
+- Enabling Extensions:
+  If an extension is installed but not enabled, you can enable 
+   it by editing `php.ini` and uncommenting (or adding) the corresponding line:
+  ```ini
+  extension=mysqli.so
+  extension=redis.so
+  ```
+---------------------------------------------------------------------------------------------------------
+PHP Command-Line Interface (CLI)
+
+1.Check PHP Version:
+   ```bash
+   php -v
+   ```
+
+2.Run PHP Script from Command Line:
+   ```bash
+   php /path/to/script.php
+   ```
+
+3.PHP Interactive Mode:
+   ```bash
+   php -a
+   ```
+---------------------------------------------------------------------------------------------------------
+Testing PHP Installation
+
+To test whether PHP is working properly with a web server (like Apache or Nginx):
+
+1.Create a PHP Test File:
+   ```php
+   <?php
+   phpinfo();
+   ?>
+   ```
+
+2.Place the File in the Web Root (e.g., `/var/www/html/info.php`).
+
+3.Access the File in a Browser:
+   Navigate to `http://your-server-ip/info.php` to view the PHP info page.
+---------------------------------------------------------------------------------------------------------
+Summary of Key PHP Files and Directories on Linux
+
+- `/etc/php/{version}/` : PHP configuration files for different versions and environments (CLI, Apache, FPM).
+- `/usr/bin/`           : PHP binary files like `php`, `phpize`, and `pecl`.
+- `/usr/lib/php/`       : Directory containing PHP libraries and extensions.
+- `/var/www/`           : The web server document root where PHP files are stored for execution.
+- `/var/log/`           : Logs directory for PHP error logs, web server logs, and PHP-FPM logs.
+- `/tmp/`               : Temporary directory used by PHP for session storage and other purposes.
+
+PHP configuration and extension files allow customization and functionality,
+ while service control via `systemd` provides management capabilities for PHP-FPM.
+Let me know if you need further details on any of the PHP topics!
+______________________________________________________________________________________________________________________________________

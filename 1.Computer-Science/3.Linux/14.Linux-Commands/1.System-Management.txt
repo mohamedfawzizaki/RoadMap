@@ -1,0 +1,96 @@
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                                     System Management 
+                                                     =================
+
+ _______________________________________________________________________________________________________________________________________________________
+|        Command         |              Example                             |                        Usage                                              |                                                                                
+|________________________|__________________________________________________|___________________________________________________________________________|
+|   hostnam e            |    `hostname -I`                                 | Display or set the hostname of the system.                                |
+|   hostnamectl          |     hostnamectl                                  |   Shows or changes the system's hostname and related information.         |
+|   uname                |    `uname -a`                                    | Display system information (kernel name, version, architecture).          |
+|   whoami               |    `whoami`                                      | Display the current user’s name.                                          |
+|   who                  |    `who`                                         | Show who is currently logged in.                                          |
+|   last                 |     last                                         |   Lists login history for all users.                                      |
+|   which                |    `which command`                               | Show the path to the command.                                             |
+|   whereis              |    `whereis command`                             | Show the path to the command.                                             |
+|   id                   |    `id username`                                 | Display UID, GID, and groups of a user.   
+|   lsb_release          |     lsb_release -a                               | Disable information about the Operating System.
+|   cat /etc/os-release  |     cat /etc/os-release                          | Disable information about the Operating System.
+|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   cpulimit	         |     cpulimit -l 50 ./script.sh	                | Limit the CPU usage of a process.
+|   watch                |     watch -n 1 'ls -l /proc/1234/fd'	            | Periodically run a command and display its output.
+|   uptime               |    `uptime`                                      | Show how long the system has been running and load averages.              |
+|   vmstat               |    `vmstat 5`                                    | Report system performance statistics (CPU, memory, I/O).                  |
+|   lscpu                |    `lscpu`                                       | Displays detailed information about the CPU architecture,                 |
+|   iostat               |    `iostat -c 5`                                 | Reports CPU statistics every 5 seconds.          
+|   tload	             |     tload	                                    | Display a graph of system load averages in the terminal.
+|   iostat               |    `iostat -x 2`                                 | Shows extended I/O statistics every 2 seconds.  
+|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   free                 |    `free -h`                                     | Display memory usage.                                                     |
+|   /proc/meminfo        |                                                  | Detailed memory statistics.
+|   mkswap               |                                                  | Create a swap space.
+|   swapoff              |    `swapoff /swapfile`                           | Disable swap space.                                                       |
+|   swapon               |    `swapon /swapfile`                            | Enable swap space.
+|   /proc/vmstat         |                                                  | Provides detailed VM statistics.
+|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   netstat	             |     netstat -tulnp	                            | Display active network connections and listening services.
+|   ss                   |    `ss -tulnp`                                   | Display socket statistics (alternative to netstat).                       |                                                                                      
+|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   strace               |    `strace -p 1234`                              | Traces system calls made by a process with PID 1234.                      |
+|   strace               |    `strace ./program`                            | Traces system calls and signals while running a specific program.         |
+|   strace               |    `strace -o output.txt ./program`              | Saves the trace output to a file.                                         |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   df                   |    `df -h`                                       | Display disk space usage by file system.                                  |
+|   du                   |    `du -sh /var/log`                             | Estimate file and directory space usage.                                  |
+|   lsblk                |    `lsblk`                                       | List information about block devices.                                     |
+|   blkid                |    `blkid /dev/sdb1`                             | Display information about block devices (UUID, type).                     |
+|   `lsusb`              |                                                  | List USB devices.
+|   mount                |    `mount /dev/sdb1 /mnt`                        | Mount a file system.                                                      |
+|   umount               |    `umount /mnt`                                 | Unmount a file system.                                                    |
+|   parted               |    `parted /dev/sda`                             | Partition management tool.                                                |
+|   fdisk                |    `fdisk -l`                                    | Partition table manipulator.                                              |
+|   ulimit               |    `ulimit -n 4096`                              | Set user limits for system resources (e.g., max open files).              |
+|   e2fsck               |    `e2fsck -y /dev/sda1`                         | Check and repair an ext2/ext3/ext4 file system.                           |
+|   fsck                 |    `fsck /dev/sda1`                              | Check and repair a file system.                                           |
+|   mkfs                 |    `mkfs.ext4 /dev/sdb1`                         | Create a file system on a device.                                         |
+|   tune2fs              |    `tune2fs -l /dev/sda1`                        | Adjust tunable parameters on ext2/ext3/ext4 file systems.                 |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   sysctl               |    `sysctl -a`                                   | Display or modify kernel parameters at runtime.                           |
+|   dmesg                |    `dmesg | tail`                                | Display kernel message buffer (useful for debugging hardware issues).     |
+|   runleve l            |    `runlevel`                                    | Display the current runlevel of the system.                               |
+|   init                 |    `init 0`                                      | Change the runlevel or shut down the system.                              |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   set                  |    `set`                                         | Display or set shell options.                                             |
+|   env                  |    `env`                                         | Display environment variables.                                            |
+|   export               |    `export VAR=value`                            | Set an environment variable.                                              |
+|   unset                |    `unset VAR`                                   | Unset (remove) an environment variable or shell function.                 |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   date                 |    `date "+%Y-%m-%d %H:%M:%S"`                   | Display or set the current date and time.                                 |
+|   timedat ectl         |    `timedatectl status`                          | Query or change the system clock and time zone.                           |
+|   hwclock              |    `hwclock --systohc`                           | Query or set the hardware clock (RTC).                                    |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   systemctl            |    `systemctl status apache2`                    | Manage system services (start, stop, restart, enable, disable).           |
+|   service              |    `service apache2 restart`                     | Start, stop, restart, or check the status of services.                    |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   journal ctl          |    `journalctl -xe`                              | Query and display logs from `systemd` journal.                            |
+|   logger               |    `logger "Test log message"`                   | Add a message to the system log.                                          |
+|   whois                |    `whois google.com`                            | Query domain ownership information.                                       |
+|   sar	                 |     sar -u 5	                                    | Collect, report, and save system activity data (CPU, memory, I/O, etc.).  |
+|________________________|__________________________________________________|___________________________________________________________________________|
+|   shutdown             |    `shutdown -h now`                             | Shuts down the system immediately.                                        |
+|   shutdown             |    `shutdown -r +5 "Rebooting"`                  | Reboots the system after 5 minutes with a broadcast message.              |
+|   shutdown             |    `shutdown -c`                                 | Cancels a scheduled shutdown or reboot.                                   |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   reboot               |    `reboot`                                      | Reboots the system immediately.                                           |
+|   poweroff             |    `poweroff`                                    | Powers off the system (same as `shutdown -h now`).                        |
+|   halt                 |    `halt`                                        | Halts the system without powering off (stops the CPU but does not cut power).|
+|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   systemctl reboot     |    `systemctl reboot`                            | Reboots the system using `systemd`.                                       |
+|   systemctl poweroff   |    `systemctl poweroff`                          | Powers off the system using `systemd`.                                    |
+|   systemctl halt       |    `systemctl halt`                              | Halts the system without powering off, using `systemd`.                   |
+|   systemctl suspend    |    `systemctl suspend`                           | Suspends the system (puts it into sleep mode).                            |
+|   systemctl hibernate  |    `systemctl hibernate`                         | Hibernates the system (saves the session to disk and powers off).         |
+|  systemctl hybrid-sleep|    `systemctl hybrid-sleep`                      | Suspends to both memory and disk (quick resume + data safety in case of power loss).     |
+|________________________|__________________________________________________|___________________________________________________________________________|
+

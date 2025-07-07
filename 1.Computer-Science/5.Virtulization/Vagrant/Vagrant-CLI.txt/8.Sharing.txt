@@ -1,0 +1,66 @@
+ ___________________________________________________________________________________________________________________________________
+|   vagrant share                                           
+                --disable-http                              Disable publicly visible HTTP(S) endpoint
+                --disable-https                             Disable publicly visible HTTPS endpoint only
+                --domain VALUE                              Domain the share name will be a subdomain of
+                --http VALUE                                Local HTTP port to forward to
+                --https VALUE                               Local HTTPS port to forward to
+            
+                --name VALUE                                Specific name for the share
+                --name VALUE                                Specific name for the share
+                --ssh                                       Allow 'vagrant connect --ssh' access
+                --ssh-no-password                           Key won't be encrypted with --ssh
+                --ssh-port PORT                             Specific port for SSH when using --ssh
+                --ssh-once                                  Allow 'vagrant connect --ssh' only one time
+                --driver DRIVER                             Deprecated option for compatibility
+                --full                                      Share entire machine
+                --share-password                            Custom share password
+                --[no-]color                                Enable or disable color output
+                --machine-readable                          Enable machine readable output
+                --version                                   Display Vagrant version
+                --name VALUE                                Specific name for the share
+                --ssh                                       Allow 'vagrant connect --ssh' access
+                --ssh-no-password                           Key won't be encrypted with --ssh
+                --ssh-port PORT                             Specific port for SSH when using --ssh
+                --ssh-once                                  Allow 'vagrant connect --ssh' only one time
+                --driver DRIVER                             Deprecated option for compatibility
+                --full                                      Share entire machine
+                --share-password                            Custom share password
+|___________________________________________________________________________________________________________________________________
+
+
+ ___________________________________________________________________________________________________________________________________
+|   vagrant connect NAME                                           
+                --disable-static-ip          No static IP, only a SOCKS proxy
+                --static-ip IP               Manually override static IP chosen
+                --ssh                        SSH into the remote machine
+                --driver DRIVER              Deprecated option for compatibility
+                --share-password             Custom share password
+|___________________________________________________________________________________________________________________________________
+
+
+
+
+
+# Share:
+
+        Allows anyone in the world with an internet connection to access your Vagrant environment by giving you a globally accessible URL. 
+        If the person wanting to connect to your environment also has Vagrant installed, 
+         they can use `vagrant connect` to connect to open any TCP stream to your Vagrant machine.
+        Vagrant will attempt to auto-discover your HTTP port and enable that. 
+        If you want to disable HTTP, specify the --disable-http flag directly. 
+        If you want HTTPS, specify the --https flag directly.
+        If the --ssh flag is specified, others can easily SSH into your Vagrant environment by using `vagrant connect --ssh`. 
+        We generate a new SSH key for this that you can encrypt with a password.
+        When --ssh is specified, all other SSH flags are optional.
+
+
+
+
+
+# Connect:
+
+        Gives you access to any Vagrant environment shared using `vagrant share`. 
+        The NAME parameter should be the unique name that was outputted with `vagrant share` on the remote side.
+        Vagrant will give you an IP that you can use to access the remote environment. 
+        You'll be able to access any ports that the shared environment has authorized.

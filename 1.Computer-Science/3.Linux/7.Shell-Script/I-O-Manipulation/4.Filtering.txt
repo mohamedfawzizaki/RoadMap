@@ -1,0 +1,144 @@
+______________________________________________________________________________________________________________________________________
+                                                          Filtering 
+                                                          =========
+
+---------------------------------------------------------------------------------------------------------
+Commonly Used Filtering Commands
+
+1.`grep` (Global Regular Expression Print)
+
+        ``````````````````````````````````````````bash
+        command | grep "pattern"
+        ``````````````````````````````````````````
+   
+        ``````````````````````````````````````````bash
+        cat file.txt | grep "error"
+        ``````````````````````````````````````````
+
+   - Common options:
+        - `-i`: Ignore case.
+        - `-v`: Invert the match (show lines that do not match).
+        - `-r` or `-R`: Search recursively in directories.
+        - `-l`: Show only the names of files that match.
+
+2.`awk` (Pattern Scanning and Processing Language)
+
+        ``````````````````````````````````````````bash
+        command | awk '{print $1, $2}'
+        ``````````````````````````````````````````
+   
+        ``````````````````````````````````````````bash
+        cat file.txt | awk '{print $1}'
+        ``````````````````````````````````````````
+
+   - Common usage:
+        - `awk '{print $1, $2}'`: Prints the first and second columns of each line.
+        - `awk '{print NR, $0}'`: Displays line numbers along with the whole line.
+      
+3.`sed` (Stream Editor)
+
+        ``````````````````````````````````````````bash
+        command | sed 's/old/new/g'
+        ``````````````````````````````````````````
+
+        ``````````````````````````````````````````bash
+        echo "Hello World" | sed 's/World/Linux/'
+        ``````````````````````````````````````````
+        This will replace the word "World" with "Linux", outputting:
+        ``````````````````````````````````````````
+        Hello Linux
+        ``````````````````````````````````````````
+
+   - Common usage:
+        - `sed 's/old/new/g'`: Replaces all occurrences of "old" with "new".
+        - `sed '2d'`: Deletes the second line.
+        - `sed 's/^/prefix_/'`: Adds a prefix to each line.
+
+4.`sort` 
+
+        ``````````````````````````````````````````bash
+        command | sort
+        ``````````````````````````````````````````
+
+        ``````````````````````````````````````````bash
+        cat file.txt | sort
+        ``````````````````````````````````````````
+        This sorts the lines in `file.txt` alphabetically.
+
+   - Common options:
+        - `-n`: Sorts numerically.
+        - `-r`: Reverses the order.
+        - `-u`: Removes duplicates.
+        - `-k`: Sort by a specific column.
+
+5.`uniq` (Unique)
+
+        ``````````````````````````````````````````bash
+        command | uniq
+        ``````````````````````````````````````````
+
+        ``````````````````````````````````````````bash
+        cat file.txt | sort | uniq
+        ``````````````````````````````````````````
+        This command first sorts the content of `file.txt` and then filters out duplicate lines.
+
+   - Common options:
+        - `-c`: Counts the occurrences of each line.
+        - `-d`: Displays only duplicate lines.
+        - `-u`: Displays only unique lines.
+
+6.`head` and `tail`
+
+        ``````````````````````````````````````````bash
+        command | head
+        command | tail
+        ``````````````````````````````````````````
+
+        ``````````````````````````````````````````bash
+        cat file.txt | head -n 10
+        ``````````````````````````````````````````
+        
+        ``````````````````````````````````````````bash
+        cat file.txt | tail -n 10
+        ``````````````````````````````````````````
+
+7.`cut`
+
+        ``````````````````````````````````````````bash
+        command | cut -d "delimiter" -f field_number
+        ``````````````````````````````````````````
+
+        ``````````````````````````````````````````bash
+        cat file.csv | cut -d "," -f 2
+        ``````````````````````````````````````````
+
+8.`tr` (Translate or Delete Characters)
+
+        ``````````````````````````````````````````bash
+        command | tr 'set1' 'set2'
+        ``````````````````````````````````````````
+
+        ``````````````````````````````````````````bash
+        echo "hello world" | tr 'a-z' 'A-Z'
+        ``````````````````````````````````````````
+        ``````````````````````````````````````````
+        HELLO WORLD
+        ``````````````````````````````````````````
+
+9.`find` (File Finder with Filtering)
+
+        ``````````````````````````````````````````bash
+        find /path/to/directory -name "filename"
+        ``````````````````````````````````````````
+
+        ``````````````````````````````````````````bash
+        find /home/user -name ".txt"
+        ``````````````````````````````````````````
+
+---------------------------------------------------------------------------------------------------------
+Combining Filters
+
+      ``````````````````````````````````````````bash
+      cat file.txt | grep "error" | sort | uniq
+      ``````````````````````````````````````````
+______________________________________________________________________________________________________________________________________

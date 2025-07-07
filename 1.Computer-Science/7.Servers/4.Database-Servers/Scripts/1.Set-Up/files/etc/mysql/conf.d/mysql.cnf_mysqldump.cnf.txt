@@ -1,0 +1,27 @@
+___________________________________________________________________________________________________________________________________
+                                                /etc/mysql/conf.d/
+                                                =================
+
+Your `/etc/mysql/conf.d/` directory contains the following files:  
+
+1. `mysql.cnf`  
+   - This file contains configuration settings for the MySQL client (such as the `mysql` command-line tool).  
+   - Example content:
+     ``````````````````````````````````````````````````````````````ini
+     [mysql]
+     default-character-set = utf8mb4
+     ``````````````````````````````````````````````````````````````
+
+2. `mysqldump.cnf`  
+   - This file is used to configure `mysqldump`, the MySQL backup tool.  
+   - Example content:
+     ``````````````````````````````````````````````````````````````ini
+     [mysqldump]
+     quick
+     max_allowed_packet = 64M
+     ``````````````````````````````````````````````````````````````
+
+ What Does This Mean?
+- The `conf.d/` directory is mainly for client-side configuration.
+- Server settings (for the MySQL daemon) are usually inside `/etc/mysql/mysql.conf.d/mysqld.cnf`.
+___________________________________________________________________________________________________________________________________

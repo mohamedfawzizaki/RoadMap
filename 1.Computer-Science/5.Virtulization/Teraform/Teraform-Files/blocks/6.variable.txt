@@ -1,0 +1,211 @@
+_________________________________________________________________________________________________________________________________________________
+                                                      To-Document-Terraform
+                                                      =====================
+
+The `variable` block in Terraform is used to define input variables that parameterize Terraform configurations.
+
+It allows you to pass dynamic values into your Terraform code, making it reusable,
+ configurable, and modular.These variables can be used across resources, modules, and other Terraform components.
+
+_________________________________________________________________________________________________________________________________________________
+                                               Key Features of the `variable` Block
+                       ____________________________________________________________________________________________________
+                      |       Feature      |                            Description                                        |
+                      |____________________|_______________________________________________________________________________|
+                      | Dynamic Inputs     | Enables configurations to accept values at runtime or from external sources.  |
+                      | Default Values     | Provides fallback values when inputs are not specified.                       |
+                      | Type Constraints   | Validates the type of input provided (e.g., string, list, map).               |
+                      | Descriptions       | Documents the purpose of the variable for better maintainability.             |
+                      | Validation Rules   | Ensures input values meet specific criteria.                                  |
+                      |____________________|_______________________________________________________________________________|
+
+_________________________________________________________________________________________________________________________________________________
+                                                Structure of a `variable` Block
+
+# Syntax:
+      ````````````````````````````````````````````````````````````````````hcl
+      variable "<NAME>" {
+        type        = <TYPE>
+        description = <DESCRIPTION>
+        default     = <DEFAULT_VALUE>
+        validation  {
+          condition     = <CONDITION>
+          error_message = <ERROR_MESSAGE>
+        }
+      }
+      ````````````````````````````````````````````````````````````````````
+ ____________________________________________________________________________________________________
+|   Component    |                                 Description                                       |
+|________________|___________________________________________________________________________________|
+| `<NAME>`       | Unique identifier for the variable.                                               |
+| `type`         | Specifies the type of variable (e.g., string, list, map, bool, number, or object).|
+| `description`  | Provides a human-readable explanation of the variable's purpose.                  |
+| `default`      | Sets a fallback value if the variable is not provided.                            |
+| `validation`   | (Optional) Defines rules to validate variable inputs.                             |
+|________________|___________________________________________________________________________________|
+
+_________________________________________________________________________________________________________________________________________________
+                                                         Variable Types
+ ______________________________________________________________________________________________________
+|    Type    |                Description                     |              Example                   |
+|____________|________________________________________________|________________________________________|
+| `string`   | A single string value.                         | `"example"`                            |
+| `number`   | A numeric value (integer or floating-point).   | `42`                                   |
+| `bool`     | A boolean value (`true` or `false`).           | `true`                                 |
+| `list`     | An ordered collection of values.               | `["value1", "value2"]`                 |
+| `map`      | A collection of key-value pairs.               | `{ key1 = "value1", key2 = "value2" }` |
+| `object`   | A complex data structure with named attributes.| `{ name = "example", count = 3 }`      |
+| `any`      | Allows any data type.                          | Can accept any type of input.          |
+|____________|________________________________________________|________________________________________|
+
+_________________________________________________________________________________________________________________________________________________
+                                                  Examples of `variable` Blocks
+-----------------------------------------------------------------------------------------------------------------------------
+# 1.Simple String Variable
+      ````````````````````````````````````````````````````````````````````hcl
+      variable "region" {
+        type        = string
+        description = "The AWS region to deploy resources in."
+        default     = "us-west-2"
+      }
+      ````````````````````````````````````````````````````````````````````
+
+- This variable accepts a string value and defaults to `us-west-2`.
+
+-----------------------------------------------------------------------------------------------------------------------------
+# 2.List Variable
+    ````````````````````````````````````````````````````````````````````hcl
+    variable "availability_zones" {
+      type        = list(string)
+      description = "List of availability zones to use."
+      default     = ["us-west-2a", "us-west-2b"]
+    }
+    ````````````````````````````````````````````````````````````````````
+
+- This variable is a list of strings, defaulting to two availability zones.
+
+-----------------------------------------------------------------------------------------------------------------------------
+# 3.Map Variable
+    ````````````````````````````````````````````````````````````````````hcl
+    variable "tags" {
+      type        = map(string)
+      description = "Tags to apply to all resources."
+      default     = {
+        environment = "production"
+        team        = "devops"
+      }
+    }
+    ````````````````````````````````````````````````````````````````````
+
+- A map of key-value pairs to tag resources.
+
+-----------------------------------------------------------------------------------------------------------------------------
+# 4.Boolean Variable
+      ````````````````````````````````````````````````````````````````````hcl
+      variable "enable_monitoring" {
+        type        = bool
+        description = "Whether to enable monitoring."
+        default     = true
+      }
+      ````````````````````````````````````````````````````````````````````
+
+- A boolean variable to toggle monitoring on or off.
+
+-----------------------------------------------------------------------------------------------------------------------------
+# 5.Object Variable
+      ````````````````````````````````````````````````````````````````````hcl
+      variable "instance_config" {
+        type = object({
+          instance_type = string
+          ami           = string
+          count         = number
+        })
+        default = {
+          instance_type = "t2.micro"
+          ami           = "ami-0abcdef1234567890"
+          count         = 1
+        }
+      }
+      ````````````````````````````````````````````````````````````````````
+
+- A structured object containing instance configuration details.
+
+-----------------------------------------------------------------------------------------------------------------------------
+# 6.Validation Example
+      ````````````````````````````````````````````````````````````````````hcl
+      variable "instance_type" {
+        type        = string
+        description = "The EC2 instance type."
+        default     = "t2.micro"
+
+        validation {
+          condition     = contains(["t2.micro", "t3.micro", "m5.large"], var.instance_type)
+          error_message = "Instance type must be t2.micro, t3.micro, or m5.large."
+        }
+      }
+      ````````````````````````````````````````````````````````````````````
+
+- Ensures the variable value is one of the specified instance types.
+-----------------------------------------------------------------------------------------------------------------------------
+_________________________________________________________________________________________________________________________________________________
+                                                       Referencing Variables
+
+You can reference variables in other parts of the configuration using the `var.<NAME>` syntax.
+
+# Example:
+      ````````````````````````````````````````````````````````````````````hcl
+      resource "aws_instance" "web" {
+        ami           = var.ami
+        instance_type = var.instance_type
+      }
+      ````````````````````````````````````````````````````````````````````
+
+- References variables `ami` and `instance_type` to configure the EC2 instance.
+
+_________________________________________________________________________________________________________________________________________________
+                                                      Passing Values to Variables
+
+1.Via CLI:
+      ````````````````````````````````````````````````````````````````````bash
+      terraform apply -var="region=us-east-1"
+      ````````````````````````````````````````````````````````````````````
+
+2.Using a `.tfvars` File:
+      ````````````````````````````````````````````````````````````````````hcl
+      region = "us-east-1"
+      ````````````````````````````````````````````````````````````````````
+      Save this as `terraform.tfvars` or a custom `.tfvars` file, and Terraform will automatically load it.
+
+3.Environment Variables:
+      ````````````````````````````````````````````````````````````````````bash
+      export TF_VAR_region="us-east-1"
+      ````````````````````````````````````````````````````````````````````
+
+_________________________________________________________________________________________________________________________________________________
+                                                            Best Practices
+
+1.Use Descriptive Names   : Make variable names meaningful and self-explanatory.
+2.Provide Descriptions    : Always document the purpose of each variable for better clarity.
+3.Set Defaults Judiciously: Avoid defaults for critical inputs to force user specification.
+4.Leverage Validation     : Ensure input values meet the expected criteria.
+5.Use Type Constraints    : Enforce strict typing for better error checking.
+
+_________________________________________________________________________________________________________________________________________________
+                                                      Common Errors and Solutions
+ ______________________________________________________________________________________________________________________________________________________
+|           Error            |                    Cause                       |                         Solution                                       |
+|____________________________|________________________________________________|________________________________________________________________________|
+| "Required variable not set"| A variable without a default was not provided. | Pass the variable value using CLI, `.tfvars`, or environment variables.|
+| "Type mismatch"            | Provided value doesn't match the expected type.| Check the variable type and ensure the input matches.                  |
+| Validation failure         | Input violates a validation rule.              | Correct the input value to comply with the validation condition.       |
+|____________________________|________________________________________________|________________________________________________________________________|
+
+_________________________________________________________________________________________________________________________________________________
+                                                                Summary
+
+The `variable` block is a powerful way to make your Terraform configurations reusable, flexible, and modular.
+
+By defining variables with proper types, defaults, and validations,
+ you can create robust and user-friendly infrastructure-as-code setups.
+_________________________________________________________________________________________________________________________________________________
+

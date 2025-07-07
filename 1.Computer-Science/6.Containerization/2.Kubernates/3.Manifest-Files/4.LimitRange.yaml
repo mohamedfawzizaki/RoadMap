@@ -1,0 +1,59 @@
+# --------------------------------------------------------------------------------------------------
+# Kubernetes LimitRange: Enforces Resource Defaults and Bounds for Containers and PVCs in "dev"
+# --------------------------------------------------------------------------------------------------
+# PURPOSE:
+# A LimitRange enforces constraints on compute and storage resources at the **pod or container level**
+# within a namespace. This is useful to:
+#   - Prevent containers from over-consuming resources
+#   - Apply default `requests` and `limits` when users forget to specify them
+#   - Control PVC (PersistentVolumeClaim) sizes
+#
+# STRUCTURE:
+# - type: Container → applies to Pod containers
+# - type: PersistentVolumeClaim → applies to PVCs
+#
+# COMMON USE CASES:
+# - Set minimum and maximum memory/CPU for containers
+# - Set default CPU/memory values if user does not provide them
+# - Control storage size constraints for PVCs
+#
+# NOTE:
+# - A LimitRange applies **within a namespace** (must match namespace of the target workloads)
+# - Works well with ResourceQuota to enforce global constraints
+# --------------------------------------------------------------------------------------------------
+
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: dev-resource-limits
+  namespace: dev               # Namespace this LimitRange applies to
+spec:
+  limits:
+    # ------------------------------------------------------------
+    # Container Resource Limits (applies to each container)
+    # ------------------------------------------------------------
+    - type: Container
+      max:
+        cpu: "1"               # Max 1 vCPU per container
+        memory: "512Mi"        # Max 512Mi memory per container
+      min:
+        cpu: "100m"            # Minimum 100 millicores (0.1 CPU)
+        memory: "128Mi"        # Minimum 128Mi memory
+      default:
+        cpu: "500m"            # Default limit: 0.5 vCPU if not specified by user
+        memory: "256Mi"        # Default memory limit if none is set
+      defaultRequest:
+        cpu: "200m"            # Default CPU request: 0.2 vCPU
+        memory: "256Mi"        # Default memory request: 256Mi
+      maxLimitRequestRatio:
+        cpu: "4"               # Enforce limit/request <= 4 for CPU
+        memory: "2"            # Enforce limit/request <= 2 for memory
+
+    # ------------------------------------------------------------
+    # PVC Size Limits
+    # ------------------------------------------------------------
+    - type: PersistentVolumeClaim
+      max:
+        storage: "10Gi"        # Maximum allowed size per PVC
+      min:
+        storage: "1Gi"         # Minimum allowed size per PVC

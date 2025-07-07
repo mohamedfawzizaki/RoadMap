@@ -1,0 +1,213 @@
+_________________________________________________________________________________________________________________________________________________________________________
+                                             `/etc/ssh/ssh_config`
+                                              ===================
+
+The `/etc/ssh/ssh_config` file is the system-wide configuration file for the OpenSSH client.
+It is used to set default settings that will be applied to all SSH client sessions initiated from the machine.
+This file is typically used to configure behavior for SSH clients connecting 
+ to remote systems, and not for the SSH server (which is configured via `/etc/ssh/sshd_config`).
+
+ Key sections and directives in `/etc/ssh/ssh_config`:
+-------------------------------------------------------------------------------------------------------------------------------
+ 1.Global Settings:
+        These settings apply to all SSH connections initiated from this machine 
+         unless overridden by specific user settings or command-line options.
+
+        - `Host`: 
+            - Specifies for which hosts the settings in the block should be applied.
+            - It can be a specific hostname or a wildcard.
+            - Example: 
+            ````````````````````````````````````bash
+            Host 
+            ````````````````````````````````````
+
+        - `HostName`: 
+            - Defines the real hostname to connect to if the user specifies an alias in the `Host` directive.
+            - Example:
+            ````````````````````````````````````bash
+            Host example
+                HostName 192.168.1.1
+            ````````````````````````````````````
+
+        - `User`: 
+            - Specifies the default user to log in as on the remote system.
+            - Example:
+            ````````````````````````````````````bash
+            User ubuntu
+            ````````````````````````````````````
+-------------------------------------------------------------------------------------------------------------------------------
+ 2.Connection Settings:
+        These settings control how SSH clients connect to the server.
+
+        - `Port`:
+            - Specifies the port on the remote host to which to connect.
+            - Default is 22 unless otherwise specified.
+            - Example:
+            ````````````````````````````````````bash
+            Port 2222
+            ````````````````````````````````````
+
+        - `Protocol`: 
+            - Specifies which version of the SSH protocol to use (either 1 or 2).
+            - Example:
+            ````````````````````````````````````bash
+            Protocol 2
+            ````````````````````````````````````
+
+        - `ForwardAgent`: 
+            - Specifies whether to enable SSH agent forwarding.
+            - `yes` allows forwarding, `no` disables it.
+            - Example:
+            ````````````````````````````````````bash
+            ForwardAgent yes
+            ````````````````````````````````````
+
+        - `ForwardX11`: 
+            - Enables or disables X11 forwarding, allowing you to run GUI applications over SSH.
+            - Example:
+            ````````````````````````````````````bash
+            ForwardX11 yes
+            ````````````````````````````````````
+
+        - `ForwardX11Trusted`:
+            - Allows trusted X11 forwarding, which is more secure.
+            - Example:
+            ````````````````````````````````````bash
+            ForwardX11Trusted yes
+            ````````````````````````````````````
+-------------------------------------------------------------------------------------------------------------------------------
+ 3.Authentication Settings:
+        These settings control how SSH authentication is handled.
+
+        - `PasswordAuthentication`:
+            - Controls whether password authentication is allowed.
+            - Example:
+            ````````````````````````````````````bash
+            PasswordAuthentication yes
+            ````````````````````````````````````
+
+        - `PubkeyAuthentication`:
+            - Specifies whether public key authentication is allowed.
+            - Example:
+            ````````````````````````````````````bash
+            PubkeyAuthentication yes
+            ````````````````````````````````````
+
+        - `IdentityFile`:
+            - Specifies the file that contains the private key used for public key authentication.
+            - Example:
+            ````````````````````````````````````bash
+            IdentityFile ~/.ssh/id_rsa
+            ````````````````````````````````````
+
+        - `UseKeychain`:
+            - Specifies whether the client should use the macOS keychain for storing and retrieving private keys.
+            - Example:
+            ````````````````````````````````````bash
+            UseKeychain yes
+            ````````````````````````````````````
+-------------------------------------------------------------------------------------------------------------------------------
+ 4.Compression and Encryption Settings:
+        These settings control the compression and encryption used during the SSH connection.
+
+        - `Compression`: 
+            - Specifies whether to use compression during the SSH connection.
+            - Example:
+            ````````````````````````````````````bash
+            Compression yes
+            ````````````````````````````````````
+
+        - `Ciphers`:
+            - Specifies which ciphers to use for the connection.
+            - Example:
+            ````````````````````````````````````bash
+            Ciphers aes128-ctr,aes192-ctr,aes256-ctr
+            ````````````````````````````````````
+
+        - `MACs`:
+            - Specifies the message authentication codes (MACs) used for integrity protection.
+            - Example:
+            ````````````````````````````````````bash
+            MACs hmac-sha2-256,hmac-sha2-512
+            ````````````````````````````````````
+-------------------------------------------------------------------------------------------------------------------------------
+ 5.Timeout and Retry Settings:
+        These settings control the behavior of SSH connection retries and timeouts.
+
+        - `ConnectTimeout`:
+            - Specifies the timeout for establishing a connection.
+            - Example:
+            ````````````````````````````````````bash
+            ConnectTimeout 10
+            ````````````````````````````````````
+
+        - `ServerAliveInterval`:
+            - Specifies the interval in seconds between sending keepalive messages to the server.
+            - Example:
+            ````````````````````````````````````bash
+            ServerAliveInterval 60
+            ````````````````````````````````````
+
+        - `ServerAliveCountMax`:
+            - Specifies how many keepalive messages can be sent without receiving a response before disconnecting.
+            - Example:
+            ````````````````````````````````````bash
+            ServerAliveCountMax 3
+            ````````````````````````````````````
+-------------------------------------------------------------------------------------------------------------------------------
+ 6.Logging and Debugging:
+        These settings control the verbosity of logging and debugging information.
+
+        - `LogLevel`:
+            - Specifies the level of logging.Possible values include `QUIET`, `FATAL`, `ERROR`, `INFO`, `VERBOSE`, and `DEBUG`.
+            - Example:
+            ````````````````````````````````````bash
+            LogLevel VERBOSE
+            ````````````````````````````````````
+-------------------------------------------------------------------------------------------------------------------------------
+ 7.Other Useful Options:
+
+        - `StrictHostKeyChecking`:
+            - Controls whether SSH should verify the host key when connecting to a server.
+            - Example:
+            ````````````````````````````````````bash
+            StrictHostKeyChecking no
+            ````````````````````````````````````
+
+        - `UserKnownHostsFile`:
+            - Specifies the file where known host keys are stored.
+            - This can be used to specify a custom location for the `known_hosts` file.
+            - Example:
+            ````````````````````````````````````bash
+            UserKnownHostsFile ~/.ssh/known_hosts
+        ````````````````````````````````````
+
+ Example `/etc/ssh/ssh_config` file:
+        ````````````````````````````````````bash
+        Global settings
+            Host 
+            ForwardAgent yes
+            ForwardX11 yes
+            User ubuntu
+            Port 22
+            Protocol 2
+            Compression yes
+
+        Host-specific settings
+            Host example.com
+            HostName 192.168.1.100
+            User admin
+            IdentityFile ~/.ssh/id_rsa
+            ServerAliveInterval 60
+            ServerAliveCountMax 3
+
+        Logging settings
+        LogLevel VERBOSE
+        ````````````````````````````````````
+-------------------------------------------------------------------------------------------------------------------------------
+                                                         Summary
+                                                         =======
+The `/etc/ssh/ssh_config` file is essential for configuring how SSH clients behave globally or for specific hosts.
+You can set options such as the default user, connection settings (like port and protocol), authentication methods, and more.
+It's typically customized to suit the needs of your environment or network.
+_________________________________________________________________________________________________________________________________________________________________________

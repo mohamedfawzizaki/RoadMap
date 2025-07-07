@@ -1,0 +1,152 @@
+____________________________________________________________________________________________________________________________________________________________
+                                                     Data Types in Bash
+                                                     ==================
+Bash does not have strict data types like other programming languages (e.g., Python, Java). 
+All variables in Bash are treated as strings by default. 
+However, you can manipulate them to behave like different types.
+
+1. Types of Data in Bash
+- Strings: Default type for variables.
+        ``````````````````````````````````````````bash
+        name="Alice"
+        echo "Hello, $name"
+        ``````````````````````````````````````````
+- Integers: Used for arithmetic operations.
+        ``````````````````````````````````````````bash
+        num=42
+        echo "$((num + 8))"  # Output: 50
+        ``````````````````````````````````````````
+- Arrays: A collection of values stored in a single variable.
+- Associative Arrays: Key-value pairs (available in Bash 4.0+).
+
+2. Declaring Variables
+- No need to specify a type:
+        ``````````````````````````````````````````bash
+        var="Hello"  # String
+        var=123      # Treated as an integer in arithmetic
+        ``````````````````````````````````````````
+- Declaring read-only variables:
+        ``````````````````````````````````````````bash
+        readonly VAR="Cannot change this"
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                       Arrays in Bash
+                                                       ==============
+
+Bash arrays are indexed collections of elements. 
+Bash supports two types of arrays:
+        1. Indexed Arrays: Use numeric indices (default starting at `0`).
+        2. Associative Arrays: Use strings as keys (requires Bash 4.0+).
+
+________________________________________________________________________________________________________________________________
+                                                     1. Indexed Arrays
+                                                     =================
+- Declaring an Indexed Array
+        ``````````````````````````````````````````bash
+        # Method 1: Explicit declaration
+        declare -a my_array
+
+        # Method 2: Implicit declaration
+        my_array=("Alice" "Bob" "Charlie")
+        ``````````````````````````````````````````
+
+- Adding/Updating Elements
+        ``````````````````````````````````````````bash
+        my_array[0]="Alice"    # Add or update element at index 0
+        my_array[3]="Dave"     # Add element at index 3
+        ``````````````````````````````````````````
+
+- Accessing Elements
+        ``````````````````````````````````````````bash
+        echo "${my_array[0]}"  # Access element at index 0
+        ``````````````````````````````````````````
+
+- Accessing All Elements
+        ``````````````````````````````````````````bash
+        echo "${my_array[@]}"  # All elements
+        echo "${#my_array[@]}" # Number of elements
+        ``````````````````````````````````````````
+
+- Iterating Over an Array
+        ``````````````````````````````````````````bash
+        for item in "${my_array[@]}"; do
+            echo "$item"
+        done
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                      2. Associative Arrays
+                                                      =====================
+- Declaring an Associative Array
+        ``````````````````````````````````````````bash
+        declare -A my_dict
+        ``````````````````````````````````````````
+
+- Adding/Updating Elements
+        ``````````````````````````````````````````bash
+        my_dict["name"]="Alice"
+        my_dict["age"]=30
+        ``````````````````````````````````````````
+
+- Accessing Elements
+        ``````````````````````````````````````````bash
+        echo "${my_dict["name"]}"  # Output: Alice
+        ``````````````````````````````````````````
+
+- Accessing All Keys and Values
+        ``````````````````````````````````````````bash
+        echo "${!my_dict[@]}"  # All keys
+        echo "${my_dict[@]}"   # All values
+        ``````````````````````````````````````````
+
+- Iterating Over an Associative Array
+        ``````````````````````````````````````````bash
+        for key in "${!my_dict[@]}"; do
+            echo "$key -> ${my_dict[$key]}"
+        done
+        ``````````````````````````````````````````
+#  Array Membership Checks:
+        [[ " ${array[@]} " =~ " ${value} " ]]
+________________________________________________________________________________________________________________________________
+                                                    Key Operations on Arrays
+                                                    ========================
+ ___________________________________________________________________________________________________________________________________
+|     Operation         |           Indexed Array Example                       |         Associative Array Example                 |
+|_______________________|_______________________________________________________|___________________________________________________|
+| Declare an array      | `declare -a my_array`                                 | `declare -A my_dict`                              |
+| Add/Update an element | `my_array[1]="Bob"`                                   | `my_dict["city"]="Paris"`                         |
+| Access an element     | `echo "${my_array[1]}"`                               | `echo "${my_dict["city"]}"`                       |
+| All keys              | Not applicable                                        | `echo "${!my_dict[@]}"`                           |
+| Length of array       | `echo "${#my_array[@]}"`                              | `echo "${#my_dict[@]}"`                           |
+| Iterate               | `for item in "${my_array[@]}"; do echo $item; done`   | `for key in "${!my_dict[@]}"; do echo $key; done` |
+| Remove an element     | `unset my_array[1]`                                   | `unset my_dict["city"]`                           |
+| Entire array          | `unset my_array`                                      | `unset my_dict`                                   |
+ ___________________________________________________________________________________________________________________________________|
+
+________________________________________________________________________________________________________________________________
+                                                         Examples
+                                                         ========
+1. Indexed Array Example
+        ``````````````````````````````````````````bash
+        fruits=("apple" "banana" "cherry")
+        echo "First fruit: ${fruits[0]}"
+        echo "All fruits: ${fruits[@]}"
+        fruits[1]="blueberry"
+        echo "Updated fruits: ${fruits[@]}"
+        ``````````````````````````````````````````
+
+2. Associative Array Example
+        ``````````````````````````````````````````bash
+        declare -A student
+        student["name"]="John"
+        student["age"]=25
+        student["course"]="Engineering"
+
+        echo "Student Name: ${student["name"]}"
+        for key in "${!student[@]}"; do
+            echo "$key: ${student[$key]}"
+        done
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________

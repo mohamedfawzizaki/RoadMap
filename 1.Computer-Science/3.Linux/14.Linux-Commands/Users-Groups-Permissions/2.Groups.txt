@@ -1,0 +1,72 @@
+_________________________________________________________________________________________________________________________________________________________________________# 
+                                                     Group Management
+                                                     ================
+                     _____________________________________________________________________________________
+                    | Command               |                 Description                                 |
+                    |_______________________|_____________________________________________________________|
+                    | `groupadd`            | Creates a new group.                                        |
+                    |_______________________|_____________________________________________________________|
+                    | `groupdel`            | Delete a group.                                             |
+                    |_______________________|_____________________________________________________________|
+                    | `gpasswd`             | Manage groups' password.                                    |
+                    |_______________________|_____________________________________________________________|
+                    | `chgrp`               | Change the group of a file or directory.                    |
+                    |_______________________|_____________________________________________________________|
+                    | `groups`              | Display all groups.                                         |
+                    | `groups <user-name>`  | Display all groups for a user.                              |
+                    | `id`                  | Show user and group IDs.                                    |
+                    |_______________________|_____________________________________________________________|
+
+
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                                      Details
+                                                      =======           
+
+sudo groupadd [options] <user-name>
+                __________________________________________________________________________________________________________________________________________________
+               | Options  |              Example                                 |                                        Usage                                                               
+               |__________|______________________________________________________|________________________________________________________________________________         
+               |  -f	  | groupadd -f  mygroup	                             | Creates the group mygroup, but if it already exists, it does nothing (avoids error).
+               |  -g	  | groupadd -g  1001 mygroup	                         | Creates the group mygroup with a specified GID of 1001.
+               |  -o	  | groupadd -o  -g 1001 mygroup	                     | Allows creating a group with a non-unique GID (use cautiously).
+               |  -p	  | groupadd -p  password_hash mygroup	                 | Sets the encrypted password for the group (typically not used as group passwords are uncommon).
+               |  -r	  | groupadd -r  mygroup	                             | Creates a system group (GID is typically below 1000).
+               |  -K	  | groupadd -K  GID_MAX=2000 mygroup	                 | Overrides default configuration in /etc/login.defs, such as setting the maximum GID.
+               |  -h	  | groupadd -h 	                                     | Displays help information for the groupadd command.                                      
+               |__________|______________________________________________________|________________________________________________________________________________  
+
+sudo groupdel  <group-name>
+              
+sudo gpasswd  [options] <group-name>
+                __________________________________________________________________________________________________________________________________________________
+               | Options  |              Example                                 |                                        Usage                                                               
+               |__________|______________________________________________________|________________________________________________________________________________  
+               |   -a	  |   gpasswd -a mohamed developers	                     | Adds the user mohamed to the group developers.
+               |   -d	  |   gpasswd -d mohamed developers	                     | Removes the user mohamed from the group developers.
+               |   -r	  |   gpasswd -r developers	                             | Removes the group password for the developers group.
+               |   -R	  |   gpasswd -R developers	                             | Disables access via the newgrp command for the developers group.
+               |   -A	  |   gpasswd -A alice,bob developers	                 | Sets alice and bob as the administrators of the developers group.
+               |   -M	  |   gpasswd -M alice,bob developers	                 | Replaces the group members with alice and bob, removing all others.
+               |   -h	  |   gpasswd -h	                                     | Displays help information for the gpasswd command.
+               |__________|______________________________________________________|________________________________________________________________________________               
+ 
+sudo chgrp  [options] <group-name> 
+                __________________________________________________________________________________________________________________________________________________
+               | Options  |              Example                                 |                                        Usage                                                               
+               |__________|______________________________________________________|________________________________________________________________________________  
+               |          |   chgrp     <group-name>    myfile.txt               | Change the Group of a File. 
+               |          |   chgrp     <group-name>    file1.txt file2.txt      | Change the Group of Multiple Files 
+               |   -h	  |   chgrp -h  <group-name>    <symbolic_link>          | Affects symbolic links, changing the group of the symlink itself, not the file it points to.
+               |   -v	  |   chgrp -v  <group-name>    myfile.txt	             | Verbose output that provides additional information about the group change.
+               |   -R	  |   chgrp -R  <group-name>    /home/user/docs          | Changes the group of a directory and its contents recursively.
+               |__________|______________________________________________________|________________________________________________________________________________
+                    
+4.Display group information:             
+               
+                __________________________________________________________________________________________________________________________________________________
+               | groups               |                                                      |  – Display all groups.
+               | groups <user-name>   |                                                      |  – Display all groups for a user.
+               | id                   |                                                      |  – Show user and group IDs.
+               |______________________|______________________________________________________|________________________________________________________________________________ 
+_________________________________________________________________________________________________________________________________________________________________________# 
+

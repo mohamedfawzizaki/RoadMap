@@ -1,0 +1,51 @@
+# ---------------------------------------------------------------------------------------------------------
+# Kubernetes ReplicationController
+# ---------------------------------------------------------------------------------------------------------
+# PURPOSE:
+# - Ensures a specified number of pod replicas are running at any given time.
+# - Watches pods with a matching label selector and recreates them if they die.
+#
+# NOTE:
+# - ReplicationController is an older concept and mostly replaced by ReplicaSet (and Deployments).
+# - Still useful for very simple use cases or compatibility with older Kubernetes versions.
+# ---------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------
+# Behavior Summary:
+# - If any of the 3 pods stop running, the RC will start a new one.
+# - If more than 3 pods with the matching label exist, RC does not terminate them.
+# - For modern Kubernetes workloads, prefer using Deployment → ReplicaSet → Pod for more features.
+# ---------------------------------------------------------------------------------------------------------
+
+apiVersion: v1                     # API version for ReplicationController (always "v1").
+kind: ReplicationController        # Declares this resource is a ReplicationController.
+
+metadata:
+  name: my-rc                      # Name of the ReplicationController (must be unique in namespace).
+  namespace: default               # (Optional) Namespace in which to create this RC. Defaults to "default".
+  labels:
+    component: legacy-controller   # Optional metadata label for identifying this controller.
+
+spec:
+  replicas: 3                      # Desired number of pod replicas to maintain at all times.
+
+  selector:                        # Pod label selector: RC manages only matching pods.
+    app: myapp                     # Only pods with label `app: myapp` are controlled.
+
+  template:                        # Template used to create new pods as needed.
+    metadata:
+      labels:
+        app: myapp                 # Labels assigned to each created pod. Must match .spec.selector.
+    spec:
+      containers:                  # List of containers in each pod.
+        - name: nginx              # Name of the container (must be unique within the pod).
+          image: nginx:1.21        # Docker image to run in the container.
+          ports:
+            - containerPort: 80    # Container listens on port 80 (used for HTTP traffic).
+          resources:               # (Optional) Define CPU/memory requests and limits.
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "128Mi"
+

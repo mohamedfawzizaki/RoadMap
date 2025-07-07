@@ -1,0 +1,58 @@
+# ================================================================================
+# 📘 Definition: ClusterRole
+# --------------------------------------------------------------------------------
+# ClusterRole is a non-namespaced Kubernetes RBAC resource that defines a set of
+# PolicyRules (permissions) that apply cluster-wide. Unlike Role (which is scoped
+# to a specific namespace), ClusterRole can grant access to:
+#   ✔️ Resources across all namespaces
+#   ✔️ Non-namespaced resources (like nodes, persistent volumes)
+#
+# ClusterRoles are typically:
+#   🔹 Referenced by ClusterRoleBinding (for global subjects like service accounts)
+#   🔹 Used for admin-level or CI/CD access
+#   🔹 Aggregated into higher-level roles using aggregationRule and labels
+#
+# 🔐 Use case: Grant CI/CD pipeline or automation scripts the ability to create,
+# manage, and delete workloads across namespaces—securely and explicitly.
+# ================================================================================
+# --------------------------------------------------------------------------------
+# 🔐 ClusterRole: Grants CI service account permissions to manage common K8s objects
+# --------------------------------------------------------------------------------
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ci-clusterrole                                # 🆔 Logical name for this role
+  labels:
+    rbac.example.com/aggregate-to-monitoring: "true"  # 🏷️ Enables dynamic aggregation if needed
+rules:
+  # ------------------------------------------------------------------------------
+  # 🌐 Core API Group: Basic workload and config resources
+  # ------------------------------------------------------------------------------
+  - apiGroups: [""]                                   # "" = core Kubernetes API group
+    resources: ["pods", "services", "configmaps", "secrets"]
+    verbs: ["get", "list", "create", "delete", "watch", "update"]
+  # ------------------------------------------------------------------------------
+  # 🧱 apps.k8s.io API Group: Application controllers
+  # ------------------------------------------------------------------------------
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "list", "create", "delete", "watch", "update"]
+  # ------------------------------------------------------------------------------
+  # ⏱ batch.k8s.io API Group: CI build/test/scheduled job handling
+  # ------------------------------------------------------------------------------
+  - apiGroups: ["batch"]
+    resources: ["jobs", "cronjobs"]
+    verbs: ["get", "list", "create", "delete", "watch", "update"]
+  # ------------------------------------------------------------------------------
+  # 🔐 RBAC API Group: For CI systems that need to bootstrap access or delegate
+  # ------------------------------------------------------------------------------
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["roles", "rolebindings"]
+    verbs: ["get", "list", "create", "delete", "update"]
+# --------------------------------------------------------------------------------
+# 🔁 Aggregation Rule: Optional – lets other roles dynamically include this one
+# --------------------------------------------------------------------------------
+aggregationRule:
+  clusterRoleSelectors:
+    - matchLabels:
+        rbac.example.com/aggregate-to-monitoring: "true"  # 🧲 Enables auto-inclusion into composite roles

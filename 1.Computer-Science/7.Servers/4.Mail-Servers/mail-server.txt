@@ -1,0 +1,254 @@
+_____________________________________________________________________________________________________________________________________
+                                                      Mail Server
+  -------------------------------------------------------------------------------------------------------------------------------
+  [User1 : Sending Email Clinet ----> Sending Email Server ------> Receiving Email Server ------> Receiving Email Clinet : User2]
+  _______________________________________________________________________________________________________________________________
+
+A mail server is a system responsible for sending, receiving, and storing emails.
+ 
+It acts as the backbone of email communication by handling the transmission and delivery of messages over a network.
+
+
+  _______________________________________________________________________________________________________________________________
+
+📧 Email Sending & Receiving Process
+1️⃣ User1 (Sender) Uses a Mail Client (MUA)
+
+User1 composes an email in their Mail User Agent (MUA) (e.g., Gmail, Outlook, Thunderbird).
+The email client sends the email to the Sending Mail Server via SMTP (Simple Mail Transfer Protocol).
+2️⃣ Sending Mail Server (MTA - Mail Transfer Agent)
+
+The SMTP server (e.g., Postfix, Sendmail, Microsoft Exchange) processes the email.
+It determines the recipient’s mail server using DNS (MX Records).
+The email is forwarded to the Receiving Mail Server.
+3️⃣ Receiving Mail Server (MDA - Mail Delivery Agent)
+
+The email is stored in the recipient's mailbox.
+This could be an IMAP/POP3 server (e.g., Dovecot, Courier, Microsoft Exchange).
+4️⃣ User2 (Recipient) Uses a Mail Client
+
+User2 retrieves the email using IMAP (Internet Message Access Protocol) or POP3 (Post Office Protocol).
+The email is displayed in their inbox.
+📡 Protocols Involved
+✅ SMTP (Simple Mail Transfer Protocol) → Sending emails
+✅ IMAP (Internet Message Access Protocol) → Receiving & syncing emails
+✅ POP3 (Post Office Protocol 3) → Downloading emails from the server
+_____________________________________________________________________________________________________________________________________
+
+ 1. Key Components of a Mail Server
+
+A mail server consists of several components that work together:
+
+ 1.1. SMTP Server (Simple Mail Transfer Protocol)
+- Purpose: Handles sending and forwarding emails.
+- Role: It pushes outgoing emails from the sender to the recipient’s mail server.
+- Ports:
+  - `25` (default but often blocked by ISPs to reduce spam).
+  - `587` (for email submission).
+  - `465` (deprecated but still used for SSL connections).
+
+ 1.2. IMAP Server (Internet Message Access Protocol)
+- Purpose: Allows users to retrieve and manage their emails from the server.
+- Role: Emails remain on the server, enabling access from multiple devices.
+- Ports:
+  - `143` (default for non-encrypted connections).
+  - `993` (encrypted with SSL/TLS).
+
+ 1.3. POP Server (Post Office Protocol)
+- Purpose: Downloads emails to the client and removes them from the server.
+- Role: Primarily for offline email access, but less flexible than IMAP.
+- Ports:
+  - `110` (default for non-encrypted connections).
+  - `995` (encrypted with SSL/TLS).
+
+_____________________________________________________________________________________________________________________________________
+
+  -------------------------------------------------------------------------------------------------------------------------------
+  [User1 : Sending Email Clinet ----> Sending Email Server ------> Receiving Email Server ------> Receiving Email Clinet : User2]
+  _______________________________________________________________________________________________________________________________
+
+                                                          How Mail Servers Work
+ 2.1. Sending Email
+1. Client to SMTP Server:
+   - The user writes an email in an email client (e.g., Outlook, Gmail, Thunderbird).
+   - The client sends the email to the SMTP server for delivery.
+2. SMTP Server to Recipient’s Mail Server:
+   - The SMTP server finds the recipient's mail server using DNS and the MX record.
+   - The email is transmitted to the recipient's mail server.
+
+ 2.2. Receiving Email
+1. Recipient’s Mail Server:
+   - The mail server receives the email and stores it.
+2. Client Retrieves Email:
+   - The user accesses their email using an email client.
+   - The client fetches the email from the mail server via IMAP or POP.
+
+
+
+                                                          Mail Server Workflow Example
+
+1. Sender: Alice writes an email to Bob using an email client.
+2. SMTP: Alice’s client sends the email to her mail server's SMTP server.
+3. DNS Lookup:
+   - Alice's server queries DNS for Bob’s mail server MX record.
+4. Delivery:
+   - Alice’s SMTP server connects to Bob’s mail server and delivers the email.
+5. IMAP/POP:
+   - Bob retrieves the email from his server using IMAP or POP.
+_____________________________________________________________________________________________________________________________________
+
+ 3. Types of Mail Servers
+1. Outgoing Mail Servers:
+   - Handle email delivery (e.g., SMTP servers).
+   
+2. Incoming Mail Servers:
+   - Store and manage incoming emails (e.g., IMAP and POP servers).
+
+_____________________________________________________________________________________________________________________________________
+
+ 4. Mail Server Software
+Popular mail server software includes:
+ _______________________________________________________________________________________________
+| Software     | Protocol Support         | Description                                         |
+|______________|__________________________|_____________________________________________________|
+| Postfix      | SMTP                     | Open-source, widely used for outgoing emails.       |
+| Exim         | SMTP                     | Flexible, open-source mail transfer agent (MTA).    |
+| Sendmail     | SMTP                     | Legacy mail server software, still in use.          |
+| Dovecot      | IMAP, POP                | Lightweight server for retrieving emails.           |
+| Zimbra       | SMTP, IMAP, POP          | Open-source, full-featured collaboration suite.     |
+|______________|__________________________|_____________________________________________________|
+
+_____________________________________________________________________________________________________________________________________
+
+ 5. Mail Server Configuration
+To set up a mail server, you typically configure the following:
+
+ 5.1. DNS Records
+1. MX Record (Mail Exchanger):
+   - Points to your mail server to direct incoming emails.
+2. SPF Record (Sender Policy Framework):
+   - Prevents email spoofing by specifying authorized senders.
+3. DKIM (DomainKeys Identified Mail):
+   - Ensures email integrity and authenticity.
+4. DMARC (Domain-based Message Authentication, Reporting, and Conformance):
+   - Provides instructions for handling unauthorized emails.
+
+ 5.2. Authentication
+- Username/Password: Protect access to the mail server.
+- TLS/SSL Encryption: Secure email communication.
+
+ 5.3. Anti-Spam Measures
+- Use tools like SpamAssassin and Razor to filter spam.
+- Enable rate-limiting and IP blacklists to prevent abuse.
+
+_____________________________________________________________________________________________________________________________________
+
+ 7. Cloud Mail Servers
+Instead of hosting your own mail server, you can use cloud-based email services:
+- Google Workspace (Gmail): Hosted by Google.
+- Microsoft 365 (Outlook): Hosted by Microsoft.
+- Zoho Mail: Cost-effective cloud solution.
+
+_____________________________________________________________________________________________________________________________________
+
+Mail servers store emails in data repositories on disk storage, which are organized in specific directories or databases. 
+The exact storage location and format depend on the mail server software and the protocols in use (IMAP, POP, or SMTP). 
+Below is a detailed explanation of where and how mail servers store emails:
+
+_____________________________________________________________________________________________________________________________________
+
+ 1. Storage Locations
+ 1.1. File System
+- Emails are often stored as individual files in a structured directory hierarchy on the server's file system.
+- Each email corresponds to a file, typically in plain text format.
+- Directories are organized based on:
+  - Domains: Separate directories for each domain (e.g., `example.com`).
+  - Users: Subdirectories for individual user accounts.
+
+ 1.2. Databases
+- Some modern mail servers (e.g., Microsoft Exchange, Zimbra) store email data in databases for better scalability and retrieval speed.
+- Examples of databases used:
+  - Microsoft Exchange: Uses Extensible Storage Engine (ESE) for mailbox storage.
+  - Zimbra: Uses MySQL or MariaDB for metadata and a file system for email content.
+
+_____________________________________________________________________________________________________________________________________
+
+ 2. Storage Formats
+Emails are stored in specific formats that dictate how they are read and written by the server. 
+Common formats include:
+
+ 2.1. Maildir Format
+- Each email is stored as a separate file.
+- Organized into three directories:
+  - new: For unread emails.
+  - cur: For read emails.
+  - tmp: Temporary files during email processing.
+- Benefits:
+  - Easy to manage and backup.
+  - Supports concurrent access by multiple processes.
+- Used by servers like Dovecot and Postfix.
+
+ 2.2. mbox Format
+- All emails for a user are stored in a single plain text file.
+- Emails are concatenated one after another.
+- Benefits:
+  - Simpler structure.
+- Drawbacks:
+  - Inefficient for large mailboxes.
+  - Concurrent access can cause corruption.
+- Used by servers like Sendmail.
+
+ 2.3. Proprietary Formats
+- Some mail servers use proprietary formats:
+  - Microsoft Exchange: Stores emails in `.edb` files.
+  - Lotus Notes: Uses `.nsf` files.
+
+_____________________________________________________________________________________________________________________________________
+
+ 3. Directory Examples
+Here’s how files and directories are commonly organized:
+
+ 3.1. Maildir Example
+```
+/var/mail/vmail/example.com/john/
+  ├── cur/
+  │   ├── 1623314722.M570P123.server
+  │   ├── 1623314723.M570P124.server
+  ├── new/
+  │   ├── 1623314730.M580P125.server
+  ├── tmp/
+```
+
+ 3.2. mbox Example
+```
+/var/mail/
+  ├── john (a single file containing all emails for "john").
+```
+
+_____________________________________________________________________________________________________________________________________
+
+ 4. IMAP and POP Storage Differences
+- IMAP:
+  - Emails are stored on the mail server.
+  - Clients sync with the server, leaving messages on it.
+  - Typically uses formats like Maildir.
+- POP:
+  - Emails are downloaded to the client and often removed from the server.
+  - Storage on the server is temporary unless configured otherwise.
+
+_____________________________________________________________________________________________________________________________________
+
+ 5. Metadata and Indexing
+- Besides the emails themselves, mail servers store:
+  - Metadata: Headers (e.g., sender, recipient, timestamp).
+  - Indexes: To speed up search and retrieval.
+  - Attachments: Stored separately or embedded.
+
+_____________________________________________________________________________________________________________________________________
+
+ 6. Email Backup and Archiving
+Mail servers often include backup and archiving solutions:
+- Backups ensure recovery in case of server failure.
+- Archives store emails long-term in a secure and searchable format.
+
+_____________________________________________________________________________________________________________________________________

@@ -1,0 +1,57 @@
+_______________________________________________________________________________________________________________________________________
+                                                    DataBase
+_______________________________________________________________________________________________________________________________________
+Databases Types:
+
+        1.Relational     Databases :  MYSQL         -->> Tables.
+        2.Non-Relational Databases :  MongoDB       -->> Documents.
+        3.In-Memory      Databases :  Redis         -->> Key-Value.
+
+_______________________________________________________________________________________________________________________________________
+Databases Quering:
+        -------------------------------------------------------------------------------------------------
+        1.RDBMS:
+                1. SQL:
+                    -> Structured Query Language, used to perform CRUD 
+                       operations and complex queries in relational databases.
+                
+                2. PDO Native:
+                    -> PHP Data Objects, a native PHP interface for database interactions.
+                
+                3. Query Builder:
+                    -> A programmatic and flexible approach to build SQL
+                       queries using libraries or frameworks (e.g., Laravel Query Builder).
+                
+                4. ORM:
+                    -> Maps database tables to objects in programming languages (e.g., Eloquent, Doctrine).
+        -------------------------------------------------------------------------------------------------
+        2.NoSQL:
+                1.MQL.
+                2.MongoDB PHP Driver Native.
+                3.Query Builder:  
+                4.ODM:
+                    -> Object Document Mapping, maps database documents to objects in programming languages.
+        -------------------------------------------------------------------------------------------------
+        3.Key-Value 'Redis':
+                1.Redis Command:
+                             ---------------------------------------------
+                             $ SET user:1 "John Doe"
+                             $ GET user:1
+                             $ EXPIRE user:1 3600
+                             ---------------------------------------------
+                2.Redis PHP Client:
+                             1.phpredis.
+                             2.Predis.
+                             -----------------phpredis--------------------
+                                   $redis = new Redis();
+                                   $redis->connect('127.0.0.1', 6379);
+                                   $redis->set('user:1', 'John Doe');
+                                   $name = $redis->get('user:1');
+                             ---------------------------------------------
+        -------------------------------------------------------------------------------------------------
+_______________________________________________________________________________________________________________________________________
+
+
+
+
+

@@ -1,0 +1,38 @@
+
+    Command	                                Description
+docker version	        Show the Docker version information
+docker system	        Manage Docker
+docker inspect	        Return  low-level information on Docker objects
+docker manifest	        Manage Docker image manifests and manifest lists
+docker debug	        Get a  shell into any container or image. An alternative to debugging with `docker exec`.
+docker search	        Search Docker Hub for images
+docker image	        Manage images
+docker container	    Manage containers
+docker network	        Manage networks
+docker volume	        Manage volumes
+docker build            (legacy builder) Build an image from a Dockerfile
+docker builder	        Manage builds
+docker buildx	        Docker Buildx
+docker compose	        Docker Compose
+docker secret	        Manage Swarm secrets
+docker checkpoint	    Manage checkpoints
+docker login	        Authenticate to a registry
+docker logout	        Log out from a registry
+
+docker config	        Manage Swarm configs
+docker context	        Manage contexts
+
+
+docker desktop          (Beta) Docker Desktop
+
+
+
+
+docker init	            Creates Docker-related starter files for your project
+docker node	            Manage Swarm nodes
+docker plugin	        Manage plugins
+docker scout	        Command line tool for Docker Scout
+docker service	        Manage Swarm services
+docker stack	        Manage Swarm stacks
+docker swarm	        Manage Swarm
+docker trust	        Manage trust on Docker images

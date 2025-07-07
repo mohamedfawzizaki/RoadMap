@@ -1,0 +1,99 @@
+# ---------------------------------------------------------------------------------------------------------
+# ConfigMap Definition:
+# ---------------------------------------------------------------------------------------------------------
+# A ConfigMap is a key-value store used to hold non-confidential configuration data
+# such as application settings, environment variables, command-line arguments, etc.
+#
+# Pods can consume ConfigMaps as:
+#   - Environment variables
+#   - Command-line arguments
+#   - Mounted volumes (files)
+#
+# ConfigMaps decouple configuration from container images, making applications portable and configurable.
+# ---------------------------------------------------------------------------------------------------------
+
+apiVersion: v1                     # API group version; 'v1' is used for core resources like ConfigMap
+kind: ConfigMap                    # Specifies that this is a ConfigMap resource
+
+metadata:
+  name: app-config                # Name of the ConfigMap (must be unique within the namespace)
+  namespace: default              # (Optional) Namespace where the ConfigMap resides
+  labels:                         # (Optional) Labels to categorize or select the object
+    app: my-application
+  annotations:                    # (Optional) Additional metadata for tooling/auditing
+    createdBy: "admin"
+
+data:                              # Holds plain-text (UTF-8) configuration data as key-value pairs
+  # 1. Single-line key-value pairs:
+  APP_ENV: "production"
+  DEBUG: "false"
+  MAX_CONNECTIONS: "100"
+  # 2. Multi-line value (block literal) as files:
+  app.conf: |
+    server {
+      listen 80;
+      server_name example.com;
+      location / {
+        proxy_pass http://backend;
+      }
+    }
+  # 3. JSON config:
+  config.json: |
+    {
+      "mode": "safe",
+      "retries": 3
+    }
+  # 4. YAML config
+  settings.yaml: |
+    app:
+      name: my-web-app
+      version: 1.0.3
+      environment: production
+    database:
+      host: db-service.default.svc.cluster.local
+      port: 5432
+      username: admin
+      password: secret
+    features:
+      registration: true
+      metrics: false
+      maintenanceMode: false
+  # 5. .ini config:
+  settings.ini: |
+    [server]
+    port = 8080
+    host = 127.0.0.1
+
+    [database]
+    user = admin
+    password = secret
+  # 6. Script or shell content:
+  init.sh: |
+    #!/bin/bash
+    echo "Initializing app..."
+    ./start-app --config /etc/config/settings.yaml
+
+binaryData:                        # (Optional) Stores binary (non-UTF-8) values, base64-encoded
+  image.png: !!binary |
+    iVBORw0KGgoAAAANSUhEUgAAAAUA...
+
+immutable: true                   # (Optional) If set to true, prevents updates to the data/binaryData
+                                  # Immutable ConfigMaps are useful for ensuring config integrity
+
+
+
+
+# to consume :
+  # 1. Single-line key-value pairs:
+        # envFrom:
+        #   - configMapRef:
+        #       name: simple-config
+  # 2. Multi-line value (block literal) as files:
+        # volumeMounts:
+        #   - name: config-volume
+        #     mountPath: /etc/config
+        # volumes:
+        #   - name: config-volume
+        #     configMap:
+        #       name: my-config
+        # Each key in the ConfigMap becomes a filename, and its value becomes file content.

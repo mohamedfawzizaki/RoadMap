@@ -1,0 +1,189 @@
+______________________________________________________________________________________________________________________________________
+                                                            Streaming 
+                                                            =========
+
+In the context of Linux and Unix-like operating systems, streams are an
+ essential part of the I/O (Input/Output) system, used for handling data transfer between programs, devices, and users.
+Streams allow data to flow from one point to another (input or output) and provide
+ a consistent way for programs to interact with external systems like the terminal, files, or other devices.
+
+There are three standard streams that are available to every running process:
+
+1.Standard Input  (stdin )   '0'
+2.Standard Output (stdout)   '1'
+3.Standard Error  (stderr)   '2'
+
+These streams are important because they enable a consistent method for
+ programs to receive input and produce output, while also handling errors.
+---------------------------------------------------------------------------------------------------------
+1.Standard Input (stdin)  '0' 
+
+- Definition: 
+      - The stream through which input is sent to a program or command.
+      - By default, `stdin` is connected to the keyboard.
+  
+- File Descriptor: `0`
+  
+- Usage: 
+      - Most commands read from `stdin` unless you explicitly provide data through files or other sources.
+      - Input can come from the user typing commands or from other programs through pipes or redirection.
+  
+- Example:
+      - When you run a command like `cat`, it waits for input from `stdin` (typically from the keyboard).
+      ```bash
+      cat
+      ```
+      - In this case, you can type text and `cat` will display it.
+
+      - Redirection: Input can be redirected from a file into `stdin` using `<`:
+      ```bash
+      cat < input.txt
+      ```
+      This command redirects the content of `input.txt` as input to `cat`.
+---------------------------------------------------------------------------------------------------------
+2.Standard Output (stdout)    '1'
+
+- Definition: 
+      - The stream through which a program sends its output.
+      - By default, `stdout` is connected to the terminal (the screen).
+  
+- File Descriptor: `1`
+  
+- Usage:
+      - Most commands write their results or data to `stdout`.
+      - `stdout` can be redirected to files or pipes for further processing.
+  
+- Example:
+      - When you run a command like `echo`, it sends output to `stdout`:
+      ```bash
+      echo "Hello, World!"
+      ```
+      - The output "Hello, World!" will be displayed on the terminal.
+
+      - Redirection: You can redirect `stdout` to a file:
+      ```bash
+      echo "Hello, World!" > output.txt
+      echo "Hello, World!" 1> output.txt
+
+      echo "Hello, World!" >> output.txt
+      echo "Hello, World!" 1>> output.txt
+      ```
+      This writes the output of `echo` to the file `output.txt` instead of printing it to the terminal.
+---------------------------------------------------------------------------------------------------------
+3.Standard Error (stderr)   '2'
+
+- Definition: 
+      - The stream through which a program sends its error messages or diagnostic information.
+      - Like `stdout`, `stderr` is connected to the terminal by default.
+  
+- File Descriptor: `2`
+  
+- Usage:
+      - Errors, warnings, or diagnostic messages are sent to `stderr`,
+        allowing error information to be separated from normal output.
+      - `stderr` is particularly useful for troubleshooting, as it helps
+        ensure that error messages do not interfere with normal program output.
+  
+- Example:
+      - Running a command that results in an error (e.g., a file that doesn't exist):
+      ```bash
+      ls non_existent_file
+      ```
+      - This will output an error message to `stderr`
+        (e.g., "ls: cannot access 'non_existent_file': No such file or directory").
+
+      - Redirection: You can redirect `stderr` to a file:
+      ```bash
+      ls non_existent_file 2> error.log
+      ls non_existent_file 2>> error.log
+      ./script.sh 1>> success.txt 2>> error.txt
+      ./script.sh 1>> output.txt 2>>&1                to the same file
+
+      ls non_existent_file > output.log 2>&1
+      ```
+      This command redirects the error message to `error.log` instead of displaying it in the terminal.
+---------------------------------------------------------------------------------------------------------
+File Descriptors
+
+- File descriptors are integer identifiers used by the kernel to manage streams.
+- Each stream is associated with a file descriptor:
+
+      - 0 = `stdin`  (Standard Input )
+      - 1 = `stdout` (Standard Output)
+      - 2 = `stderr` (Standard Error )
+
+---------------------------------------------------------------------------------------------------------
+Combining `stdout` and `stderr`
+
+You can combine or redirect both `stdout` and `stderr` together using redirection operators.
+This allows you to manage output and errors efficiently.
+
+- Redirect both `stdout` and `stderr` to the same file:
+      ```bash
+      command > output.log 2>&1
+      ```
+      In this case:
+      - `> output.log`: Redirects `stdout` to the file `output.log`.
+      - `2>&1`: Redirects `stderr` to the same destination as `stdout` (which is now `output.log`).
+
+- Example with a command:
+      ```bash
+      ls non_existent_file > output.log 2>&1
+      ```
+      This command attempts to list a non-existent file.
+      The error message (from `stderr`) and the standard output (if any) will both be written to `output.log`.
+---------------------------------------------------------------------------------------------------------
+Pipes and Streams
+
+Streams can be combined and redirected using pipes (`|`).
+A pipe takes the output of one command and sends it as input to another command.
+This can help chain multiple commands together, creating a powerful tool for manipulating data.
+
+- Pipe Example:
+      ```bash
+      echo "Hello World" | grep "Hello"
+      ```
+      - `echo "Hello World"` sends "Hello World" to `stdout`.
+      - `grep "Hello"` reads from `stdin` (the output of `echo`) and searches for the string "Hello".
+      - The result will be passed to `stdout`.
+
+- Example with stderr and pipes:
+      ```bash
+      ls non_existent_file 2>&1 | tee error.log
+      ```
+      This command sends both `stdout` and `stderr` to `tee`, which writes it to `error.log` and also prints it to the terminal.
+---------------------------------------------------------------------------------------------------------
+File Stream Redirection
+
+You can redirect streams to files to capture input/output data.
+
+- Redirecting `stdin` from a file:
+      ```bash
+      command < input.txt
+      ```
+      The `command` will take its input from the `input.txt` file instead of the terminal.
+
+- Redirecting `stdout` to a file:
+      ```bash
+      command > output.txt
+      ```
+      The output of `command` is saved in `output.txt`.
+
+- Redirecting `stderr` to a file:
+      ```bash
+      command 2> error.txt
+      ```
+      This saves error messages in `error.txt`.
+
+- Redirecting both `stdout` and `stderr` to the same file:
+      ```bash
+      command > output.txt 2>&1
+      ```
+---------------------------------------------------------------------------------------------------------
+Conclusion
+
+Streams (`stdin`, `stdout`, `stderr`) in Linux provide a consistent method for handling input and output.
+Redirection and piping allow for powerful manipulation of data,
+ while separating error output from regular output is crucial for debugging.
+Mastery of streams and related tools is essential for any advanced Linux user or system administrator.
+______________________________________________________________________________________________________________________________________

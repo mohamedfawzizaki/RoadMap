@@ -1,0 +1,106 @@
+# --------------------------------------------------------------------------------------------------------
+# Kubernetes StatefulSet
+# --------------------------------------------------------------------------------------------------------
+# PURPOSE:
+# - Manages stateful applications where each Pod needs a persistent identity and stable storage.
+# - Unlike Deployments, StatefulSets give each Pod a fixed identity (name, network address, storage).
+
+# HOW IT WORKS:
+# - Pods are created as web-0, web-1, web-2, ... and maintain their identity even after restarts.
+# - Each Pod gets its own PersistentVolumeClaim (PVC) via volumeClaimTemplates.
+# - Pod ordering matters: created/updated/deleted **in order** (unless changed via podManagementPolicy).
+#
+# TYPICAL USE CASES:
+# - Databases (PostgreSQL, MySQL, MongoDB), Zookeeper, Kafka, Redis (clustered mode), etc.
+# --------------------------------------------------------------------------------------------------------
+
+apiVersion: apps/v1                     # The API version for the StatefulSet object.
+kind: StatefulSet                       # Specifies this is a StatefulSet resource.
+
+metadata:
+  name: web                             # Name of the StatefulSet.
+  namespace: default                    # Namespace in which the StatefulSet is deployed.
+  labels:
+    app: web                            # Labels to group and select the StatefulSet.
+
+spec:
+  serviceName: "web-headless"           # REQUIRED: name of a Headless Service (clusterIP: None).
+                                        # Used to provide stable DNS names for each pod:
+                                        # e.g. web-0.web-headless.default.svc.cluster.local
+
+  replicas: 3                           # Desired number of replicas (Pods).
+
+  selector:
+    matchLabels:
+      app: web                          # Pod selector (MUST match template.metadata.labels).
+
+  template:                             # Pod template used to create each Pod.
+    metadata:
+      labels:
+        app: web                        # Label for each Pod (must match .spec.selector).
+    spec:
+      terminationGracePeriodSeconds: 10  # Graceful shutdown time before SIGKILL.
+
+      containers:
+        - name: nginx                   # Container name inside each Pod.
+          image: nginx:1.25.3           # Container image to run.
+          ports:
+            - containerPort: 80         # Port exposed by the container.
+              name: http
+          volumeMounts:                # Mount volume for persistent storage.
+            - name: web-storage         # Must match volumeClaimTemplates.metadata.name.
+              mountPath: /usr/share/nginx/html
+
+  volumeClaimTemplates:                 # Creates a PVC **per Pod**.
+    - metadata:
+        name: web-storage              # PVC name will be web-storage-0, web-storage-1, ...
+      spec:
+        accessModes: ["ReadWriteOnce"] # Pod must have exclusive access to the volume.
+        resources:
+          requests:
+            storage: 1Gi               # Request 1Gi storage for each pod.
+
+  updateStrategy:                       # How to roll out updates to Pods.
+    type: RollingUpdate                 # Update Pods one-by-one in order (default).
+    rollingUpdate:
+      partition: 0                     # Number of Pods to leave untouched during update (0 = update all).
+
+  podManagementPolicy: OrderedReady     # (default) Pods are created/deleted **in order**.
+                                        # Use "Parallel" for concurrent create/delete of Pods.
+
+  revisionHistoryLimit: 10             # How many revisions (old versions) to keep for rollback.
+
+  persistentVolumeClaimRetentionPolicy: # Controls what happens to PVCs on scale down/delete.
+    whenDeleted: Retain                # PVCs are kept when StatefulSet is deleted (data is preserved).
+    whenScaled: Delete                 # PVCs for removed Pods (on scale down) are deleted.
+
+  ordinals:
+    start: 0                           # Start indexing Pods from 0 (default: web-0, web-1, web-2, ...)
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-headless                    # Name of the service referenced by StatefulSet.spec.serviceName.
+spec:
+  clusterIP: None                       # Headless service (no internal Cluster IP assigned).
+                                        # Enables DNS entries like pod-0.svcname.namespace.svc.cluster.local
+  selector:
+    app: web                            # Selects Pods with label app=web.
+  ports:
+    - name: http
+      port: 80                          # Exposes port 80 on the Service.
+      targetPort: 80                    # Forwards traffic to container port 80.
+
+
+
+
+
+#
+# | Feature                | Deployment                       | StatefulSet                                      |
+# | ---------------------- | -------------------------------- | ------------------------------------------------ |
+# | Pod identity           | All pods are interchangeable     | Each pod has a **unique, stable identity**       |
+# | Pod name               | Random suffix (e.g. `myapp-abc`) | Predictable: `myapp-0`, `myapp-1`                |
+# | Pod order (start/stop) | Any order                        | **Sequentially ordered**                         |
+# | Persistent volumes     | Shared or ephemeral              | **One persistent volume per pod**, bound by name |
+# | Use case               | Stateless apps (web, API)        | Stateful apps (databases, brokers)               |

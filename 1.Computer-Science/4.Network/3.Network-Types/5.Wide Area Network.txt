@@ -1,0 +1,13 @@
+_______________________________________________________________________________________________________________________________________
+Wide Area Network (WAN)
+        - A Wide Area Network connects devices over large geographical areas, often spanning countries or continents.
+
+        Characteristics:
+            - Slower than LANs due to longer distances.
+            - Use leased lines, satellite links, or public infrastructure.
+            - The Internet is the most prominent example of a WAN.
+
+        Examples:
+            - Corporate offices across different countries sharing data.
+            - ATM networks operated by banks.
+_______________________________________________________________________________________________________________________________________

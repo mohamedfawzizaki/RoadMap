@@ -1,0 +1,99 @@
+# ---------------------------------------------------------------------------------------------------------
+# Kubernetes Service Manifest
+# ---------------------------------------------------------------------------------------------------------
+# PURPOSE:
+# A Service is an abstraction that defines a logical set of Pods and a policy by which to access them.
+# It enables stable networking to Pods that may change over time (e.g., after restarts or rescheduling).
+# This example shows a ClusterIP Service targeting an nginx deployment listening on port 80.
+# ---------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------
+# BEHAVIOR:
+# - This service will route internal traffic sent to "nginx-service.default.svc.cluster.local:80"
+#   to any Pod with label app=nginx, using TCP on port 80.
+# - The `targetPort` must match the container's listening port (e.g., in a Deployment or Pod).
+# ---------------------------------------------------------------------------------------------------------
+
+apiVersion: v1                # API version for core Kubernetes resources like Service.
+kind: Service                 # Declares this resource as a Service.
+
+metadata:
+  name: nginx-service         # Name of the service (must be unique within a namespace).
+  namespace: default          # Namespace in which the service will be created.
+  labels:
+    app: nginx                # Labels for identifying and grouping resources.
+    tier: frontend
+
+spec:
+  type: ClusterIP             # Service type (ClusterIP | NodePort | LoadBalancer | ExternalName).
+                              # - ClusterIP (default): exposes the service on a cluster-internal IP.
+                              # - NodePort: exposes the service on a static port on each Node's IP.
+                              # - LoadBalancer: exposes the service externally using a cloud provider’s LB.
+                              # - ExternalName: maps service to DNS name (no proxying).
+
+  selector:                   # Selects Pods to target. This must match labels of target Pods.
+    app: nginx                # Targets Pods with label app=nginx.
+
+  ports:
+    - name: http              # Optional name for the port (used for monitoring, debugging).
+      protocol: TCP           # Network protocol (TCP, UDP, SCTP). Default is TCP.
+      port: 80                # Port the service exposes internally (used by clients inside the cluster).
+      targetPort: 80          # Port on the target Pod's container to send traffic to.
+                              # Can be a number or a named port defined in the Pod.
+      appProtocol: http       # Optional: for protocol hints (e.g. 'http', 'kubernetes.io/ws')
+      nodePort: 30080         # Used only for NodePort/LoadBalancer; fixed external port on each node.
+  sessionAffinity: ClientIP          # Enables sticky sessions based on client IP. ("ClientIP" or "None")
+                                     # See: https://kubernetes.io/docs/concepts/services-networking/service/#session-affinity
+  externalTrafficPolicy: Local       # For LoadBalancer/NodePort: "Cluster" (default) or "Local"
+                                     # - "Cluster": Routes to any pod in the cluster.
+                                     # - "Local": Routes only to local node's pods; preserves client IP.
+  internalTrafficPolicy: Cluster     # For ClusterIP traffic: "Cluster" or "Local" (same logic as above)
+  ipFamilyPolicy: PreferDualStack    # Policy for dual-stack support:
+                                     # - SingleStack (default)
+                                     # - PreferDualStack: Use both IPv4 & IPv6 if available
+                                     # - RequireDualStack: Must assign both or fail
+  ipFamilies:
+    - IPv4                           # IP families to assign to this Service. Can be IPv4, IPv6, or both.
+    # - IPv6
+  clusterIP: 10.96.0.100             # Optional: Manually set cluster-internal IP. Set to "None" for headless service.
+  clusterIPs:                        # Used with dual-stack. Must match ipFamilies order.
+    - 10.96.0.100
+    # - fd00::1
+  externalIPs:                       # IPs outside cluster accepted by kube-proxy and forwarded to endpoints.
+    - 203.0.113.1
+  loadBalancerIP: 198.51.100.1       # Desired static IP for external LoadBalancer (depends on cloud provider support).
+                                     # Deprecated; prefer annotations or loadBalancerClass.
+  loadBalancerSourceRanges:          # Restrict allowed client source IPs.
+    - 192.168.0.0/16
+    - 203.0.113.0/24
+  loadBalancerClass: mycompany.com/advanced-lb
+                                     # Specifies custom LB controller (e.g., nginx, GKE, AWS, MetalLB).
+                                     # Optional. Defaults to platform-specific implementation.
+  healthCheckNodePort: 32567       # (int32)
+                                   # Only used with type=LoadBalancer and externalTrafficPolicy=Local.
+                                   # This port on the node is used by external load balancers to check if
+                                   # the node has healthy endpoints for the Service.
+                                   # It must be unique, within the NodePort range, and not already in use.
+                                   # Cannot be updated once set.
+  publishNotReadyAddresses: true   # (boolean)
+                                   # Useful for Headless Services (clusterIP: "None").
+                                   # If true, endpoints will be published even if the Pods are not ready.
+                                   # Common for StatefulSets needing DNS-based peer discovery (e.g., Cassandra, Kafka).
+  sessionAffinityConfig:           # Configures behavior of session affinity (i.e., sticky sessions).
+    clientIP:
+      timeoutSeconds: 10800        # (int32)
+                                   # Duration in seconds that a client's IP address is bound to the same Pod.
+                                   # Default is 10800 (3 hours). Valid range: 1 to 86400 (1 day).
+  allocateLoadBalancerNodePorts: true
+                                   # (boolean)
+                                   # Controls whether NodePorts should be allocated for LoadBalancer-type services.
+                                   # If false, no NodePorts are created unless explicitly specified in `nodePort` fields.
+                                   # Some load balancer implementations don’t need NodePorts (e.g., internal LBs).
+  trafficDistribution: PreferClose # (string)
+                                   # Hint to the load balancer or service mesh on traffic preference.
+                                   # Values:
+                                   # - PreferClose: Prefer local zone/region endpoints.
+                                   # - Default (empty): Implementation-specific behavior.
+  # Only for type: ExternalName
+  # externalName: my.external.service.com
+                                     # Required for type=ExternalName; maps DNS to external hostname.
+

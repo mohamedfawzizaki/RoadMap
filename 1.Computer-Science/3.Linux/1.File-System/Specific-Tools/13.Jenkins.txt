@@ -1,0 +1,239 @@
+______________________________________________________________________________________________________________________________________
+                                                        Jenkins
+                                                        =======
+
+Jenkins is an open-source automation server widely used in
+  continuous integration (CI) and continuous delivery (CD) pipelines.It automates the building,
+  testing, deployment, and other parts of the software development lifecycle, making it easier to integrate
+  changes and deliver software more reliably.
+---------------------------------------------------------------------------------------------------------
+Core Features of Jenkins:
+
+1.Continuous Integration and Continuous Delivery (CI/CD):
+   - Jenkins automates the process of integrating code changes into a shared repository multiple times a day.
+   - It also automates the process of testing, building, and deploying applications to various environments.
+
+2.Extensibility:
+   - Jenkins has a rich ecosystem of plugins that extend its functionality 
+     to integrate with various tools for version control, build systems, testing frameworks, cloud platforms, and more.
+
+3.Pipeline Support:
+   - Jenkins supports the creation of complex build and deployment 
+     pipelines (using Jenkins Pipeline as code, which is typically written in Groovy or Declarative Pipelines).
+
+4.Distributed Builds:
+   - Jenkins can distribute the workload across multiple machines (agents) to
+     speed up the process of building and testing large applications.
+
+5.User Interface:
+   - Jenkins provides a web-based user interface for managing jobs, configuring builds,
+     monitoring the status of your pipelines, and reviewing build logs.
+---------------------------------------------------------------------------------------------------------
+Jenkins File Structure on Linux
+
+When you install Jenkins on a Linux machine, Jenkins creates several 
+files and directories for its configuration, logs, and workspace.Below are the common locations:
+---------------------------------------------------------------------------------------------------------
+1.Jenkins Installation Directory
+
+- Default Installation Path:
+  - `/usr/share/jenkins/`  
+    This is where the Jenkins WAR (Web Application Archive) file resides.
+  
+- Jenkins Home Directory:
+  - `/var/lib/jenkins/`  
+    This is the default home directory for Jenkins, where most of the configuration, build data, and job information is stored.
+    - `/var/lib/jenkins/jobs/` – Stores the job configurations and build history.
+    - `/var/lib/jenkins/workspace/` – Stores the working directory for each Jenkins job.
+    - `/var/lib/jenkins/plugins/` – Jenkins plugins are stored here.
+---------------------------------------------------------------------------------------------------------
+2.Jenkins Configuration Files
+
+- Main Configuration File:
+  - `/var/lib/jenkins/config.xml`  
+    This is the main configuration file for Jenkins.
+    It holds global settings such as security, user configurations, and build settings.
+
+- Jenkins CLI and Security Config:
+  - `/var/lib/jenkins/jenkins.model.JenkinsLocationConfiguration.xml`  
+    Contains configuration for the Jenkins server’s URL and location.
+  
+- Global Security Settings:
+  - `/var/lib/jenkins/credentials.xml`  
+    Stores credentials and security-related configurations.
+  
+- System Configuration File:
+  - `/etc/default/jenkins`  
+    This file is used to configure system-level settings, such as the HTTP port Jenkins runs on (`8080` by default).
+---------------------------------------------------------------------------------------------------------
+3.Jenkins Logs
+
+- Main Jenkins Log File:
+  - `/var/log/jenkins/jenkins.log`  
+    Jenkins runtime logs are stored here.This file records information 
+    about the Jenkins server’s operation, including start-up and run-time messages.
+
+- Job-specific Logs:
+  - Each job in Jenkins creates its own logs within the `/var/lib/jenkins/jobs/<job-name>/builds/` directory.
+
+---------------------------------------------------------------------------------------------------------
+4.Jenkins Service
+
+- Systemd Service File (For Managing Jenkins):
+  - `/lib/systemd/system/jenkins.service`  
+    The systemd service file for Jenkins controls the Jenkins service, allowing you to start, stop, or restart Jenkins.
+
+- Service Logs:
+  - `journalctl -u jenkins`  
+    To view Jenkins service logs if your system uses systemd.
+---------------------------------------------------------------------------------------------------------
+5.Jenkins Plugins Directory
+
+- Directory for Installed Plugins:
+  - `/var/lib/jenkins/plugins/`  
+    This is where Jenkins stores installed plugins.Plugins can be manually placed here or installed via the Jenkins UI.
+---------------------------------------------------------------------------------------------------------
+6.Jenkins Home Directory Customization
+
+You can change the Jenkins home directory location by setting the `JENKINS_HOME` environment
+ variable when starting Jenkins, for example:
+
+```bash
+export JENKINS_HOME=/new/jenkins/home
+```
+
+Or by modifying the `/etc/default/jenkins` file on Debian-based systems or `/etc/sysconfig/jenkins` on Red Hat-based systems.
+---------------------------------------------------------------------------------------------------------
+Common Jenkins Commands
+
+1.Start Jenkins:
+   ```bash
+   sudo systemctl start jenkins
+   ```
+
+2.Stop Jenkins:
+   ```bash
+   sudo systemctl stop jenkins
+   ```
+
+3.Restart Jenkins:
+   ```bash
+   sudo systemctl restart jenkins
+   ```
+
+4.Check Jenkins Status:
+   ```bash
+   sudo systemctl status jenkins
+   ```
+---------------------------------------------------------------------------------------------------------
+Useful Jenkins CLI Commands
+
+- Run a job from CLI:
+  ```bash
+  java -jar jenkins-cli.jar -s http://localhost:8080/ build <job-name>
+  ```
+
+- List all Jenkins jobs:
+  ```bash
+  java -jar jenkins-cli.jar -s http://localhost:8080/ list-jobs
+  ```
+---------------------------------------------------------------------------------------------------------
+The location of Jenkins files on a Linux system can vary depending on how Jenkins is installed.
+However, in a typical installation, here are the main directories and files related to Jenkins:
+
+ 1.Jenkins Home Directory
+This is the primary directory where Jenkins stores most of its data, including job configurations, build history, and plugins.
+
+- Default Location:  
+  - `/var/lib/jenkins/`  
+    This is the default Jenkins home directory.It contains:
+    - `/var/lib/jenkins/jobs/` — Stores Jenkins job configurations and build history.
+    - `/var/lib/jenkins/workspace/` — Stores the working directories for Jenkins jobs.
+    - `/var/lib/jenkins/plugins/` — Stores installed plugins.
+
+ 2.Jenkins Configuration Files
+These files store Jenkins settings and configuration data.
+
+- Global Configuration File:  
+  - `/var/lib/jenkins/config.xml`  
+    This file contains the global configuration for Jenkins, including user settings, 
+    security configurations, and system-wide configurations.
+  
+- Jenkins Location Configuration:  
+  - `/var/lib/jenkins/jenkins.model.JenkinsLocationConfiguration.xml`  
+    Contains information about the Jenkins server's URL and location.
+
+- System-level Configuration File (For environment settings):  
+  - `/etc/default/jenkins` (Debian/Ubuntu)  
+  - `/etc/sysconfig/jenkins` (Red Hat/CentOS)  
+    This file contains system-level environment settings for Jenkins, such as the HTTP port,
+     Java options, and Jenkins home directory (if customized).
+
+ 3.Jenkins Log Files
+Jenkins logs various runtime information, including errors, warnings, and informational messages.
+
+- Main Jenkins Log:  
+  - `/var/log/jenkins/jenkins.log`  
+    The main log file for Jenkins, where it logs activity during its operation.
+
+- Job-specific Logs:  
+  - `/var/lib/jenkins/jobs/<job-name>/builds/`  
+    Each Jenkins job has its own log directory that contains logs for each build.
+
+ 4.Jenkins Plugins Directory
+Jenkins plugins are stored here:
+
+- Plugin Directory:  
+  - `/var/lib/jenkins/plugins/`  
+    - All installed plugins are stored in this directory.
+    - You can manually install or update plugins by placing `.hpi` or `.jpi` files in this directory.
+
+ 5.Jenkins Service Files
+If Jenkins is managed as a service via `systemd`, it has configuration files for controlling the Jenkins service.
+
+- Systemd Service File (Managing Jenkins Service):  
+  - `/lib/systemd/system/jenkins.service`  
+    The systemd service file that is used to control the Jenkins service, including starting, stopping, and restarting Jenkins.
+
+ 6.Temporary Jenkins Files
+Jenkins may use temporary files during builds or operations.
+
+- Temporary Files (Optional):  
+  - `/tmp/jenkins/` (temporary location for runtime files)  
+    Jenkins might store temporary files here, though this depends on the setup and the specific build process.
+---------------------------------------------------------------------------------------------------------
+Customizing Jenkins Home Directory
+If you want to change the default Jenkins home directory, you can modify it 
+ by setting the `JENKINS_HOME` environment variable.This can be done in:
+
+- For Debian/Ubuntu-based systems:  
+  - Edit the `/etc/default/jenkins` file and modify the `JENKINS_HOME` variable:
+    ```bash
+    JENKINS_HOME=/new/jenkins/home
+    ```
+
+- For Red Hat/CentOS-based systems:  
+  - Edit the `/etc/sysconfig/jenkins` file and change the `JENKINS_HOME` variable accordingly.
+---------------------------------------------------------------------------------------------------------
+Common Jenkins Commands
+
+- Start Jenkins:
+  ```bash
+  sudo systemctl start jenkins
+  ```
+
+- Stop Jenkins:
+  ```bash
+  sudo systemctl stop jenkins
+  ```
+
+- Restart Jenkins:
+  ```bash
+  sudo systemctl restart jenkins
+  ```
+
+- Check Jenkins Status:
+  ```bash
+  sudo systemctl status jenkins
+  ```
+______________________________________________________________________________________________________________________________________

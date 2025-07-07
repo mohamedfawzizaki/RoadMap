@@ -1,0 +1,208 @@
+Here’s a clear comparison of `named function`, `anonymous function`,
+ `class`, and `object` using ES6 syntax, with examples of export/import.
+
+
+                    | Type           | Example                       | Notes                            |
+                    | -------------- | ----------------------------- | -------------------------------- |
+                    | Function       | `export function foo()`       | Reusable logic                   |
+                    | Anonymous Func | `export default function()`   | Single default behavior          |
+                    | Class          | `export default class`        | Reusable blueprint               |
+                    | Object         | `export const obj = {...}`    | Grouped logic or data            |
+                    | Primitive      | `export const PI = 3.14`      | Constants, flags, etc.           |
+                    | Array          | `export const list = []`      | List of data                     |
+                    | JSON           | `require('./file.json')`      | Config, data files (CommonJS)    |
+                    | Factory        | `module.exports = function()` | Returns new object on call       |
+                    | Singleton      | Internal shared state         | Module cache shared across files |
+                    | Mixed          | `export default` + named      | Combine different export styles  |
+                    | Barrel         | `export * from './a.js'`      | Re-export multiple modules       |
+
+
+------------------------------------------------------------------------------------------------------------------------------
+                                                ✅ Named Function
+
+export function add(a, b) {
+  return a + b;
+}
+export function sub(a, b) {
+  return a + b;
+}
+=====================================================
+
+import mathModule from './math.js';
+import { add, sub } from './math.js';
+console.log(add(2, 3));             // 5
+console.log(mathModule.add(2, 3));  // 5
+------------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------------
+                                                ✅ Anonymous Function
+
+export default function(name) {
+  return `Hello, ${name}`;
+}
+=====================================================
+import greet from './greet.js';
+console.log(greet('Mohamed')); // Hello, Mohamed
+------------------------------------------------------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------------------------------------------------------
+                                                      ✅ Class
+
+export default class Calculator {
+  add(a, b) {
+    return a + b;
+  }
+
+  multiply(a, b) {
+    return a  b;
+  }
+}
+=====================================================
+import Calculator from './Calculator.js';
+const calc = new Calculator();
+console.log(calc.multiply(4, 5)); // 20
+------------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------------
+                                                    ✅ Object
+
+export const user = {
+  name: 'Mohamed',
+  age: 25,
+  greet() {
+    return `Hi, I'm ${this.name}`;
+  }
+};
+=====================================================
+import { user } from './userInfo.js';
+console.log(user.greet()); // Hi, I'm Mohamed
+------------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------------
+                                                ✅ Primitive Values
+
+export const version = '1.0.0';
+=====================================================
+import { version } from './version.js';
+------------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------------
+                                                    ✅ Arrays
+
+export const colors = ['red', 'green', 'blue'];
+=====================================================
+import { colors } from './colors.js';
+console.log(colors[0]); // red
+------------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------------
+                                                    ✅ JSON Data
+
+{
+  "appName": "MyApp"
+}
+=====================================================
+import config from './config.json' assert { type: 'json' };
+console.log(config.appName); // MyApp
+------------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------------
+                                            ✅ Constants (Enums-like pattern)
+
+export const STATUS = {
+  OK: 200,
+  NOT_FOUND: 404,
+  SERVER_ERROR: 500
+};
+
+=====================================================
+import { STATUS } from './statusCodes.js';
+
+console.log(STATUS.OK);         // 200
+console.log(STATUS.NOT_FOUND);  // 404
+------------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------------
+                                    ✅ Factory Functions (return objects/functions)
+
+export default function(name) {
+  return {
+    greet() {
+      return `Hello, ${name}`;
+    }
+  };
+}
+=====================================================
+import createGreeter from './greeter.js';
+console.log(createGreeter('Zaki').greet());
+------------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------------
+                                                ✅ Singleton Module
+
+let count = 0;
+export function increment() {
+  count++;
+  return count;
+}
+
+export function getCount() {
+  return count;
+}
+=====================================================
+import { increment, getCount } from './counter.js';
+increment();
+console.log(getCount()); // 1
+------------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------------
+                                                 ✅ Mixed Exports
+export default function () {
+  console.log('Default export');
+}
+
+export const version = '2.1.0';
+=====================================================
+import run, { version } from './mylib.js';
+run();          // Default export
+console.log(version); // 2.1.0
+------------------------------------------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------------------------------------------------------------
+                                            ✅ Async Modules (via dynamic import)
+
+export async function getData() {
+  const response = await fetch('https://api.example.com');
+  return await response.json();
+}
+=====================================================
+const { getData } = await import('./dynamic.mjs');
+------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

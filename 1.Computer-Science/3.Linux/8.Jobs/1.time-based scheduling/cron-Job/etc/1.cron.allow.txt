@@ -1,0 +1,99 @@
+_________________________________________________________________________________________________________________________________________________________________________
+                                                `/etc/cron.allow`
+                                              ===================  
+The `/etc/cron.allow` file is used to control access to the cron system for scheduling jobs.
+It specifies which users are permitted to use the `cron` command to set up their own cron jobs.
+
+______________________________________________________________________________________________________________________________________
+Purpose of `/etc/cron.allow`
+
+The file provides an explicit allow list of users who can create and manage cron jobs.
+If it exists, only the users listed in this file are allowed to use the `crontab` command.
+This enhances system security by limiting cron usage to trusted users.
+
+______________________________________________________________________________________________________________________________________
+Behavior Based on File Existence
+
+1.If `/etc/cron.allow` exists:
+        - Only users listed in this file can create and manage cron jobs.
+        - All other users are denied access, even if they are not listed in `/etc/cron.deny`.
+
+2.If `/etc/cron.allow` does not exist but `/etc/cron.deny` exists:
+        - Any user not listed in `/etc/cron.deny` is allowed to create and manage cron jobs.
+
+3.If neither `/etc/cron.allow` nor `/etc/cron.deny` exists:
+        - By default, all users are allowed to create and manage cron jobs.
+______________________________________________________________________________________________________________________________________
+Format of `/etc/cron.allow`
+
+- Each line in the file should contain the username of a permitted user.
+- Comments are not allowed.
+- Example `/etc/cron.allow` file:
+
+  ```````````````````````````````````````plaintext
+  root
+  alice
+  bob
+  ```````````````````````````````````````
+
+  In this example:
+  - Only the users `root`, `alice`, and `bob` are allowed to use the `cron` command.
+  - All other users are denied access.
+
+______________________________________________________________________________________________________________________________________
+Example: Testing `/etc/cron.allow`
+
+Step 1: Create the `/etc/cron.allow` file
+                    ```````````````````````````````````````bash
+                    sudo nano /etc/cron.allow
+                    ```````````````````````````````````````
+
+                    Add the following lines:
+                    ```````````````````````````````````````plaintext
+                    root
+                    john
+                    ```````````````````````````````````````
+
+Step 2: Test cron access for users
+
+            1.For a listed user (e.g., `john`):
+                    ```````````````````````````````````````bash
+                    su - john
+                    crontab -e
+                    ```````````````````````````````````````
+                    The user will be able to edit their crontab.
+
+            2.For an unlisted user (e.g., `mary`):
+                    ```````````````````````````````````````bash
+                    su - mary
+                    crontab -e
+                    ```````````````````````````````````````
+                    Output:
+                    ```````````````````````````````````````plaintext
+                    You (mary) are not allowed to use this program (crontab)
+                    See crontab(1) for more information
+                    ```````````````````````````````````````
+
+______________________________________________________________________________________________________________________________________
+Managing Cron Access with `/etc/cron.allow`
+
+- To allow a new user:   Add the username to `/etc/cron.allow`.
+  
+- To remove access for a user:  Remove the username from `/etc/cron.allow`.
+
+______________________________________________________________________________________________________________________________________
+Security Considerations
+
+1.Restrict Cron Usage to Trusted Users  
+   Limiting cron access reduces the risk of resource abuse and unmonitored
+    background jobs that could harm system performance or security.
+
+2.File Permissions  
+   Ensure that `/etc/cron.allow` has 
+   proper permissions to prevent unauthorized modifications:
+            ```````````````````````````````````````bash
+            sudo chmod 600 /etc/cron.allow
+            sudo chown root:root /etc/cron.allow
+            ```````````````````````````````````````
+
+_________________________________________________________________________________________________________________________________________________________________________

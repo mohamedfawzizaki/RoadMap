@@ -1,0 +1,31 @@
+________________________________________________________________________________________________________________________________________________________________
+                                                                    Dockerfile instructions
+                                                                    =======================
+                                                             https://docs.docker.com/reference/dockerfile/
+
+ __________________________________________________________________________________________________________________________________________________________________________________________________________
+|   Instruction    |                       Example                                    |                                          Description                                                               |
+|__________________|__________________________________________________________________|____________________________________________________________________________________________________________________|
+|    FROM          |    FROM python:3.9-slim                                          | Specifies the base image to use. Every Dockerfile must start with a FROM instruction.                              |
+|    LABEL         |    LABEL maintainer="you@example.com"                            | Adds metadata to the image, such as the maintainer or version info.                                                |
+|    RUN           |    RUN apt-get update && apt-get install -y curl                 | Executes commands in the image during build time, creating layers in the image.                                    |
+|    COPY          |    COPY ./src /app                                               | Copies files from the host to the container filesystem.                                                            |
+|    ADD           |    ADD app.tar.gz /app                                           | Similar to COPY, but can handle URLs and compressed files, automatically extracting them.                          |
+|    WORKDIR       |    WORKDIR /app                                                  | Sets the working directory for the container. Subsequent RUN, CMD, and ENTRYPOINT instructions are relative to this path. |
+|------------------|------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+|    ENV           |    ENV APP_ENV=production                                        | Sets environment variables in the image, which can be accessed by processes in the container.                      |
+|    EXPOSE        |    EXPOSE 8080                                                   | Informs Docker that the container will listen on the specified network ports at runtime.                           |
+|    ENTRYPOINT    |    ENTRYPOINT ["python", "app.py"]                               | Sets a command that always runs when the container starts (cannot be overridden by docker run).                    |
+|    USER          |    USER appuser                                                  | Specifies the user to run the container as. This is useful for security by not running as root.                    |
+|    VOLUME        |    VOLUME ["/data"]                                              | Creates a mount point for external storage volumes.                                                                |
+|    ARG           |    ARG APP_VERSION=1.0.0                                         | Defines build-time variables. These are only available during the image build process.                             |
+|    STOPSIGNAL    |    STOPSIGNAL SIGINT                                             | Specifies the signal that will be used to stop the container.                                                      |
+|    ADD           |    ADD https://example.com/file.tar.gz /app/                     | Copies files from a URL or local directory into the container (also extracts .tar files).                          |
+|    HEALTHCHECK   |    HEALTHCHECK CMD curl --fail http://localhost/ || exit 1       | Defines a command that Docker will run to check if the container is healthy.                                       |
+|    SHELL         |    SHELL ["powershell", "-Command"]                              | Changes the default shell used for running the commands in the Dockerfile.                                         |
+|    COPY          |    COPY ./app /usr/src/app                                       | Copies files or directories from the host into the container.                                                      |
+|    EXPOSE        |    EXPOSE 5000                                                   | Tells Docker to expose port 5000 to the host system (used by web apps).                                            |
+|    CMD           |    CMD ["node", "index.js"]                                      | Default command to run when the container starts. This can be overridden by providing arguments in docker run.     |
+|__________________|__________________________________________________________________|____________________________________________________________________________________________________________________|
+
+________________________________________________________________________________________________________________________________________________________________

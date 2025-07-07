@@ -1,0 +1,39 @@
+
+                    
+                                                    [mysqld] section
+
+                    Here’s a table listing common directives in the [mysqld] section along with their descriptions:
+
+ ____________________________________________________________________________________________________________________________________
+|           Directive/Options    |                                      Description                                                  |
+|________________________________|___________________________________________________________________________________________________|
+| port                           | Specifies the port MySQL listens on (default: 3306).                                              |
+| bind-address                   | Defines the IP address MySQL binds to (default: 127.0.0.1).                                       |
+| datadir                        | Specifies the directory where MySQL stores data.                                                  |
+| socket                         | Defines the Unix socket file location for local connections.                                      |
+| log-error                      | Specifies the error log file location.                                                            |
+|--------------------------------|---------------------------------------------------------------------------------------------------|
+| max_connections                | Sets the maximum number of concurrent connections.                                                |
+| key_buffer_size                | Allocates memory for index buffers (important for MyISAM tables).                                 |
+| query_cache_size               | Specifies the total memory allocated for query caching.                                           |
+| query_cache_limit              | Defines the maximum size of individual query results that can be cached.                          |
+| table_open_cache               | Sets the number of open tables MySQL can keep in cache.                                           |
+| thread_cache_size              | Specifies the number of threads to cache for reuse.                                               |
+|--------------------------------|---------------------------------------------------------------------------------------------------|
+| innodb_buffer_pool_size        | Defines the memory allocated for InnoDB buffer pool (crucial for performance).                    |
+| innodb_log_file_size           | Sets the size of InnoDB redo log files.                                                           |
+| innodb_flush_log_at_trx_commit | Controls when InnoDB writes logs to disk (0, 1, or 2; 1 ensures full ACID compliance).            |
+| innodb_file_per_table          | Enables the use of a separate file for each InnoDB table.                                         |
+|--------------------------------|---------------------------------------------------------------------------------------------------|
+| slow_query_log                 | Enables logging of slow queries for performance analysis.                                         |
+| slow_query_log_file            | Specifies the file where slow queries are logged.                                                 |
+| long_query_time                | Defines the execution time threshold for slow queries (in seconds).                               |
+|--------------------------------|---------------------------------------------------------------------------------------------------|
+| log_bin                        | Enables binary logging (used for replication and point-in-time recovery).                         |
+| server-id                      | Assigns a unique ID to the MySQL server (important for replication).                              |
+| expire_logs_days               | Sets the number of days to retain binary logs before deletion.                                    | 
+|--------------------------------|---------------------------------------------------------------------------------------------------|
+| default_authentication_plugin  | Specifies the default authentication plugin (e.g., mysql_native_password or caching_sha2_password)|
+| sql_mode                       | Defines SQL modes to control MySQL behavior (e.g., STRICT_TRANS_TABLES).                          |
+| event_scheduler                | Enables or disables the MySQL event scheduler (ON or OFF).                                        |
+|________________________________|___________________________________________________________________________________________________|

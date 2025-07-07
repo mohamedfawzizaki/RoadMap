@@ -1,0 +1,46 @@
+# --------------------------------------------------------------------------------------------------------
+# Kubernetes HorizontalPodAutoscaler (HPA)
+# --------------------------------------------------------------------------------------------------------
+# PURPOSE:
+# The HPA automatically scales the number of pod replicas in a target (Deployment, StatefulSet, etc.)
+# based on observed CPU utilization (or custom/external metrics with v2 APIs).
+
+# SCALING LOGIC:
+# - Continuously monitors targetCPUUtilizationPercentage
+# - If average CPU usage > target, HPA increases replicas (up to maxReplicas)
+# - If usage < target, HPA reduces replicas (not below minReplicas)
+
+# NOTE:
+# - The HPA requires metrics-server to be deployed in the cluster.
+# - CPU utilization is based on container resource **requests**, not limits.
+
+# KEY FIELDS:
+# - scaleTargetRef: the resource being autoscaled
+# - minReplicas / maxReplicas: range of allowed replicas
+# - targetCPUUtilizationPercentage: target average across all pods
+# --------------------------------------------------------------------------------------------------------
+
+apiVersion: autoscaling/v1              # API version for Horizontal Pod Autoscaler
+kind: HorizontalPodAutoscaler           # Resource kind: HPA
+
+metadata:
+  name: nginx-hpa                       # Name of the HPA
+  namespace: default                    # Namespace for the HPA object
+  labels:
+    app: nginx                          # Optional label (can help group resources)
+
+spec:
+  scaleTargetRef:                       # Reference to the workload this HPA is scaling
+    apiVersion: apps/v1                 # API version of the target (e.g., Deployment)
+    kind: Deployment                    # Kind of target resource (e.g., Deployment)
+    name: nginx-deployment              # Name of the target deployment to scale
+
+  minReplicas: 2                        # Minimum number of replicas to maintain
+  maxReplicas: 5                        # Maximum number of replicas the HPA can scale up to
+
+  targetCPUUtilizationPercentage: 70    # Target average CPU usage across pods (% of request)
+                                        # E.g., if each pod requests 500m CPU, HPA aims to keep average usage below 350m
+
+
+# kubectl autoscale <workload-type> <name> --min=2 --max=10 --cpu-percent=50
+# kubectl autoscale deployment nginx --min=2 --max=10 --cpu-percent=50

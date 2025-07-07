@@ -1,0 +1,53 @@
+# --------------------------------------------------------------------------------------------------
+# Kubernetes Namespace Definition
+# --------------------------------------------------------------------------------------------------
+# A Namespace in Kubernetes is a virtual cluster that allows you to logically separate workloads,
+# resources, and access controls within the same physical cluster.
+#
+# Use cases for namespaces:
+#   - Isolate environments (e.g., dev, staging, prod)
+#   - Apply policies (ResourceQuotas, LimitRanges, NetworkPolicies) at the namespace level
+#   - Control access using RBAC (Role-Based Access Control)
+#   - Organize workloads by teams or business units
+#
+# Each namespace here includes:
+#   - A `name` identifying the namespace
+#   - A `label` for categorization (e.g., by environment)
+#   - An `annotation` indicating the owner for tracking and automation
+# --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------
+# Development Namespace
+# --------------------------------------------
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev                             # The name of the namespace (used in kubectl commands)
+  labels:
+    environment: development            # Label used to identify the environment type
+  annotations:
+    owner: "mohamed@example.com"        # Annotation to track ownership or responsible contact
+---
+# --------------------------------------------
+# Staging Namespace
+# --------------------------------------------
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: staging                         # Namespace for QA and testing purposes
+  labels:
+    environment: staging                # Label for grouping and querying by environment
+  annotations:
+    owner: "qa-team@example.com"        # Assigned QA team owner for this namespace
+---
+# --------------------------------------------
+# Production Namespace
+# --------------------------------------------
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prod                            # Production namespace (used for live workloads)
+  labels:
+    environment: production             # Environment label to enable filtering, quota, and policy
+  annotations:
+    owner: "ops-team@example.com"       # Annotation to document responsible operations team

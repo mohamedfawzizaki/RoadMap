@@ -1,0 +1,1 @@
+# https://medium.com/@prevailexcellent/mastering-null-safety-in-php-8-a-comprehensive-guide-to-using-the-null-safe-operator-47835ba1140b#:~:text=The%20Null%20Coalescing%20Operator%20and%20Null%20Safe%20Operator

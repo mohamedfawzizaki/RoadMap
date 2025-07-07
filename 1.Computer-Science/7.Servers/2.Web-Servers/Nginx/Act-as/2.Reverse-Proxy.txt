@@ -1,0 +1,196 @@
+_____________________________________________________________________________________________________________________________________
+                                                    NGINX as a Reverse Proxy
+                                                    ========================
+
+NGINX can act as a reverse proxy, meaning it handles incoming client requests and forwards them to one or more backend servers.
+The client interacts with NGINX instead of directly communicating with the backend servers.
+This is useful for load balancing, caching, SSL termination, and improving the security of backend services.
+
+_____________________________________________________________________________________________________________________________________
+                                                    What is a Reverse Proxy?
+- A reverse proxy sits between clients and servers.
+- It receives client requests, forwards them to backend servers, and returns the server responses to the clients.
+- Benefits include:
+        - Load Balancing  : Distribute traffic across multiple servers.
+        - Caching         : Reduce backend server load and improve performance.
+        - SSL Termination : Offload SSL/TLS encryption from backend servers.
+        - Security        : Hide backend server details and apply filtering or authentication.
+
+_____________________________________________________________________________________________________________________________________
+                                               Setting Up NGINX as a Reverse Proxy
+----------------------------------------------------------------------------------------------
+Edit the NGINX configuration file or create a new virtual host file:
+        `````````````````````````````````````````````````bash
+        sudo nano /etc/nginx/sites-available/reverse-proxy.conf
+        `````````````````````````````````````````````````
+
+Add the following configuration:
+        `````````````````````````````````````````````````nginx
+        server {
+            listen 80;
+            server_name example.com;
+
+            location / {
+                proxy_pass http://backend_server;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+            }
+        }
+        `````````````````````````````````````````````````
+
+Replace `backend_server` with the IP address or hostname of your backend server, e.g., `http://127.0.0.1:8080`.
+
+_____________________________________________________________________________________________________________________________________
+                                                        Key Directives
+----------------------------------------------------------------------------------------------
+1.`proxy_pass`:
+
+   - Specifies the backend server where requests are forwarded.
+   - Examples:
+        - `proxy_pass http://127.0.0.1:8080;` (HTTP)
+        - `proxy_pass https://api.example.com;` (HTTPS)
+----------------------------------------------------------------------------------------------
+2.`proxy_set_header`:
+
+   - Modifies request headers sent to the backend server.
+   - Examples:
+        - `Host $host`                 : Preserves the original `Host` header.
+        - `X-Real-IP $remote_addr`     : Passes the client's IP address.
+        - `X-Forwarded-Proto $scheme`  : Indicates whether the client used HTTP or HTTPS.
+        - `X-Forwarded-For $proxy_add_x_forwarded_for`: Adds the client IP to the `X-Forwarded-For` header.
+----------------------------------------------------------------------------------------------
+3.Enable the Configuration
+
+Activate the new configuration:
+        `````````````````````````````````````````````````bash
+        sudo ln -s /etc/nginx/sites-available/reverse-proxy.conf /etc/nginx/sites-enabled/
+        `````````````````````````````````````````````````
+
+Test the configuration for errors:
+        `````````````````````````````````````````````````bash
+        sudo nginx -t
+        `````````````````````````````````````````````````
+
+Reload NGINX to apply changes:
+        `````````````````````````````````````````````````bash
+        sudo systemctl reload nginx
+        `````````````````````````````````````````````````
+
+_____________________________________________________________________________________________________________________________________
+                                                 Advanced Configurations
+----------------------------------------------------------------------------------------------
+1.Load Balancing
+
+Distribute traffic among multiple backend servers:
+        `````````````````````````````````````````````````nginx
+        upstream backend_cluster {
+            server 192.168.1.101;
+            server 192.168.1.102;
+            server 192.168.1.103;
+        }
+
+        server {
+            listen 80;
+            server_name example.com;
+
+            location / {
+                proxy_pass http://backend_cluster;
+            }
+        }
+        `````````````````````````````````````````````````
+
+Load balancing methods:
+        - Round-robin      : Default, requests are distributed evenly.
+        - Least Connections: Add `least_conn;` to the upstream block.
+        - IP Hash          : Add `ip_hash;` to persist client sessions to the same backend.
+----------------------------------------------------------------------------------------------
+2.SSL Termination
+
+Terminate SSL/TLS at NGINX:
+        `````````````````````````````````````````````````nginx
+        server {
+            listen 443 ssl;
+            server_name example.com;
+
+            ssl_certificate /etc/nginx/ssl/example.crt;
+            ssl_certificate_key /etc/nginx/ssl/example.key;
+
+            location / {
+                proxy_pass http://127.0.0.1:8080;
+                proxy_set_header Host $host;
+            }
+        }
+        `````````````````````````````````````````````````
+----------------------------------------------------------------------------------------------
+3.Caching
+
+Enable caching for improved performance:
+        `````````````````````````````````````````````````nginx
+        proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:10m max_size=10g inactive=60m use_temp_path=off;
+
+        server {
+            listen 80;
+            server_name example.com;
+
+            location / {
+                proxy_cache my_cache;
+                proxy_pass http://127.0.0.1:8080;
+                add_header X-Cache-Status $upstream_cache_status;
+            }
+        }
+        `````````````````````````````````````````````````
+----------------------------------------------------------------------------------------------
+4.Restrict Access
+
+Limit access to certain IPs:
+        `````````````````````````````````````````````````nginx
+        server {
+            listen 80;
+            server_name example.com;
+
+            location / {
+                allow 192.168.1.0/24;
+                deny all;
+                proxy_pass http://127.0.0.1:8080;
+            }
+        }
+        `````````````````````````````````````````````````
+
+_____________________________________________________________________________________________________________________________________
+                                                      Testing the Reverse Proxy
+
+1.Update your DNS or `/etc/hosts` to point `example.com` to the NGINX server IP.
+2.Access the NGINX server via the browser or CLI:
+        `````````````````````````````````````````````````bash
+        curl http://example.com
+        `````````````````````````````````````````````````
+
+_____________________________________________________________________________________________________________________________________
+                                                       Monitoring and Logs
+
+NGINX logs provide valuable information:
+
+- Access logs: `/var/log/nginx/access.log`
+- Error  logs: `/var/log/nginx/error.log`
+
+Use tools like `journalctl` or `tail` to monitor logs:
+        `````````````````````````````````````````````````bash
+        tail -f /var/log/nginx/access.log
+        `````````````````````````````````````````````````
+
+_____________________________________________________________________________________________________________________________________
+                                                    Benefits of Reverse Proxy
+
+1.Security:
+        - Hide backend servers from direct exposure.
+        - Add WAF (Web Application Firewall) for protection.
+2.Scalability:
+        - Distribute traffic among multiple servers.
+3.Performance:
+        - Cache responses to serve content faster.
+4.Centralized SSL:
+        - Simplify certificate management with SSL termination.
+
+_____________________________________________________________________________________________________________________________________

@@ -1,0 +1,25 @@
+_________________________________________________________________________________________________________________________________________________________________________ 
+                                                     User Management
+                                                     ===============
+ _______________________________________________________________________________________________________________________________________________________________________________________
+|    Option    |                          Example                                   |                              Description                                                                                
+|______________|____________________________________________________________________|___________________________________________________________________________________________________
+|--------------|--------------------------------------------------------------------|--------------------------------------------------------------------------------------------------- 
+| rsync        | rsync  -av    file.txt   user@remote:/path/to/destination          | Basic command to copy files or directories from the local machine to a remote machine.             
+|--------------|--------------------------------------------------------------------|--------------------------------------------------------------------------------------------------- 
+| -a           | rsync  -av    file.txt   user@remote:/path/to/destination          | Archive mode: preserves symbolic links, permissions, timestamps, and other attributes.             
+| -v           | rsync  -v     file.txt   user@remote:/path/to/destination          | Verbose mode: provides detailed output of the process.                                             
+| -z           | rsync  -z     file.txt   user@remote:/path/to/destination          | Enables compression during the transfer, useful for large files.                                   
+| -r           | rsync  -r     dir        user@remote:/path/to/destination          | Recursively copy directories and their contents.                                                   
+| -P           | rsync  -P     file.txt   user@remote:/path/to/destination          | Combines --partial and --progress to show progress and allow resuming interrupted transfers.       
+| -e           | rsync  -e ssh file.txt   user@remote:/path/to/destination          | Specifies the remote shell program to use (e.g., SSH).                                           
+| -u           | rsync  -u     file.txt   user@remote:/path/to/destination          | Skip files that are newer on the destination than on the source.                                   
+| -n           | rsync  -n     file.txt   user@remote:/path/to/destination          | Dry run: shows what files would be transferred without actually doing so.                         
+| --checksum   | rsync  -c     file.txt   user@remote:/path/to/destination          | Uses checksum comparison instead of modification time to determine whether files need to be copied.
+| --delete     | rsync  -a --delete dir/  user@remote:/path/to/destination/         | Deletes files in the destination directory that no longer exist in the source directory.          
+| --progress   | rsync  --progress file.txt user@remote:/path/to/destination        | Shows progress during file transfer.                                                              
+| --exclude    | rsync  --exclude='.log' -av dir/ user@remote:/path/to/destination/ | Excludes files or directories matching the pattern (e.g., .log files).                          
+|______________|____________________________________________________________________|___________________________________________________________________________________________________
+
+ 
+_________________________________________________________________________________________________________________________________________________________________________

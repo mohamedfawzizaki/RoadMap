@@ -1,0 +1,166 @@
+_______________________________________________________________________________________________________________________________________
+                                                # 🔹 Nginx Modules 
+
+Nginx is a modular web server that provides core functionality and allows additional features via modules. 
+These modules can be built-in (compiled into the core) or dynamic (loaded at runtime from shared libraries).
+
+_______________________________________________________________________________________________________________________________________
+                                                🔹 1️⃣ Types of Nginx Modules 
+
+| Module Type       | Description 
+| Core Modules      | Essential modules required for Nginx to function. 
+| HTTP Modules      | Handle web traffic, security, compression, and proxying. 
+| Mail Modules      | Enable SMTP, POP3, and IMAP proxy support. 
+| Stream Modules    | Handle TCP and UDP load balancing. 
+| 3rd-Party Modules | External modules developed by the community. 
+
+_______________________________________________________________________________________________________________________________________
+                                                🔹 2️⃣ Core Modules (Built-in)  
+
+📌 These are always available in Nginx and provide fundamental request handling.
+
+| Module                | Description 
+| `ngx_core_module`     | Manages Nginx processes, configuration parsing, and logging. 
+| `ngx_errlog_module`   | Handles error logging to files or `syslog`. 
+| `ngx_events_module`   | Manages connection handling (worker processes, event loops). 
+| `ngx_http_module`     | Enables HTTP request processing (required for web server functionality). 
+| `ngx_mail_module`     | Supports mail proxying (IMAP, SMTP, POP3). 
+| `ngx_stream_module`   | Supports TCP/UDP load balancing and proxying. 
+
+📌 Example: Configuring worker processes in `nginx.conf`
+````````````````````````````````````````````````````````````````````nginx
+worker_processes auto;   # Auto-adjust based on available CPU cores
+worker_connections 1024; # Maximum connections per worker
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+                                            🔹 3️⃣ HTTP Modules (Web Server Features)
+
+These modules extend HTTP request handling, compression, security, and proxying.
+
+| Module                        | Description 
+| `ngx_http_access_module`      | Controls access to resources (`allow`/`deny`). 
+| `ngx_http_auth_basic_module`  | Implements Basic Authentication. 
+| `ngx_http_autoindex_module`   | Generates directory listings. 
+| `ngx_http_charset_module`     | Handles character set conversions. 
+| `ngx_http_gzip_module`        | Compresses responses using Gzip. 
+| `ngx_http_proxy_module`       | Enables reverse proxying to backend servers. 
+| `ngx_http_rewrite_module`     | Supports URL rewriting using regex. 
+| `ngx_http_ssl_module`         | Adds SSL/TLS support (HTTPS). 
+| `ngx_http_upstream_module`    | Enables load balancing for backend servers. 
+
+📌 Example: Enabling Gzip Compression
+````````````````````````````````````````````````````````````````````nginx
+gzip on;
+gzip_types text/plain text/css application/json;
+gzip_comp_level 6;
+````````````````````````````````````````````````````````````````````
+
+📌 Example: Reverse Proxying to a Backend
+````````````````````````````````````````````````````````````````````nginx
+location /api/ {
+    proxy_pass http://127.0.0.1:5000;
+    proxy_set_header Host $host;
+}
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+                                            🔹 4️⃣ Mail Modules (SMTP, POP3, IMAP Proxy)
+These modules allow Nginx to function as a mail proxy.
+
+| Module                        | Description 
+| `ngx_mail_module`             | Enables mail proxy functionality. 
+| `ngx_mail_auth_http_module`   | Performs authentication for mail users. 
+| `ngx_mail_proxy_module`       | Proxies mail traffic to backend servers. 
+
+📌 Example: Mail Proxy Configuration
+````````````````````````````````````````````````````````````````````nginx
+mail {
+    server {
+        listen 993 ssl;
+        protocol imap;
+        auth_http http://127.0.0.1/auth;
+    }
+}
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 5️⃣ Stream Modules (TCP/UDP Proxy & Load Balancing)
+These modules extend Nginx’s capabilities for handling raw TCP and UDP traffic.
+
+| Module                        | Description 
+| `ngx_stream_module`           | Enables TCP/UDP traffic processing. 
+| `ngx_stream_proxy_module`     | Proxies TCP/UDP traffic to backend servers. 
+| `ngx_stream_ssl_module`       | Provides SSL/TLS encryption for TCP/UDP connections. 
+| `ngx_stream_upstream_module`  | Enables load balancing for TCP/UDP services. 
+
+📌 Example: TCP Load Balancing
+````````````````````````````````````````````````````````````````````nginx
+stream {
+    upstream database {
+        server 192.168.1.100:3306;
+        server 192.168.1.101:3306 backup;
+    }
+
+    server {
+        listen 3306;
+        proxy_pass database;
+    }
+}
+````````````````````````````````````````````````````````````````````
+✅ This load balances MySQL traffic across two servers.
+
+_______________________________________________________________________________________________________________________________________
+                                            🔹 6️⃣ Dynamic Modules (Located in `/usr/lib/nginx/modules/`)
+
+📌 Nginx does not load dynamic modules by default; they must be enabled manually.
+
+| Module                                | Description 
+| `ngx_http_geoip_module`               | Enables GeoIP-based access control. 
+| `ngx_http_auth_request_module`        | Handles external authentication. 
+| `ngx_http_brotli_module`              | Enables Brotli compression for faster page loads. 
+| `ngx_http_vhost_traffic_status_module`| Provides real-time traffic monitoring. 
+
+📌 Enable a Dynamic Module in `nginx.conf`
+````````````````````````````````````````````````````````````````````nginx
+load_module /usr/lib/nginx/modules/ngx_http_geoip_module.so;
+````````````````````````````````````````````````````````````````````
+
+📌 List Available Dynamic Modules
+````````````````````````````````````````````````````````````````````bash
+ls /usr/lib/nginx/modules/
+````````````````````````````````````````````````````````````````````
+
+📌 Check Installed Modules
+````````````````````````````````````````````````````````````````````bash
+nginx -V 2>&1 | grep modules
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+                                        🔹 7️⃣ Third-Party Modules (Additional Features)
+
+Nginx allows external modules to extend its functionality.
+
+| Module                            | Description   
+| `ModSecurity`                     | Web Application Firewall (WAF).   
+| `Lua-Nginx Module`                | Runs Lua scripts inside Nginx for dynamic content.    
+| `PageSpeed Module`                | Optimizes web performance (image compression, minification).  
+| `Headers More Module`             | Allows modifying HTTP headers dynamically.    
+
+📌 Example: Installing a Third-Party Module (Ubuntu)
+````````````````````````````````````````````````````````````````````bash
+sudo apt install nginx-extras
+````````````````````````````````````````````````````````````````````
+✅ This package includes additional modules such as ModSecurity and Brotli compression.
+
+_______________________________________________________________________________________________________________________________________
+                                                           🔹 8️⃣ Summary
+- Core Modules       : Handle essential Nginx functions (workers, events, logging).
+- HTTP Modules       : Enable caching, proxying, compression, and security.
+- Mail Modules       : Proxy mail traffic (SMTP, IMAP, POP3).
+- Stream Modules     : Handle TCP/UDP traffic and load balancing.
+- Dynamic Modules    : Extend functionality (loaded from `/usr/lib/nginx/modules/`).
+- Third-Party Modules: Provide additional security and performance enhancements.
+
+_______________________________________________________________________________________________________________________________________

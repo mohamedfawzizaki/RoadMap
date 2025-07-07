@@ -1,0 +1,28 @@
+
+
+                                                         [mysqldump] Section 
+
+                            This section configures the mysqldump tool, which is used for database backups.
+
+             ___________________________________________________________________________________________________________________________
+            |       Directive       |                                   Description                                                     |
+            |_______________________|___________________________________________________________________________________________________|
+            | quick                 | Enables quick dumping by fetching rows one by one instead of loading the whole table into memory. |
+            | max_allowed_packet    | Sets the maximum packet size for mysqldump operations.                                            |
+            | quote-names           | Encloses table and column names in backticks (\) to prevent conflicts with reserved words.        |
+            | add-drop-database     | Includes DROP DATABASE before creating a new one.                                                 |
+            | add-drop-table        | Includes DROP TABLE before recreating tables.                                                     |
+            | add-locks             | Adds LOCK TABLES before inserts for faster restoration.                                           |
+            | lock-tables           | Locks tables during dumping to ensure consistency.                                                |
+            | disable-keys          | Temporarily disables foreign key checks for faster import.                                        |
+            | extended-insert       | Uses multiple-row INSERT statements for faster import.                                            |
+            |-----------------------|---------------------------------------------------------------------------------------------------|
+            | single-transaction    | Ensures a consistent snapshot without locking tables (useful for InnoDB).                         |
+            |-----------------------|---------------------------------------------------------------------------------------------------|
+            | routines              | Includes stored procedures and functions in the dump.                                             |
+            | events                | Includes scheduled events in the dump.                                                            |
+            | triggers              | Includes database triggers in the dump.                                                           |
+            |-----------------------|---------------------------------------------------------------------------------------------------|
+            | compress              | Enables compression for network transfers.                                                        |
+            | hex-blob              | Dumps binary data (BLOB fields) in hexadecimal format.                                            |
+            |_______________________|___________________________________________________________________________________________________|

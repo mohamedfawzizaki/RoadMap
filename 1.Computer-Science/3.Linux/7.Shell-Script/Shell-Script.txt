@@ -1,0 +1,157 @@
+____________________________________________________________________________________________________________________________________________________________
+                                                        Shell Script 
+                                                        ============
+chsh -s bash                                                    
+                                https://www.geeksforgeeks.org/introduction-linux-shell-shell-scripting/                                
+____________________________________________________________________________________________________________________________________________________________
+____________________________________________________________________________________________________________________________________________________________
+- Definition:
+        - It is a text file containing a sequence of commands for a Unix-based operating system's shell to execute in a specific order.
+        - It automates repetitive tasks, simplifies complex workflows, and enables users to create powerful utilities.
+        - It can be used for a wide range of tasks, including file management, system administration.
+        - It is a program written in a shell scripting language (e.g., Bash, Zsh, Ksh).
+        - It allows users to write commands and logic to execute tasks automatically.
+
+- Types:
+        1.Bash Shell Script : "Bourne Again Shell" This is the most common type of shell script and is used on Linux and macOS systems.
+        2.Zsh  Shell Script : "Z Shell, an extended version of Bash", This type of shell script is used on macOS systems.
+
+- Features :
+        - Automation   : Shell scripts automate repetitive tasks, freeing up time for more complex and creative work.
+        - Portability  : Shell scripts are platform-independent, making them easy to transfer between different systems.
+        - Reusability  : Shell scripts can be reused, reducing the need to rewrite code for similar tasks.
+        - Scalability  : Shell scripts can handle large datasets and complex workflows, making them ideal for big data processing tasks.
+        - Security     : Shell scripts can be used to implement secure workflows, such as encrypting data and authenticating users.
+
+- Examples:
+        - Backup scripts      : Automate data backups to ensure data integrity and availability.
+        - Deployment scripts  : Automate the deployment of applications and services.
+        - Monitoring scripts  : Automate the monitoring of system performance and resource utilization.
+        - Security scripts    : Automate security tasks, such as password management and access control.
+
+Bash Scripting Language:
+        Variables                               : Store and manipulate data.
+        Control Structures                      : Use conditional statements and loops for logic.
+        Functions                               : Modularize code into reusable components.
+        I/O Redirection                         : Handle input and output efficiently.
+        File and String Manipulation            : Process and edit files or strings.
+        Command Execution                       : Run commands and handle their output.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Shell Script creation:
+        1.Choose a text editor (e.g., Vim, Emacs, Nano) to create a new file with a `.sh` extension (e.g., `script.sh`).
+        2.Write the shell script using a shell scripting language (e.g., Bash, Zsh).
+        3.Save the file and make it will be executed when run.
+        4.Check syntax errors.
+        4.Make the file executable by running the command `chmod +x script.sh` in the terminal
+        5.Run the script.sh by typing ./script.sh in the terminal.
+
+                    
+        Create a Script File:                   touch myscript.sh
+
+                                                nano myscript.sh
+                                                        #!/bin/bash
+        Write your script:                              echo "Hello, World!"
+                                                        <your script>
+                                                        exit 0
+
+        Check Syntax errors:                    bash -n myscript.sh  
+
+        Make the Script Executable:             chmod +x myscript.sh
+        
+        Run the Script:                         ./myscript.sh
+
+        Indicate successful execution           exit 0
+
+       
+______________________________________________________________________________________________________________________________________
+
+                                             bash [option] [command]
+         _______________________________________________________________________________________________________________
+        |  Option    |                    Description	                          |           Example                   |
+        |____________|____________________________________________________________|_____________________________________|
+        |    -c	     |   Reads and executes commands from a string	          |      bash -c 'echo Hello'           |
+        |    -i	     |   Starts an interactive shell	                          |      bash -i                        |
+        |    -l	     |   Starts a login shell (as if logging in)	          |      bash -l                        |
+        |    -r	     |   Starts a restricted shell	                          |      bash -r                        |
+        |    -s	     |   Reads commands from standard input	                  |      bash -s 'echo Hello'           |
+        |    -v	     |   Prints shell input lines as they are read (verbose mode) |	 bash -v myscript.sh            |
+        |    -x	     |   Prints commands before execution (debug mode)	          |      bash -x myscript.sh            |
+        |    -n	     |   Checks syntax errors without executing the script	  |      bash -n myscript.sh            |
+        |    -D	     |   Prints all double-quoted strings for translation	  |      bash -D myscript.sh            |
+        |____________|____________________________________________________________|_____________________________________|
+        | --debugger |	 Enables debugging mode	                                  |      bash --debugger myscript.sh    |
+        | --help     |   Displays Bash help information	                          |      bash --help                    |
+        | --version  |	 Shows the Bash version	                                  |      bash --version                 |
+        |____________|____________________________________________________________|_____________________________________|
+
+
+
+Key Words:
+
+bash 
+declare
+readonly
+export
+printenv
+env
+
+expr 
+let
+local
+
+______________________________________________________________________________________________________________________________________
+
+#!/bin/bash
+
+# variables :
+-------------------------------------------
+                str_var="mohamed"
+                int_var=23
+                readonly ro_str_var="job is doctor"
+                readonly ro_int_var=3.14
+-------------------------------------------
+
+# indexed arrays :
+-------------------------------------------
+                declare -a arr
+
+                arr=("item1" "item2" "item3")
+                arr[3]="item4"
+                arr[4]="item5"
+
+                echo "${arr[0]}"
+                echo "${arr[@]}"
+                echo "${#arr[@]}"
+
+                for item in "${arr[@]}"; do
+                        echo "$item"
+                done
+
+                unset arr[2]
+                unset arr
+-------------------------------------------
+
+ # associative arrays :
+-------------------------------------------
+                declare -A arr
+
+                arr["name"]="mohamed"
+                arr["age"]=
+                # associative arrays :
+                declare -A arr
+
+                arr["name"]="mohamed"
+                arr["age"]=23
+                                                                                                                                                        33 echo "${arr['name']}"
+                echo "${arr['age']}"
+                echo "${arr[@]}"
+                echo "${!arr[@]}"
+
+                for key in "${!arr[@]}"; do
+                        echo "$key -> ${arr[$key]}"
+                done
+
+                unset arr["name"]
+                unset arr
+-------------------------------------------
+

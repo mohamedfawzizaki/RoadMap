@@ -1,0 +1,221 @@
+_________________________________________________________________________________________________________________________________________________________________________
+                                                      curl [options] [URL]
+                                                      ====================
+
+ _______________________________________________________________________________________________________________________________________________________________________________________________
+|      Option            |                             Example                                          |                         Description                                                   |
+|________________________|______________________________________________________________________________|_______________________________________________________________________________________|
+|  -O`                   |  curl  -O                               http://example.com/file.txt`         | Saves the file with the original name from the URL.                                   |
+|  -o <filename>`        |  curl  -o output.txt                    http://example.com/file.txt`         | Saves the output to the specified file.                                               |
+|  -C -`                 |  curl  -C - -O                          http://example.com/largefile.zip`    | Resumes a partially downloaded file.                                                  |
+|  -L`                   |  curl  -L                               http://example.com`                  | Follows redirects.                                                                    |
+|  -X <method>`          |  curl  -X POST                          http://example.com`                  | Specifies the HTTP method to use (`GET`, `POST`, `PUT`, `DELETE`, etc.).              |
+|  -d <data>`            |  curl  -d "name=value"                  http://example.com`                  | Sends data with a `POST` or `PUT` request.                                            |
+|  -H <header>`          |  curl  -H "Authorization:Bearer token"  http://example.com`                  | Adds a custom header to the request.                                                  |
+|  -I`                   |  curl  -I                               http://example.com`                  | Fetches only the HTTP headers (`HEAD` request).                                       |
+|  -u <user:password>`   |  curl  -u admin:secret                  http://example.com`                  | Sets the username and password for authentication.                                    |
+|  --limit-rate <speed>` |  curl  --limit-rate 100k                http://example.com/file.zip`         | Limits the download speed (e.g., `100k` for 100 KB/s).                                |
+|  --compressed`         |  curl  --compressed                     http://example.com`                  | Requests a compressed response from the server to save bandwidth.                     |
+|  -k, --insecure`       |  curl  -k                               https://example.com`                 | Allows insecure SSL connections (ignores certificate verification). Use with caution. |
+|  -v`                   |  curl  -v                               http://example.com`                  | Enables verbose mode to see detailed request and response information.                |
+|  -s`                   |  curl  -s                               http://example.com`                  | Runs in silent mode (no progress output).                                             |
+|  -G`                   |  curl  -G -d "key=value"                http://example.com`                  | Sends data as query parameters with a `GET` request.                                  |
+|  --data-urlencode`     |  curl  --data-urlencode "name=John Doe" http://example.com`                  | URL-encodes the data before sending it in the request.                                |
+|  -e <referrer>`        |  curl  -e         "http://referrer.com" http://example.com`                  | Specifies a referrer URL.                                                             |
+|  -A <user-agent>`      |  curl  -A "Mozilla/5.0"                 http://example.com`                  | Sets a custom User-Agent string.                                                      |
+|  --head`               |  curl  --head                           http://example.com`                  | Fetches only the HTTP headers (`HEAD` request, alias of `-I`).                        |
+|  --http2`              |  curl  --http2                          http://example.com`                  | Enables HTTP/2 support for the request.                                               |
+|  --http3`              |  curl  --http3                          http://example.com`                  | Enables HTTP/3 support for the request.                                               |
+|  --max-time <seconds>` |  curl  --max-time 10                    http://example.com`                  | Sets a maximum time for the request to complete (in seconds).                         |
+|  --retry <number>`     |  curl  --retry 3                        http://example.com`                  | Sets the number of retry attempts for a failed request.                               |
+|  --retry-delay <time>` |  curl  --retry-delay 5 --retry 3        http://example.com`                  | Specifies the delay (in seconds) between retries.                                     |
+|  --progress-bar`       |  curl  --progress-bar -O                http://example.com/file.txt`         | Shows a progress bar instead of default download progress.                            |
+|  --form <data>`        |  curl  --form "file=@file.txt"          http://example.com`                  | Sends a file or form data with a `POST` request.                                      |
+|  --output-dir`         |  curl  --output-dir /downloads -O       http://example.com/file.txt`         | Saves output files in the specified directory.                                        |
+|  --cert <file>`        |  curl  --cert client.pem                https://example.com`                 | Specifies a client certificate for SSL authentication.                                |
+|  --key <file>`         |  curl  --key client.key                 https://example.com`                 | Specifies a private key for SSL authentication.                                       |
+|  --proxy <proxy>`      |  curl  --proxy                          http://proxy:8080 http://example.com`| Sends the request through a specified proxy server.                                   |
+|  --cookie <file>`      |  curl  --cookie cookies.txt             http://example.com`                  | Sends cookies from the specified file with the request.                               |
+|  --cookie-jar <file>`  |  curl  --cookie-jar cookies.txt         http://example.com`                  | Saves cookies received from the server to a file.                                     |
+|  -x, --proxy`          |  curl  -x http://proxy:8080             http://example.com`                  | Specifies a proxy server for the request.                                             |
+|  --silent`             |  curl  --silent                         http://example.com`                  | Suppresses all output (equivalent to `-s`).                                           |
+|  --trace <file>`       |  curl  --trace trace.log                http://example.com`                  | Enables a detailed trace of the request/response, saved to the specified file.        |
+|  --trace-ascii <file>` |  curl  --trace-ascii trace.log          http://example.com`                  | Saves a trace of the request/response in ASCII format.                                |
+|________________________|______________________________________________________________________________|_______________________________________________________________________________________|
+
+
+
+
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                                           `curl` 
+                                                           ======
+
+`curl` (Client URL) is a powerful command-line tool used for transferring data to and from servers.
+It supports many protocols, including HTTP, HTTPS, FTP, SFTP, SCP, IMAP, SMTP, and more.
+Unlike `wget`, which primarily focuses on downloading files, `curl` excels in interacting with APIs and transferring data.
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                                         Common Use Cases
+                                                         ================
+
+1.Download a File
+
+         `````````````````````````````````````````````````bash
+         curl -O https://example.com/file.zip
+         `````````````````````````````````````````````````
+         This downloads `file.zip` and saves it with the same name.
+
+2.Download a File with a Custom Name
+
+         `````````````````````````````````````````````````bash
+         curl -o custom_name.zip https://example.com/file.zip
+         `````````````````````````````````````````````````
+
+3.Resume a Download
+
+         `````````````````````````````````````````````````bash
+         curl -C - -O https://example.com/largefile.iso
+         `````````````````````````````````````````````````
+         The `-C -` option allows resuming an interrupted download.
+
+4.Follow Redirects
+
+         `````````````````````````````````````````````````bash
+         curl -L https://short.url
+         `````````````````````````````````````````````````
+         The `-L` option follows HTTP redirects to the final destination.
+
+5.Pass Data to a Server (HTTP POST)
+
+         `````````````````````````````````````````````````bash
+         curl -X POST -d "param1=value1&param2=value2" https://example.com/api
+         `````````````````````````````````````````````````
+         This sends a `POST` request with form data to the specified URL.
+
+6.Send JSON Data
+
+         `````````````````````````````````````````````````bash
+         curl -X POST -H "Content-Type: application/json" -d '{"key": "value"}' https://example.com/api
+         `````````````````````````````````````````````````
+         This sends a `POST` request with JSON data, setting the appropriate `Content-Type` header.
+
+7.Download a File via FTP
+
+         `````````````````````````````````````````````````bash
+         curl ftp://example.com/file.zip --user username:password
+         `````````````````````````````````````````````````
+
+8.Send a GET Request with Custom Headers
+
+         `````````````````````````````````````````````````bash
+         curl -H "Authorization: Bearer your_token" https://example.com/api
+         `````````````````````````````````````````````````
+
+9.Save Output to a File
+
+         `````````````````````````````````````````````````bash
+         curl https://example.com/data -o output.txt
+         `````````````````````````````````````````````````
+
+10.Show Only the Response Headers
+
+         `````````````````````````````````````````````````bash
+         curl -I https://example.com
+         `````````````````````````````````````````````````
+         The `-I` option fetches only the headers using a `HEAD` request.
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                               Authentication Examples
+                                               =======================
+
+1.Basic Authentication
+
+         `````````````````````````````````````````````````bash
+         curl -u username:password https://example.com/protected
+         `````````````````````````````````````````````````
+
+2.Bearer Token Authentication
+
+         `````````````````````````````````````````````````bash
+         curl -H "Authorization: Bearer your_token" https://example.com/api
+         `````````````````````````````````````````````````
+
+3.OAuth 2.0 Token Retrieval
+
+         `````````````````````````````````````````````````bash
+         curl -X POST -d "grant_type=client_credentials&client_id=your_id&client_secret=your_secret" https://example.com/oauth/token
+         `````````````````````````````````````````````````
+_________________________________________________________________________________________________________________________________________________________________________
+                                                   Advanced Use Cases
+                                                   ==================
+
+1.Uploading Files
+
+         `````````````````````````````````````````````````bash
+         curl -X POST -F "file=@/path/to/local/file.txt" https://example.com/upload
+         `````````````````````````````````````````````````
+         The `-F` option specifies a file to upload.
+
+2.Download Multiple Files
+
+         `````````````````````````````````````````````````bash
+         curl -O https://example.com/file1.zip -O https://example.com/file2.zip
+         `````````````````````````````````````````````````
+         This downloads multiple files in a single command.
+
+3.Limit Download Speed
+
+         `````````````````````````````````````````````````bash
+         curl --limit-rate 200k -O https://example.com/largefile.zip
+         `````````````````````````````````````````````````
+
+4.Set Timeout
+
+         `````````````````````````````````````````````````bash
+         curl --connect-timeout 10 -m 30 https://example.com
+         `````````````````````````````````````````````````
+         - `--connect-timeout`: Timeout for connection establishment.
+         - `-m`: Total maximum time for the entire operation.
+
+5.Save Cookies
+
+         `````````````````````````````````````````````````bash
+         curl -c cookies.txt https://example.com
+         `````````````````````````````````````````````````
+         This saves the cookies to a file named `cookies.txt`.
+
+6.Use Cookies
+
+         `````````````````````````````````````````````````bash
+         curl -b cookies.txt https://example.com
+         `````````````````````````````````````````````````
+         This sends the cookies from `cookies.txt` with the request.
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                            Comparing `wget` and `curl`
+                                            ===========================
+          ______________________________________________________________________________________________________________________
+         |          Feature            |                 `wget`                     |                 `curl`                    |
+         |_____________________________|____________________________________________|___________________________________________|
+         | Primary Purpose             | Downloading files                          | Data transfer and API interaction         |
+         | Protocols Supported         | HTTP, HTTPS, FTP                           | HTTP, HTTPS, FTP, SFTP, SCP, IMAP, SMTP   |
+         | Recursive Downloading       | Yes                                        | No                                        |
+         | Resuming Downloads          | Yes                                        | Yes                                       |
+         | Handling of APIs            | Basic support                              | Full support with custom methods, headers |
+         | Output to File              | Automatic                                  | Requires `-o` or `-O`                     |
+         | Background Download         | Yes (`-b` option)                          | No (use with `&` to run in background)    |
+         | Redirection Handling        | Yes (`-L` is default)                      | No (must use `-L` option)                 |
+         |_____________________________|____________________________________________|___________________________________________|
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                                       Conclusion
+                                                       ==========
+
+`curl` is an essential tool for interacting with web servers and APIs.
+Its flexibility in handling different protocols, sending custom headers,
+ and supporting authentication makes it a preferred choice for developers.
+ 
+Whether you're downloading files, testing an API, or simulating requests,
+ `curl` provides a versatile solution for all data transfer needs.
+_________________________________________________________________________________________________________________________________________________________________________

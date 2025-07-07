@@ -1,0 +1,28 @@
+___________________________________________________________________________________________________________________________________________________________________________________________________
+                                                                   config.vagrant namespace
+                                                                   ========================
+
+
+ _________________________________________________________________________________________________________________________________________________________________________________________________________________
+|               Property               |                                           Description                                              |                               Example                               |
+|______________________________________|____________________________________________________________________________________________________|_____________________________________________________________________|
+| config.vagrant.host                  | Specifies the type of host operating system (e.g., Windows, macOS, Linux).                         | config.vagrant.host = :windows                                      |
+| config.vagrant.auto_install          | Controls whether Vagrant should automatically install missing plugins specified in the Vagrantfile.| config.vagrant.auto_install = true                                  |
+| config.vagrant.plugins               | Specifies a list of plugins to install when the Vagrantfile is executed.                           | config.vagrant.plugins = ["vagrant-vbguest", "vagrant-hostmanager"] |
+|--------------------------------------|----------------------------------------------------------------------------------------------------|---------------------------------------------------------------------|
+| config.vagrant.disable_entry_path    | Disables the use of an entry point script when Vagrant starts.                                     | config.vagrant.disable_entry_path = true                            |
+| config.vagrant.disabled_plugins      | A list of Vagrant plugins to disable.                                                              | config.vagrant.disabled_plugins = ["vagrant-aws", "vagrant-vmware"] |
+| config.vagrant.vagrantfile           | Sets a custom Vagrantfile path or a custom Vagrantfile to be used.                                 | config.vagrant.vagrantfile = "path/to/custom/Vagrantfile"           |
+| config.vagrant.host_key_fingerprints | Specifies fingerprints for the Vagrant host key.                                                   | config.vagrant.host_key_fingerprints = ["SHA256:abcdef..."]         |
+|--------------------------------------|----------------------------------------------------------------------------------------------------|---------------------------------------------------------------------|
+| config.vagrant.default_provider      | Specifies the default provider for virtual machines (e.g., VirtualBox, VMware).                    | config.vagrant.default_provider = "virtualbox"                      |
+| config.vagrant.provision_on_up       | Automatically provisions when the machine is started.                                              | config.vagrant.provision_on_up = true                               |
+| config.vagrant.default_memory        | Sets the default memory for the VM instance.                                                       | config.vagrant.default_memory = "1024MB"                            |
+| config.vagrant.sync_folders          | Configures the folder sync mechanism between host and guest.                                       | config.vagrant.sync_folders = ["./shared:/mnt/shared"]              |
+|______________________________________|____________________________________________________________________________________________________|_____________________________________________________________________|
+ 
+
+
+
+ 
+___________________________________________________________________________________________________________________________________________________________________________________________________

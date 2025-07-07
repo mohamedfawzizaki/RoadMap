@@ -1,0 +1,191 @@
+______________________________________________________________________________________________________________________________________
+                                                 `/etc/shadow`
+                                                 =============
+Breif:
+         - The `/etc/shadow` file is a critical system file in Linux and Unix-like operating systems.
+         - It securely stores hashed passwords for all system users.
+    
+         - Unlike `/etc/passwd`, which is world-readable, `/etc/shadow` is highly protected
+           and can only be read or modified by the root user or processes with appropriate privileges.
+
+______________________________________________________________________________________________________________________________________
+                                             Purpose of `/etc/shadow`
+
+The primary purpose of the `/etc/shadow` file is to
+ provide a secure way to store user password information, including:
+
+         1.Password hashes: Instead of storing plain-text passwords, it stores password hashes.
+         2.Password aging : It contains fields for password expiration, minimum/maximum age, and warning periods.
+
+______________________________________________________________________________________________________________________________________
+                                             Structure of `/etc/shadow`
+
+Each line in the `/etc/shadow` file represents a user account and contains nine fields separated by colons (`:`).
+
+The format is:
+
+         `````````````````````````````````````````````````````````````````````````````````
+         username:password_hash:last_change:min_age:max_age:warn:inactive:expire:reserved
+         `````````````````````````````````````````````````````````````````````````````````
+
+Here’s a breakdown of each field:
+
+1.`username`  
+         - The login name of the user. 
+         - Must match the username in `/etc/passwd`. 
+         - Example: `john`, `root`.
+
+2.`password_hash`  
+         - The hashed password of the user. 
+         - If this field contains a single character (`*` or `!`),
+            it indicates that the account is locked (the user cannot log in). 
+         - An empty field means the account has no password, which is a significant security risk. 
+         - Example of a hashed password:  
+         `````````````````````````````````````````````````
+         $6$gU9aTLJb$2zA74QlF/cqkPLgvd5jUxD8ENY93ojGRBxDpFexf4Py8Z2H1OnBsYV1EgZr9NiA4kEF6KnzI0NdxfpMgdAwIQ1
+         `````````````````````````````````````````````````
+         - The hash format starts with `$id$`, where `id` indicates the hashing algorithm:
+                              - `$1$`  → MD5
+                              - `$2a$` → Blowfish
+                              - `$5$`  → SHA-256
+                              - `$6$`  → SHA-512 (most common in modern systems)
+
+3.`last_change`  
+         - The number of days since January 1, 1970 (the Unix epoch) when the password was last changed. 
+         - This helps in implementing password aging policies. 
+         - Example: `19140` (indicating the password was last changed 19,140 days after the epoch).
+
+4.`min_age`  
+         - The minimum number of days that must pass before the user can change their password again. 
+         - Helps prevent users from repeatedly changing passwords to cycle through old ones. 
+         - Example: `0` (no restriction).
+
+5.`max_age`  
+         - The maximum number of days a password can be used before the user is required to change it. 
+         - Example: `90` (password must be changed every 90 days).
+
+6.`warn`  
+         - The number of days before password expiration when the user
+            will start receiving warnings about the need to change their password. 
+         - Example: `7` (user will be warned for 7 days before the password expires).
+
+7.`inactive`  
+         - The number of days after password expiration during which the account remains active without a password change. 
+         - Once this period ends, the account is locked. 
+         - Example: `30` (account will be locked 30 days after password expiration).
+
+8.`expire`  
+         - The absolute date (in days since the Unix epoch) when the account will be disabled, regardless of password status. 
+         - A value of `-1` means the account will never expire. 
+         - Example: `19300` (account will expire on the specified date).
+
+9.`reserved`  
+         - Reserved for future use and typically empty.
+
+______________________________________________________________________________________________________________________________________
+                                             Example Entry in `/etc/shadow`
+
+``````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+john:$6$gU9aTLJb$2zA74QlF/cqkPLgvd5jUxD8ENY93ojGRBxDpFexf4Py8Z2H1OnBsYV1EgZr9NiA4kEF6KnzI0NdxfpMgdAwIQ1:19140:0:90:7:30:19300:
+``````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+
+Explanation:
+         - `john`           : Username.
+         - `$6$gU9aTLJb$...`: Password hash using SHA-512.
+         - `19140`          : Last password change was 19,140 days after January 1, 1970.
+         - `0`              : No minimum age for password change.
+         - `90`             : Maximum password age is 90 days.
+         - `7`              : User will be warned 7 days before the password expires.
+         - `30`             : Account will be inactive 30 days after password expiration.
+         - `19300`          : Account will expire after 19,300 days since the Unix epoch.
+
+______________________________________________________________________________________________________________________________________
+                                             Managing `/etc/shadow`
+
+Commands for User and Password Management
+
+1.Change a user’s password  
+         `````````````````````````````````````````````````
+         sudo passwd username
+         `````````````````````````````````````````````````
+         This command updates the password hash and last change date in `/etc/shadow`.
+
+2.View password aging information  
+         `````````````````````````````````````````````````
+         chage -l username
+         `````````````````````````````````````````````````
+         Displays detailed password expiration and aging information.
+
+3.Set password aging policies  
+         `````````````````````````````````````````````````
+         sudo chage -M 60 -m 5 -W 10 username
+         `````````````````````````````````````````````````
+         This sets:
+                  - Maximum password age: 60 days
+                  - Minimum password age: 5 days
+                  - Warning period: 10 days
+
+4.Lock a user account  
+         `````````````````````````````````````````````````
+         sudo passwd -l username
+         `````````````````````````````````````````````````
+         This places a `!` at the beginning of the password hash in `/etc/shadow`, effectively disabling the account.
+
+5.Unlock a user account  
+         `````````````````````````````````````````````````
+         sudo passwd -u username
+         `````````````````````````````````````````````````
+
+______________________________________________________________________________________________________________________________________
+                                             Security Considerations
+
+1.Permissions of `/etc/shadow`  
+         `````````````````````````````````````````````````
+         ls -l /etc/shadow
+         `````````````````````````````````````````````````
+         Output:
+         `````````````````````````````````````````````````
+            -rw------- 1 root root 1300 Jan 9 12:00 /etc/shadow
+         `````````````````````````````````````````````````
+         - The file is readable and writable only by the root user.
+         - Regular users and processes cannot access `/etc/shadow`.
+
+2.Password Hashing Algorithms  
+         Modern systems use SHA-512 for password hashing due to its strength.
+         If your system uses older algorithms (like MD5), it is advisable
+          to update your password hashing method by reconfiguring `pam`
+          (Pluggable Authentication Modules) and forcing users to update their passwords.
+
+3.Ensuring Password Complexity  
+         Use tools like `pam_cracklib` or `pam_pwquality` to enforce password
+          complexity policies (e.g., minimum length, character classes).
+
+4.Auditing for Empty Passwords  
+         Accounts with empty passwords can pose a significant security risk.
+
+         You can check for such accounts using:
+                     `````````````````````````````````````````````````
+                     awk -F: '($2 == "") {print $1}' /etc/shadow
+                     `````````````````````````````````````````````````
+
+______________________________________________________________________________________________________________________________________
+                                             Differences Between `/etc/passwd` and `/etc/shadow`
+                      ___________________________________________________________________________________________________________
+                     | Feature         |          `/etc/passwd`                  |              `/etc/shadow`                    |
+                     |_________________|_________________________________________|_______________________________________________|
+                     | Purpose         | Stores general user account information | Stores password hashes and aging policies     |
+                     | Accessibility   | World-readable                          | Restricted to root only                       |
+                     | Password Field  | Placeholder (`x`)                       | Actual hashed password                        |
+                     | Security Level  | Low                                     | High                                          |
+                     |_________________|_________________________________________|_______________________________________________|
+
+______________________________________________________________________________________________________________________________________
+                                             Conclusion
+
+The `/etc/shadow` file plays a vital role in Linux system security by securely storing password hashes and password aging policies.
+
+Proper management of this file, along with enforcing
+ strong password policies and limiting access, ensures robust user authentication on the system.
+
+Understanding how to work with `/etc/shadow` is crucial for Linux system administrators to maintain system integrity.
+______________________________________________________________________________________________________________________________________

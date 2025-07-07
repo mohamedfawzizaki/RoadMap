@@ -1,0 +1,13 @@
+_______________________________________________________________________________________________________________________________________
+Campus Area Network (CAN)
+        - A Campus Area Network connects multiple LANs within 
+          a confined area like a university, business campus, or military base.
+
+        Characteristics:
+            - Covers larger areas than LANs but smaller than MANs.
+            - High-speed connectivity optimized for internal communication.
+
+        Examples:
+            - University networks connecting classrooms, libraries, and labs.
+            - Corporate campuses with centralized IT services.
+_______________________________________________________________________________________________________________________________________

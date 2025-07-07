@@ -1,0 +1,75 @@
+______________________________________________________________________________________________________________________________________
+                                                Location of Composer Files in Linux
+                                                ===================================
+
+When you install Composer and use it in a project, several important files and directories are created or managed.
+Below is a detailed list of Composer file locations and their purposes:
+---------------------------------------------------------------------------------------------------------
+1.Composer Executable
+
+- Global Installation:  
+  The Composer binary (`composer.phar`) is often installed globally in one of these locations:
+  - `/usr/local/bin/composer` (Common for global installations)
+  - `/usr/bin/composer`  
+  Once installed, you can run Composer from anywhere using the command `composer`.
+
+- Local Installation (Per Project):  
+  If you download Composer manually for a specific project, the `composer.phar` file
+   will typically be in the project's root directory:
+  - `/path/to/project/composer.phar`
+---------------------------------------------------------------------------------------------------------
+2.Composer Configuration Files
+
+- Global Configuration:  
+  The global configuration file is located at:
+  - `~/.config/composer/config.json`  
+    This file contains settings that apply to all projects (e.g., repository URLs, default directories).
+    
+- Per-Project Configuration:  
+  Each project managed by Composer has a configuration file:
+  - `/path/to/project/composer.json`  
+    This file defines dependencies, scripts, and other settings specific to the project.
+  - `/path/to/project/composer.lock`  
+    This file locks the versions of installed dependencies to ensure consistency across installations.
+---------------------------------------------------------------------------------------------------------
+3.Composer Global Directory
+
+- Composer stores globally installed packages in:
+  - `~/.config/composer/vendor/`  
+    This directory contains globally installed PHP packages.
+  - `~/.config/composer/composer.json`  
+    Defines the globally installed packages.
+---------------------------------------------------------------------------------------------------------
+4.Composer Cache Directory
+
+- Composer caches downloaded files and packages to improve performance and avoid redundant downloads.
+  - Location:  
+    - `~/.cache/composer/` (Standard for most Linux distributions)
+  - Contents of this directory include:
+    - `cache/files/` – Cached files for packages.
+    - `cache/repo/`  – Cached repository metadata.
+    - `cache/vcs/`   – Cached version control information.
+---------------------------------------------------------------------------------------------------------
+5.Composer Autoload File
+
+- After running `composer install` or `composer update`, Composer generates an autoload file for the project:
+  - `/path/to/project/vendor/autoload.php`  
+    This file is used to load all installed dependencies automatically in your PHP scripts.
+---------------------------------------------------------------------------------------------------------
+Common Composer Commands
+
+1.Check Composer Version
+   ```bash
+   composer --version
+   ```
+
+2.Check Global Packages
+   ```bash
+   composer global show
+   ```
+
+3.Clear Cache
+   ```bash
+   composer clear-cache
+   ```
+______________________________________________________________________________________________________________________________________

@@ -1,0 +1,45 @@
+___________________________________________________________________________________________________________________________________________________________________________________________________
+                                                                   config.vm namespace
+                                                                   ===================
+ config.vm.define
+ __________________________________________________________________________________________________________________________________________________________________________________________________
+|                       |      config.vm.box:                        | Specifies the base box for the virtual machine.                  | `config.vm.box = "ubuntu/bionic64"`                      |
+| General Configuration |      config.vm.box_url:                    | URL to download the box if it is not available locally.          | `config.vm.box_url = "https://example.com/ubuntu.box"`   |
+|                       |      config.vm.box_version:                | Specifies the box version.                                       | `config.vm.box_version = ">= 2.0"`                       |
+|                       |      config.vm.hostname:                   | Sets the hostname of the machine.                                | `config.vm.hostname = "my-vm"`                           |
+|                       |      config.vm.communicator:               | Type of communicator used (e.g., ssh or winrm).                  | `config.vm.communicator = "ssh"`                         |
+|-----------------------|--------------------------------------------|------------------------------------------------------------------|----------------------------------------------------------|
+| Boot and Shutdown     |      config.vm.boot_timeout:               | Time in seconds to wait for the machine to boot.                 | `config.vm.boot_timeout = 300`                           |
+|                       |      config.vm.graceful_halt_timeout:      | Time to wait for the machine to shut down gracefully.            | `config.vm.graceful_halt_timeout = 60`                   |
+|-----------------------|--------------------------------------------|------------------------------------------------------------------|----------------------------------------------------------|
+| Networking            |      config.vm.network:                    | Configures network settings (public, private, or forwarded ports)| `config.vm.network "private_network", type: "dhcp"       |
+|-----------------------|--------------------------------------------|------------------------------------------------------------------|---------------------------------------------             |
+| Synced Folders        |      config.vm.synced_folder:              | Configures folders shared between the host and guest.            | `config.vm.synced_folder "/host/folder", "/guest/folder" |
+|-----------------------|--------------------------------------------|------------------------------------------------------------------|---------------------------------------------             |
+|                       |      config.vm.box_check_update: true/false| Checks for updates to the box on vagrant up.                     | `config.vm.box_check_update = true`                      |
+| Box Updates and       |      config.vm.box_download_checksum:      | Verifies the downloaded box file with a checksum.                | `config.vm.box_download_checksum = "abc123"              |
+|    Verification       |      config.vm.box_download_checksum_type: | Specifies the checksum type (md5, sha256, etc.).                 | `config.vm.box_download_checksum_type = "sha256"`        |
+|-----------------------|--------------------------------------------|------------------------------------------------------------------|---------------------------------------------             |
+|                       |      config.vm.provider:                   | Specifies provider-specific settings (e.g., VirtualBox, VMware). | `config.vm.provider "virtualbox"`                        |
+| Advanced Configuration|      config.vm.provision:                  | Configures provisioners (e.g., shell scripts, Puppet, Chef).     | `config.vm.provision "shell", inline: "apt-get update"`  |
+|                       |      config.vm.usable_port_range:          | Range of ports for Vagrant to use for forwarding.                | `config.vm.usable_port_range = 2200..2250`               |
+|-----------------------|--------------------------------------------|------------------------------------------------------------------|----------------------------------------------------------|
+|                       |      config.vm.allow_hosts_modification:   | Prevents modification of /etc/hosts when set to false.           | `config.vm.allow_hosts_modification = false              |
+| Host Interaction      |      config.vm.post_up_message:            | Message displayed after vagrant up.                              | `config.vm.post_up_message = "VM is ready!"              |
+|-----------------------|--------------------------------------------|------------------------------------------------------------------|----------------------------------------------------------|
+| Disk and Storage      |      config.vm.disk:                       | Defines additional virtual disks for the machine.                | `config.vm.disk "disk1", size: "20GB"`                   |
+|-----------------------|--------------------------------------------|------------------------------------------------------------------|----------------------------------------------------------|
+|                       |      config.vm.cloud_init:                 | Configures cloud-init settings for provisioning.                 | `config.vm.cloud_init = { user_data: "cloud-init.txt" }` |
+|-----------------------|--------------------------------------------|------------------------------------------------------------------|----------------------------------------------------------|
+|                       |      config.vm.allow_fstab_modification:   | Disables modifications to fstab when set to false.               | `config.vm.allow_fstab_modification = false`             |
+| Default Behaviors     |      config.vm.base_mac:                   | Defines the MAC address for the default NAT interface.           | `config.vm.base_mac = "00:14:22:01:23:45"`               |
+|                       |      config.vm.base_address:               | Sets the IP address for the default NAT interface.               | `config.vm.base_address = "192.168.33.10"`               |
+|_______________________|____________________________________________|__________________________________________________________________|__________________________________________________________|
+
+
+
+
+
+
+
+ 

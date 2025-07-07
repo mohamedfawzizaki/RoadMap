@@ -1,0 +1,138 @@
+_________________________________________________________________________________________________________________________________
+                     Disc/Drive (SDA  -  SDB  -  SDC) -  Partition (SDA1  -  SDA2)  -  Driver  
+                     =================================================================================                 
+1.Disc:
+      - A disk (or disk drive) refers to a physical storage device used for storing data.
+      - Disks can be magnetic (e.g., HDD) or solid-state (e.g., SSD) 
+         and come in various types like internal, external, or portable storage.
+
+      - Hard Disk Drive (HDD)  : Traditional storage device that uses spinning disks to read/write data.
+      - Solid-State Drive (SSD): A faster, newer type of storage device that uses NAND flash memory to store data.
+        
+      - A disk is typically identified in Linux as `/dev/sda`, `/dev/sdb`,
+         etc., where `sda` refers to the first disk, `sdb` to the second, and so on.
+--------------------------------------------------------------------------------------------------------------
+2.Drive:
+      - A drive is similar to a disk but refers more broadly to
+         any device capable of reading or writing data to a storage medium, 
+         such as hard drives, optical drives, flash drives, and USB drives.
+
+      - In Linux, when a disk (HDD, SSD, etc.) is connected, 
+         it's often referred to as a block device and represented as `/dev/sda`, `/dev/sdb`, etc.
+      - The driver is the software responsible for allowing the operating system to 
+         communicate with the hardware (e.g., SATA or USB drivers for storage devices).
+--------------------------------------------------------------------------------------------------------------
+3.Driver:
+      - A driver is a software component that allows the operating system to interact with hardware devices,
+         such as a storage device (HDD, SSD, etc.).It serves as a translator between the device and the operating system.
+
+      - For storage devices:
+            - Disk Drivers       : Enable interaction between the operating system and hard drives, SSDs, or any other storage devices.
+            - File System Drivers: Allow the operating system to read/write different file system types, such as NTFS, EXT4, and FAT32.
+--------------------------------------------------------------------------------------------------------------
+4.Partition:
+      - A partition is a segment of a disk that is divided for organization and file system purposes.
+      - A disk can be partitioned into multiple sections (partitions), each of which can have its own file system.
+      - Partitions allow a disk to be used for different purposes (e.g., one partition for system files, another for data).
+
+      - Primary Partition  :  A main partition that can hold a file system.
+      - Extended Partition :  A partition used to hold logical partitions (useful for creating more than four partitions on a disk).
+      - Logical Partition  :  A partition created within an extended partition.
+
+      - In Linux, partitions are named like `/dev/sda1`, `/dev/sda2`, `/dev/sdb1`, etc.
+      - where the number after the `sda` refers to the partition number.
+--------------------------------------------------------------------------------------------------------------
+5.SDA, SDB, SDC (Disk Identifiers):
+      - `/dev/sda`: 
+              -> The first disk on the system.
+              -> The `a` stands for the first disk.
+              -> If there are multiple disks, they are listed as `/dev/sdb`, `/dev/sdc`, and so on,
+                  where `b` is the second disk and `c` is the third.
+              - Example: `/dev/sda` could represent your primary internal hard drive (HDD) or SSD.
+              - Example: `/dev/sdb` could represent a secondary storage device (another internal or external drive).
+
+      - These are block device names in Linux that refer to entire physical disks.
+
+      - Drive Naming Convention in Linux:
+            - `/dev/sda`, `/dev/sdb`, `/dev/sdc`, etc.represent the first, second, and third disk drives.
+            - For example:
+              - `/dev/sda`: First drive.
+              - `/dev/sdb`: Second drive.
+              - `/dev/sdc`: Third drive, and so on.
+--------------------------------------------------------------------------------------------------------------
+6.SDA1, SDA2 (Partition Identifiers)
+       - `/dev/sda1`, `/dev/sda2`: These represent partitions on the first disk (`/dev/sda`).
+         - `/dev/sda1` refers to the first partition on the first disk.
+         - `/dev/sda2` refers to the second partition on the first disk.
+         - The number `1` or `2` after `sda` refers to the partition number.
+_________________________________________________________________________________________________________________________________
+Partitions allow a single physical disk to be divided into separate, independent storage units.
+Each partition can have its own file system, such as ext4, NTFS, or FAT32.
+_________________________________________________________________________________________________________________________________
+Partitioning Example in Linux:
+
+1.Creating a Partition:
+   You can create partitions on a disk using tools like `fdisk`, `parted`, or `gparted`.
+                                  bash
+                                  sudo fdisk /dev/sda
+
+   In this case, `/dev/sda` is the first disk.
+   This command opens an interactive session to modify the partitions of the disk.
+--------------------------------------------------------------------------------------------------------------
+2.Listing Partitions:
+   You can list the partitions on a disk using the `lsblk` command:
+                bash
+                lsblk
+   Example output:
+   
+                NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+                sda      8:0    0   100G  0 disk
+                ├─sda1   8:1    0    50G  0 part /
+                └─sda2   8:2    0    50G  0 part /data
+   In this example:
+          - `/dev/sda` is the first disk.
+          - `/dev/sda1` is the first partition, mounted at `/` (root directory).
+          - `/dev/sda2` is the second partition, mounted at `/data`.
+--------------------------------------------------------------------------------------------------------------
+3.Formatting Partitions:
+   You can format partitions with a file system, for example:
+
+   bash
+   sudo mkfs.ext4 /dev/sda1
+   
+   This command formats `/dev/sda1` with the `ext4` file system.
+--------------------------------------------------------------------------------------------------------------
+Partition Types (Extended/Logical/Primary):
+       - Primary Partition  : The main partition type. A disk can have up to 4 primary partitions.
+       - Extended Partition : A special partition that contains logical partitions.It allows you to have more than 4 partitions.
+       - Logical Partition  : A partition inside an extended partition.You can have many logical partitions on a disk.
+--------------------------------------------------------------------------------------------------------------
+Key Points:
+       - SDA refers to the first disk on your system.
+       - SDB and SDC refer to the second and third disks, respectively.
+       - SDA1 refers to the first partition on the first disk (`/dev/sda`), and SDA2 refers to the second partition.
+       - Partitions allow you to organize data on a disk and are necessary for creating multiple file systems on a single disk.
+--------------------------------------------------------------------------------------------------------------
+Common Commands to Work with Disks and Partitions in Linux:
+
+       - List Disks: 
+                      bash
+                      lsblk
+                      -> This shows all the disks and their partitions.
+
+       - Show Partition Table:
+                      bash
+                      sudo fdisk -l /dev/sda
+  
+       - Create Partition:
+                      bash
+                      sudo fdisk /dev/sda
+  
+       - Format Partition:
+                      bash
+                      sudo mkfs.ext4 /dev/sda1
+
+       - Mount a Partition:
+                      bash
+                      sudo mount /dev/sda1 /mnt
+_________________________________________________________________________________________________________________________________

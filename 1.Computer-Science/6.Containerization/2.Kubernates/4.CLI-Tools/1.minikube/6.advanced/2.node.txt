@@ -1,0 +1,16 @@
+______________________________________________________________________________________________________________________________________
+                                         https://minikube.sigs.k8s.io/docs/commands/node/
+______________________________________________________________________________________________________________________________________
+ 
+
+minikube node list [flags]
+ minikube node add [flags]
+            --control-plane       If set, added node will become a control-plane. Defaults to false. Currently only supported for existing HA (multi-control plane) clusters.
+            --delete-on-failure   If set, delete the current cluster if start fails and try again. Defaults to false.
+            --worker              If set, added node will be available as worker. Defaults to true. (default true)
+minikube node delete <node-name> [flags]
+minikube node start  <node-name> [flags]
+            --delete-on-failure   If set, delete the current cluster if start fails and try again. Defaults to false.
+minikube node stop   <node-name> [flags]
+
+______________________________________________________________________________________________________________________________________

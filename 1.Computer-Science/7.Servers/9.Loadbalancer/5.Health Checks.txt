@@ -1,0 +1,305 @@
+_____________________________________________________________________________________________________________________________________
+                                            Health Checks in Load Balancing   
+
+ What Are Health Checks?  
+A health check is a mechanism used by a load balancer
+ to continuously monitor the availability and responsiveness of backend servers. 
+ 
+It helps ensure that user requests are only routed to healthy servers,
+ improving the reliability, availability, and fault tolerance of the system.
+
+_____________________________________________________________________________________________________________________________________
+                                             Why Are Health Checks Important?  
+
+✔ Detect Failures Quickly  – If a server crashes or stops responding, the load balancer can stop sending traffic to it.  
+✔ Improve Fault Tolerance  – Requests are automatically rerouted to healthy servers.  
+✔ Enhance Auto-Scaling     – Cloud platforms can automatically add or remove instances based on health check status.  
+✔ Prevent Partial Failures – A server might be running but experiencing errors or high response times.
+                             Health checks detect these conditions.  
+
+_____________________________________________________________________________________________________________________________________
+                                                    Types of Health Checks  
+
+Health checks can operate at different network layers:  
+
+|       Type                | Layer     | Description |
+
+| TCP Health Check          | Layer 4   | Checks if the server is accepting TCP connections (e.g., `telnet server 80`). 
+| HTTP/HTTPS Health Check   | Layer 7   | Sends an HTTP request (GET/HEAD) to verify if the server is responding correctly. 
+| gRPC Health Check         | Layer 7   | Sends a gRPC call to check if a microservice is alive. 
+| Custom Health Check       | Layer 7   | Runs a script or command to check application-specific conditions (e.g., database connectivity). 
+
+_____________________________________________________________________________________________________________________________________
+                                                    How Health Checks Work  
+
+1. The load balancer sends periodic probes to backend servers.  
+2. If a server responds with a healthy status (e.g., HTTP 200 OK), traffic is sent to it.  
+3. If a server fails a certain number of times, it is marked unhealthy and traffic is stopped.  
+4. The server is periodically rechecked; once it recovers, it is put back in rotation.  
+
+_____________________________________________________________________________________________________________________________________
+                                                1. TCP Health Checks (Layer 4)  
+
+- The simplest form of health checking.  
+- Checks if a server is accepting connections on a specific port.  
+- If the connection is refused or times out, the server is marked unhealthy.  
+
+✅ Example: Nginx TCP Health Check (Stream Module)  
+````````````````````````````````````````````````````````````nginx
+stream {
+    upstream backend {
+        server 192.168.1.10:3306 max_fails=3 fail_timeout=30s;
+        server 192.168.1.11:3306 max_fails=3 fail_timeout=30s;
+    }
+
+    server {
+        listen 3306;
+        proxy_pass backend;
+    }
+}
+````````````````````````````````````````````````````````````
+Parameters:
+- `max_fails=3` → Server is marked unhealthy after 3 failed checks.  
+- `fail_timeout=30s` → If a server fails, it is retried after 30 seconds.  
+
+_____________________________________________________________________________________________________________________________________
+                                            2. HTTP/HTTPS Health Checks (Layer 7) 
+
+- Sends an HTTP request (GET, HEAD) to a specific endpoint (e.g., `/health`).  
+- If the response is 200 OK, the server is considered healthy.  
+
+✅ Example: Nginx HTTP Health Check  
+````````````````````````````````````````````````````````````nginx
+http {
+    upstream backend {
+        server server1.example.com max_fails=3 fail_timeout=30s;
+        server server2.example.com max_fails=3 fail_timeout=30s;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://backend;
+        }
+
+        location /health {
+            return 200;
+        }
+    }
+}
+````````````````````````````````````````````````````````````
+💡 Best Practice: Use a dedicated health check endpoint (`/health`) instead of checking the homepage.  
+
+_____________________________________________________________________________________________________________________________________
+                                3. Advanced HTTP Health Check (with Response Validation)  
+
+- Instead of checking just HTTP 200, we can validate a specific response body.  
+- This ensures that the application logic is running correctly.  
+
+✅ Example: HAProxy Advanced HTTP Health Check
+````````````````````````````````````````````````````````````haproxy
+backend myapp
+    option httpchk GET /health
+    http-check expect string "OK"
+````````````````````````````````````````````````````````````
+- `option httpchk GET /health` → Sends a GET request to `/health`.  
+- `http-check expect string "OK"` → The response must contain "OK" to be considered healthy.  
+
+_____________________________________________________________________________________________________________________________________
+                                                    4. gRPC Health Checks  
+
+- gRPC services use a special health check API to report status.  
+- The load balancer calls the `Check()` method to verify if the service is alive.  
+
+✅ Example: gRPC Health Check with Envoy
+````````````````````````````````````````````````````````````yaml
+health_check:
+  grpc_health_check:
+    service_name: "myservice"
+````````````````````````````````````````````````````````````
+💡 Best Practice: Implement the gRPC health check API in every microservice.  
+
+_____________________________________________________________________________________________________________________________________
+                                        5. Custom Health Checks (Application-Level Checks)  
+
+Sometimes, you need to check custom conditions:  
+- Database connectivity (e.g., MySQL, Redis).  
+- Disk space availability.  
+- CPU/Memory usage.  
+
+✅ Example: Custom Bash Script for Health Checks
+````````````````````````````````````````````````````````````bash
+#!/bin/bash
+if ! nc -z localhost 3306; then
+  echo "MySQL is down!"
+  exit 1
+fi
+
+if df / | awk '$5 > 90 {exit 1}'; then
+  echo "Disk usage too high!"
+  exit 1
+fi
+
+echo "Healthy"
+exit 0
+````````````````````````````````````````````````````````````
+🔹 Run this script periodically in the load balancer.  
+
+_____________________________________________________________________________________________________________________________________
+                                     Configuring Health Checks in Different Load Balancers  
+
+ 1. Nginx Plus Health Checks
+````````````````````````````````````````````````````````````nginx
+location /health {
+    proxy_pass http://backend;
+    health_check;
+}
+````````````````````````````````````````````````````````````
+
+ 2. HAProxy
+````````````````````````````````````````````````````````````haproxy
+backend myapp
+    option httpchk GET /health
+    http-check expect string "OK"
+````````````````````````````````````````````````````````````
+
+ 3. AWS Elastic Load Balancer (ELB)
+````````````````````````````````````````````````````````````json
+{
+  "TargetGroupArn": "arn:aws:...",
+  "HealthCheckProtocol": "HTTP",
+  "HealthCheckPort": "80",
+  "HealthCheckPath": "/health",
+  "HealthCheckIntervalSeconds": 10,
+  "HealthyThresholdCount": 2,
+  "UnhealthyThresholdCount": 3
+}
+````````````````````````````````````````````````````````````
+🔹 AWS removes instances after 3 failures and rechecks every 10 seconds.  
+
+_____________________________________________________________________________________________________________________________________
+
+ Health Check Best Practices
+✔ Use a dedicated `/health` endpoint instead of checking the homepage.  
+✔ Ensure health checks run frequently but not too aggressively (every 5-10 seconds).  
+✔ Combine multiple checks (HTTP, database, CPU, disk space).  
+✔ Set thresholds (e.g., remove a server after 3 failed attempts).  
+✔ Implement self-healing mechanisms (e.g., restart services automatically).  
+
+_____________________________________________________________________________________________________________________________________
+                                                Automated Health Check Script (Bash)
+
+This script:
+- Checks HTTP/HTTPS endpoints.
+- Verifies database connectivity.
+- Monitors disk space and CPU usage.
+- Logs failures and sends alerts.
+
+ Setup Instructions
+1. Replace `yourserver.com` and `your_database_details` with actual values.
+2. Schedule it via cron (e.g., run every 5 minutes: `crontab -e` → `/5     /path/to/health_check.sh`).
+
+ Script (health_check.sh)
+````````````````````````````````````````````````````````````bash
+#!/bin/bash
+
+# Configuration
+LOG_FILE="/var/log/health_check.log"
+ALERT_EMAIL="admin@example.com"
+
+# Server and service details
+WEB_URL="http://yourserver.com/health"
+DB_HOST="localhost"
+DB_USER="youruser"
+DB_PASS="yourpassword"
+DB_NAME="yourdatabase"
+DISK_THRESHOLD=90   # Alert if disk usage exceeds this (%)
+CPU_THRESHOLD=80    # Alert if CPU usage exceeds this (%)
+
+# Check HTTP status
+check_http() {
+    HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" $WEB_URL)
+    if [ "$HTTP_STATUS" -ne 200 ]; then
+        log_failure "HTTP check failed! Status: $HTTP_STATUS"
+    else
+        echo "✅ HTTP check passed"
+    fi
+}
+
+# Check database connectivity
+check_db() {
+    mysql -h $DB_HOST -u $DB_USER -p$DB_PASS -e "USE $DB_NAME;" > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        log_failure "Database check failed!"
+    else
+        echo "✅ Database check passed"
+    fi
+}
+
+# Check disk space
+check_disk() {
+    USAGE=$(df / | awk 'NR==2 {print $5}' | sed 's/%//')
+    if [ "$USAGE" -gt "$DISK_THRESHOLD" ]; then
+        log_failure "Disk usage high: $USAGE%"
+    else
+        echo "✅ Disk check passed"
+    fi
+}
+
+# Check CPU usage
+check_cpu() {
+    CPU_LOAD=$(top -bn1 | grep "Cpu(s)" | awk '{print $2 + $4}')
+    CPU_INT=${CPU_LOAD%.}
+    if [ "$CPU_INT" -gt "$CPU_THRESHOLD" ]; then
+        log_failure "High CPU usage: $CPU_LOAD%"
+    else
+        echo "✅ CPU check passed"
+    fi
+}
+
+# Log failure and send alert
+log_failure() {
+    MESSAGE="$1"
+    echo "$(date) - ERROR: $MESSAGE" | tee -a $LOG_FILE
+    echo "$MESSAGE" | mail -s "Health Check Alert" $ALERT_EMAIL
+}
+
+# Run checks
+echo "Running health checks..."
+check_http
+check_db
+check_disk
+check_cpu
+
+echo "Health check completed ✅"
+````````````````````````````````````````````````````````````
+
+_____________________________________________________________________________________________________________________________________
+# How It Works
+1. Checks HTTP status – Calls `/health` and verifies it returns HTTP 200.
+2. Checks MySQL database – Tries to connect; if it fails, an alert is triggered.
+3. Checks disk space – If usage > 90%, an alert is triggered.
+4. Checks CPU usage – If usage > 80%, an alert is triggered.
+5. Logs failures & sends email alerts – All issues are logged in `/var/log/health_check.log`.
+
+_____________________________________________________________________________________________________________________________________
+
+ How to Automate with Cron (Run Every 5 Minutes)
+Run:
+````````````````````````````````````````````````````````````bash
+crontab -e
+````````````````````````````````````````````````````````````
+Add:
+````````````````````````````````````````````````````````````
+/5     /path/to/health_check.sh
+````````````````````````````````````````````````````````````
+This will execute the script every 5 minutes.
+
+_____________________________________________________________________________________________________________________________________
+
+ Customization
+- Change `yourserver.com` to your actual server URL.
+- Modify `DISK_THRESHOLD` and `CPU_THRESHOLD` based on your needs.
+- Update `ALERT_EMAIL` to your admin email.
+_____________________________________________________________________________________________________________________________________

@@ -1,0 +1,51 @@
+# ================================================================================
+# 📘 Definition: Role
+# --------------------------------------------------------------------------------
+# Role is a namespaced Kubernetes RBAC resource that defines a set of PolicyRules
+# (permissions) within a specific namespace.
+#
+# Roles can only grant access to:
+#   ✔️ Namespaced resources (like Pods, Services, ConfigMaps, Secrets, etc.)
+#   ❌ Not applicable to cluster-wide resources (like Nodes, PVs, CRDs, etc.)
+#
+# Roles are typically:
+#   🔹 Bound to a ServiceAccount or User via RoleBinding (namespace-scoped)
+#   🔹 Used in tenant-isolated environments, staging/test setups, or scoped CI jobs
+#   🔹 Preferred for minimizing blast radius of misconfigured automation
+#
+# 🔐 Use case: Grant CI jobs or developers permissions to manage workloads safely
+# within a namespace without giving full cluster access.
+# ================================================================================
+# --------------------------------------------------------------------------------
+# 🔐 Role: Grants CI service account permissions to manage common K8s objects
+# --------------------------------------------------------------------------------
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: ci-role                                       # 🆔 Name for this Role
+  namespace: ci-namespace                             # 🗂️ Namespace this Role applies to
+rules:
+  # -------------------------------------------------------------------------------
+  # 🌐 Core API Group: Pods, Services, ConfigMaps, Secrets
+  # -------------------------------------------------------------------------------
+  - apiGroups: [""]                                   # Core API group
+    resources: ["pods", "services", "configmaps", "secrets"]
+    verbs: ["get", "list", "create", "delete", "watch", "update"]
+  # -------------------------------------------------------------------------------
+  # 🧱 apps.k8s.io API Group: Manage Deployments and ReplicaSets
+  # -------------------------------------------------------------------------------
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "list", "create", "delete", "watch", "update"]
+  # -------------------------------------------------------------------------------
+  # ⏱ batch.k8s.io API Group: Handle CI Jobs and CronJobs
+  # -------------------------------------------------------------------------------
+  - apiGroups: ["batch"]
+    resources: ["jobs", "cronjobs"]
+    verbs: ["get", "list", "create", "delete", "watch", "update"]
+  # -------------------------------------------------------------------------------
+  # 🔐 (Optional) RBAC API Group: Allow CI system to manage RoleBindings in this ns
+  # -------------------------------------------------------------------------------
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["roles", "rolebindings"]
+    verbs: ["get", "list", "create", "delete", "update"]

@@ -1,0 +1,183 @@
+_____________________________________________________________________________________________________________________________________
+                                                NGINX as a forward proxy
+                                                ========================
+
+Using NGINX as a forward proxy allows clients to make requests to external servers through NGINX.
+This configuration is useful for caching, filtering, logging, or applying specific rules to outgoing traffic.
+
+_____________________________________________________________________________________________________________________________________
+                                                What is a Forward Proxy?
+
+- A forward proxy acts as an intermediary between a client and external servers.
+- The client sends requests to the proxy, which then forwards them to the intended server.
+- The response from the external server is returned to the proxy, which delivers it to the client.
+
+_____________________________________________________________________________________________________________________________________
+                                                NGINX Forward Proxy Setup
+----------------------------------------------------------------------------------------------
+1.Install NGINX
+
+Install NGINX on your system if it’s not already installed:
+
+For Ubuntu/Debian:
+        `````````````````````````````````````````````````bash
+        sudo apt update
+        sudo apt install nginx
+        `````````````````````````````````````````````````
+
+For CentOS/RHEL:
+        `````````````````````````````````````````````````bash
+        sudo yum install nginx
+        `````````````````````````````````````````````````
+
+----------------------------------------------------------------------------------------------
+2.Enable NGINX Proxying
+
+By default, NGINX doesn't support forward proxying natively but can be configured to
+ achieve this functionality using the `proxy_pass` directive.
+
+----------------------------------------------------------------------------------------------
+3.Basic Forward Proxy Configuration
+
+        Edit the NGINX configuration file:
+        `````````````````````````````````````````````````bash
+        sudo nano /etc/nginx/nginx.conf
+        `````````````````````````````````````````````````
+
+Add the following configuration block to set up the forward proxy:
+        `````````````````````````````````````````````````nginx
+        http {
+            server {
+                listen 8080;  Port for the proxy
+                server_name forward_proxy;
+
+                location / {
+                    # Enable proxying
+                    proxy_pass $scheme://$http_host$request_uri;
+
+                    # Allow all requests
+                    proxy_set_header Host $http_host;
+                    proxy_set_header X-Real-IP $remote_addr;
+                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+                    # Optional: Limit access to the proxy (replace with your IP range)
+                    allow 192.168.1.0/24;  # Example: Allow local subnet
+                    deny all;
+                }
+
+                # Optional: Set timeouts
+                proxy_connect_timeout 5s;
+                proxy_read_timeout 10s;
+            }
+        }
+        `````````````````````````````````````````````````
+
+- Key Directives:
+        - `proxy_pass`      : Forwards requests to the specified target (dynamic in this case with `$http_host`).
+        - `proxy_set_header`: Sets additional headers for forwarded requests.
+        - `allow`/`deny`    : Restricts access to specific IPs.
+
+----------------------------------------------------------------------------------------------
+4.Enable SSL Proxying (Optional)
+To enable HTTPS requests:
+        `````````````````````````````````````````````````nginx
+        http {
+            server {
+                listen 8080;
+                server_name forward_proxy;
+
+                location / {
+                    proxy_pass $scheme://$http_host$request_uri;
+                    proxy_ssl_server_name on;
+                    proxy_ssl_protocols TLSv1.2 TLSv1.3;
+                    proxy_ssl_ciphers HIGH:!aNULL:!MD5;
+                }
+            }
+        }
+        `````````````````````````````````````````````````
+
+        - `proxy_ssl_server_name`: Enables SNI (Server Name Indication) for HTTPS requests.
+        - `proxy_ssl_protocols`: Specifies allowed SSL/TLS versions.
+        - `proxy_ssl_ciphers`: Specifies secure ciphers for SSL.
+
+----------------------------------------------------------------------------------------------
+_____________________________________________________________________________________________________________________________________
+5.Restart NGINX
+After configuring the file, restart NGINX to apply changes:
+        `````````````````````````````````````````````````bash
+        sudo systemctl restart nginx
+        `````````````````````````````````````````````````
+
+_____________________________________________________________________________________________________________________________________
+                                                Testing the Forward Proxy
+
+1.Set the proxy server in your browser or tools:
+   - Proxy server: `http://<NGINX_IP>:8080`
+
+2.Use tools like `curl` to test the proxy:
+        `````````````````````````````````````````````````bash
+        curl -x http://<NGINX_IP>:8080 http://example.com
+        `````````````````````````````````````````````````
+
+_____________________________________________________________________________________________________________________________________
+                                                    Advanced Features
+
+----------------------------------------------------------------------------------------------
+1.Add Authentication
+
+To secure the proxy with basic authentication:
+        `````````````````````````````````````````````````bash
+        location / {
+            auth_basic "Proxy Access";
+            auth_basic_user_file /etc/nginx/.htpasswd;
+
+            proxy_pass $scheme://$http_host$request_uri;
+        }
+        `````````````````````````````````````````````````
+
+Create the password file:
+        `````````````````````````````````````````````````bash
+        sudo htpasswd -c /etc/nginx/.htpasswd username
+        `````````````````````````````````````````````````
+
+----------------------------------------------------------------------------------------------
+2.Enable Caching
+
+Improve performance by caching responses:
+        `````````````````````````````````````````````````nginx
+        location / {
+            proxy_pass $scheme://$http_host$request_uri;
+
+            proxy_cache my_cache;
+            proxy_cache_valid 200 1h;
+            proxy_cache_use_stale error timeout updating;
+        }
+
+        proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:10m inactive=1d max_size=1g;
+        `````````````````````````````````````````````````
+
+----------------------------------------------------------------------------------------------
+3.Limit Bandwidth
+
+Control bandwidth for outgoing traffic:
+        `````````````````````````````````````````````````nginx
+        http {
+            limit_rate 100k;  # Limit to 100 KB/s per connection
+        }
+        `````````````````````````````````````````````````
+
+----------------------------------------------------------------------------------------------
+_____________________________________________________________________________________________________________________________________
+                                                    Common Use Cases
+1.Access Control      : Restrict access to certain domains or IPs.
+2.Content Filtering   : Block specific content types or URLs.
+3.Caching             : Speed up repeated requests.
+4.Logging and Auditing: Monitor outgoing requests.
+
+_____________________________________________________________________________________________________________________________________
+                                         Limitations of NGINX as a Forward Proxy
+
+- NGINX does not natively support features like DNS caching or sophisticated access control.
+- For advanced use cases, consider dedicated forward proxy tools like Squid Proxy.
+
+_____________________________________________________________________________________________________________________________________

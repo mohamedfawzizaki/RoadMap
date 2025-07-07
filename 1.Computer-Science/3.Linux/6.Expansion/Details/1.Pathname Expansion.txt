@@ -1,0 +1,206 @@
+______________________________________________________________________________________________________________________________________
+                                                Pathname Expansion (Globbing)
+                                                ============================= 
+                                                      
+                                                =============================
+Pathname expansion, commonly known as globbing, refers to a mechanism
+ where the shell expands a pattern containing special characters into matching filenames or directories.
+This allows users to specify multiple files or directories
+ with a single pattern instead of listing each one individually.
+---------------------------------------------------------------------------------------------------------
+Globbing Characters
+===================
+
+The primary (characters) used for pathname expansion are known as wildcards.
+They help match filenames or directories based on patterns.
+
+1.Asterisk `*`                -> match more than one character. 
+      ---------------------------------------------------------------- 
+       ls *.txt
+       ls f*
+       ls *s*     
+       ls s*u*                   -> success
+      ----------------------------------------------------------------
+
+      - Matches zero or more characters in a filename or directory name.
+      - It can match an empty string, meaning it will match everything in the current directory when used alone.
+
+      Examples:
+      ```bash
+      ls *.txt
+      ```
+      Matches all files with a `.txt` extension, such as `file.txt`, `notes.txt`, and `report.txt`.
+
+      ```bash
+      ls file*
+      ```
+      Matches all files and directories starting with `file`, such as `file1`, `file2.txt`, and `file_backup`.
+---------------------------------------------------------------------------------------------------------
+2.Question Mark `?`           -> match one character. 
+
+      - Matches exactly (one character) in a filename or directory name.
+      - Useful when you need to match files or directories with specific patterns of characters.
+
+      Examples:
+      ```bash
+      ls file?.txt
+      ```
+      Matches files like `file1.txt`, `file2.txt`, but not `file10.txt` because `?` matches only one character.
+
+      ```bash
+      ls data?
+      ```
+      Matches files or directories like `data1`, `dataA`, but not `data12`.
+---------------------------------------------------------------------------------------------------------
+3.Brackets `[ ]`
+
+      - Matches any one character enclosed within the brackets.
+      - You can specify a range of characters or a set of characters.
+
+      Examples:
+      ```bash
+      ls file[123].txt
+      ```
+      Matches `file1.txt`, `file2.txt`, and `file3.txt`, but not `file4.txt`.
+
+      ```bash
+      ls file[a-c].txt
+      ```
+      Matches `filea.txt`, `fileb.txt`, and `filec.txt`.
+
+      ```bash
+      ls file[0-9].txt
+      ```
+      Matches files with a single digit between `0` and `9` in their name.
+
+      - Negation using `!` or `^`:  
+      If the first character inside the brackets is an exclamation mark (`!`) or caret (`^`), 
+      it negates the match, meaning it matches any character not listed.
+
+      ```bash
+      ls file[!123].txt
+      ```
+      Matches files that do not end with `1`, `2`, or `3`, such as `file4.txt` or `file5.txt`.
+
+      ```bash
+      ls file[^a-c].txt
+      ```
+      Matches files that do not end with `a`, `b`, or `c`.
+---------------------------------------------------------------------------------------------------------
+Combining Wildcards
+
+You can combine different globbing characters to create more complex patterns.
+
+      Examples:
+      ```bash
+      ls file*[1-3].txt
+      ```
+      Matches any file starting with `file`, followed by a digit between `1` and `3`, and ending with `.txt`.
+
+      ```bash
+      ls data??.log
+      ```
+      Matches files like `data01.log`, `dataAB.log`, but not `data1.log` because `??` requires exactly two characters.
+---------------------------------------------------------------------------------------------------------
+Escaping Special Characters
+
+If you want to use a wildcard character as a literal (not for expansion), 
+you need to escape it using a backslash (`\`) or enclose it in quotes.
+
+      Examples:
+      ```bash
+      ls file\*.txt
+      ```
+      Matches a file literally named `file*.txt` rather than files with any extension starting with `file`.
+
+      ```bash
+      ls "file*.txt"
+      ```
+      Same as above, treating `*` as a literal character.
+---------------------------------------------------------------------------------------------------------
+Hidden Files and Globbing
+
+Hidden files in Linux are those that start with a dot (`.`).
+By default, globbing patterns do not match hidden files unless the pattern explicitly starts with a dot.
+
+      Examples:
+      ```bash
+      ls 
+      ```
+      Lists all non-hidden files and directories.
+
+      ```bash
+      ls .*
+      ```
+      Lists all hidden files and directories.
+
+      ```bash
+      ls -a
+      ```
+      Lists both hidden and non-hidden files and directories, as `-a` is an option to show all files.
+
+      ```bash
+      ls .*rc
+      ```
+      Matches hidden files ending with `rc`, such as `.bashrc`, `.vimrc`, and `.zshrc`.
+---------------------------------------------------------------------------------------------------------
+Globbing vs Regular Expressions
+
+- Globbing is simpler and specifically designed for matching file and directory names.
+- Regular expressions (regex) are more powerful and complex, used for advanced 
+  pattern matching in various tools like `grep`, `sed`, and `awk`.
+       ___________________________________________________________________________ 
+      | Feature            | Globbing                | Regular Expressions        |
+      |____________________|_________________________|____________________________|
+      | Complexity         | Simple                  | Complex                    |
+      | Use Case           | Filename matching       | Text pattern matching      |
+      | Wildcards          | `*`, `?`, `[ ]`         | Many (e.g., `.`, `+`, `[]`)|
+      | Tools              | Shell (`ls`, `cp`, `mv`)| `grep`, `sed`, `awk`, etc. |
+      |____________________|_________________________|____________________________|
+
+---------------------------------------------------------------------------------------------------------
+Disabling Pathname Expansion
+
+If you want to disable pathname expansion (globbing) temporarily,
+ you can use the `set` command with the `-f` option.
+
+      Example:
+      ```bash
+      set -f
+      ```
+      This disables pathname expansion.
+      Now, `ls ` will literally output `*` instead of listing files.
+
+      To re-enable pathname expansion, use:
+      ```bash
+      set +f
+      ```
+---------------------------------------------------------------------------------------------------------
+Practical Use Cases
+
+      1.Copying multiple files:
+         ```bash
+         cp *.jpg /backup/photos/
+         ```
+         Copies all `.jpg` files to the `/backup/photos/` directory.
+
+      2.Removing files with specific names:
+         ```bash
+         rm file[1-5].log
+         ```
+         Deletes files like `file1.log`, `file2.log`, up to `file5.log`.
+
+      3.Archiving multiple directories:
+         ```bash
+         tar -cvf archive.tar dir[1-3]/
+         ```
+         Archives `dir1`, `dir2`, and `dir3` into `archive.tar`.
+---------------------------------------------------------------------------------------------------------
+Conclusion
+
+Pathname expansion (globbing) is a powerful feature in Linux shells that
+ simplifies working with multiple files and directories.
+By using globbing patterns, users can perform complex file operations with minimal effort.
+Understanding the nuances of globbing characters, combining patterns, and
+ escaping special characters is essential for efficient command-line operations and shell scripting.
+______________________________________________________________________________________________________________________________________

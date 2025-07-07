@@ -1,0 +1,48 @@
+ ___________________________________________________________________________________________________________________________________
+|   vagrant init [options] [name [url]]                     This initializes the current directory to be a Vagrant environment by creating an initial Vagrantfile if one does not already exist.  
+                 --box [box_name]                           Creates a Vagrantfile in the current directory.                                                           
+                 --minimal                                  Creates a minimal Vagrantfile. 
+                 --box-version VERSION                      Version of the box to add
+                 -f, --force                                Overwrite existing Vagrantfile
+                 -m, --minimal                              Use minimal Vagrantfile template (no help comments). Ignored with --template
+                     --output FILE                          Output path for the box. '-' for stdout
+                     --template FILE                        Path to custom Vagrantfile template
+                         name                               url = .box if is not in the official registery 
+    vagrant init ubuntu/trusty64 https://portal.cloud.hashicorp.com/vagrant/discover/ubuntu/trusty64 --box-version 20191107.0.0
+|___________________________________________________________________________________________________________________________________
+|   vagrant up [options] [name|id]             
+                                                            name - Name of machine defined in Vagrantfile. Using name to specify the Vagrant machine to act on must be done from within a Vagrant project (directory where the Vagrantfile exists).
+                                                            id   - Machine id found with vagrant global-status. Using id allows you to call vagrant up id from any directory.                                                                          
+                 --[no-]provision                           Enable or disable provisioning
+                 --provision-with x,y,z                     Enable only certain provisioners, by type or by name.       
+                 --[no-]destroy-on-error                    Destroy machine if any fatal error happens (default to true)
+                 --[no-]parallel                            Enable or disable parallelism if provider supports it,    
+                                                             boots multiple machines defined in the Vagrantfile in parallel.   
+                 --provider PROVIDER                        Back the machine with a specific provider
+                 --[no-]install-provider                    If possible, install the provider if it isn't installed     
+|___________________________________________________________________________________________________________________________________
+|   vagrant halt [options] [name|id]
+                     --provider [provider_name]             Stops the VM associated with a specific provider.  
+                 -f, --force                                Force shut down (equivalent of pulling power)
+|___________________________________________________________________________________________________________________________________
+|   vagrant reload [vm-name]                                Restarts the VM and applies Vagrantfile changes. 
+                     --provider [provider_name]             Restarts the VM with a specified provider.                                                                 |
+                     --[no-]provision                       Enable or disable provisioning
+                     --provision-with x,y,z                 Enable only certain provisioners, by type or by name.
+                 -f, --force                                Force shut down (equivalent of pulling power)        
+                 -a, --all-global                           Suspend all running vms globally.
+|___________________________________________________________________________________________________________________________________
+|   vagrant suspend [options] [name|id]                     Pauses the running VM.
+|___________________________________________________________________________________________________________________________________
+|   vagrant resume [vm-name]                                Resumes a paused VM. 
+                 --[no-]provision                           Enable or disable provisioning
+                 --provision-with x,y,z                     Enable only certain provisioners, by type or by name.
+|___________________________________________________________________________________________________________________________________
+|   vagrant destroy [options] [name|id]
+                 -f, --force                                Destroy without confirmation.
+                     --[no-]parallel                        Enable or disable parallelism if provider supports it (automatically enables force)
+                 -g, --graceful                             Gracefully poweroff of VM
+|___________________________________________________________________________________________________________________________________
+|   vagrant provision [vm-name] [--provision-with x,y,z]
+                 --provision-with x,y,z                     Enable only certain provisioners, by type or by name.
+|___________________________________________________________________________________________________________________________________

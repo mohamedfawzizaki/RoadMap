@@ -1,0 +1,228 @@
+==================================================================================================================
+                                                 `/etc/ssh/ssh_config`
+
+The `/etc/ssh/ssh_config` file is the default client-side configuration file for OpenSSH on Linux and Unix-like systems.
+Unlike `/etc/ssh/sshd_config`, which configures the SSH server (daemon), `ssh_config` is used by SSH clients to set default options for SSH connections.
+
+The `ssh_config` file defines settings such as the default port, preferred authentication methods,
+ key files, timeouts, and other parameters that affect how SSH client applications behave when connecting to remote systems.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Purpose of `/etc/ssh/ssh_config`
+
+This file is used by the SSH client (i.e., when you run the `ssh` command) to configure default settings for outgoing SSH connections. 
+These settings apply to all SSH clients on the system, but individual users can override
+ these settings by modifying their personal SSH configuration file (`~/.ssh/config`).
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Common Entries in `/etc/ssh/ssh_config`
+
+The configuration file consists of key-value pairs that define specific behaviors for SSH client connections. 
+Some common options found in `/etc/ssh/ssh_config` include:
+
+1. `Host`
+   - Specifies host patterns for which the following configuration settings apply. 
+   - If no `Host` directive is specified, the settings apply globally.
+   - Example:
+     ```bash
+     Host example.com
+         Port 2222
+         User admin
+     ```
+
+2. `Port`
+   - Defines the port to use when connecting to a remote SSH server. 
+   - The default port is `22`, but this can be changed to any valid port.
+   - Example:
+     ```bash
+     Port 22
+     ```
+
+3. `User`
+   - Sets the default username for SSH connections. This is the username used when connecting to a remote host.
+   - Example:
+     ```bash
+     User myusername
+     ```
+
+4. `IdentityFile`
+   - Specifies the private key file used for authentication when connecting to an SSH server. 
+   - This is typically used for key-based authentication.
+   - Example:
+     ```bash
+     IdentityFile ~/.ssh/id_rsa
+     ```
+
+5. `PreferredAuthentications`
+   - Defines the authentication methods to try in order when connecting to a server. 
+   - It specifies the order in which SSH will attempt authentication (e.g., password, public key, etc.).
+   - Example:
+     ```bash
+     PreferredAuthentications publickey,password
+     ```
+
+6. `ServerAliveInterval`
+   - Sets the interval in seconds that the client waits before sending a keep-alive message to the server. 
+   - This is useful to prevent the connection from being closed due to inactivity.
+   - Example:
+     ```bash
+     ServerAliveInterval 60
+     ```
+
+7. `ServerAliveCountMax`
+   - Specifies the number of server alive messages (as defined by `ServerAliveInterval`) that
+      can be sent without receiving any messages back from the server before the client disconnects.
+   - Example:
+     ```bash
+     ServerAliveCountMax 3
+     ```
+
+8. `StrictHostKeyChecking`
+   - Controls whether SSH checks the server's host key. 
+   - If `yes`, SSH will not automatically add new host keys to the `~/.ssh/known_hosts` file.
+   - Default: `ask`
+   - Example:
+     ```bash
+     StrictHostKeyChecking no
+     ```
+
+9. `UserKnownHostsFile`
+   - Defines the location of the file that stores known hosts. 
+   - This file contains the SSH server’s public keys to help authenticate future connections.
+   - Example:
+     ```bash
+     UserKnownHostsFile ~/.ssh/known_hosts
+     ```
+
+10. `LogLevel`
+    - Defines the verbosity level of log messages. 
+    - Can be used to debug issues with SSH connections.
+    - Default: `INFO`
+    - Possible values: `QUIET`, `FATAL`, `ERROR`, `INFO`, `VERBOSE`, `DEBUG`, `DEBUG1`, `DEBUG2`, `DEBUG3`
+    - Example:
+      ```bash
+      LogLevel VERBOSE
+      ```
+
+11. `ForwardAgent`
+    - Specifies whether SSH agent forwarding is allowed. 
+    - Agent forwarding allows the SSH client to use the local SSH key for authentication on the remote server.
+    - Example:
+      ```bash
+      ForwardAgent yes
+      ```
+
+12. `ForwardX11`
+    - Enables or disables X11 forwarding. 
+    - If enabled, GUI applications running on the remote machine can display locally.
+    - Default: `no`
+    - Example:
+      ```bash
+      ForwardX11 yes
+      ```
+
+13. `Compression`
+    - Specifies whether to use compression for SSH connections. 
+    - Enabling this can improve performance on slow network connections.
+    - Default: `no`
+    - Example:
+      ```bash
+      Compression yes
+      ```
+
+14. `ProxyCommand`
+    - Specifies a command to use for connecting to the SSH server through a proxy. 
+    - This is useful if you need to connect to a remote system behind a proxy server.
+    - Example:
+      ```bash
+      ProxyCommand nc -X 5 -x proxy.example.com:1080 %h %p
+      ```
+
+15. `ControlMaster`
+    - Enables or disables connection multiplexing. 
+    - When set to `yes`, it allows multiple SSH connections to share the same connection.
+    - Example:
+      ```bash
+      ControlMaster auto
+      ```
+
+16. `ControlPath`
+    - Defines the path where the multiplexed control connection is stored.
+    - Example:
+      ```bash
+      ControlPath ~/.ssh/ctl_%h_%p_%r
+      ```
+
+17. `HostKeyAlgorithms`
+    - Specifies the SSH key algorithms to use when connecting to the server. 
+    - This can help enforce the use of more secure algorithms.
+    - Example:
+      ```bash
+      HostKeyAlgorithms ssh-ed25519,ecdsa-sha2-nistp256
+      ```
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Managing SSH Client Configurations
+
+- After modifying `/etc/ssh/ssh_config`, you do not need to restart any services,
+  as the changes apply immediately to new SSH connections.
+
+- If you want to apply settings to specific hosts or environments, you can use the `Host` directive,
+  followed by the settings you want to apply to that host or a group of hosts (using wildcards like ``).
+
+ Example `/etc/ssh/ssh_config` File
+
+```bash
+ /etc/ssh/ssh_config
+
+ Global settings for SSH connections
+Host 
+     Set the default port for SSH connections
+    Port 22
+
+     Use public key authentication first
+    PreferredAuthentications publickey,password
+
+     Check the known hosts for the remote server
+    UserKnownHostsFile ~/.ssh/known_hosts
+
+     Set the default username for all SSH connections
+    User user1
+
+     Enable compression for faster transfers
+    Compression yes
+
+     Send keep-alive messages to prevent timeouts
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+
+     Disallow strict host key checking (use with caution)
+    StrictHostKeyChecking no
+
+ Specific settings for example.com
+Host example.com
+    Port 2222
+    User admin
+    IdentityFile ~/.ssh/id_rsa_example
+
+ Specific settings for any host matching .example.com
+Host .example.com
+    User user2
+    IdentityFile ~/.ssh/id_rsa_example2
+```
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Conclusion
+
+The `/etc/ssh/ssh_config` file is a critical part of configuring the behavior of the SSH client on a Linux or Unix-like system. 
+It provides various options to control how SSH clients authenticate, handle connections, and interact with remote hosts. 
+
+By modifying this file, system administrators can create global default behaviors for SSH clients across a system,
+ while users can further personalize their own SSH configurations in the `~/.ssh/config` file. 
+ 
+Careful configuration of this file can improve security, performance, and the usability of SSH for remote connections.
+===================================================================================================================

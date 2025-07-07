@@ -1,0 +1,191 @@
+____________________________________________________________________________________________________________________________________________________________
+                                                            Checks in Bash
+                                                            ==============
+Bash provides various test conditions to check files, directories, strings, numbers, and permissions. 
+
+Below is a complete reference of all available checks:
+
+____________________________________________________________________________________________________________________________________________________________
+                                                    1️⃣ File and Directory Checks
+                         ___________________________________________________________________________________________                                                   
+                        |    Expression         |                       Description                                 |
+                        |_______________________|___________________________________________________________________|
+                        | [ -e FILE ]           | True if FILE exists (any type: file, directory, symlink, etc.).   |
+                        | [ -f FILE ]           | True if FILE exists and is a regular file (not a directory).      |
+                        | [ -d DIRECTORY ]      | True if DIRECTORY exists.                                         |
+                        | [ -s FILE ]           | True if FILE exists and is not empty.                             |
+                        | [ -L FILE ]           | True if FILE exists and is a symbolic link.                       |
+                        | [ -h FILE ]           | Same as -L, checks if FILE is a symbolic link.                    |
+                        | [ -r FILE ]           | True if FILE exists and is readable.                              |
+                        | [ -w FILE ]           | True if FILE exists and is writable.                              |
+                        | [ -x FILE ]           | True if FILE exists and is executable.                            |
+                        | [ -p FILE ]           | True if FILE exists and is a named pipe (FIFO).                   |
+                        | [ -c FILE ]           | True if FILE exists and is a character device.                    |
+                        | [ -b FILE ]           | True if FILE exists and is a block device.                        |
+                        | [ -S FILE ]           | True if FILE exists and is a socket.                              |
+                        |-----------------------|-------------------------------------------------------------------|
+                        | [ FILE1 -nt FILE2 ]   | True if FILE1 is newer than FILE2.                                |
+                        | [ FILE1 -ot FILE2 ]   | True if FILE1 is older than FILE2.                                |
+                        | [ FILE1 -ef FILE2 ]   | True if FILE1 and FILE2 are hard links to the same inode.         |
+                        |_______________________|___________________________________________________________________|
+
+                        🔹 Example: Check if a file exists and is readable:
+                        bash
+                        if [ -f myfile.txt ] && [ -r myfile.txt ]; then
+                            echo "File exists and is readable."
+                        fi
+
+____________________________________________________________________________________________________________________________________________________________
+                                                    2️⃣ String Checks
+
+                         ___________________________________________________________________________________________                            
+                        |      Expression       |            Description                                            |
+                        |-----------------------|-------------------------------------------------------------------|
+                        | [ -z "$str" ]         | True if str is empty (zero length).                               |
+                        | [ -n "$str" ]         | True if str is not empty.                                         |
+                        | [ "$str1" = "$str2" ] | True if str1 is equal to str2.                                    |
+                        | [ "$str1" != "$str2" ]| True if str1 is not equal to str2.                                |
+                        | [[ "$str1" =~ pattern]]| True if str1 matches regex pattern.                              |
+                        | [ "$str1" < "$str2" ] | True if str1 is lexicographically less than str2.                 |
+                        | [ "$str1" > "$str2" ] | True if str1 is lexicographically greater than str2.              |
+                        |_______________________|___________________________________________________________________|
+
+                        🔹 Example: Check if a string is empty:
+                        bash
+                        if [ -z "$username" ]; then
+                            echo "Username is empty!"
+                        fi
+
+____________________________________________________________________________________________________________________________________________________________
+                                                    3️⃣ Number Checks
+                         ___________________________________________________________________________________________                            
+                        |       Expression      |                   Description                                     |
+                        |_______________________|___________________________________________________________________|
+                        | [ num1 -eq num2 ]     | True if num1 equals num2.                                         |
+                        | [ num1 -ne num2 ]     | True if num1 is not equal to num2.                                |
+                        |-----------------------|-------------------------------------------------------------------|
+                        | [ num1 -lt num2 ]     | True if num1 is less than num2.                                   |
+                        | [ num1 -le num2 ]     | True if num1 is less than or equal to num2.                       |
+                        |-----------------------|-------------------------------------------------------------------|
+                        | [ num1 -gt num2 ]     | True if num1 is greater than num2.                                |                   
+                        | [ num1 -ge num2 ]     | True if num1 is greater than or equal to num2.                    |
+                        |_______________________|___________________________________________________________________|
+
+                        🔹 Example: Check if a number is positive:
+                        bash
+                        num=5
+                        if [ $num -gt 0 ]; then
+                            echo "Number is positive."
+                        fi
+
+____________________________________________________________________________________________________________________________________________________________
+                                                    4️⃣ Combining Conditions
+You can combine multiple conditions using AND (&&) or OR (||).
+
+                         ___________________________________________________________________________________________                            
+                        |       Expression      |                   Description                                     |
+                        |_______________________|___________________________________________________________________|
+                        | [ cond1 -a cond2 ]    | AND (Both conditions must be true).                               |
+                        | [ cond1 -o cond2 ]    | OR (At least one condition must be true).                         |
+                        |-----------------------|-------------------------------------------------------------------|
+                        | [[ cond1 && cond2 ]]  | AND (Preferred inside [[ ... ]]).                                 |
+                        | [[ cond1 || cond2 ]]  | OR (Preferred inside [[ ... ]]).                                  |
+                        |_______________________|___________________________________________________________________|
+
+                        🔹 Example: Check if a file exists AND is writable:
+                        bash
+                        if [ -f "myfile.txt" ] && [ -w "myfile.txt" ]; then
+                            echo "File exists and is writable."
+                        fi
+
+
+                        🔹 Example: Check if a number is between 1 and 10:
+                        bash
+                        num=5
+                        if [[ $num -ge 1 && $num -le 10 ]]; then
+                            echo "Number is in range."
+                        fi
+
+____________________________________________________________________________________________________________________________________________________________
+                                                    5️⃣ Checking Exit Status of a Command
+
+                         ___________________________________________________________________________________________                            
+                        |       Expression      |                   Description                                     |
+                        |_______________________|___________________________________________________________________|
+                        | $?                    | Exit status of the last command (0 = success, non-zero = failure).|
+                        | [ COMMAND ]           | True if COMMAND succeeds (exit code 0).                           |
+                        | [ ! COMMAND ]         | True if COMMAND fails (exit code not 0).                          |
+                        |_______________________|___________________________________________________________________|
+
+                        🔹 Example: Check if ping was successful:
+                        bash
+                        ping -c 1 google.com > /dev/null 2>&1
+                        if [ $? -eq 0 ]; then
+                            echo "Internet is working."
+                        else
+                            echo "No internet connection."
+                        fi
+
+____________________________________________________________________________________________________________________________________________________________
+                                                    6️⃣ Checking User Permissions
+
+                         ___________________________________________________________________________________________                            
+                        |       Expression      |                   Description                                     |
+                        |_______________________|___________________________________________________________________|
+                        | [ $UID -eq 0 ]        | True if script is run as root.                                    |
+                        | [ $(id -u) -eq 0 ]    | Alternative way to check for root user.                           |
+                        |_______________________|___________________________________________________________________|
+
+                        🔹 Example: Ensure the script runs as root:
+                        bash
+                        if [ $(id -u) -ne 0 ]; then
+                            echo "This script must be run as root!"
+                            exit 1
+                        fi
+
+____________________________________________________________________________________________________________________________________________________________
+                                                    7️⃣ Checking Process and Services
+
+                         ___________________________________________________________________________________________                            
+                        |       Expression      |                   Description                                     |
+                        |_______________________|___________________________________________________________________|
+                        | pgrep process_name    | Returns PID if the process is running.                            |
+                        | pidof process_name    | Returns PID if the process is running.                            |
+                        | [ -d /proc/PID ]      | True if process with PID is running.                              |
+                        |_______________________|___________________________________________________________________|
+
+                        🔹 Example: Check if nginx is running:
+                        bash
+                        if pgrep nginx > /dev/null; then
+                            echo "Nginx is running."
+                        else
+                            echo "Nginx is not running."
+                        fi
+
+____________________________________________________________________________________________________________________________________________________________
+                                                    8️⃣ Checking Network Connectivity
+
+                         ___________________________________________________________________________________________                            
+                        |       Expression      |                   Description                                     |
+                        |_______________________|___________________________________________________________________|
+                        | nc -z host port       | Check if a port is open.                                          |
+                        | ping -c 1 google.com  | Check if internet is available.                                   |
+                        |_______________________|___________________________________________________________________|
+
+                        🔹 Example: Check if port 80 is open:
+                        bash
+                        if nc -z localhost 80; then
+                            echo "Port 80 is open."
+                        else
+                            echo "Port 80 is closed."
+                        fi
+
+____________________________________________________________________________________________________________________________________________________________
+                                                        🔹 Summary
+- File Checks: -f, -d, -e, -s, etc.
+- String Checks: -z, -n, =, !=, etc.
+- Number Checks: -eq, -ne, -lt, -gt, etc.
+- Combining Conditions: &&, ||, -a, -o
+- Exit Status & Commands: $?, [ COMMAND ]
+- User & Process Checks: id -u, pgrep, nc -z
+____________________________________________________________________________________________________________________________________________________________

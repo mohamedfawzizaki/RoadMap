@@ -1,0 +1,12 @@
+_______________________________________________________________________________________________________________________________________
+Global Area Network (GAN)
+        - A Global Area Network is an extension of a WAN, connecting devices worldwide.
+
+        Characteristics:
+            - Large-scale connectivity over vast distances.
+            - Requires satellites, undersea cables, and extensive infrastructure.
+
+        Examples:
+            - Global corporate networks.
+            - International bank transaction systems.
+_______________________________________________________________________________________________________________________________________

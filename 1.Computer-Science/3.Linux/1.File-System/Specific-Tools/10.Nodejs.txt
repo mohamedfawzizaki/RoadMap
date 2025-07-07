@@ -1,0 +1,92 @@
+______________________________________________________________________________________________________________________________________
+                                          Location of Node.js Files in Linux
+                                          ==================================
+
+When you install Node.js on a Linux system, various files and directories are created 
+ for the executable, libraries, modules, and configuration.Below are the typical locations where Node.js files are found:
+---------------------------------------------------------------------------------------------------------
+1.Node.js Executable
+
+- The `node` and `npm` executables are typically installed in:
+  - `/usr/bin/`  
+  - `/usr/local/bin/`  
+  You can verify the location of the `node` and `npm` executables using:
+  ```bash
+  which node
+  which npm
+  ```
+---------------------------------------------------------------------------------------------------------
+2.Node.js Libraries
+
+- Core libraries required by Node.js are stored in:
+  - `/usr/lib/node_modules/` (for globally installed Node.js modules)
+  - `/usr/local/lib/node_modules/` (if Node.js is installed manually or using a version manager like `nvm`)
+---------------------------------------------------------------------------------------------------------
+3.NPM Global Packages
+
+- Globally installed NPM packages (modules installed using `npm install -g`) are typically located in:
+  - `/usr/local/lib/node_modules/`  
+  You can check the global modules directory using:
+  ```bash
+  npm root -g
+  ```
+
+- Binaries (executable scripts) of global NPM packages are symlinked in:
+  - `/usr/local/bin/` or `/usr/bin/`
+---------------------------------------------------------------------------------------------------------
+4.Local Node.js Project Files
+
+- For locally installed packages (using `npm install` without `-g`), 
+  the following directories/files are created within the project folder:
+  - `/path/to/project/node_modules/`  
+    Contains locally installed packages.
+  - `/path/to/project/package.json`  
+    Lists the project’s dependencies and scripts.
+  - `/path/to/project/package-lock.json`  
+    Locks the installed package versions for consistency.
+---------------------------------------------------------------------------------------------------------
+5.Node.js Cache
+
+- NPM caches downloaded packages and metadata in:
+  - `~/.npm/` (default cache directory)
+  You can check or change the cache location using:
+  ```bash
+  npm config get cache
+  npm config set cache /new/cache/path
+  ```
+---------------------------------------------------------------------------------------------------------
+6.Node Version Manager (NVM) Files
+
+If you are using NVM (Node Version Manager) to manage multiple versions of Node.js, the installed Node.js versions are stored in:
+- `~/.nvm/versions/node/`  
+  Each version of Node.js will have its own directory, and the active version will be symlinked for use.
+---------------------------------------------------------------------------------------------------------
+7.Logs and Temporary Files
+
+- Node.js applications may generate logs and temporary files. 
+  These are often found in:
+  - `/var/log/` – For logs if configured by the application.
+  - `/tmp/` – For temporary files during runtime.
+---------------------------------------------------------------------------------------------------------
+Common Commands to Check Node.js Files
+
+1.Check Node.js Version
+   ```bash
+   node --version
+   ```
+
+2.Check NPM Version
+   ```bash
+   npm --version
+   ```
+
+3.Check Global Modules Directory
+   ```bash
+   npm root -g
+   ```
+
+4.List Installed Global Packages
+   ```bash
+   npm list -g --depth=0
+   ```
+______________________________________________________________________________________________________________________________________

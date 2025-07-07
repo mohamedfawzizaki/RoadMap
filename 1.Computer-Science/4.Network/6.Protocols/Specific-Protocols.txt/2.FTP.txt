@@ -1,0 +1,175 @@
+_______________________________________________________________________________________________________________________________________
+                                                FTP (File Transfer Protocol)  
+                                                ============================
+
+FTP (File Transfer Protocol) is a standard network protocol used to transfer
+ files between a client and a server over a TCP/IP network, such as the internet. 
+ 
+It allows users to upload, download, and manage files on a remote server,
+ making it one of the oldest and most commonly used protocols for file transfers.
+
+FTP operates on a client-server model, where the client initiates requests to the server to perform various file operations. 
+
+The client can use an FTP client software (e.g., FileZilla, WinSCP) to connect to the FTP server, authenticate, and transfer files.
+_______________________________________________________________________________________________________________________________________
+                                                      How FTP Works
+
+FTP uses two separate communication channels:
+1. Control Channel:
+      - Used to send commands and receive responses. 
+      - This communication is typically done over port 21 (default).
+2. Data Channel: 
+      - Used for transferring actual file data. 
+      - The port used for this channel can vary based on the connection mode (Active or Passive).
+
+ Active Mode (PORT Mode):
+- The client opens a random port (greater than 1024) and tells the server to connect to that port for the data transfer.
+- The server will establish the data connection from its port 20 to the client’s specified port.
+
+ Passive Mode (PASV Mode):
+- The client initiates both the control and data connections. 
+- The server opens a random port (greater than 1024) for the data connection and tells the client to connect to it.
+- This mode is preferred when clients are behind firewalls
+   or NAT (Network Address Translation) devices because it doesn't require inbound connections to the client's system.
+_______________________________________________________________________________________________________________________________________
+                                                      FTP Commands
+
+FTP clients send commands to FTP servers to interact with them. 
+Some of the most common FTP commands include:
+
+1. USER: Specifies the username for authentication.
+   - Example: `USER username`
+
+2. PASS: Specifies the password for authentication.
+   - Example: `PASS password`
+
+3. LIST: Lists files and directories in the current directory of the server.
+   - Example: `LIST`
+
+4. CWD: Changes the working directory on the server.
+   - Example: `CWD /path/to/directory`
+
+5. PWD: Displays the current working directory on the server.
+   - Example: `PWD`
+
+6. RETR: Retrieves (downloads) a file from the server.
+   - Example: `RETR filename`
+
+7. STOR: Stores (uploads) a file to the server.
+   - Example: `STOR filename`
+
+8. DELE: Deletes a file on the server.
+   - Example: `DELE filename`
+
+9. MKD: Creates a new directory on the server.
+   - Example: `MKD new_directory`
+
+10. RMD: Removes a directory from the server.
+    - Example: `RMD old_directory`
+
+11. QUIT: Closes the connection to the server.
+    - Example: `QUIT`
+_______________________________________________________________________________________________________________________________________
+                                                         FTP Response Codes
+
+The server responds to commands with a three-digit code, followed by an optional text message. 
+
+The response code can help the client understand the result of a command.
+
+- 1xx (Positive Preliminary Response): The command was accepted, but further action is needed.
+  - Example: `150 File status okay; about to open data connection.`
+
+- 2xx (Positive Completion Response): The command was successfully completed.
+  - Example: `200 Command okay.`
+
+- 3xx (Positive Intermediate Response): The server is requesting further information from the client.
+  - Example: `331 User name okay, need password.`
+
+- 4xx (Transient Negative Completion Response): The command was not completed, but the error is temporary (e.g., network issues).
+  - Example: `421 Service not available, closing control connection.`
+
+- 5xx (Permanent Negative Completion Response): The command failed due to a permanent error.
+  - Example: `550 Requested action not taken. File unavailable.`
+_______________________________________________________________________________________________________________________________________
+                                                            FTP Modes
+
+- ASCII Mode: 
+      - Used for transferring text files. 
+      - The FTP server and client will automatically convert newline characters to the appropriate format for the operating system (e.g., Windows uses `\r\n` while Unix-based systems use `\n`).
+- Binary Mode: 
+      - Used for transferring binary files (e.g., images, executables). 
+      - No conversion occurs during the transfer, ensuring that the file is transferred exactly as it is.
+
+To switch between modes:
+- ASCII  : `TYPE A`
+- Binary : `TYPE I`
+_______________________________________________________________________________________________________________________________________
+                                                   Security and Encryption in FTP
+
+By default, FTP does not provide encryption or secure authentication. 
+All data (including credentials) is transmitted in clear text,
+ making it vulnerable to interception and man-in-the-middle attacks.
+
+To secure FTP connections, a few variations of FTP have been developed:
+
+1. FTPS (FTP Secure):
+   - FTPS adds SSL/TLS encryption to FTP, providing secure communication and protecting both the control and data channels.
+   - FTPS can operate in two modes:
+     - Explicit FTPS: The client requests encryption explicitly by sending the `AUTH TLS` command before any data is transmitted.
+     - Implicit FTPS: Encryption is automatically used, typically on port 990.
+
+2. SFTP (SSH File Transfer Protocol):
+   - SFTP is a different protocol that is part of the SSH (Secure Shell) suite, offering secure file transfers over a secure channel. Unlike FTPS, which is FTP with encryption, SFTP is entirely different in its implementation and encryption.
+   - SFTP encrypts both the control and data channels, ensuring that the entire session is secure.
+_______________________________________________________________________________________________________________________________________
+                                                FTP Client-Server Communication Flow
+
+1. Client Initiates Connection:
+   - The client initiates a connection to the FTP server, typically over port 21.
+
+2. Authentication:
+   - The client sends the `USER` and `PASS` commands to provide a username and password for authentication.
+   - The server responds with either a success message (e.g., `230 User logged in`) or an error (e.g., `530 Login incorrect`).
+
+3. File Transfer or Management:
+   - The client can issue commands like `RETR`, `STOR`, `LIST`, and `CWD` to manage files on the server.
+   - The server responds to each command with appropriate status codes.
+
+4. End Session:
+   - The client can issue the `QUIT` command to end the session.
+_______________________________________________________________________________________________________________________________________
+                                                         FTP Ports
+
+- Port 21: Default port for FTP control channel (used for sending commands and receiving responses).
+- Port 20: Default port for FTP data channel in active mode (used for transferring data).
+- Ports 1024–65535: In passive mode, the server opens a random port for the data connection, which the client connects to.
+
+_______________________________________________________________________________________________________________________________________
+                                                      FTP Use Cases
+
+1. Website Management:
+   - FTP is commonly used by webmasters to upload, download, and manage website files on web servers.
+
+2. Data Backup:
+   - Organizations use FTP to back up important data from local systems to remote servers.
+
+3. Software Distribution:
+   - Developers use FTP to distribute software updates or files to users, making it an essential tool for file sharing.
+_______________________________________________________________________________________________________________________________________
+                                                    FTP Alternatives
+
+While FTP is still widely used, modern alternatives are preferred for secure and efficient file transfers:
+1. SFTP  : Secure, based on SSH.
+2. FTPS  : FTP over SSL/TLS.
+3. HTTP/S: For web-based file transfers (via file upload forms, for example).
+4. Cloud storage services: Such as Google Drive, Dropbox, or AWS S3.
+_______________________________________________________________________________________________________________________________________
+                                                      Conclusion
+
+FTP is a simple and widely used protocol for file transfer over a network. 
+While it is an effective and established solution,
+ its lack of built-in security has led to the adoption of secure variants such as FTPS and SFTP for more sensitive data transfers. 
+ 
+With secure alternatives in place, FTP remains a valuable tool in various domains such as web management,
+ data backups, and software distribution, especially when encryption or secure channels are implemented.
+_______________________________________________________________________________________________________________________________________

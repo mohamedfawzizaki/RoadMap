@@ -1,0 +1,205 @@
+_________________________________________________________________________________________________________________________________________________
+                                                      To-Document-Terraform
+                                                      =====================
+In Terraform, the `input` block does not exist explicitly.
+Instead, Terraform uses `variable` blocks to accept input values for configurations.
+These input variables allow you to customize configurations dynamically, enabling reuse and modularity.
+
+Below is a detailed explanation of how input variables (via the `variable` block) are used in Terraform:
+
+_________________________________________________________________________________________________________________________________________________
+                                                     What Are Input Variables?
+Input variables are placeholders for values that can be set when running Terraform commands.
+
+They allow you to:
+    - Dynamically configure Terraform modules.
+    - Parameterize configurations for different environments.
+    - Avoid hardcoding sensitive or environment-specific data.
+
+_________________________________________________________________________________________________________________________________________________
+                                                   Syntax of the `variable` Block
+
+# Basic Structure:
+        ````````````````````````````````````````````````````````````````````hcl
+        variable "<NAME>" {
+            description = "<DESCRIPTION>"   # Optional but recommended
+            type        = <TYPE>            # Optional, defaults to any
+            default     = <DEFAULT_VALUE>   # Optional
+            sensitive   = <BOOLEAN>         # Optional, defaults to false
+            validation  {                   # Optional validation rules
+                condition     = <EXPRESSION>
+                error_message = "<MESSAGE>"
+            }
+        }
+        ````````````````````````````````````````````````````````````````````
+ ___________________________________________________________________________________________________________________
+|   Attribute    |                                      Description                                                 |
+|________________|__________________________________________________________________________________________________|
+| `<NAME>`       | The name of the variable, which is unique within the configuration.                              |
+| `description`  | A human-readable explanation of what the variable represents.                                    |
+| `type`         | Specifies the data type of the variable (string, number, bool, list, map, etc.).                 |
+| `default`      | Specifies a default value for the variable, making it optional to provide a value during runtime.|
+| `sensitive`    | If `true`, prevents the variable value from being displayed in the Terraform plan or logs.       |
+| `validation`   | Adds custom validation rules for the variable's value.                                           |
+|________________|__________________________________________________________________________________________________|
+
+_________________________________________________________________________________________________________________________________________________
+                                                How Input Variables Work
+
+1.Declared in `variable` Blocks: Variables are defined in a `variable` block within the configuration.
+2.Provided at Runtime: 
+      Values for these variables can be set via:
+            - A `terraform.tfvars` file.
+            - CLI arguments (`-var` or `-var-file`).
+            - Environment variables.
+3.Accessed in Code: 
+      Variables are referenced using the syntax `var.<NAME>`.
+
+_________________________________________________________________________________________________________________________________________________
+                                               Examples of Input Variables
+-----------------------------------------------------------------------------------------------------------------------------
+# 1.String Input Variable
+        ````````````````````````````````````````````````````````````````````hcl
+        variable "region" {
+            description = "The AWS region to deploy resources in"
+            type        = string
+            default     = "us-west-2"
+        }
+        ````````````````````````````````````````````````````````````````````
+Usage in configuration:
+        ````````````````````````````````````````````````````````````````````hcl
+        provider "aws" {
+            region = var.region
+        }
+        ````````````````````````````````````````````````````````````````````
+
+-----------------------------------------------------------------------------------------------------------------------------
+# 2.List Input Variable
+        ````````````````````````````````````````````````````````````````````hcl
+        variable "availability_zones" {
+            description = "A list of availability zones"
+            type        = list(string)
+            default     = ["us-west-2a", "us-west-2b"]
+        }
+        ````````````````````````````````````````````````````````````````````
+Usage in configuration:
+        ````````````````````````````````````````````````````````````````````hcl
+        resource "aws_subnet" "example" {
+            count = length(var.availability_zones)
+
+            availability_zone = var.availability_zones[count.index]
+            cidr_block        = "10.0.${count.index}.0/24"
+        }
+        ````````````````````````````````````````````````````````````````````
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+# 3.Map Input Variable
+        ````````````````````````````````````````````````````````````````````hcl
+        variable "tags" {
+            description = "Key-value tags for resources"
+            type        = map(string)
+            default     = {
+                Environment = "production"
+                Team        = "DevOps"
+            }
+        }
+        ````````````````````````````````````````````````````````````````````
+Usage in configuration:
+        ````````````````````````````````````````````````````````````````````hcl
+        resource "aws_instance" "example" {
+            tags = var.tags
+        }
+        ````````````````````````````````````````````````````````````````````
+
+-----------------------------------------------------------------------------------------------------------------------------
+# 4.Sensitive Variable
+        ````````````````````````````````````````````````````````````````````hcl
+        variable "db_password" {
+            description = "The password for the database"
+            type        = string
+            sensitive   = true
+        }
+        ````````````````````````````````````````````````````````````````````
+- Sensitive variables hide their values in Terraform logs and the CLI output.
+
+-----------------------------------------------------------------------------------------------------------------------------
+# 5.Variable with Validation
+        ````````````````````````````````````````````````````````````````````hcl
+        variable "instance_type" {
+            description = "EC2 instance type"
+            type        = string
+            default     = "t2.micro"
+
+            validation {
+                condition     = contains(["t2.micro", "t2.small", "t2.medium"], var.instance_type)
+                error_message = "The instance type must be t2.micro, t2.small, or t2.medium."
+            }
+        }
+        ````````````````````````````````````````````````````````````````````
+- Adds a custom rule to ensure the input value is valid.
+-----------------------------------------------------------------------------------------------------------------------------
+_________________________________________________________________________________________________________________________________________________
+                                                 Ways to Provide Input Variables
+
+# 1.Using CLI Flags
+        ````````````````````````````````````````````````````````````````````bash
+        terraform apply -var="region=us-east-1" -var="db_password=secure123"
+        ````````````````````````````````````````````````````````````````````
+
+# 2.Using `terraform.tfvars` File
+Create a file named `terraform.tfvars`:
+        ````````````````````````````````````````````````````````````````````hcl
+        region      = "us-east-1"
+        db_password = "secure123"
+        ````````````````````````````````````````````````````````````````````
+- Automatically loaded by Terraform.
+
+# 3.Using Environment Variables
+Set environment variables with the prefix `TF_VAR_`:
+        ````````````````````````````````````````````````````````````````````bash
+        export TF_VAR_region="us-east-1"
+        export TF_VAR_db_password="secure123"
+        ````````````````````````````````````````````````````````````````````
+
+# 4.Using `-var-file` Option
+Create a custom variable file (e.g., `prod.tfvars`):
+        ````````````````````````````````````````````````````````````````````hcl
+        region      = "us-east-1"
+        db_password = "secure123"
+        ````````````````````````````````````````````````````````````````````
+Pass it to Terraform:
+        ````````````````````````````````````````````````````````````````````bash
+        terraform apply -var-file="prod.tfvars"
+        ````````````````````````````````````````````````````````````````````
+
+_________________________________________________________________________________________________________________________________________________
+                                               Best Practices for Input Variables
+
+1.Use Descriptive Names              : Ensure variable names clearly indicate their purpose.
+2.Provide Default Values             : Set sensible defaults to reduce the need for user input.
+3.Leverage Validation                : Add validation rules to enforce correct usage.
+4.Group Variables in `.tfvars` Files : Use `.tfvars` files for environment-specific configurations.
+5.Mark Sensitive Data                : Use the `sensitive` attribute for passwords and other secrets.
+6.Document Variables                 : Always include a `description` for clarity.
+
+_________________________________________________________________________________________________________________________________________________
+                                               Common Issues with Input Variables
+ ____________________________________________________________________________________________________________________________________________________________________________
+|             Issue                |                              Cause                          |                                   Solution                                |
+|__________________________________|_____________________________________________________________|___________________________________________________________________________|
+| "Variable not defined" error     | Variable used in code but not defined in a `variable` block.| Define the missing variable in a `variable` block.                        |
+| Sensitive value shown in output  | Variable not marked as `sensitive`.                         | Add `sensitive = true` to the variable definition.                        |
+| Validation failure               | Input value does not meet validation rules.                 | Provide a valid value that satisfies the validation condition.            |
+| Missing input variable error     | Required variable not set and no default value provided.    | Pass the variable value via CLI, `.tfvars` file, or environment variables.|
+|__________________________________|_____________________________________________________________|___________________________________________________________________________|
+
+_________________________________________________________________________________________________________________________________________________
+                                                            Summary
+
+While Terraform does not have an explicit `input` block, the `variable` block serves this purpose,
+ allowing you to dynamically pass and manage input values in your Terraform configurations.
+ 
+By properly leveraging input variables, you can create modular, reusable, and flexible infrastructure code.
+_________________________________________________________________________________________________________________________________________________
+

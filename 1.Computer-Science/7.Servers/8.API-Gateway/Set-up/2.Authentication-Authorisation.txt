@@ -1,0 +1,97 @@
+_____________________________________________________________________________________________________________________________________
+
+http {
+    server {
+        listen 80;  # Listen for incoming HTTP requests on port 80
+        server_name api.example.com;  # The domain name for the API gateway
+
+        # Main API location where client requests are received
+        location /api/ {
+            auth_request /auth;  # Forward request to the authentication service for validation
+            error_page 401 = @unauthorized;  # Redirect unauthorized requests to a custom 401 error page
+
+            proxy_pass http://backend_service;  # Forward authenticated requests to the backend service
+        }
+
+        # Authentication endpoint where token validation happens
+        location /auth {
+            proxy_pass http://auth-service/validate;  # Redirect authentication requests to an external Auth-Service
+
+            proxy_pass_request_body off;  # Prevent forwarding request body (as authentication does not need it)
+            proxy_set_header Content-Length "";  # Ensure request body size is set to zero to avoid unnecessary overhead
+            proxy_set_header X-Original-URI $request_uri;  # Pass the original requested URI for logging or further processing
+        }
+
+        # Custom error handler for unauthorized requests
+        location @unauthorized {
+            return 401 "Unauthorized";  # Return a 401 HTTP status with an "Unauthorized" message
+        }
+    }
+}
+
+_____________________________________________________________________________________________________________________________________
+
+http {
+    server {
+        listen 80;  # Listen on port 80 for HTTP traffic (consider HTTPS for security)
+        server_name api.example.com;  # API Gateway domain name
+
+        # Main API location where all requests are received
+        location /api/ {
+            auth_request /auth;  # Forward authentication requests to the auth service
+            error_page 401 403 = @unauthorized;  # Handle unauthorized & forbidden requests
+            error_page 500 502 503 504 = @backend_error;  # Handle backend service errors
+
+            # Set caching headers to improve performance
+            add_header Cache-Control "no-store";  # Ensure sensitive data is not cached
+            add_header Pragma "no-cache";  # Ensure no caching for older HTTP versions
+
+            # Prevent request body from being sent unless authentication succeeds
+            auth_request_set $auth_status $upstream_status;
+            if ($auth_status = "401") { return 401 "Unauthorized"; }
+            if ($auth_status = "403") { return 403 "Forbidden"; }
+
+            # Forward valid requests to the backend service
+            proxy_pass http://backend_service;
+            proxy_http_version 1.1;  # Ensure HTTP/1.1 for persistent connections
+            proxy_set_header Connection "";  # Keep connections alive for better performance
+            proxy_set_header Host $host;  # Preserve the original host header
+            proxy_set_header X-Forwarded-For $remote_addr;  # Log client IP for tracking
+            proxy_set_header X-Forwarded-Proto $scheme;  # Preserve original request scheme
+        }
+
+        # Authentication Service for Token Validation
+        location /auth {
+            proxy_pass http://auth-service/validate;  # Redirect to authentication microservice
+
+            proxy_pass_request_body off;  # Do not send request body (to optimize performance)
+            proxy_set_header Content-Length "";  # Prevent unnecessary body content
+            proxy_set_header X-Original-URI $request_uri;  # Send original URI for logging/debugging
+            proxy_set_header Authorization $http_authorization;  # Pass the Authorization header
+        }
+
+        # Unauthorized Access Handler
+        location @unauthorized {
+            add_header Content-Type "application/json";  # Return JSON response
+            return 401 '{"error": "Unauthorized", "message": "Invalid credentials"}';
+        }
+
+        # Handle Backend Service Errors Gracefully
+        location @backend_error {
+            add_header Content-Type "application/json";
+            return 502 '{"error": "Service Unavailable", "message": "Backend is down"}';
+        }
+
+        # Rate Limiting to Prevent Abuse (Optional)
+        limit_req_zone $binary_remote_addr zone=api_limit:10m rate=10r/s;
+        location /api/ {
+            limit_req zone=api_limit burst=20 nodelay;  # Allow bursts, but enforce rate limits
+        }
+
+        # Enable Logging for Debugging (Optional)
+        access_log /var/log/nginx/api_access.log combined;
+        error_log /var/log/nginx/api_error.log warn;
+    }
+}
+
+_____________________________________________________________________________________________________________________________________

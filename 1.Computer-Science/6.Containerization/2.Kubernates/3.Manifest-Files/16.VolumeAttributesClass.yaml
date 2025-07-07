@@ -1,0 +1,51 @@
+# ======================================================================================
+# 📘 Definition: VolumeAttributesClass (Beta Feature)
+# --------------------------------------------------------------------------------------
+# A VolumeAttributesClass is a Kubernetes resource (introduced in v1.27 as beta) used 
+# to define **additional CSI volume attributes** that are not part of the StorageClass 
+# or PVC directly. It allows fine-grained control over volume behavior such as 
+# performance, compression, encryption, or backup policies.
+#
+# Key Concepts:
+# - Designed to work with CSI drivers that support `VolumeAttributesClass`.
+# - Referenced by PersistentVolumeClaims (PVCs) via `spec.volumeAttributesClassName`.
+# - Parameters are passed as opaque key-value pairs to the CSI driver during provisioning.
+# - Useful for dynamic provisioning with customizable storage policies.
+#
+# Requirements:
+# - The CSI driver **must support** `VolumeAttributesClass`.
+# - Kubernetes >= v1.27 (beta feature; requires enabling the feature gate if needed).
+# ======================================================================================
+
+apiVersion: storage.k8s.io/v1beta1
+kind: VolumeAttributesClass
+metadata:
+  name: fast-retention-class           # 👈 Unique name used in PVCs to reference this class
+driverName: csi.example.com            # 👈 CSI driver name (must match PV.driver & StorageClass.provisioner)
+
+parameters:                            # 👇 Key-value pairs are opaque to Kubernetes
+  performance: "high"                  # Example: performance profile (e.g., high, balanced, low)
+  compression: "lz4"                   # Example: compression setting
+  snapshotPolicy: "daily"              # Example: daily snapshot configuration
+
+
+
+
+
+
+
+
+
+
+--- 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: example-pvc
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: fast-storage
+  volumeAttributesClassName: fast-retention-class   # 👈 Reference to VolumeAttributesClass
+  resources:
+    requests:
+      storage: 10Gi

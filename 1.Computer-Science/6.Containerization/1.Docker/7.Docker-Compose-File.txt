@@ -1,0 +1,174 @@
+______________________________________________________________________________________________________________________________________________________________________________________________
+                                                               docker-compose.yml Elements
+                                                https://docs.docker.com/reference/compose-file/version-and-name/
+
+
+______________________________________________________________________________________________________________________________________________________________________________________________
+                                                                ------------------
+                                                                Top-Level Elements
+                                                                ------------------
+ _____________________________________________________________________________________________________________________________________________________________________________________________
+| Top-Level Element |                                             Description                                                        |                Example                                 |
+|___________________|________________________________________________________________________________________________________________|________________________________________________________|
+|-------------------|----------------------------------------------------------------------------------------------------------------|--------------------------------------------------------|
+| version           |   Specifies the version of the Docker Compose file format. Determines feature availability.                    | version: '3.8'                                         |
+| name              |   Specifies the name of the service. This name is used to identify the service in docker-compose up            | name: myapp                                            |
+| services          |   Defines and configures the services (containers) in the application.                                         | See example below                                      |
+| networks          |   Defines custom networks to which services can connect. Supports multiple network types.                      | networks: frontend:                                    |
+| volumes           |   Declares volumes for persistent storage and data sharing across services.                                    | volumes: data_volume:                                  |
+| configs           |   Declares configuration files to be used in Docker Swarm mode.                                                | configs: my_config: file: ./config.yml                 |
+| secrets           |   Declares sensitive data such as passwords, securely passed to services. Only available in Swarm mode.        | secrets: db_password: file: ./secret                   |
+| profiles          |   Declares named profiles to conditionally enable or disable specific services.                                | profiles: - dev                                        |
+| x-*               |   Defines custom extensions to the Compose file for your own metadata. Ignored by Docker Compose itself.       | x-custom: value                                        |
+| extensions        |   Introduced in later versions of Docker Compose for customizations and plugins.                               | extensions: {}                                         |
+|___________________|________________________________________________________________________________________________________________|________________________________________________________|
+
+
+
+                                                                --------------------------
+                                                                Service-Top-Level Elements
+                                                                --------------------------
+
+ _____________________________________________________________________________________________________________________________________________________________________________________________
+|      Element      |                                             Description                                                        |                      Example                           |
+|___________________|________________________________________________________________________________________________________________|________________________________________________________|
+| image             |   Specifies the image to use for the service. Can include a specific tag or default to latest.                 | image: nginx:latest                                    |
+| build             |   Defines the context or configuration for building a Docker image. Supports context, dockerfile, and args.    | build: ./app                                           |
+| container_name    |   Specifies a custom name for the container, overriding the default generated name.                            | container_name: my-nginx                               |
+| command           |   Overrides the default command specified in the Dockerfile.                                                   | command: ["python", "app.py"]                          |
+| environment       |   Sets environment variables inside the container.                                                             | environment: - NODE_ENV=production                     |
+| env_file          |   Loads environment variables from a file.                                                                     | env_file: - ./config/.env                              |
+| ports             |   Maps container ports to host machine ports.                                                                  | ports: - "8080:80"                                     |
+| volumes           |   Mounts volumes or binds host directories into the container.                                                 | volumes: - ./data:/var/lib/data                        |
+| networks          |   Connects the service to specified networks.                                                                  | networks: - frontend                                   |
+| depends_on        |   Specifies service dependencies. Ensures that dependent services are started before this service.             | depends_on: - db                                       |
+| restart           |   Sets restart policies for the container (no, on-failure, always, unless-stopped).                            | restart: always                                        |
+| deploy            |   Configuration for Docker Swarm deployments (e.g., scaling, constraints, resources).                          | deploy: replicas: 3                                    |
+|-------------------|----------------------------------------------------------------------------------------------------------------|--------------------------------------------------------|
+| healthcheck       |   Specifies a command to check container health.                                                               | healthcheck: test: ["CMD", "curl", "-f", "http://localhost"] |
+| logging           |   Configures logging options such as driver (json-file, syslog, etc.) and settings.                            | logging: driver: json-file                             |
+| extra_hosts       |   Adds additional host-to-IP mappings for DNS resolution within the container.                                 | extra_hosts: - "myhost:127.0.0.1"                      |
+| stdin_open        |   Keeps the container’s STDIN open even if not attached. Useful for interactive sessions.                      | stdin_open: true                                       |
+| tty               |   Allocates a pseudo-TTY, often used with stdin_open for interactive terminals.                                | tty: true                                              |
+| ulimits           |   Sets user limits for the container, such as file descriptors or processes.                                   | ulimits: nproc: 65535                                  |
+| secrets           |   Configures secrets to inject sensitive information in the container (Swarm mode).                            | secrets: - app_key                                     |
+| configs           |   Configures external files to be used as configuration in Swarm mode.                                         | configs: - app_config                                  |
+| cap_add           |   Adds Linux capabilities to the container.                                                                    | cap_add: - NET_ADMIN                                   |
+| cap_drop          |   Removes Linux capabilities from the container.                                                               | cap_drop: - SYS_ADMIN                                  |
+| security_opt      |   Sets security options for the container.                                                                     | security_opt: - no-new-privileges:true                 |
+| privileged        |   Grants extended privileges to the container.                                                                 | privileged: true                                       |
+| read_only         |   Makes the container filesystem read-only, except for explicitly mounted writable volumes.                    | read_only: true                                        |
+| user              |   Sets the user and group IDs for running the container.                                                       | user: "1000:1000"                                      |
+| hostname          |   Sets a custom hostname for the container.                                                                    | hostname: my-container                                 |
+| dns               |   Configures DNS servers for the container.                                                                    | dns: - 8.8.8.8                                         |
+| dns_search        |   Sets custom DNS search domains.                                                                              | dns_search: - example.com                              |
+| labels            |   Adds metadata as key-value pairs to the service, used for organization or monitoring.                        | labels: com.example.type: "backend"                    |
+| working_dir       |   Sets the working directory inside the container.                                                             | working_dir: /app                                      |
+| entrypoint        |   Overrides the default entrypoint specified in the Dockerfile.                                                | entrypoint: ["sh", "-c", "start.sh"]                   |
+| stop_signal       |   Configures the signal used to stop the container.                                                            | stop_signal: SIGTERM                                   |
+| stop_grace_period |   Sets a timeout for how long to wait for the container to stop.                                               | stop_grace_period: 30s                                 |
+| sysctls           |   Configures kernel parameters at runtime.                                                                     | sysctls: net.ipv4.ip_forward: 1                        |
+| profiles          |   Specifies service profiles that allow conditional service inclusion when specific profiles are activated.    | profiles: ["development", "staging"]                   |
+| shm_size          |   Sets the shared memory size for the container.                                                               | shm_size: 64m                                          |
+| isolation         |   Configures the isolation technology used for the service (default, process, or hyperv).                      | isolation: process                                     |
+| platform          |   Specifies the platform architecture for the service (e.g., linux/amd64, linux/arm64).                        | platform: linux/amd64                                  |
+| runtime           |   Sets a custom runtime for the container (e.g., NVIDIA runtime for GPU support).                              | runtime: nvidia                                        |
+| devices           |   Maps host devices into the container with specific permissions.                                              | devices: - "/dev/sda:/dev/xvdc:rwm"                    |
+| ipc               |   Sets the IPC (Inter-Process Communication) mode for the container.                                           | ipc: host                                              |
+| tmpfs             |   Mounts temporary file systems inside the container.                                                          | tmpfs: - /run - /tmp                                   |
+| dns_opt           |   Configures DNS resolver options for the container.                                                           | dns_opt: - use-vc                                      |
+| group_add         |   Adds additional groups the container process should belong to.                                               | group_add: - 1000                                      |
+| pid               |   Shares the process namespace with the host or isolates it.                                                   | pid: host                                              |
+| storage_opt       |   Configures storage driver options, such as disk size quotas.                                                 | storage_opt: size: 10G                                 |
+| external_links    |   Allows the container to communicate with services not managed by the same Compose file.                      | external_links: - "legacy-db:db"                       |
+| init              |   Adds an init process to handle zombie processes in the container.                                            | init: true                                             |
+| privileges        |   Configures privileges for specific security features.                                                        | privileges: credentialspec: file://spec.json           |
+| oom_score_adj     |   Adjusts the Out Of Memory (OOM) score for the container.                                                     | oom_score_adj: -500                                    |
+| stop_timeout      |   Sets a timeout (in seconds) before the container is forcibly stopped.                                        | stop_timeout: 20                                       |
+| cpu_count         |   Limits the number of CPUs available to the container.                                                        | cpu_count: 2                                           |
+| memory            |   Sets a memory limit for the container.                                                                       | memory: 512m                                           |
+| memory_swap       |   Configures the total memory + swap limit for the container.                                                  | memory_swap: 1g                                        |
+| cpus              |   Specifies the number of CPU cores available to the container.                                                | cpus: "1.5"                                            |
+| restart_policy    |   Defines custom restart conditions and policies for the container.                                            | restart_policy: condition: on-failure                  |
+| links             |   Links this service to another, allowing communication by alias.                                              | links: - db:database_alias                             |
+|___________________|________________________________________________________________________________________________________________|________________________________________________________|
+
+
+
+                                                                --------------------------
+                                                                Network Top-Level Elements
+                                                                --------------------------
+ _____________________________________________________________________________________________________________________________________________________________________________________________
+|     Element       |                                             Description                                                        |                        Example                                               |
+|___________________|________________________________________________________________________________________________________________|________________________________________________________|
+|-------------------|----------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|
+| driver            | Specifies the network driver to use (e.g., bridge, overlay, host, none).                                       | driver: bridge                                          |
+| driver_opts       | Configures options specific to the network driver.                                                             | driver_opts: com.docker.network.driver.mtu: 1200        |
+| attachable        | Allows standalone containers to attach to the network.                                                         | attachable: true                                        |
+| enable_ipv6       | Enables IPv6 support on the network.                                                                           | enable_ipv6: true                                       |
+| ipam              | Configures IP address management (IPAM) for custom subnet and IP range allocations.                            | ipam: driver: default config: - subnet: 192.168.1.0/24 |
+| internal          | Makes the network internal, preventing external access.                                                        | internal: true                                      |
+| labels            | Adds metadata to the network as key-value pairs for organization or monitoring.                                | labels: com.example.env: production                    |
+| name              | Specifies a custom name for the network. Overrides the default generated name.                                 | name: custom_network                                   |
+| external          | Uses an existing network instead of creating a new one.                                                        | external: true                                          |
+| external with name| Specifies the name of an existing external network to use.                                                     | external: name: existing_network                       |
+| scope             | Defines the scope of the network (local, global, or swarm).                                                    | scope: swarm                                          |
+|___________________|________________________________________________________________________________________________________________|________________________________________________________|
+
+
+                                                                --------------------------
+                                                                Volumes Top-Level Elements
+                                                                --------------------------
+ _____________________________________________________________________________________________________________________________________________________________________________________________
+|     Element       |                                             Description                                                        |                        Example                                               |
+|___________________|________________________________________________________________________________________________________________|________________________________________________________|
+|-------------------|----------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|
+| driver            | Specifies the volume driver to use (e.g., local, nfs, rexray).                                                 | driver: local                                           |
+| driver_opts       | Configures options specific to the volume driver.                                                              | driver_opts: o: bind                                    |
+| name              | Assigns a custom name to the volume.                                                                           | name: my_volume                                         |
+| labels            | Adds metadata to the volume as key-value pairs for organization or monitoring.                                 | labels: com.example.env: production                    |
+| external          | Specifies that the volume already exists outside the Compose file and should not be created.                   | external: true                                          |
+| external with name| Specifies the name of an existing external volume to use.                                                      | external: name: existing_volume                        |
+| mounts            | Configures mount options for the volume.                                                                       | mounts: - source: ./data target: /data                  |
+| driver_opts       | Allows specifying options for external volumes.                                                                | driver_opts: type: nfs o:addr=192.168.1.100,rw         |
+|___________________|________________________________________________________________________________________________________________|________________________________________________________|
+
+
+
+
+                                                                --------------------------
+                                                                Configs Top-Level Elements
+                                                                --------------------------
+
+ _____________________________________________________________________________________________________________________________________________________________________________________________
+|     Element       |                                             Description                                                        |                        Example                                               |
+|___________________|________________________________________________________________________________________________________________|________________________________________________________|
+|-------------------|----------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|
+| file              | Specifies the path to the configuration file. This file can be used as a source for the config.                | file: ./config.yml                                      |
+| name              | Sets a custom name for the config. This name is used within the service to refer to the config.                | name: my_config                                         |
+| external          | Indicates if the config already exists externally and should not be created.                                   | external: true                                          |
+| external with name| Specifies the name of an existing external config to use.                                                      | external: name: existing_config                        |
+| labels            | Adds metadata to the config as key-value pairs for organization or monitoring.                                 | labels: com.example.env: production                    |
+|___________________|________________________________________________________________________________________________________________|________________________________________________________|
+
+
+
+                                                                --------------------------
+                                                                Secrets Top-Level Elements
+                                                                --------------------------
+
+ _____________________________________________________________________________________________________________________________________________________________________________________________
+|     Element       |                                             Description                                                        |                        Example                                               |
+|___________________|________________________________________________________________________________________________________________|________________________________________________________|
+|-------------------|----------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|
+| file              | Specifies the path to the secret file. This file contains the secret data that is securely passed to the service. | file: ./secret.txt                                      |
+| name              | Sets a custom name for the secret. This name is used within the service to reference the secret.               | name: db_password                                       |
+| external          | Indicates if the secret already exists externally and should not be created.                                   | external: true                                          |
+| external with name| Specifies the name of an existing external secret to use.                                                      | external: name: existing_secret                         |
+| labels            | Adds metadata to the secret as key-value pairs for organization or monitoring.                                 | labels: com.example.env: production                    |
+|___________________|________________________________________________________________________________________________________________|________________________________________________________|
+
+
+
+
+______________________________________________________________________________________________________________________________________________________________________________________________

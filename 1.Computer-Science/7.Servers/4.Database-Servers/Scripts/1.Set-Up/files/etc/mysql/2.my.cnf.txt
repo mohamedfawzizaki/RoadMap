@@ -1,0 +1,173 @@
+___________________________________________________________________________________________________________________________________
+                                                  /etc/mysql/my.cnf
+                                                  =================
+
+This `my.cnf` file is the main MySQL configuration file, but in your setup, it does not define any explicit MySQL settings. 
+
+Instead, it includes additional configuration files from two directories:  
+
+1. `/etc/mysql/conf.d/`  
+2. `/etc/mysql/mysql.conf.d/`  
+
+This setup allows MySQL to be modular and easier to manage by keeping configuration files separate.  
+
+
+Main Sections:                                                      
+      1.  [mysql]     : This section contains configurations for the MySQL command-line client (mysql).
+                        --------------------------------------------------------
+                        [mysql]
+                        user=root
+                        password=my-secret-pass
+                        default-character-set=utf8mb4
+                        --------------------------------------------------------
+
+      2.  [mysqld]    : This section configures the MySQL server daemon (mysqld).
+                        --------------------------------------------------------
+                        [mysqld]
+                        port=3306
+                        bind-address=127.0.0.1
+                        datadir=/var/lib/mysql
+                        socket=/var/run/mysqld/mysqld.sock
+                        log-error=/var/log/mysql/error.log
+                        max_connections=200
+                        --------------------------------------------------------
+
+      3.  [mysqldump] : This section contains configurations for the mysqldump utility, which is used for backing up MySQL databases.
+                        --------------------------------------------------------
+                        [mysqldump]
+                        quick
+                        max_allowed_packet=64M
+                        --------------------------------------------------------
+
+___________________________________________________________________________________________________________________________________
+                                                Breakdown of `my.cnf`
+
+``````````````````````````````````````````````````````````````plaintext
+# The MySQL database server configuration file.
+``````````````````````````````````````````````````````````````
+- This is a comment explaining that this is a MySQL server configuration file.
+
+``````````````````````````````````````````````````````````````plaintext
+ You can copy this to one of:
+ - "/etc/mysql/my.cnf" to set global options,
+ - "~/.my.cnf" to set user-specific options.
+``````````````````````````````````````````````````````````````
+- If you copy this file to:
+  - `/etc/mysql/my.cnf`, it applies to all users (system-wide settings).
+  - `~/.my.cnf`, it applies only to the current user (user-specific settings).
+
+``````````````````````````````````````````````````````````````plaintext
+ One can use all long options that the program supports.
+ Run program with --help to get a list of available options and with
+ --print-defaults to see which it would actually understand and use.
+``````````````````````````````````````````````````````````````
+- To see available MySQL options, you can run:
+  ``````````````````````````````````````````````````````````````bash
+  mysqld --help
+  ``````````````````````````````````````````````````````````````
+  or
+  ``````````````````````````````````````````````````````````````bash
+  mysqld --print-defaults
+  ``````````````````````````````````````````````````````````````
+
+``````````````````````````````````````````````````````````````plaintext
+ For explanations see
+ http://dev.mysql.com/doc/mysql/en/server-system-variables.html
+``````````````````````````````````````````````````````````````
+- This provides a link to MySQL’s server system variables documentation.
+
+``````````````````````````````````````````````````````````````plaintext
+
+  IMPORTANT: Additional settings that can override those from this file!
+   The files must end with '.cnf', otherwise they'll be ignored.
+
+``````````````````````````````````````````````````````````````
+- Any additional `.cnf` files inside the included directories can override settings from this file.
+- Only files ending with `.cnf` will be loaded.
+
+___________________________________________________________________________________________________________________________________
+                                                   Key Directives
+
+``````````````````````````````````````````````````````````````plaintext
+!includedir /etc/mysql/conf.d/
+!includedir /etc/mysql/mysql.conf.d/
+``````````````````````````````````````````````````````````````
+- These lines tell MySQL to load additional configuration files from the specified directories:
+  - `/etc/mysql/conf.d/` → Used for custom configuration files.
+  - `/etc/mysql/mysql.conf.d/` → Typically contains `mysqld.cnf` (server settings).
+
+- This means:
+  - Instead of putting all settings in one file (`my.cnf`), you can create separate files for different purposes.
+  - Example files inside `/etc/mysql/mysql.conf.d/`:
+    - `mysqld.cnf` → Main MySQL server configuration (like ports, datadir, bind-address, logging, etc.).
+  - Example files inside `/etc/mysql/conf.d/`:
+    - `client.cnf` → Configurations for MySQL clients (such as `mysql` command-line tool).
+    - `custom.cnf` → Any custom settings you want to apply.
+
+___________________________________________________________________________________________________________________________________
+                                                How MySQL Loads Configuration Files
+
+When MySQL starts, it loads configuration files in this order:
+1. `/etc/mysql/my.cnf` (this file)
+2. `/etc/mysql/mysql.cnf` (if present)
+3. All `.cnf` files in `/etc/mysql/conf.d/`
+4. All `.cnf` files in `/etc/mysql/mysql.conf.d/`
+5. `~/.my.cnf` (for the current user)
+
+- The last loaded setting takes precedence.
+
+___________________________________________________________________________________________________________________________________
+                                                How to Modify MySQL Settings
+
+Since this `my.cnf` file does not contain specific settings, you should modify files inside:
+
+1. For server settings (MySQL daemon - `mysqld`)
+   - Edit `/etc/mysql/mysql.conf.d/mysqld.cnf`
+   - Example:
+     ``````````````````````````````````````````````````````````````ini
+     [mysqld]
+     bind-address = 0.0.0.0   Allow remote connections
+     max_connections = 200    Increase max connections
+     ``````````````````````````````````````````````````````````````
+
+2. For client settings (`mysql` command-line tool)
+   - Edit `/etc/mysql/conf.d/mysql.cnf`
+   - Example:
+     ``````````````````````````````````````````````````````````````ini
+     [mysql]
+     user = root
+     password = my_secure_password
+     ``````````````````````````````````````````````````````````````
+
+3. For custom configurations
+   - Create a new file in `/etc/mysql/conf.d/`
+   - Example:
+     ``````````````````````````````````````````````````````````````bash
+     sudo nano /etc/mysql/conf.d/custom.cnf
+     ``````````````````````````````````````````````````````````````
+     Add settings inside:
+     ``````````````````````````````````````````````````````````````ini
+     [mysqld]
+     log_bin = /var/log/mysql/mysql-bin.log
+     ``````````````````````````````````````````````````````````````
+
+___________________________________________________________________________________________________________________________________
+                                                Restart MySQL After Changes
+
+After modifying any `.cnf` files, restart MySQL for changes to take effect:
+``````````````````````````````````````````````````````````````bash
+sudo systemctl restart mysql
+``````````````````````````````````````````````````````````````
+or
+``````````````````````````````````````````````````````````````bash
+sudo service mysql restart
+``````````````````````````````````````````````````````````````
+
+___________________________________________________________________________________________________________________________________
+                                                        Conclusion
+
+- Your `my.cnf` file does not contain settings itself but includes additional `.cnf` files.
+- The actual MySQL configuration is inside `/etc/mysql/conf.d/` and `/etc/mysql/mysql.conf.d/`.
+- To modify MySQL settings, edit `mysqld.cnf` or create `.cnf` files in the included directories.
+- Restart MySQL after making changes.
+___________________________________________________________________________________________________________________________________

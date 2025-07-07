@@ -1,0 +1,180 @@
+______________________________________________________________________________________________________________________________________
+                                                    Regular User
+                                                    ============ 
+Breif:
+        - In Linux, a regular user refers to any non-administrative user account.
+    
+        - Unlike the root user, a regular user has limited privileges and can only
+          perform tasks and access files permitted by the system’s file permissions and ownership settings.
+
+______________________________________________________________________________________________________________________________________
+                                              1.Characteristics of a Regular User
+
+1.Limited Privileges  
+        - Regular users cannot modify system files or perform administrative
+          tasks without permission from the root user or through the use of tools like `sudo`.
+   
+2.Home Directory  
+        - Each regular user has a dedicated home directory located in `/home/<username>`.
+        - This is where the user’s personal files, configuration files, and application settings are stored.
+
+3.Unique User ID (UID)  
+        - Regular users have a UID greater than `1000` (on most modern systems).
+        - The UID is used by the system to identify and manage user permissions.
+        - Example entry in `/etc/passwd`:
+                `````````````````````````````````````````````````
+                alice:x:1001:1001:Alice:/home/alice:/bin/bash
+                `````````````````````````````````````````````````
+                - Username: `alice`
+                - UID: `1001`
+                - GID: `1001`
+                - Home Directory: `/home/alice`
+                - Login Shell: `/bin/bash`
+
+4.Primary and Secondary Groups  
+        - Each regular user is assigned a primary group
+          (with the same name as the user by default) and can belong to multiple secondary groups.
+        
+        - Groups are used to manage access control for files and resources shared among multiple users.
+
+______________________________________________________________________________________________________________________________________
+                                              2.Creating a Regular User
+
+A regular user can be created using the `useradd` or `adduser` command:
+
+        `````````````````````````````````````````````````
+        sudo useradd -m -s /bin/bash john
+        sudo passwd john
+        `````````````````````````````````````````````````
+        - `-m`: Creates the user’s home directory.
+        - `-s /bin/bash`: Sets the user’s default shell to `/bin/bash`.
+        - `passwd john`: Sets a password for the user.
+
+______________________________________________________________________________________________________________________________________
+                                              3.Regular User Permissions
+
+1.File Permissions  
+   A regular user can:
+        - Read, write, and execute files they own.
+        - Read files owned by other users if they have read permission (`r`).
+        - Write to files owned by other users if they have write permission (`w`).
+        - Execute files if they have execute permission (`x`).
+
+2.Restricted Commands  
+   Regular users cannot:
+        - Install or remove system-wide software.
+        - Modify files outside their home directory unless they have the necessary permissions.
+        - Manage system services or network settings unless granted `sudo` privileges.
+
+______________________________________________________________________________________________________________________________________
+                                              4.Escalating Privileges with `sudo`
+
+Regular users can perform administrative tasks by being added to the sudoers 
+ list (a configuration that allows specific users to use `sudo` to execute commands as root).
+
+1.Adding a User to `sudo` Group  
+        `````````````````````````````````````````````````
+        sudo usermod -aG sudo alice
+        `````````````````````````````````````````````````
+        This command adds the user `alice` to the `sudo` group, granting her the ability to run commands as root using `sudo`.
+
+2.Using `sudo`  
+        Once a user is part of the `sudo` group, they can run commands as root by prefixing them with `sudo`:
+        `````````````````````````````````````````````````
+        sudo apt update
+        `````````````````````````````````````````````````
+        The system will prompt for the user’s password before executing the command with elevated privileges.
+
+______________________________________________________________________________________________________________________________________
+                                              5.Modifying a Regular User
+
+1.Changing User Information  
+        Use the `usermod` command to modify user settings:
+        `````````````````````````````````````````````````
+        sudo usermod -l newname alice
+        `````````````````````````````````````````````````
+        This changes the username from `alice` to `newname`.
+
+2.Deleting a User  
+        Use the `userdel` command to remove a user:
+        `````````````````````````````````````````````````
+        sudo userdel -r alice
+        `````````````````````````````````````````````````
+        - `-r`: Deletes the user’s home directory and mail spool along with the user account.
+
+______________________________________________________________________________________________________________________________________
+                                              6.Viewing Regular Users
+
+To list all users on the system, check the `/etc/passwd` file:
+        `````````````````````````````````````````````````
+        cat /etc/passwd
+        `````````````````````````````````````````````````
+        Regular users typically have a UID greater than `1000`.
+        You can filter them using:
+        `````````````````````````````````````````````````
+        awk -F: '$3 >= 1000 && $3 < 65534 { print $1 }' /etc/passwd
+        `````````````````````````````````````````````````
+        This command lists only the usernames of regular users.
+
+______________________________________________________________________________________________________________________________________
+                                              7.Switching Between Users
+
+1.Switching to Another User  
+        Use the `su` command to switch to another user:
+        `````````````````````````````````````````````````
+        su - john
+        `````````````````````````````````````````````````
+        You will be prompted to enter the password for `john`.
+        The `-` option ensures that the environment is properly loaded for the new user.
+
+2.Logging Out  
+        Use the `exit` command to log out and return to the previous user session:
+        `````````````````````````````````````````````````
+        exit
+        `````````````````````````````````````````````````
+
+______________________________________________________________________________________________________________________________________
+                                              8.Commands Regular Users Commonly Use
+
+1.File and Directory Management  
+        - `ls`, `cd`, `mkdir`, `rm`, `cp`, `mv`
+
+2.Viewing and Editing Files  
+        - `cat`, `less`, `nano`, `vim`, `head`, `tail`
+
+3.Process Management  
+        - `ps`, `top`, `kill`
+
+4.Disk Usage  
+        - `df`, `du`
+
+5.Networking  
+        - `ping`, `curl`, `wget`, `ssh`
+
+______________________________________________________________________________________________________________________________________
+                                              9.Best Practices for Regular Users
+
+1.Use `sudo` Sparingly  
+        - Only use `sudo` when absolutely necessary.
+        - This reduces the risk of accidental system changes or damage.
+
+2.Keep Your Home Directory Organized  
+        - Regular users should maintain a clean and organized home directory to ensure ease of use and management.
+
+3.Set a Strong Password  
+        - Always use a strong password for your user account to prevent unauthorized access.
+
+4.Avoid Changing Critical System Files  
+        - Regular users should avoid modifying files outside their home directory unless they are sure about the changes.
+
+______________________________________________________________________________________________________________________________________
+                                              Conclusion
+
+Regular users are an essential part of Linux systems, ensuring a balance between usability and security.
+
+They have enough privileges to perform everyday tasks while
+ being restricted from making critical system changes unless explicitly granted permission.
+
+By properly managing regular users and their privileges,
+ administrators can maintain a secure and stable operating environment.
+______________________________________________________________________________________________________________________________________

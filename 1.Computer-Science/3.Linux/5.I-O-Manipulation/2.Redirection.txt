@@ -1,0 +1,182 @@
+______________________________________________________________________________________________________________________________________
+                                                          Redirection 
+                                                          ===========
+
+Redirection in Linux allows you to control where the output of a command is sent or where it takes its input from.
+By default, input is taken from the terminal, and output is displayed on the terminal.
+Redirection enables you to change this behavior, sending
+ output to files, using input from files, or even chaining commands together.
+
+---------------------------------------------------------------------------------------------------------
+There are several types of redirection that can be used in the shell:
+
+1.Output Redirection (>)
+
+The `>` operator is used to redirect the standard output (`stdout`) of
+ a command to a file.
+If the file already exists, it will be overwritten.
+
+- Syntax:
+  ```bash
+  command > file
+  ```
+
+- Example:
+  ```bash
+  echo "Hello, World!" > output.txt
+  ```
+  This command redirects the output of `echo` to the file `output.txt`.If `output.txt` exists, it will be overwritten.
+---------------------------------------------------------------------------------------------------------
+2.Append Output Redirection (>>)
+
+The `>>` operator is used to append the output of a command to a file, instead of overwriting the file.
+
+- Syntax:
+  ```bash
+  command >> file
+  ```
+
+- Example:
+  ```bash
+  echo "Appending this text" >> output.txt
+  ```
+  This command appends the output of `echo` to the file `output.txt`.If the file does not exist, it will be created.
+---------------------------------------------------------------------------------------------------------
+3.Input Redirection (<)
+
+The `<` operator is used to redirect input from a file into a command, instead of typing the input manually.
+
+- Syntax:
+  ```bash
+  command < file
+  ```
+
+- Example:
+  ```bash
+  sort < unsorted.txt
+  ```
+  This command sorts the content of the file `unsorted.txt`.The file content is redirected as input to the `sort` command.
+---------------------------------------------------------------------------------------------------------
+4.Redirecting Standard Error (2>)
+
+By default, error messages are sent to the standard error stream (`stderr`).You can redirect `stderr` to a file using `2>`.
+
+- Syntax:
+  ```bash
+  command 2> file
+  ```
+
+- Example:
+  ```bash
+  ls non_existent_file 2> error.log
+  ```
+  This command tries to list a non-existent file, and the error message will be redirected to `error.log`.
+---------------------------------------------------------------------------------------------------------
+5.Redirecting Both Standard Output and Standard Error (2>&1)
+
+Sometimes, you may want to redirect both standard output (`stdout`) and standard error (`stderr`) to the same destination (e.g., to a file).This can be done using `2>&1`.
+
+- Syntax:
+  ```bash
+  command > file 2>&1
+  ```
+
+- Example:
+  ```bash
+  ls non_existent_file > output.log 2>&1
+  ```
+  This command redirects both the standard output and standard error to `output.log`.The `2>&1` part tells the shell to redirect `stderr` (2) to wherever `stdout` (1) is currently going (in this case, to `output.log`).
+---------------------------------------------------------------------------------------------------------
+6.Redirecting to /dev/null
+
+The `/dev/null` device is a special file that discards any data written to it.
+You can use it to ignore output or errors by redirecting them to `/dev/null`.
+
+- Syntax:
+  ```bash
+  command >  /dev/null 2>&1
+  command >  /dev/null 
+  command 2> /dev/null 
+  ```
+
+- Example:
+  ```bash
+  ls non_existent_file > /dev/null 2>&1
+  ```
+  This command will suppress all output, including both regular output and error messages, by redirecting them to `/dev/null`.
+---------------------------------------------------------------------------------------------------------
+7.Here Documents (<<)
+
+A Here Document (also known as Heredoc) is used to provide multi-line input to a command.
+It allows you to redirect a block of text as input to a command.
+
+- Syntax:
+  ```bash
+  command << delimiter
+  text
+  delimiter
+  ```
+
+- Example:
+  ```bash
+  cat << EOF
+  Hello, this is a multi-line input.
+  It will be provided to the cat command.
+  EOF
+  ```
+  This command uses `cat` to print the provided multi-line text.
+---------------------------------------------------------------------------------------------------------
+8.Here Strings (<<<)
+
+A Here String is similar to a Here Document, but it's used for providing a single-line input to a command.
+It sends a string to the command’s `stdin`.
+
+- Syntax:
+  ```bash
+  command <<< "string"
+  ```
+
+- Example:
+  ```bash
+  grep "Hello" <<< "Hello, World!"
+  ```
+  This command searches for the word "Hello" in the string "Hello, World!" and outputs the match.
+---------------------------------------------------------------------------------------------------------
+9.Piping (|)
+
+Piping connects the output of one command to the input of another command.
+This allows you to chain commands together in a way that makes use of the output of one as the input for the next.
+
+- Syntax:
+  ```bash
+  command1 | command2
+  ```
+
+- Example:
+  ```bash
+  echo "Hello, World!" | grep "Hello"
+  ```
+  In this example, the output of `echo` ("Hello, World!") is passed as input to `grep`,
+   which searches for the string "Hello" and prints the result.
+---------------------------------------------------------------------------------------------------------
+Redirection Summary Table
+ ________________________________________________________________________________________________________________________
+| Redirection Type                        | Operator       | Description                                                 |
+|_________________________________________|________________|_____________________________________________________________|
+| Redirect output to file                 | `>`            | Overwrites the file with the output of the command.         |
+| Append output to file                   | `>>`           | Appends the output of the command to the file.              |
+| Redirect input from file                | `<`            | Uses the contents of a file as input to the command.        |
+| Redirect error output to file           | `2>`           | Redirects error messages (`stderr`) to a file.              |
+| Redirect both output and error          | `> file 2>&1`  | Redirects both `stdout` and `stderr` to the same file.      |
+| Discard output/error                    | `/dev/null`    | Redirects output or errors to the special null device.      |
+| Provide multi-line input (Heredoc)      | `<< delimiter` | Provides multiple lines of input to a command.              |
+| Provide single-line input (HereString)  | `<<<`          | Provides a single string as input to a command.             |
+|_________________________________________|________________|_____________________________________________________________|
+---------------------------------------------------------------------------------------------------------
+Conclusion
+
+Redirection is an essential tool in Linux, enabling more control over the input and output of commands.
+By using these redirection techniques, you can manipulate how data flows between commands, 
+ files, and processes, making your workflow more efficient and flexible.
+Understanding these redirection options will make you much more powerful and productive while working in the Linux terminal.
+______________________________________________________________________________________________________________________________________

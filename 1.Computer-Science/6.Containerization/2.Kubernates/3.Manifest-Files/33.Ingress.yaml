@@ -1,0 +1,90 @@
+# ---------------------------------------------------------------------------------------------------------
+# Kubernetes Ingress Manifest
+# ---------------------------------------------------------------------------------------------------------
+# Ingress is an API object that manages external access to services in a cluster, typically HTTP.
+# It provides routing rules to map incoming HTTP/S requests to backend Services.
+# Requires an Ingress Controller (like NGINX) to fulfill the configuration.
+#
+# Purpose:
+# - Expose HTTP and HTTPS routes from outside the cluster to services inside the cluster.
+# - Consolidate traffic routing in a single object.
+# - Support name-based virtual hosting, TLS termination, and path-based routing.
+#
+# This manifest references an IngressClass (e.g. `nginx`) to determine which controller handles the rules.
+# ---------------------------------------------------------------------------------------------------------
+apiVersion: networking.k8s.io/v1    # API version for Ingress resources
+kind: Ingress                       # Resource kind: Ingress defines HTTP(S) routing to services
+metadata:
+  name: example-ingress            # Name of the Ingress resource
+  namespace: default               # Namespace in which the Ingress is created
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /  # Optional: Rewrite paths to `/`
+spec:
+  ingressClassName: nginx          # References the IngressClass 'nginx' defined elsewhere (e.g., nginx-ingress controller)
+  
+  # ------------------------------------------------------------------------------------------
+  # TLS Configuration
+  # ------------------------------------------------------------------------------------------
+  # Enables HTTPS using TLS certificates stored in a Kubernetes Secret.
+  # All TLS traffic is served on port 443.
+  # If multiple domains are listed, SNI will determine which certificate to use.
+  tls:
+    - hosts:                      # List of FQDNs covered by the TLS certificate
+        - app.example.com
+        - www.example.com
+      secretName: example-tls     # Name of Kubernetes TLS secret storing the cert/key
+                                  # Must contain 'tls.crt' and 'tls.key'
+  # ------------------------------------------------------------------------------------------
+  # Ingress Rules
+  # ------------------------------------------------------------------------------------------
+  # Each rule maps a "host" (i.e., domain) and its "http.paths" to Kubernetes backend services.
+  # Incoming requests are evaluated in this order:
+  #   1. Host match (e.g., app.example.com)
+  #   2. Path match (e.g., /api)
+  # If both match, the request is forwarded to the specified backend service.
+  rules:
+    - host: app.example.com        # Host header in the HTTP request must match this FQDN
+      http:
+        paths:
+          - path: /                # Path prefix to match (must start with '/')
+            pathType: Prefix       # PathType can be:
+                                   # - Exact: path must match exactly
+                                   # - Prefix: matches if request path starts with this prefix
+                                   # - ImplementationSpecific: controller-defined behavior
+            backend:
+              service:
+                name: app-service  # Name of the Kubernetes Service to forward traffic to
+                port:
+                  number: 80       # Port number exposed by the service (TCP by default)
+    - host: api.example.com        # A second rule for a different subdomain
+      http:
+        paths:
+          - path: /v1              # Only match requests that start with /v1
+            pathType: Prefix
+            backend:
+              service:
+                name: api-service  # Different service handling API traffic
+                port:
+                  number: 8080
+    - host: ''                     # Optional: matches all hosts if none of the above match
+      http:
+        paths:
+          - path: /fallback
+            pathType: Prefix
+            backend:
+              service:
+                name: fallback-service
+                port:
+                  number: 3000
+  # -----------------------------------------------------------------------------------------------------
+  # Default Backend
+  # -----------------------------------------------------------------------------------------------------
+  # The default backend is used when no rules match the incoming request.
+  # It must be defined if no specific rules are given. Optional otherwise.
+  # Can be used to return a generic error page, maintenance message, or 404 response.
+  # -----------------------------------------------------------------------------------------------------
+  defaultBackend:
+    service:                       # Defines the fallback backend service
+      name: default-backend        # Name of the Kubernetes Service that should receive unmatched requests
+      port:
+        number: 80                 # Port on the Service to forward the traffic to

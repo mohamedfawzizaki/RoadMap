@@ -1,0 +1,108 @@
+_______________________________________________________________________________________________________________________________
+                                    DDoS Attacks (Distributed Denial of Service) 
+
+ 1. What is a DDoS Attack?  
+
+A Distributed Denial of Service (DDoS) attack is an attempt to overwhelm a server,
+ network, or application by flooding it with an excessive amount of requests, causing:  
+✅ Slow performance (delayed responses or timeouts).  
+✅ Server crashes (unable to handle incoming requests).  
+✅ Disruptions in services (websites or APIs become unreachable).  
+
+DDoS attacks are distributed, meaning they come from multiple
+ compromised systems (often botnets), making them harder to block.
+
+----------------------------------------------------------------------------------------
+
+ 2. How DDoS Attacks Work
+1. Attacker infects multiple devices (computers, IoT devices, etc.) using malware.  
+2. Creates a botnet—a network of infected devices controlled remotely.  
+3. Launches an attack by sending a flood of traffic to a target server.  
+4. Overwhelms resources, leading to downtime or degraded performance.  
+
+----------------------------------------------------------------------------------------
+
+ 3. Types of DDoS Attacks  
+DDoS attacks target different layers of a network or application.  
+
+ 🔵 1. Volume-Based Attacks (Layer 3 & 4)
+- Floods the target with massive traffic to exhaust bandwidth.  
+- Measured in Gbps (Gigabits per second) or PPS (Packets per second).  
+- Examples:  
+  - UDP Flood: Sends a massive number of UDP packets, consuming bandwidth.  
+  - ICMP (Ping) Flood: Sends continuous ping requests to overload the server.  
+  - DNS Amplification: Uses vulnerable DNS servers to amplify traffic towards the victim.  
+
+----------------------------------------------------------------------------------------
+
+ 🟠 2. Protocol Attacks (Layer 4)
+- Exploits weaknesses in network protocols to consume server resources (CPU, memory, firewall limits).  
+- Measured in PPS (Packets per second).  
+- Examples:  
+  - SYN Flood:  
+    - Sends half-open TCP connection requests (SYN packets) but never completes them, consuming memory.  
+  - ACK Flood:  
+    - Sends massive ACK responses to confuse firewalls and servers.  
+  - Slowloris Attack:  
+    - Opens multiple HTTP connections without closing them, tying up server resources.  
+
+----------------------------------------------------------------------------------------
+
+ 🟢 3. Application Layer Attacks (Layer 7)
+- Targets the web application directly using normal HTTP requests.  
+- Harder to detect because it mimics legitimate user traffic.  
+- Measured in RPS (Requests per second).  
+- Examples:  
+  - HTTP Flood:  
+    - Sends multiple HTTP requests to overload the web server.  
+  - Login Page Attacks:  
+    - Floods authentication pages to exhaust resources.  
+  - API DDoS Attacks:  
+    - Targets API endpoints with thousands of fake API calls.  
+
+----------------------------------------------------------------------------------------
+
+ 4. Real-World DDoS Attack Examples
+| Year |      Attack          | Impact                                                        |
+| 2016 | Mirai Botnet         | Took down Twitter, Netflix, GitHub by hijacking IoT devices.  |
+| 2020 | AWS DDoS Attack      | Largest attack 2.3 Tbps, targeting Amazon Web Services.       |
+| 2023 | Google Cloud Attack  | 398 million RPS attack using HTTP/2 Rapid Reset.              |
+
+----------------------------------------------------------------------------------------
+
+ 5. How to Prevent & Mitigate DDoS Attacks
+ 🛡️ 1. Network & Firewall Protection
+✅ Rate Limiting: Limit the number of requests per IP.  
+✅ Geo-Blocking: Block traffic from high-risk regions.  
+✅ Cloud DDoS Protection: Use services like Cloudflare, AWS Shield, Akamai, Imperva.  
+
+----------------------------------------------------------------------------------------
+
+ 🛡️ 2. Web Server & API Protection
+✅ CDN (Content Delivery Network): Absorbs traffic spikes and protects origin servers.  
+✅ WAF (Web Application Firewall): Blocks malicious Layer 7 requests.  
+✅ CAPTCHAs & Bot Detection: Prevents automated traffic.  
+
+----------------------------------------------------------------------------------------
+
+ 🛡️ 3. Traffic Filtering & Load Balancing
+✅ Traffic Analysis Tools: Use Grafana, Prometheus, or Datadog to detect unusual patterns.  
+✅ Load Balancers: Distribute traffic across multiple servers (AWS ELB, Nginx, HAProxy).  
+✅ Anycast Routing: Spreads traffic across multiple locations.  
+
+----------------------------------------------------------------------------------------
+
+ 🛡️ 4. Linux & Server Hardening
+✅ iptables & fail2ban: Block excessive connections from a single IP.  
+✅ TCP SYN Cookie: Prevents SYN Flood attacks.  
+✅ ModSecurity: Blocks Layer 7 attacks (XSS, SQL Injection).  
+
+----------------------------------------------------------------------------------------
+
+ 6. How to Detect a DDoS Attack
+📌 Unusual traffic spikes (high CPU, RAM, or bandwidth usage).  
+📌 Slow website response times or timeouts.  
+📌 Massive requests from single or multiple unknown IPs.  
+📌 Increased failed login attempts.  
+
+_______________________________________________________________________________________________________________________________

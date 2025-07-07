@@ -1,0 +1,34 @@
+ ______________________________________________________________________________________________________________________________________
+|   vagrant version                                         Displays the installed Vagrant version and the latest version.
+|   vagrant --version                                       Displays the installed Vagrant version.
+|___________________________________________________________________________________________________________________________________
+|   vagrant init [options] [name [url]]                     Creates a Vagrantfile in the current directory.   
+                 --box VERSION                              Version of the box to add                                                           
+                 --box-version VERSION                      Version of the box to add
+                 --minimal                                  Creates a minimal Vagrantfile. 
+                 -f, --force                                Overwrite existing Vagrantfile
+                 -m, --minimal                              Use minimal Vagrantfile template (no help comments). Ignored with --template
+                     --output FILE                          Output path for the box. '-' for stdout
+                     --template FILE                        Path to custom Vagrantfile template
+                     
+                     name                                url = .box if is not in the official registery 
+    vagrant init ubuntu/trusty64 https://portal.cloud.hashicorp.com/vagrant/discover/ubuntu/trusty64 --box-version 20191107.0.0
+|___________________________________________________________________________________________________________________________________
+|   vagrant global-status                                   Shows the status of all Vagrant environments on the system.                   
+                 --prune                                    Prune invalid entries.        
+|___________________________________________________________________________________________________________________________________
+|   vagrant status [name|id]                                Displays the status of the VM. 
+|___________________________________________________________________________________________________________________________________
+|   vagrant validate [options]                              Validates the Vagrantfile syntax. 
+                 -p, --ignore-provider                      Ignores provider config options
+|___________________________________________________________________________________________________________________________________
+|                                       General options
+                     --[no-]color                           Enable or disable color output
+                     --machine-readable                     Enable machine readable output
+                 -v, --version                              Display Vagrant version
+                     --debug                                Enable debug output
+                     --timestamp                            Enable timestamps on log output
+                     --debug-timestamp                      Enable debug output with timestamps
+                     --no-tty                               Enable non-interactive output
+                 -h, --help                                 Print this help
+|___________________________________________________________________________________________________________________________________

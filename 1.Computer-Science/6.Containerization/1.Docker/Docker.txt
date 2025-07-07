@@ -1,0 +1,187 @@
+_______________________________________________________________________________________________________________________________________
+
+
+Concepts:
+    -------------------
+    1.Docker Engine.
+    2.Docker Desktop.
+    3.Docker Hub.
+    4.Docker File.
+    5.Docker Compose
+    6.Docker Swarm
+    7.Kubernetes.
+    -------------------
+    1.Image.
+    2.Container.
+    3.Network.
+    4.Volume.
+    5.Docker Compose.
+    -------------------
+    Docker Files:
+                Dockerfile
+                Dockerfile.dev
+                Dockerfile.prod
+                Dockerfile.test
+                Dockerfile.template
+                
+                docker-compose.yml
+                docker-compose.override.yml
+                docker-compose.prod.yml
+                docker-compose.env or .env
+                
+                docker-stack.yml
+                
+                docker-entrypoint.sh
+                config.json
+                .dockerignore
+    
+
+
+    =>>>> Containerizing your Application:
+                        A.Single  Host:
+                                        1.Single-Container Applications 'Monolithic    App'.   "Project 1"
+                                        2.Multi -Container Applications 'Microservices App'.   "Project 2"
+                        A.Multiple Host:
+                                        # Multi -Container Applications 'Microservices App'.   "Project 3"
+
+________________________________________________________________________________________________________________________________________________________________
+Image     Management :             (Write   "docker image"     to list all image     commands)
+Container Management :             (Write   "docker container" to list all container commands)
+Network   Management :             (Write   "docker network"   to list all network   commands)
+Volume    Management :             (Write   "docker volume"    to list all volume    commands)
+Docker Compose:
+
+________________________________________________________________________________________________________________________________________________________________
+
+                                                                Examples                                
+                                                                Examples
+                                                                Examples
+________________________________________________________________________________________________________________________________________________________________
+Basic Commands:
+    docker info
+    docker -v
+    docker --version
+    docker -h
+    docker --help  
+    
+    echo "your-password" | docker login -u <your-username>            --password-stdin     <registry'>
+    echo "mo#es.com123"  | docker login -u mohamedfawzizaki@gmail.com --password-stdin     https://registry-1.docker.io/v2/
+
+    docker logout   <registry>
+    docker logout   https://registry-1.docker.io/v2/   
+   
+
+________________________________________________________________________________________________________________________________________________________________
+________________________________________________________________________________________________________________________________________________________________
+// Containerizing Your Application:
+
+
+Method 1:
+    1.Create a container from a base image.
+    2.Run the container.
+
+                    docker run -it --name php-container -p 8000:80 ubuntu:latest
+
+    3.Install your app dependencies, packages and tools.
+
+                    apt update && apt install -y apache2 php php-mysql vim curl
+
+    3.Copy the application code into the container or Install code editor in the container and write your app source code.
+
+                    cd /var/www/html
+                    vim index.php 
+                    press Esc and write :wq and press Enter
+
+    4.Run  your application in the container.
+
+                    service apache2 start
+                    hostname -I
+
+    5.Test your application in the container.
+
+                    curl http://<container-ip>/index.php
+
+    6.Build a new image from the container.
+
+                    docker commit php-container php-app:1.0
+
+    7.Push the new image to a registry.
+
+                    docker tag php-app:1.0 <your-dockerhub-username>/php-app:1.0
+                    docker login
+                    docker push <your-dockerhub-username>/php-app:1.0
+
+    8.Deploy the image to a container runtime environment.
+    ___________________________________________________________________________
+    /    docker run -it --name php-container ubuntu:latest
+    /
+    /    apt update && apt install -y apache2 php php-mysql vim curl
+    /
+    /    service apache2 start
+    /    cd /var/www/html
+    /    vim index.php
+    /
+    /
+    /    # Commit and push
+    /    docker commit php-container php-app:1.0
+    /    docker tag php-app:1.0 <your-dockerhub-username>/php-app:1.0
+    /
+    /    # Test the application
+    /    docker run -it --name php-container -p 8000:80 <your-dockerhub-username>/php-app:1.0
+    /    curl http://localhost:8000:80
+
+    /
+    /    docker login
+    /    docker push <your-dockerhub-username>/php-app:1.0
+    /__________________________________________________________________________
+
+Method 2:
+    1.Create your app in your host machine.
+    2.Create a Dockerfile in your app directory.
+    3.Build a Docker image from your Dockerfile
+    4.Run your application in the container.
+ 
+    -----------------------------------------------------------------------------------
+    my-app:    
+          ->app
+               /contrllers
+               /models
+          ->resources
+          ->bootstrap
+          ->public
+          ->tests
+          ->vendor
+          ->.env
+          ->.gitIgnore
+          ->.dockerIgnore      
+          ->Dockerfile
+          -------------------------------Dockerfile-------------------------------------
+          # get base image:
+          FROM php:7.4-apache
+          
+          # set working directory to /app
+          WORKDIR /app
+          
+          # copy composer.lock and composer.json
+          COPY composer.lock composer.json ./
+          
+          # install dependencies
+          RUN apt-get update && apt-get install -y libzip-dev zip
+          
+          # expose port:
+          EXPOSE 80
+          
+          # copy application code
+          COPY . /app/
+          
+          # CMD Command:
+          CMD ["php", "-S", "localhost:8000"]
+  -----------------------------------------------------------------------------------
+ 
+// 1. Create a Dockerfile
+// 2. Build the Docker image
+// 3. Run the Docker container
+// 4. Push the Docker image to a registry
+// 5. Pull the Docker image from a registry
+// 6. Run the Docker container from the registry
+ 

@@ -1,0 +1,102 @@
+_______________________________________________________________________________________________________________________________________
+                                                      /etc/nginx/
+
+The `/etc/nginx/` directory is the main configuration directory for Nginx on Linux systems. 
+It contains several important files and subdirectories that control how Nginx functions. 
+
+Below is a detailed breakdown:
+
+_______________________________________________________________________________________________________________________________________
+
+ 1. `/etc/nginx/nginx.conf`
+- The main Nginx configuration file.
+- Defines global settings, worker processes, logging, and default server settings.
+- Common sections:
+  - `events {}`: Controls worker connections.
+  - `http {}`: Configures web server behavior.
+  - `server {}`: Defines virtual hosts and routing.
+
+_______________________________________________________________________________________________________________________________________
+
+ 2. `/etc/nginx/conf.d/`
+- This directory contains additional configuration files.
+- Typically used for including extra settings.
+- Files inside are automatically included in `nginx.conf` using:
+  ````````````````````````````````````````````````````````````````````nginx
+  include /etc/nginx/conf.d/*.conf;
+  ````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 3. `/etc/nginx/sites-available/`
+- Stores site-specific configuration files.
+- Not automatically loaded; you need to enable sites manually.
+- Example virtual host file (`example.com`):
+  ````````````````````````````````````````````````````````````````````nginx
+  server {
+      listen 80;
+      server_name example.com;
+      root /var/www/example;
+      index index.html index.php;
+  }
+  ````````````````````````````````````````````````````````````````````
+- To enable a site, create a symbolic link to `sites-enabled`:
+  ````````````````````````````````````````````````````````````````````bash
+  sudo ln -s /etc/nginx/sites-available/example.com /etc/nginx/sites-enabled/
+  ````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 4. `/etc/nginx/sites-enabled/`
+- Contains symbolic links to enabled sites.
+- Only sites with links here will be served by Nginx.
+
+_______________________________________________________________________________________________________________________________________
+
+ 5. `/etc/nginx/snippets/`
+- Stores reusable configuration snippets.
+- Used for including common settings across multiple sites.
+- Example: `ssl-params.conf` for SSL settings.
+  ````````````````````````````````````````````````````````````````````nginx
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_ciphers HIGH:!aNULL:!MD5;
+  ````````````````````````````````````````````````````````````````````
+- Included in a server block using:
+  ````````````````````````````````````````````````````````````````````nginx
+  include snippets/ssl-params.conf;
+  ````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 6. `/etc/nginx/modules-enabled/`
+- Contains enabled dynamic modules.
+- Loaded in `nginx.conf` using `load_module` directive.
+
+_______________________________________________________________________________________________________________________________________
+
+ 7. `/etc/nginx/mime.types`
+- Defines supported MIME types for content delivery.
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  types {
+      text/html html;
+      image/png png;
+  }
+  ````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 8. `/etc/nginx/fastcgi_params`
+- Defines FastCGI parameters for PHP applications.
+
+_______________________________________________________________________________________________________________________________________
+
+ 9. `/etc/nginx/proxy_params`
+- Contains settings for reverse proxy configurations.
+
+_______________________________________________________________________________________________________________________________________
+
+ 10. `/etc/nginx/uwsgi_params`
+- Used for `uWSGI` applications.
+
+_______________________________________________________________________________________________________________________________________

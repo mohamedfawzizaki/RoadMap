@@ -1,0 +1,24 @@
+_______________________________________________________________________________________________________________________________________
+                                                       5.Router
+                                                       ---------
+- Definition: 
+      - A device that connects different networks and directs data packets based on IP addresses.
+- Functions:
+      - Operates at the network layer (Layer 3) of the OSI model.
+      - Routes data between devices within a network and across networks.
+      - Assigns IP addresses through DHCP.
+      - Provides NAT (Network Address Translation) for secure private networks.
+- Types:
+      1.Wired Routers   : Connect using Ethernet cables.
+      2.Wireless Routers: Provide Wi-Fi connectivity.
+      3.Edge Routers    : Connect enterprise networks to the internet.
+      4.Core Routers    : Operate within the backbone of a large network.
+- Advantages:
+      - Enables internet access.
+      - Ensures efficient data routing.
+- Disadvantages:
+      - Complex configuration for advanced features.
+- Usage:
+      - Home networks, businesses, and ISPs.
+_______________________________________________________________________________________________________________________________________
+  

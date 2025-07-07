@@ -1,0 +1,182 @@
+
+
+________________________________________________________________________________________________________________________________
+1.Backup Script:
+        
+        ________________________________________________________________________________________________________________________________
+        Purpose: Automates data backups to ensure data integrity and availability.
+        ________________________________________________________________________________________________________________________________
+        #!/bin/bash
+        # Backup Script: Backs up a specific directory to a backup location
+
+        SOURCE_DIR="/home/user/docs"
+        BACKUP_DIR="/home/user/backups"
+        TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+        BACKUP_FILE="$BACKUP_DIR/backup_$TIMESTAMP.tar.gz"
+
+        # Ensure the backup directory exists
+        mkdir -p "$BACKUP_DIR"
+
+        # Create the backup
+        tar -czf "$BACKUP_FILE" "$SOURCE_DIR"
+
+        echo "Backup completed: $BACKUP_FILE"
+        ________________________________________________________________________________________________________________________________
+
+2.Database Backup Script:
+
+        ________________________________________________________________________________________________________________________________
+        Purpose: Automates database backups to ensure data integrity and availability.
+        ________________________________________________________________________________________________________________________________
+        #!/bin/bash
+        # MySQL Database Backup Script
+
+        DB_NAME="my_database"
+        DB_USER="root"
+        DB_PASS="password"
+        BACKUP_DIR="/home/user/db_backups"
+        TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+        BACKUP_FILE="$BACKUP_DIR/${DB_NAME}_backup_$TIMESTAMP.sql"
+
+        mkdir -p "$BACKUP_DIR"
+
+        # Dump the database
+        mysqldump -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" > "$BACKUP_FILE"
+
+        if [ $? -eq 0 ]; then
+        echo "Database backup successful: $BACKUP_FILE"
+        else
+        echo "Database backup failed!"
+        fi        
+        ________________________________________________________________________________________________________________________________
+
+3.Deployment Script:
+
+        ________________________________________________________________________________________________________________________________
+        Purpose: Automates the deployment of applications and services.
+        ________________________________________________________________________________________________________________________________
+        #!/bin/bash
+        # Deployment Script: Deploys a web application to the server
+
+        APP_DIR="/var/www/myapp"
+        DEPLOY_DIR="/var/www/html"
+        LOG_FILE="/var/log/deploy.log"
+
+        echo "Starting deployment at $(date)" | tee -a "$LOG_FILE"
+
+        # Remove old files
+        rm -rf "$DEPLOY_DIR"/*
+
+        # Copy new files
+        cp -r "$APP_DIR"/* "$DEPLOY_DIR/"
+
+        # Set appropriate permissions
+        chmod -R 755 "$DEPLOY_DIR"
+
+        # Restart the web server
+        systemctl restart apache2
+
+        echo "Deployment completed at $(date)" | tee -a "$LOG_FILE"        
+        ________________________________________________________________________________________________________________________________
+
+4.Container Deployment Script:
+
+        ________________________________________________________________________________________________________________________________
+        Purpose: Automate Docker container deployment.
+        ________________________________________________________________________________________________________________________________
+        #!/bin/bash
+        # Docker Deployment Script
+
+        IMAGE_NAME="my_app"
+        CONTAINER_NAME="my_app_container"
+        PORT=8080
+
+        echo "Stopping existing container..."
+        docker stop "$CONTAINER_NAME" || true
+        docker rm "$CONTAINER_NAME" || true
+
+        echo "Deploying new container..."
+        docker run -d --name "$CONTAINER_NAME" -p "$PORT:80" "$IMAGE_NAME"
+
+        if [ $? -eq 0 ]; then
+        echo "Container deployed successfully!"
+        else
+        echo "Failed to deploy container."
+        fi        
+        ________________________________________________________________________________________________________________________________
+
+5.Monitoring Script:
+
+        ________________________________________________________________________________________________________________________________
+        Purpose: Automates the monitoring of system performance and resource utilization.
+        ________________________________________________________________________________________________________________________________
+        #!/bin/bash
+        # Monitoring Script: Logs system performance metrics
+
+        LOG_FILE="/var/log/system_monitor.log"
+        INTERVAL=10  # Check every 10 seconds
+
+        echo "System monitoring started at $(date)" >> "$LOG_FILE"
+
+        while true; do
+        echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ $(date) ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------" >> "$LOG_FILE"
+        echo "CPU Usage:" >> "$LOG_FILE"
+        mpstat | tail -1 >> "$LOG_FILE"
+        echo "Memory Usage:" >> "$LOG_FILE"
+        free -h >> "$LOG_FILE"
+        echo "Disk Usage:" >> "$LOG_FILE"
+        df -h >> "$LOG_FILE"
+        sleep "$INTERVAL"
+        done        
+        ________________________________________________________________________________________________________________________________
+
+6.Network Monitoring Script:
+        ________________________________________________________________________________________________________________________________
+        Purpose: Monitor the status of a specific network service.
+        ________________________________________________________________________________________________________________________________
+        #!/bin/bash
+        # Network Monitoring Script
+
+        SERVICE="google.com"
+        LOG_FILE="/var/log/network_monitor.log"
+
+        echo "Monitoring network connectivity to $SERVICE..."
+
+        while true; do
+        ping -c 1 "$SERVICE" > /dev/null 2>&1
+        if [ $? -ne 0 ]; then
+                echo "$(date): $SERVICE is unreachable!" >> "$LOG_FILE"
+        else
+                echo "$(date): $SERVICE is reachable." >> "$LOG_FILE"
+        fi
+        sleep 30
+        done        
+        ________________________________________________________________________________________________________________________________
+
+7.Security Script
+        ________________________________________________________________________________________________________________________________
+        Purpose: Automates security tasks like password management and access control.
+        ________________________________________________________________________________________________________________________________
+        #!/bin/bash
+        # Security Script: Checks for unauthorized SSH login attempts
+
+        LOG_FILE="/var/log/auth.log"
+        OUTPUT_FILE="/var/log/unauthorized_attempts.log"
+
+        echo "Scanning for unauthorized SSH login attempts..." | tee -a "$OUTPUT_FILE"
+
+        grep "Failed password" "$LOG_FILE" | awk '{print $1, $2, $3, $11, $13}' >> "$OUTPUT_FILE"
+
+        echo "Unauthorized login attempts have been logged to $OUTPUT_FILE"        
+        ________________________________________________________________________________________________________________________________
+
+8.Security Scripts
+        ________________________________________________________________________________________________________________________________
+        User Account Monitoring Script
+        Purpose: Detect newly added or removed user accounts.
+        ________________________________________________________________________________________________________________________________
+        #!/bin/bash
+        # User Monitoring Script
+
+        PREV_USERS="/tmp/users_prev"
+        ________________________________________________________________________________________________________________________________

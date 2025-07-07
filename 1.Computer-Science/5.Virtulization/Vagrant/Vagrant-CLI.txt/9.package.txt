@@ -1,0 +1,11 @@
+ ___________________________________________________________________________________________________________________________________
+|   vagrant package [options] [name|id]
+                 --base NAME                                Name of a VM in VirtualBox to package as a base box (VirtualBox Only)
+                 --output NAME                              Name of the file to output
+                 --include FILE,FILE..                      Comma separated additional files to package with the box, like .json files
+                 --info FILE                                Path to a custom info.json file containing additional box information
+                 --vagrantfile FILE                         Vagrantfile to package with the box
+|___________________________________________________________________________________________________________________________________
+vagrant cloud box      create organization/box-name --description "description"
+vagrant cloud version  create organization/box-name <version like 1.0.0>
+vagrant cloud provider upload organization/box-name provider-name version architecture box-file

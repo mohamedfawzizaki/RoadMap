@@ -1,0 +1,31 @@
+ ___________________________________________________________________________________________________________________________________
+|   vagrant snapshot list [options] [vm-name/id]            List all snapshots taken for a machine.
+|___________________________________________________________________________________________________________________________________
+|   vagrant snapshot save [options] [vm-name/id] <name>     Take a snapshot of the current state of the machine. 
+                                                            The snapshot can be restored via `vagrant snapshot restore` at any point in the
+                                                            future to get back to this exact machine state.
+                                                            If no vm-name is given, Vagrant will take a snapshot of
+                                                            the entire environment with the same snapshot name.
+                                                            Snapshots are useful for experimenting in a machine and being able
+                                                            to rollback quickly.
+                 -f, --force                                Replace snapshot without confirmation
+|___________________________________________________________________________________________________________________________________
+|   vagrant snapshot restore [options] [vm-name/id] <name> Restore a snapshot taken previously with snapshot save.
+                 --[no-]provision                           Enable or disable provisioning
+                 --provision-with x,y,z                     Enable only certain provisioners, by type or by name.
+                 --no-start                                 Don't start the snapshot after the restore
+|___________________________________________________________________________________________________________________________________
+|   vagrant snapshot push [options] [vm-name/id]            Take a snapshot of the current state of the machine and 'push'
+                                                            it onto the stack of states. You can use `vagrant snapshot pop`
+                                                            to restore back to this state at any time.
+                                                            If you use `vagrant snapshot save` or restore at any point after
+                                                            a push, pop will still bring you back to this pushed state.
+|___________________________________________________________________________________________________________________________________
+|   vagrant snapshot pop [options] [vm-name/id]             Restore state that was pushed onto the snapshot stack with `vagrant snapshot push`.
+                 --[no-]provision                           Enable or disable provisioning
+                 --provision-with x,y,z                     Enable only certain provisioners, by type or by name.
+                 --no-delete                                Don't delete the snapshot after the restore
+                 --no-start                                 Don't start the snapshot after the restore
+|___________________________________________________________________________________________________________________________________
+|   vagrant snapshot delete [options] [vm-name/id] <name>      Delete a snapshot taken previously with snapshot save.
+|___________________________________________________________________________________________________________________________________

@@ -1,0 +1,170 @@
+______________________________________________________________________________________________________________________________________
+                                                    System User
+                                                    =========== 
+Breif:
+        - A system user in Linux refers to an account used by the
+          operating system and services to run processes, manage resources,
+          and ensure proper functioning of system services without requiring human interaction.
+         
+        - Unlike regular users, system users are typically non-login
+          accounts and have restricted permissions tailored for specific tasks.
+
+______________________________________________________________________________________________________________________________________
+                                              1.Characteristics of a System User
+
+1.UID Range  
+        - System users generally have a User ID (UID) in the range of `0` to `999` (or `0` to `499` on some older systems).
+        - Regular users, in contrast, typically have UIDs starting from `1000` and above.
+   
+2.No Home Directory or Shell (Optional)  
+        - Many system users do not have a home directory (`/home/<username>`)
+          or a login shell because they are not intended for interactive logins.
+        
+        - Instead, their home directories may point to `/var`, `/usr`,
+          or another service-related path, or they may not have one at all.
+        
+        - Their shell is often set to `/sbin/nologin` or `/bin/false` to prevent logins.
+        
+        - Example entry in `/etc/passwd`:
+                `````````````````````````````````````````````````
+                sshd:x:108:65534::/run/sshd:/usr/sbin/nologin
+                `````````````````````````````````````````````````
+                - Username: `sshd`  
+                - UID: `108`  
+                - GID: `65534`  
+                - Home Directory: `/run/sshd`  
+                - Shell: `/usr/sbin/nologin`
+                `````````````````````````````````````````````````
+
+3.Purpose-Specific Accounts  
+        - Each system user is typically associated with a specific service or
+          application (e.g., `sshd` for the SSH daemon, `www-data` for the web server).
+
+______________________________________________________________________________________________________________________________________
+                                              2.Common System Users
+                         _______________________________________________________________________
+                        | Username        |                   Purpose                           |
+                        |_________________|_____________________________________________________|
+                        | `root`          | Superuser with unrestricted privileges.             |
+                        | `sshd`          | Used by the SSH daemon (`sshd`).                    |
+                        | `www-data`      | Used by the Apache/Nginx web servers.               |
+                        | `nobody`        | Generic unprivileged user for running processes.    |
+                        | `mail`          | Used by the mail services.                          |
+                        | `daemon`        | Generic user for system-wide daemons.               |
+                        | `bin`           | Owns essential system binaries (`/bin`, `/usr/bin`).|
+                        | `mysql`         | Used by the MySQL database server.                  |
+                        | `postgres`      | Used by the PostgreSQL database server.             |
+                        |_________________|_____________________________________________________|
+
+______________________________________________________________________________________________________________________________________
+                                              3.Viewing System Users
+
+1.Listing All Users  
+        You can view all users, including system users,
+         by displaying the contents of the `/etc/passwd` file:
+        `````````````````````````````````````````````````
+        cat /etc/passwd
+        `````````````````````````````````````````````````
+
+2.Filtering System Users  
+        To list only system users (with UIDs less than `1000`),
+         use the following command:
+        `````````````````````````````````````````````````
+        awk -F: '$3 < 1000 { print $1 }' /etc/passwd
+        `````````````````````````````````````````````````
+
+______________________________________________________________________________________________________________________________________
+                                              4.Creating a System User
+
+To create a system user, use the `useradd` command
+ with the `-r` option (for creating a system account):
+
+        ``````````````````````````````````````````````````````````````
+        sudo useradd -r -s /usr/sbin/nologin -d /nonexistent myservice
+        ``````````````````````````````````````````````````````````````
+
+        - `-r`: Creates a system account with a UID less than `1000`.
+        - `-s /usr/sbin/nologin`: Sets the shell to `nologin`, preventing interactive logins.
+        - `-d /nonexistent`: Specifies a non-existent home directory, as system users typically do not need one.
+
+______________________________________________________________________________________________________________________________________
+                                              5.File Ownership and Permissions
+
+System users often own specific directories and files used by their associated services.
+For example:
+
+        - The Apache web server (`www-data` user) may own web content in `/var/www`.
+        - The MySQL server (`mysql` user) owns database files in `/var/lib/mysql`.
+
+Permissions are set such that only the associated system user can
+ read or modify the files, ensuring that no unauthorized process or user can interfere with the service.
+
+Example:
+        `````````````````````````````````````````````````````````
+        ls -ld /var/www
+        drwxr-xr-x 2 www-data www-data 4096 Jan 10 14:00 /var/www
+        `````````````````````````````````````````````````````````
+Here, the owner is `www-data`, which corresponds to the Apache web server.
+
+______________________________________________________________________________________________________________________________________
+                                              6.Security and Best Practices
+
+1.Restrict Shell Access  
+        Use `/usr/sbin/nologin` or `/bin/false` as the login shell for system users to prevent unauthorized logins.
+        
+        Example:
+        `````````````````````````````````````````````````
+        usermod -s /usr/sbin/nologin myservice
+        `````````````````````````````````````````````````
+
+2.Set Minimal Permissions  
+        - Ensure that system users only have the necessary permissions for their intended tasks.
+        - Avoid granting unnecessary `sudo` privileges.
+
+3.Use System Groups  
+        - Group related services under specific groups to manage permissions efficiently.
+        - For example, both `www-data` and `nginx` may be part of the `web` group if they need to share files.
+
+______________________________________________________________________________________________________________________________________
+                                              7.Differences Between System User and Regular User
+ _______________________________________________________________________________________________________________________________________________
+| Aspect           |                      System User                         |                        Regular User                             |
+|__________________|__________________________________________________________|_________________________________________________________________|
+| UID Range        | 0–999                                                    | 1000 and above                                                  |
+| Login Access     | Usually no login (using `/bin/false` or `/sbin/nologin`) | Interactive login enabled (using `/bin/` or similar shells) |
+| Purpose          | Runs system services and daemons                         | Used by human users for daily tasks                             |
+| Home Directory   | May not have a home directory                            | `/home/<username>`                                              |
+| Shell            | Typically `/bin/false` or `/usr/sbin/nologin`            | `/bin/bash`, `/bin/zsh`, etc.                                   |
+|__________________|__________________________________________________________|_________________________________________________________________|
+
+______________________________________________________________________________________________________________________________________
+                                              8.Managing System Users
+
+- Locking a System User Account  
+        To prevent any access or modifications:
+        `````````````````````````````````````````````````
+        sudo usermod -L myservice
+        `````````````````````````````````````````````````
+        This locks the account by disabling the password.
+
+- Unlocking a System User Account  
+        `````````````````````````````````````````````````
+        sudo usermod -U myservice
+        `````````````````````````````````````````````````
+
+- Deleting a System User  
+        If you need to remove a system user:
+        `````````````````````````````````````````````````
+        sudo userdel -r myservice
+        `````````````````````````````````````````````````
+        The `-r` option deletes the user's home directory and mail spool.
+
+______________________________________________________________________________________________________________________________________
+                                              Conclusion
+
+System users are critical for the proper operation of services and daemons in Linux.
+They are designed to run background processes with minimal privileges, enhancing the security and stability of the system.
+
+By carefully managing system users and their permissions, administrators
+ can ensure that services run reliably while minimizing security risks.
+______________________________________________________________________________________________________________________________________

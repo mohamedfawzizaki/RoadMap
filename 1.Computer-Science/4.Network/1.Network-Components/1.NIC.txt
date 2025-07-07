@@ -1,0 +1,22 @@
+_______________________________________________________________________________________________________________________________________
+                                             1.Network Interface Card (NIC)
+                                             -----------------------------
+- Definition: 
+      - A NIC is a hardware component that connects a computer to a network,
+         allowing it to communicate with other devices.
+- Types:
+      1.Ethernet NIC    : Used for wired networks.
+      2.Wireless NIC    : Uses Wi-Fi to connect to networks.
+      3.Fiber Optic NIC : Uses fiber optics for high-speed connections.
+- Functions:
+      - Converts data into signals (electrical or wireless) for transmission.
+      - Supports network protocols like Ethernet and TCP/IP.
+      - Provides unique MAC (Media Access Control) addresses for identification.
+- Components:
+      - Controller Chip : Processes network data.
+      - Ports           : Ethernet or optical connectors.
+      - LED Indicators  : Show activity and connectivity status.
+- Usage:
+      - Desktop computers, laptops, servers, and embedded systems.
+_______________________________________________________________________________________________________________________________________
+ 

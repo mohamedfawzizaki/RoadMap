@@ -1,0 +1,70 @@
+# ----------------------------------------------------------------------------------------------------
+# Kubernetes NetworkPolicy: Restrict and control pod-to-pod/network communication
+# ----------------------------------------------------------------------------------------------------
+# PURPOSE:
+# This NetworkPolicy limits what traffic is allowed **to** and **from** the selected pods.
+# It applies to pods with the label `app=myapp` in the `default` namespace.
+#
+# COMPONENTS:
+# - `podSelector`: Targets the pods this policy applies to (e.g., app=myapp).
+# - `policyTypes`: Controls direction of traffic:
+#     - Ingress: Controls **incoming** traffic to the selected pods.
+#     - Egress: Controls **outgoing** traffic from the selected pods.
+#
+# TRAFFIC IS DENIED BY DEFAULT:
+# - If a pod is selected by a NetworkPolicy, **only traffic explicitly allowed** by it is permitted.
+# ----------------------------------------------------------------------------------------------------
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: myapp-policy
+  namespace: default  # Policy is scoped to the 'default' namespace
+spec:
+  podSelector:
+    matchLabels:
+      app: myapp       # Selects pods labeled with app=myapp
+
+  policyTypes:
+    - Ingress         # Apply rules to incoming traffic
+    - Egress          # Apply rules to outgoing traffic
+
+  # --------------------
+  # INGRESS RULES: Allow traffic TO myapp pods
+  # --------------------
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              role: frontend    # Allow traffic from pods labeled role=frontend (same namespace)
+        - namespaceSelector:
+            matchLabels:
+              access: trusted   # Allow traffic from any namespace labeled access=trusted
+        - ipBlock:
+            cidr: 10.0.0.0/16   # Allow traffic from IP range 10.0.0.0/16
+            except:
+              - 10.0.5.0/24     # EXCEPT traffic from 10.0.5.0/24 (explicit deny)
+      ports:
+        - protocol: TCP
+          port: 80              # Allow on port 80 (e.g., HTTP)
+
+  # --------------------
+  # EGRESS RULES: Allow traffic FROM myapp pods
+  # --------------------
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0     # Allow outbound internet access (all destinations)
+      ports:
+        - protocol: TCP
+          port: 443             # Allow HTTPS traffic
+
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              access: trusted   # Allow to trusted namespaces...
+          podSelector:
+            matchLabels:
+              role: database    # ...and to pods labeled role=database within them
+      ports:
+        - protocol: TCP
+          port: 5432           # Allow PostgreSQL traffic

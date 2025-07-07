@@ -1,0 +1,388 @@
+____________________________________________________________________________________________________________________________________________________________
+                                                        Control flow
+                                                        ============
+Control flow in shell scripting refers to the order in which
+ individual statements, instructions, or functions are executed or evaluated. 
+ 
+It helps control the sequence of execution based
+ on specific conditions or iterations, making scripts flexible and interactive. 
+ 
+There are several types of control flow mechanisms in shell scripting: 
+                                                                        - conditional statements. 
+                                                                        - loops.
+                                                                        - functions.
+
+________________________________________________________________________________________________________________________________
+                                                 1.Conditional Statements
+                                                 =========================
+Conditional statements allow you to execute different sections of code based on whether a condition is true or false. 
+The most common conditional statements are `if`, `else`, `elif`, and `case`.
+
+a. If-Else Statement
+        The `if` statement evaluates a condition, and if it's true, it executes the commands inside the block. 
+        Otherwise, it may execute an optional `else` block.
+
+#Syntax
+        ``````````````````````````````````````````bash
+        if [ condition ]                           ((condition))
+        then
+            commands
+        else
+            other_commands
+        fi
+        ``````````````````````````````````````````
+
+#Example
+        ``````````````````````````````````````````bash
+        number=10
+
+        if [ $number -gt 5 ]; then
+            echo "Number is greater than 5."
+        else
+            echo "Number is not greater than 5."
+        fi
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Number is greater than 5.
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                  b. If-ElseIf-Else Statement
+                                                  ===========================
+The `elif` (else if) statement allows you to check multiple conditions sequentially.
+
+#Syntax
+        ``````````````````````````````````````````bash
+        if [ condition1 ]
+        then
+            commands1
+        elif [ condition2 ]
+        then
+            commands2
+        else
+            commands3
+        fi
+        ``````````````````````````````````````````
+#Example
+        ``````````````````````````````````````````bash
+        number=10
+
+        if [ $number -gt 15 ]; then
+            echo "Greater than 15"
+        elif [ $number -gt 5 ]; then
+            echo "Greater than 5 but less than or equal to 15"
+        else
+            echo "5 or less"
+        fi
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Greater than 5 but less than or equal to 15
+        ``````````````````````````````````````````
+________________________________________________________________________________________________________________________________
+                                                Ternary Operator
+
+                                && executes the first command if the condition is true.
+                                || executes the second command if the condition is false.
+
+                                is_even 4 && echo "Even" || echo "Odd"
+                                (( num > 5 )) && echo "Greater than 5" || echo "Less than or equal to 5"
+
+                                num=10
+                                result=$(( num > 5 ? 100 : 50 ))          This works only for numerical expressions, not strings.
+                                echo "Result: $result"
+        
+________________________________________________________________________________________________________________________________
+                                                    c. Case Statement
+                                                    =================
+The `case` statement allows you to check multiple conditions, similar to `switch` in other languages. 
+It is useful when you have multiple possible values to match.
+
+#Syntax
+        ``````````````````````````````````````````bash
+        case $variable in
+            pattern1)
+                commands1
+                ;;
+            pattern2)
+                commands2
+                ;;
+            *)
+                default_comman
+                ds
+                ;;
+        esac
+        ``````````````````````````````````````````
+#Example
+        ``````````````````````````````````````````bash
+        read -p "Enter a number: " num
+
+        case $num in
+            1) echo "You entered One";;
+            2) echo "You entered Two";;
+            3) echo "You entered Three";;
+            *) echo "Unknown number";;
+        esac
+        ``````````````````````````````````````````
+Output:
+        ``````````````````````````````````````````
+        Enter a number: 2
+        You entered Two
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                   2. Looping Statements
+                                                   =====================
+Loops allow you to repeat a set of commands multiple times. 
+
+Shell scripting supports three types of loops: `for`, `while`, and `until`.
+
+a. For Loop
+The `for` loop is used when you want to iterate over a list or a range of values.
+
+#Syntax
+        ``````````````````````````````````````````bash
+        for var in list
+        do
+            commands
+        done
+        ``````````````````````````````````````````
+
+#Example
+        ``````````````````````````````````````````bash
+        for i in 1 2 3 4 5
+        do
+            echo "Number: $i"
+        done
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Number: 1
+        Number: 2
+        Number: 3
+        Number: 4
+        Number: 5
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                      b. While Loop
+                                                      =============
+The `while` loop continues executing as long as the given condition evaluates to true.
+
+#Syntax
+        ``````````````````````````````````````````bash
+        while [ condition ]
+        do
+            commands
+        done
+        ``````````````````````````````````````````
+
+#Example
+        ``````````````````````````````````````````bash
+        count=1
+        while [ $count -le 5 ]
+        do
+            echo "Count: $count"
+            count=$((count + 1))
+        done
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Count: 1
+        Count: 2
+        Count: 3
+        Count: 4
+        Count: 5
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                    c. Until Loop
+                                                    =============
+The `until` loop is the opposite of the `while` loop. 
+It executes commands until the condition becomes true.
+
+#Syntax
+        ``````````````````````````````````````````bash
+        until [ condition ]
+        do
+            commands
+        done
+        ``````````````````````````````````````````
+
+#Example
+        ``````````````````````````````````````````bash
+        count=1
+        until [ $count -gt 5 ]
+        do
+            echo "Count: $count"
+            count=$((count + 1))
+        done
+        ``````````````````````````````````````````
+
+        Output:
+        ``````````````````````````````````````````
+        Count: 1
+        Count: 2
+        Count: 3
+        Count: 4
+        Count: 5
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                       3. Controlling Loops with Break and Continue
+                                       ============================================
+
+a. Break
+The `break` statement is used to exit a loop prematurely when a certain condition is met.
+
+#Example
+        ``````````````````````````````````````````bash
+        for num in {1..10}
+        do
+            if [ $num -eq 5 ]; then
+                break
+            fi
+            echo "Number: $num"
+        done
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Number: 1
+        Number: 2
+        Number: 3
+        Number: 4
+        ``````````````````````````````````````````
+
+b. Continue
+The `continue` statement is used to skip the rest of the current iteration and proceed to the next iteration of the loop.
+
+#Example
+        ``````````````````````````````````````````bash
+        for num in {1..5}
+        do
+            if [ $num -eq 3 ]; then
+                continue
+            fi
+            echo "Number: $num"
+        done
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Number: 1
+        Number: 2
+        Number: 4
+        Number: 5
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                     4. Functions
+                                                     ============
+Functions allow you to group a set of commands under a single name and reuse them.
+
+a. Defining Functions
+        - You define a function in shell scripting using the following syntax:
+
+#Syntax
+        ``````````````````````````````````````````bash
+        function_name() {
+            commands
+        }
+        ``````````````````````````````````````````
+
+#Example
+        ``````````````````````````````````````````bash
+        greet() {
+            echo "Hello, $1!"
+        }
+
+        greet "Alice"
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Hello, Alice!
+        ``````````````````````````````````````````
+
+b. Returning Values
+       - In shell scripts, functions don't return values in the same way as other languages. 
+       - Instead, you can use `echo` or modify global variables to pass data from a function.
+
+#Example: Using Echo
+        ``````````````````````````````````````````bash
+        multiply() {
+            result=$(( $1  $2 ))
+            echo $result
+        }
+
+        multiply 3 4
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        12
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                    5. Exit Statement
+                                                    =================
+The `exit` statement is used to terminate a script or function. 
+It can also return an exit status.
+
+Syntax
+        ``````````````````````````````````````````bash
+        exit [status]
+        ``````````````````````````````````````````
+
+#Example
+        ``````````````````````````````````````````bash
+        if [ $1 -lt 10 ]; then
+            echo "Argument is less than 10"
+            exit 1
+        else
+            echo "Argument is greater than or equal to 10"
+            exit 0
+        fi
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                       6. Exit Status
+                                                       ==============
+The exit status of a command or script is a numeric value that indicates success or failure. 
+By convention:
+- `0` means success.
+- Non-zero means failure.
+
+You can access the exit status of the last command using the special variable `$?`.
+
+#Example
+        ``````````````````````````````````````````bash
+        echo "Hello"
+        if [ $? -eq 0 ]; then
+            echo "The command was successful."
+        else
+            echo "The command failed."
+        fi
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Hello
+        The command was successful.
+``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                             Best Practices for Control Flow
+                                             ===============================
+- Use `if` statements to handle conditional execution based on variables.
+- Ensure loops have proper conditions to avoid infinite loops.
+- Define functions to keep your scripts modular and reusable.
+- Handle exit statuses properly for error handling.
+
+________________________________________________________________________________________________________________________________

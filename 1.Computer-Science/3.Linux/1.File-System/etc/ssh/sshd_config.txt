@@ -1,0 +1,252 @@
+==================================================================================================================
+                                                 `/etc/ssh/sshd_config`
+
+The `/etc/ssh/sshd_config` file is the main configuration file for the OpenSSH Daemon (`sshd`),
+ which is responsible for managing SSH (Secure Shell) connections on a Linux or Unix-like system. 
+
+SSH provides a secure method for remote login and other secure network services.
+
+The `sshd_config` file controls how the SSH server behaves, such as which authentication methods are allowed,
+ which protocols to use, connection limits, and other settings for secure remote access.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Purpose of `/etc/ssh/sshd_config`
+
+The `sshd_config` file allows system administrators to configure the SSH server's behavior and define security policies for incoming connections. 
+It is read by the SSH daemon when it starts and is typically used to enable or disable features,
+ control user access, and configure various authentication methods.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Common Entries in `/etc/ssh/sshd_config`
+
+The configuration file consists of key-value pairs, where each key corresponds to a specific setting, and its value defines how the SSH server behaves.
+
+Here are some of the most common entries found in `/etc/ssh/sshd_config`:
+
+1. `Port`
+   - Specifies the port number on which the SSH server listens for incoming connections.
+   - Default: `22`
+   - Example:
+     ```bash
+     Port 22
+     ```
+
+2. `PermitRootLogin`
+   - Controls whether the root user is allowed to log in via SSH.
+   - Default: `prohibit-password` (root login is disabled except with key-based authentication)
+   - Possible values: `yes`, `no`, `prohibit-password`, `without-password`, `forced-commands-only`
+   - Example:
+     ```bash
+     PermitRootLogin no
+     ```
+
+3. `PasswordAuthentication`
+   - Determines whether password-based authentication is allowed for SSH connections.
+   - Default: `yes`
+   - Possible values: `yes`, `no`
+   - Example:
+     ```bash
+     PasswordAuthentication yes
+     ```
+
+4. `PubkeyAuthentication`
+   - Specifies whether public key authentication is allowed.
+   - Default: `yes`
+   - Example:
+     ```bash
+     PubkeyAuthentication yes
+     ```
+
+5. `AllowUsers` / `DenyUsers`
+   - These directives define which users are allowed or denied access to the SSH server.
+   - Example:
+     ```bash
+     AllowUsers user1 user2
+     DenyUsers user3
+     ```
+
+6. `AllowGroups` / `DenyGroups`
+   - These directives control group access to the SSH server, allowing or denying groups of users to connect.
+   - Example:
+     ```bash
+     AllowGroups sshusers
+     DenyGroups restrictedgroup
+     ```
+
+7. `MaxAuthTries`
+   - Specifies the maximum number of authentication attempts allowed before the connection is closed.
+   - Default: `6`
+   - Example:
+     ```bash
+     MaxAuthTries 3
+     ```
+
+8. `UsePAM`
+   - Specifies whether to use Pluggable Authentication Modules (PAM) for authentication.
+   - Default: `yes`
+   - Possible values: `yes`, `no`
+   - Example:
+     ```bash
+     UsePAM yes
+     ```
+
+9. `PermitEmptyPasswords`
+   - Controls whether users with empty passwords can log in.
+   - Default: `no`
+   - Example:
+     ```bash
+     PermitEmptyPasswords no
+     ```
+
+10. `ChallengeResponseAuthentication`
+    - Determines whether challenge-response authentication (such as for two-factor authentication) is allowed.
+    - Default: `yes`
+    - Example:
+      ```bash
+      ChallengeResponseAuthentication no
+      ```
+
+11. `X11Forwarding`
+    - Enables or disables X11 forwarding over SSH, allowing graphical applications to run remotely.
+    - Default: `yes`
+    - Example:
+      ```bash
+      X11Forwarding no
+      ```
+
+12. `AllowTcpForwarding`
+    - Specifies whether TCP forwarding is allowed for SSH connections.
+    - Default: `yes`
+    - Example:
+      ```bash
+      AllowTcpForwarding no
+      ```
+
+13. `LogLevel`
+    - Specifies the verbosity level of SSH logs.
+    - Default: `INFO`
+    - Possible values: `QUIET`, `FATAL`, `ERROR`, `INFO`, `VERBOSE`, `DEBUG`, `DEBUG1`, `DEBUG2`, `DEBUG3`
+    - Example:
+      ```bash
+      LogLevel VERBOSE
+      ```
+
+14. `TCPKeepAlive`
+    - Controls whether the SSH server sends TCP keepalive messages to maintain the connection.
+    - Default: `yes`
+    - Example:
+      ```bash
+      TCPKeepAlive yes
+      ```
+
+15. `Banner`
+    - Specifies a file to display a message before authentication, often used for security notices.
+    - Example:
+      ```bash
+      Banner /etc/ssh/sshd_banner
+      ```
+
+16. `Subsystem`
+    - Defines the location of subsystem programs, such as SFTP (Secure File Transfer Protocol).
+    - Default: `/usr/lib/openssh/sftp-server`
+    - Example:
+      ```bash
+      Subsystem sftp /usr/lib/openssh/sftp-server
+      ```
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Security Considerations
+
+1. Disabling Root Login:
+   - It is a good practice to disable root login via SSH. 
+   - This can be done by setting `PermitRootLogin no` to prevent direct root access and enforce the use of `sudo` for administrative tasks.
+
+2. Public Key Authentication:
+   - Enable public key authentication (`PubkeyAuthentication yes`) and disable password
+      authentication (`PasswordAuthentication no`) for better security, as password-based authentication is more susceptible to brute force attacks.
+
+3. Limit User Access:
+   - Use `AllowUsers` and `DenyUsers` to restrict which users can or cannot log in via SSH.
+
+4. SSH Port:
+   - While the default port for SSH is `22`, changing it to a non-standard port (e.g., `Port 2222`) can help avoid automated attacks,
+     although it is not a comprehensive security measure on its own.
+
+5. Key-based Authentication:
+   - Enforce the use of SSH keys for authentication and disable password-based logins. 
+   - SSH keys are more secure and harder to crack than passwords.
+
+6. Firewall Rules:
+   - Consider configuring a firewall to restrict SSH access to only trusted IP addresses to further secure remote access.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Managing the SSH Daemon
+
+After making changes to the `/etc/ssh/sshd_config` file, the SSH daemon must be reloaded or restarted for the changes to take effect. 
+This can be done using the following commands:
+
+- Reload SSH (without disconnecting active sessions):
+  ```bash
+  sudo systemctl reload sshd
+  ```
+
+- Restart SSH (disconnects active sessions):
+  ```bash
+  sudo systemctl restart sshd
+  ```
+
+- Check SSH daemon status:
+  ```bash
+  sudo systemctl status sshd
+  ```
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Example `/etc/ssh/sshd_config` File
+
+```bash
+ /etc/ssh/sshd_config
+
+ Disable root login
+PermitRootLogin no
+
+ Allow only specific users
+AllowUsers user1 user2
+
+ Use public key authentication
+PubkeyAuthentication yes
+
+ Disable password authentication
+PasswordAuthentication no
+
+ Set a custom SSH port
+Port 2222
+
+ Enable TCP KeepAlive
+TCPKeepAlive yes
+
+ Enable X11 Forwarding
+X11Forwarding yes
+
+ Log verbosity level
+LogLevel VERBOSE
+
+ Set a custom banner file
+Banner /etc/ssh/sshd_banner
+```
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Conclusion
+
+The `/etc/ssh/sshd_config` file is essential for configuring SSH server settings on a Linux or Unix-like system. 
+It allows administrators to define security policies, control access, and customize the behavior of the SSH server. 
+Properly configuring this file is critical for securing remote connections and ensuring a robust, secure SSH environment.
+
+By following best practices such as disabling root login, enforcing key-based authentication,
+ and managing user access, you can significantly enhance the security of your system's SSH configuration.
+===================================================================================================================

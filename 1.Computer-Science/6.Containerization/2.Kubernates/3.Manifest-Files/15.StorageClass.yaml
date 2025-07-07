@@ -1,0 +1,50 @@
+# ======================================================================================
+# 📘 Definition: StorageClass
+# --------------------------------------------------------------------------------------
+# A StorageClass in Kubernetes defines how a volume should be dynamically provisioned. 
+# It acts as a template used by PVCs to request storage with specific characteristics.
+#
+# Key Concepts:
+# - PVCs referencing a StorageClass get matched with dynamically created PVs.
+# - Each StorageClass specifies a provisioner (CSI or in-tree driver).
+# - You can define parameters like filesystem type, reclaim policy, binding behavior, etc.
+# - Volume expansion, topology, and mount options are also configurable.
+# ======================================================================================
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fast-storage                # Unique name of the StorageClass used in PVCs
+provisioner: hostpath.csi.k8s.io    # CSI driver that provisions the volume
+                                    # Examples:
+                                    # - kubernetes.io/aws-ebs
+                                    # - kubernetes.io/gce-pd
+                                    # - csi.ceph.com
+
+parameters:
+  fstype: ext4                      # Filesystem to format the volume with (driver specific)
+  # Additional driver-specific parameters can go here
+
+reclaimPolicy: Delete               # What happens to PV after PVC is deleted
+                                    # - Delete: auto-remove the PV (default for dynamic provisioning)
+                                    # - Retain: keeps PV data; manual cleanup required
+
+allowVolumeExpansion: true         # ✅ Allows users to expand PVCs after creation
+                                   # Useful for StatefulSets or changing workloads
+
+volumeBindingMode: WaitForFirstConsumer
+                                   # Controls **when** volume binding & provisioning occur
+                                   # - Immediate: binds instantly (default)
+                                   # - WaitForFirstConsumer: delays until Pod is scheduled (improves locality/topology)
+
+mountOptions:
+  - noatime                         # Disable writing access timestamps
+  - nodiratime                      # Disable writing access time for directories
+  # Mount options may be passed to the node's mount command
+
+allowedTopologies:
+  - matchLabelExpressions:
+      - key: topology.kubernetes.io/zone
+        values:
+          - zone-a                 # Restrict provisioning to specific zones or regions
+          - zone-b                 # Example keys: topology.kubernetes.io/zone, kubernetes.io/hostname

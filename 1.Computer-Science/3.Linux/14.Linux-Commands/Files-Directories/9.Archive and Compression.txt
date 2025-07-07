@@ -1,0 +1,108 @@
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                                  Archiving and Compression
+                                                  =========================           
+------------------
+Archiving with tar:
+                                     ---------------------------------------------------------------------------
+                                     tar [option] <archive-name> <files-to-be-archived>         
+                                     tar [option] <archive-name> <file1,file2,file3>           -C <destination>
+                                     ---------------------------------------------------------------------------
+                                     tar [option] <archive-name> <directory-to-be-archived>         
+                                     tar [option] <archive-name> <directory-to-be-archived>    -C <destination>
+                                     --------------------------------------------------------------------------
+         __________________________________________________________________________________________________________________________________________________
+        | Options  |              Example                                 |                                        Usage                                                               
+        |__________|______________________________________________________|________________________________________________________________________________         
+        |  -c      |   tar  -cvf   <archive-name.tar>     file1 file2     |   Creates an archive (c stands for "create").
+        |  -c      |   tar  -cvf   <archive-name.tar>     dir/	          |   Creates an archive (c stands for "create").
+        |  -v      |   tar  -cvf   <archive-name.tar>     file1 file2     |   Verbose mode, displays progress while archiving.
+        |  -f      |   tar  -cvf   <archive-name.tar>     file1 file2     |   Specifies the archive file name (f stands for "file").
+        |  -t      |   tar  -tvf   <archive-name.tar>    	          |   Lists the contents of an archive without extracting.
+        |  -x      |   tar  -xvf   <archive-name.tar>    	          |   Extracts files from an archive (x stands for "extract").
+        |--------------------------------------------------------------------------------------------------------------------------------------------------
+        |--------------------------------------------------------------------------------------------------------------------------------------------------
+        |  -z      |   tar  -czvf  <archive-name.tar.gz>  file1 file2	  |   Compresses the archive using gzip.
+        |  -j      |   tar  -cjvf  <archive-name.tar.bz2> file1 file2	  |   Compresses the archive using bzip2.
+        |  -J      |   tar  -cJvf  <archive-name.ta.xz>   file1 file2	  |   Compresses the archive using xz.
+        |--------------------------------------------------------------------------------------------------------------------------------------------------
+        |--exclude |   tar --exclude="*.log" -cvf <archive-name.tar>  dir/|   Excludes files matching the specified pattern while creating an archive.                                           
+        |--delete  |   tar --delete -f            <archive-name.tar> file1|   Deletes a file from the archive.
+        |__________|______________________________________________________|________________________________________________________________________________  
+
+#_________________________________________________________________________________________________________________________________________________________________________# 
+Compression with gzip:
+                                     --------------------------------------------------------------------------
+                                     gzip [option] <file-to-be-compressed>
+                                     --------------------------------------------------------------------------
+         __________________________________________________________________________________________________________________________________________________
+        | Options  |              Example                                 |                                        Usage                                                               
+        |__________|______________________________________________________|________________________________________________________________________________  
+        | gzip	   |    gzip         file.txt	                          | Compresses file.txt into file.txt.gz.
+        | -k	   |    gzip -k      file.txt	                          | Keep the original file after compression (by default, gzip deletes the original).
+        | -r	   |    gzip -r      /path/to/directory	                  | Recursively compress all files in a directory.
+        |--------------------------------------------------------------------------------------------------------------------------------------------------
+        | -d	   |    gzip -d      file.txt.gz	                  | Decompress the specified file (same as using gunzip).
+        | gunzip   |    gunzip       file.txt.gz	                  | Decompresses file.txt.gz to file.txt.
+        |--------------------------------------------------------------------------------------------------------------------------------------------------
+        |--------------------------------------------------------------------------------------------------------------------------------------------------
+        | -v	   |    gzip -v      file.txt	                          | Display verbose information during compression.
+        | -l	   |    gzip -l      file.txt.gz	                  | List information about a compressed file, such as size and compression ratio.
+        |--------------------------------------------------------------------------------------------------------------------------------------------------
+        | --fast   |    gzip --fast  file.txt	                          | Compress quickly, similar to -1.
+        | --best   |    gzip --best  file.txt	                          | Compress with the best ratio, similar to -9.
+        | -1 to -9 |    gzip -9      file.txt	                          | Set the compression level (1 = fastest, least compression; 9 = slowest, best compression).
+        |--------------------------------------------------------------------------------------------------------------------------------------------------
+        | -c	   |    gzip -c      file.txt >                           | file.txt.gz	Write the compressed output to standard output (useful for piping or redirection).
+        | -t	   |    gzip -t      file.txt.gz	                  | Test the integrity of a compressed file.
+        | -n	   |    gzip -n      file.txt	                          | Do not store original file name or timestamp in the compressed file (for reproducible builds).
+        | -q	   |    gzip -q      file.txt	                          | Operate in quiet mode (suppress warnings).
+        | --help   |    gzip --help	                                  | Display a help message with available options.
+        |__________|______________________________________________________|________________________________________________________________________________       
+
+#_________________________________________________________________________________________________________________________________________________________________________# 
+
+
+
+
+
+
+
+
+
+
+
+
+#_________________________________________________________________________________________________________________________________________________________________________# 
+Compression:
+                                     --------------------------------------------------------------------------
+                                     <Compression-Command> <files-to-be-compressed>
+                                     --------------------------------------------------------------------------
+         __________________________________________________________________________________________________________________________________________________
+        | Options  |              Example                                 |                                        Usage                                                               
+        |__________|______________________________________________________|________________________________________________________________________________  
+        | gzip	   |    gzip      <file.txt>	                          | Compresses file.txt into file.txt.gz.
+        |          |    gzip     /path/to/directory/*                     | Compresses all files in a directory.
+        | gunzip   |    gunzip    <file.txt.gz>	                          | Decompresses file.txt.gz to file.txt.
+        |--------------------------------------------------------------------------------------------------------------------------------------------------
+        | bzip2	   |    bzip2     <file.txt>	                          | Compresses file.txt into file.txt.bz2.
+        | bunzip2  |    bunzip2   <file.txt.bz2>	                      | Decompresses file.txt.bz2 to file.txt.
+        |--------------------------------------------------------------------------------------------------------------------------------------------------
+        | xz	   |    xz        <file.txt>	                          | Compresses file.txt into file.txt.xz.
+        | unxz	   |    unxz      <file.txt.xz>	                          | Decompresses file.txt.xz to file.txt.
+        |--------------------------------------------------------------------------------------------------------------------------------------------------
+        | zip	   |    zip       <archive.zip>    <file1 file2>	      | Creates a compressed archive (archive.zip) containing file1 and file2.
+        |          |    zip -r    <archive.zip>    /path/to/directory     | Creates a compressed zip archive recursively from the directory.
+        | unzip	   |    unzip     <archive.zip>	                          | Extracts files from the specified zip archive.                                         
+        |__________|______________________________________________________|________________________________________________________________________________       
+
+
+#_________________________________________________________________________________________________________________________________________________________________________# 
+
+
+
+
+
+
+
+
+

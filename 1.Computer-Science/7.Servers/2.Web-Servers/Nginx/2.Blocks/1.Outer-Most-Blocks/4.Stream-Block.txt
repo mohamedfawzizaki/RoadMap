@@ -1,0 +1,216 @@
+_______________________________________________________________________________________________________________________________________
+                                            🔹 Stream Block in Nginx (`stream {}`)
+
+The `stream` block in Nginx is used for handling TCP and UDP traffic,
+ making it useful for reverse proxying non-HTTP services like:  
+
+✅ Database connections (MySQL, PostgreSQL, Redis)  
+✅ Load balancing TCP/UDP traffic (e.g., DNS, SSH, MQTT, FTP)  
+✅ Proxying SSL/TLS traffic (e.g., OpenVPN, SMTP)  
+
+_______________________________________________________________________________________________________________________________________
+                                            📌 Structure of the `stream` Block  
+
+The `stream {}` block is outside the `http {}` block and is defined globally in `nginx.conf`:
+````````````````````````````````````````````````````````````````````nginx
+stream {
+    upstream backend {
+        server 192.168.1.10:3306;  # Example: MySQL server
+        server 192.168.1.11:3306;
+    }
+
+    server {
+        listen 3306;  # Nginx listens on port 3306
+        proxy_pass backend;  # Forward traffic to MySQL backend
+    }
+}
+````````````````````````````````````````````````````````````````````
+👉 Nginx now acts as a proxy for MySQL connections!
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 Key Directives in the `stream` Block  
+
+|       Directive     |                         Description 
+| `server`            | Defines each TCP/UDP server that listens for connections. 
+| `listen`            | Specifies the port and protocol (TCP or UDP) for the server. 
+| `proxy_pass`        | Forwards incoming connections to an upstream backend. 
+| `upstream`          | Defines backend servers for load balancing. 
+| `proxy_protocol`    | Enables Proxy Protocol (preserves client IP). 
+| `ssl_preread`       | Extracts SSL/TLS metadata before passing connections. 
+| `limit_conn`        | Limits the number of simultaneous connections per client. 
+| `resolver`          | Configures DNS resolution for upstream servers. 
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 Explanation of Each Directive  
+
+ 1️⃣ `server` (Define a TCP/UDP Listener)
+- Each `server {}` block listens for incoming TCP or UDP connections.
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  stream {
+      server {
+          listen 6379;  # Listen on port 6379 (e.g., Redis)
+          proxy_pass 192.168.1.100:6379;
+      }
+  }
+  ````````````````````````````````````````````````````````````````````
+  ✅ Any request on port `6379` is forwarded to `192.168.1.100:6379`.
+
+_______________________________________________________________________________________________________________________________________
+
+ 2️⃣ `listen` (Port and Protocol)
+- Defines port number and whether to use UDP or TCP.
+- Default: TCP (for UDP, specify `udp`).
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  stream {
+      server {
+          listen 53 udp;  # DNS UDP Proxy
+          proxy_pass 192.168.1.200:53;
+      }
+  }
+  ````````````````````````````````````````````````````````````````````
+  ✅ Listens for DNS queries on port `53` and forwards them to `192.168.1.200:53`.
+
+_______________________________________________________________________________________________________________________________________
+
+ 3️⃣ `proxy_pass` (Forward Traffic to Backend)
+- Used to redirect connections to a backend IP and port.
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  stream {
+      server {
+          listen 3306;
+          proxy_pass backend;  # Defined in `upstream`
+      }
+  }
+  ````````````````````````````````````````````````````````````````````
+  ✅ Forwards MySQL connections to the backend defined in `upstream {}`.
+
+_______________________________________________________________________________________________________________________________________
+
+ 4️⃣ `upstream` (Load Balancing Multiple Servers)
+- Allows load balancing for TCP/UDP connections.
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  stream {
+      upstream redis_cluster {
+          server 192.168.1.10:6379;
+          server 192.168.1.11:6379;
+      }
+
+      server {
+          listen 6379;
+          proxy_pass redis_cluster;
+      }
+  }
+  ````````````````````````````````````````````````````````````````````
+  ✅ Distributes Redis traffic across two backend servers.
+
+_______________________________________________________________________________________________________________________________________
+
+ 5️⃣ `proxy_protocol` (Preserve Client IP)
+- By default, Nginx hides the original client’s IP.
+- Use `proxy_protocol` to preserve the real client IP.
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  stream {
+      server {
+          listen 443 proxy_protocol;
+          proxy_pass 192.168.1.100:443;
+      }
+  }
+  ````````````````````````````````````````````````````````````````````
+  ✅ Preserves original IP when proxying SSL traffic.
+
+_______________________________________________________________________________________________________________________________________
+
+ 6️⃣ `ssl_preread` (Inspect SSL/TLS Metadata)
+- Allows Nginx to read SSL/TLS SNI (Server Name Indication) before forwarding.
+- Used for TLS-based load balancing.
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  stream {
+      map $ssl_preread_server_name $backend {
+          example.com 192.168.1.100:443;
+          another.com 192.168.1.101:443;
+      }
+
+      server {
+          listen 443;
+          ssl_preread on;
+          proxy_pass $backend;
+      }
+  }
+  ````````````````````````````````````````````````````````````````````
+  ✅ Routes HTTPS traffic based on the requested domain!  
+
+_______________________________________________________________________________________________________________________________________
+
+ 7️⃣ `limit_conn` (Connection Limits)
+- Controls how many connections a single client can open.
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  stream {
+      limit_conn_zone $binary_remote_addr zone=addr:10m;
+
+      server {
+          listen 22;
+          proxy_pass 192.168.1.100:22;
+          limit_conn addr 3;  # Limit to 3 concurrent SSH connections per IP
+      }
+  }
+  ````````````````````````````````````````````````````````````````````
+  ✅ Prevents DDoS by limiting clients to 3 simultaneous SSH connections.
+
+_______________________________________________________________________________________________________________________________________
+
+ 8️⃣ `resolver` (DNS for Upstreams)
+- If backend IPs change dynamically (e.g., cloud-based servers), Nginx needs DNS resolution.
+- Example:
+  ````````````````````````````````````````````````````````````````````nginx
+  stream {
+      resolver 8.8.8.8 valid=30s;
+      
+      server {
+          listen 1883;
+          proxy_pass mqtt.example.com:1883;
+      }
+  }
+  ````````````````````````````````````````````````````````````````````
+  ✅ Resolves `mqtt.example.com` every 30 seconds!  
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 Full Example: Load-Balanced MySQL Proxy
+````````````````````````````````````````````````````````````````````nginx
+stream {
+    upstream mysql_cluster {
+        server 192.168.1.10:3306;
+        server 192.168.1.11:3306;
+    }
+
+    server {
+        listen 3306;
+        proxy_pass mysql_cluster;
+        proxy_protocol on;
+        limit_conn_zone $binary_remote_addr zone=mysql_conn:10m;
+        limit_conn mysql_conn 5;  # Limit to 5 connections per client
+    }
+}
+````````````````````````````````````````````````````````````````````
+✅ Nginx load-balances MySQL traffic and limits connections per client!
+
+_______________________________________________________________________________________________________________________________________
+                                                        🔹 Summary
+                                                        
+✔️ The `stream` block is for TCP/UDP traffic (not HTTP).  
+✔️ Use `proxy_pass` to forward requests to backend services.  
+✔️ Use `upstream` for load balancing between multiple backends.  
+✔️ `ssl_preread` is useful for TLS SNI-based routing.  
+✔️ `limit_conn` helps prevent DDoS attacks on TCP/UDP services.  
+✔️ Use `resolver` if backends have dynamic IPs.  
+
+_______________________________________________________________________________________________________________________________________

@@ -1,0 +1,144 @@
+==================================================================================================================
+                                                 `/etc/host.deny`
+
+The `/etc/hosts.deny` file is part of the TCP Wrappers access control system used in Linux and Unix-like operating systems. 
+It is designed to restrict access to system services based on the client's hostname or IP address. 
+The file works alongside `/etc/hosts.allow` to provide a fine-grained mechanism for controlling access to network services.
+
+The general purpose of `/etc/hosts.deny` is to explicitly deny access to certain services for specified hosts or IP addresses. 
+If a host or service is not explicitly denied in this file, it is allowed by default, unless a matching entry exists in `/etc/hosts.allow`.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Purpose of `/etc/hosts.deny`
+
+- The `/etc/hosts.deny` file is used to explicitly deny access to services for certain clients (hosts) based on their IP addresses or hostnames.
+- This file works in conjunction with `/etc/hosts.allow`. If a client is denied in `/etc/hosts.deny`,
+   that denial will apply unless the host is explicitly allowed in `/etc/hosts.allow`.
+- The `/etc/hosts.deny` file is typically used to block access to services for all hosts or to deny access from untrusted sources.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Basic Syntax
+
+The syntax of entries in the `/etc/hosts.deny` file is similar to that of the `/etc/hosts.allow` file. Each line follows the format:
+
+```plaintext
+service : host1, host2, ..., hostN
+```
+
+- `service`: The name of the service (e.g., `sshd`, `ftp`, `httpd`).
+- `host1, host2, ..., hostN`: A comma-separated list of hostnames, IP addresses, or address ranges that are denied access to the specified service.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Example Configuration in `/etc/hosts.deny`
+
+Here is an example of what you might find in the `/etc/hosts.deny` file:
+
+```plaintext
+ Deny all access to SSH service from a specific IP address
+sshd : 192.168.1.50
+
+ Deny FTP access from a specific subnet
+ftp : 192.168.2.0/24
+
+ Deny access from any host
+ALL : ALL
+```
+
+In this example:
+- SSH (`sshd`) access is denied from the IP address `192.168.1.50`.
+- FTP access is denied from all hosts in the `192.168.2.0/24` subnet.
+- All services are denied from any host using the `ALL` keyword.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Special Keywords
+
+- `ALL`: The `ALL` keyword can be used to specify a global rule to deny all hosts. If used for a service, it will deny access from all hosts for that service.
+- `LOCAL`: Denies access from all local hosts (localhost).
+- `UNKNOWN`: Denies access from hosts whose IP address cannot be resolved by DNS.
+- `PARANOID`: This is a very restrictive setting that only allows connections where the IP address matches the hostname.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Order of Evaluation
+
+The order of evaluation between `/etc/hosts.allow` and `/etc/hosts.deny` is critical:
+1. If a service is explicitly allowed in `/etc/hosts.allow`, that access will be granted regardless of any entries in `/etc/hosts.deny`.
+2. If a service is explicitly denied in `/etc/hosts.deny`, it will be blocked, unless the same host is explicitly allowed in `/etc/hosts.allow`.
+3. If neither file explicitly allows nor denies access for a service, the default behavior is typically to allow the connection.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Example of `/etc/hosts.allow`
+
+To understand how `/etc/hosts.deny` works in conjunction with `/etc/hosts.allow`, here’s an example of what the `/etc/hosts.allow` file might look like:
+
+```plaintext
+ Allow SSH connections from a specific host
+sshd : 192.168.1.100
+
+ Allow all HTTP connections
+httpd : ALL
+```
+
+With this configuration:
+- SSH connections are only allowed from `192.168.1.100` as specified in `/etc/hosts.allow`,
+ and connections from other hosts are denied in `/etc/hosts.deny` unless specified otherwise.
+- HTTP access is allowed from all hosts, as `ALL` is specified.
+
+If you have entries in both `/etc/hosts.allow` and `/etc/hosts.deny`, the `/etc/hosts.allow` file takes precedence.
+ So, if a host is allowed in `/etc/hosts.allow`, it will be granted access regardless of the rules in `/etc/hosts.deny`.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Logging and Monitoring
+
+- TCP Wrappers will log access attempts to the system in a log file, typically `/var/log/auth.log` or `/var/log/secure` (depending on the Linux distribution).
+- The log entries will indicate whether access was granted or denied for specific services, including the host, service, and time of access attempt.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Example Scenario
+
+Let’s consider a scenario where you want to secure your system’s SSH service.
+
+1. You want to deny SSH access to a specific IP address `192.168.1.100`.
+2. You want to deny all other hosts by default.
+3. You will explicitly allow SSH access from a trusted subnet `192.168.2.0/24`.
+
+Here’s how you could configure the `/etc/hosts.deny` and `/etc/hosts.allow` files:
+
+ /etc/hosts.deny
+
+```plaintext
+ Deny all access by default
+ALL : ALL
+
+ Deny SSH from a specific IP address
+sshd : 192.168.1.100
+```
+
+ /etc/hosts.allow
+
+```plaintext
+ Allow SSH from a trusted subnet
+sshd : 192.168.2.0/24
+```
+
+- This configuration ensures that all hosts are denied access by default,
+   except for the subnet `192.168.2.0/24` which is explicitly allowed in `/etc/hosts.allow`.
+- The host `192.168.1.100` is explicitly denied access to SSH in `/etc/hosts.deny`.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Conclusion
+
+- `/etc/hosts.deny` is used in Linux systems for access control to restrict access to network services based on hostnames or IP addresses.
+- It is used in combination with `/etc/hosts.allow`, where `/etc/hosts.allow` grants access and `/etc/hosts.deny` denies it.
+- The `/etc/hosts.deny` file is useful for denying access to unwanted or 
+   untrusted clients, while the `/etc/hosts.allow` file is used to allow access for trusted hosts.
+- TCP Wrappers logs all access attempts, so administrators can monitor and track connection attempts for security purposes.
+===================================================================================================================

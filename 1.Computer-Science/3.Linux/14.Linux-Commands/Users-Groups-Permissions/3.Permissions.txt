@@ -1,0 +1,130 @@
+ #_________________________________________________________________________________________________________________________________________________________________________________________# 
+                                            Ownership - Permissions Management
+                                            ==================================
+                     _____________________________________________________________________________________
+                    | Command               |                 Description                                 |
+                    |_______________________|_____________________________________________________________|
+                    | `ls -l`               | List files with detailed information, including permissions.|
+                    |_______________________|_____________________________________________________________|
+                    | `chmod`               | Change file or directory permissions.                       |
+                    |_______________________|_____________________________________________________________|
+                    | `chown`               | Change the owner of a file or directory.                    |
+                    |_______________________|_____________________________________________________________|                     
+                    | `getfacl`               | Change the owner of a file or directory.                  |
+                    |_______________________|_____________________________________________________________|                    
+                    | `setfacl`               | Change the owner of a file or directory.                  |
+                    |_______________________|_____________________________________________________________|
+                    | `chgrp`               | Change the group of a file or directory.                    |
+                    |_______________________|_____________________________________________________________|
+                    | `umask`               | Set or display default permissions for new files.           |
+                    |_______________________|_____________________________________________________________|
+
+
+#_________________________________________________________________________________________________________________________________________________________________________________________# 
+                                                         Details
+                                                         =======           
+
+sudo chmod  <owners> <+/-/=> <permissions>    <filename/dir-name>
+sudo chmod  <numeric-permissions>             <filename/dir-name>
+                __________________________________________________________________________________________________________________________________________________________
+               | Options  |              Example                                        |                                        Usage                                                               
+               |__________|_____________________________________________________________|_________________________________________________________________________________         
+               |  u+x	  | chmod   u+x    file.txt	                                    | Adds execute permission for the user (owner) of the file.
+               |  g-w	  | chmod   g-w    file.txt	                                    | Removes write permission from the group.
+               |  o+r	  | chmod   o+r    file.txt	                                    | Adds read permission for others.
+               |----------------------------------------------------------------------------------------------------------------------------------------------------------
+               |  755	  | chmod   755    file.txt	                                    | Sets the permissions to rwxr-xr-x (Owner: rwx, Group: rx, Others: rx).
+               |  644	  | chmod   644    file.txt	                                    | Sets the permissions to rw-r--r-- (Owner: rw, Group: r, Others: r).
+               |----------------------------------------------------------------------------------------------------------------------------------------------------------
+               |  -R	  | chmod   -R     755 /path/to/directory	                    | Recursively changes the permissions for all files and subdirectories to 755.
+               |----------------------------------------------------------------------------------------------------------------------------------------------------------
+               |  u+s	  | chmod   u+s    /bin/ls	                                    | Sets the SetUID permission, allowing the file to execute with the owner’s permissions.
+               |  g+s	  | chmod   g+s    directory	                                | Sets the SetGID permission, making new files created in the directory inherit the directory's group.
+               |  +t	  | chmod   +t    /tmp	                                        | Sets the Sticky bit, ensuring that only the file owner or root can delete or rename files within the directory.
+               |----------------------------------------------------------------------------------------------------------------------------------------------------------
+               |  a+x	  | chmod   a+x    file.sh	                                    | Adds execute permission for all users (owner, group, and others).
+               |----------------------------------------------------------------------------------------------------------------------------------------------------------
+               |  o-w	  | chmod   o-w    file.txt   	                                | Removes write permission from others.
+               |  a-w	  | chmod   a-w    file.txt	                                    | Removes write permission from all users (owner, group, and others).
+               |----------------------------------------------------------------------------------------------------------------------------------------------------------
+               |  u=rwx,g=rx,o=r	chmod u=rwx,g=rx,o=r file.txt	                    | Sets specific permissions for the owner, group, and others. Owner: rwx, Group: rx, Others: r.                                 |__________|______________________________________________________|________________________________________________________________________________  
+               |__________|_____________________________________________________________|_________________________________________________________________________________         
+
+                                
+                                
+                                
+sudo getfacl [options] <filename/dir-name>                               
+                ________________________________________________________________________________________________________________________________________________________
+               | Options  |     Example                                                 |                               Usage                                                               
+               |__________|_____________________________________________________________|_________________________________________________________________________________         
+               | No option| getfacl        file.txt	                                    | Display the access control list (ACL) of the specified file or directory.
+               |----------------------------------------------------------------------------------------------------------------------------------------------------------
+               |  -R	  | getfacl  -R    /path/to/dir	                                | Recursively display ACLs for all files and subdirectories.
+               |  -n	  | getfacl  -n    file.txt	                                    | Display numeric user and group IDs instead of names.
+               |  -e	  | getfacl  -e    file.txt	                                    | Display ACLs in a format suitable for restoring using setfacl.
+               |----------------------------------------------------------------------------------------------------------------------------------------------------------
+               | --help   | getfacl  --help	                                            | Display the help message with all available options.
+               | --version| getfacl  --version	                                        | Display the version of getfacl.
+               |__________|_____________________________________________________________|_________________________________________________________________________________         
+
+sudo setfacl [options] <filename/dir-name> 
+                __________________________________________________________________________________________________________________________________________________________
+               | Options  |              Example                                        |                               Usage                                                               
+               |__________|_____________________________________________________________|_________________________________________________________________________________         
+               |  -m	  | setfacl  -m u:username:rw   file.txt	                    | Modify or add ACL entries. Grants read (r) and write (w) permissions to the specified user.
+               |  -x	  | setfacl  -x u:username      file.txt	                    | Remove ACL entries. Removes the ACL entry for the specified user.
+               |----------------------------------------------------------------------------------------------------------------------------------------------------------
+               |  -b	  | setfacl  -b                 file.txt	                    | Remove all ACL entries (restore to default file permissions).
+               |  -k	  | setfacl  -k                 file.txt	                    | Remove the default ACL (if set).
+               |----------------------------------------------------------------------------------------------------------------------------------------------------------
+               |  -R	  | setfacl  -m u:username:rw -R /path/to/dir	                | Apply ACL changes recursively to all files and subdirectories.
+               |  -d	  | setfacl  -m d:u:username:rw dir/	                        | Set default ACL for new files created in a directory.
+               |----------------------------------------------------------------------------------------------------------------------------------------------------------
+               | --mask	  | setfacl  --mask             file.txt	                    | Modify the effective rights mask of a file or directory.
+               | --restore| setfacl  --restore=file.acl	                                | Restore ACLs from a file previously saved using getfacl.
+               |----------------------------------------------------------------------------------------------------------------------------------------------------------
+               | --help	  | setfacl  --help	                                            | Display help message with all available options.
+               |__________|_____________________________________________________________|_________________________________________________________________________________         
+
+
+
+
+sudo chown [options] <uowner:gowner> <file/directory>
+                __________________________________________________________________________________________________________________________________________________________
+               | Options           |     Example                                        |                               Usage                                                               
+               |___________________|____________________________________________________|_________________________________________________________________________________         
+               |user:group	       | chown john:admin    file.txt	                    | Changes the owner of the file to john and the group to admin.
+               |user	           | chown john          file.txt	                    | Changes the owner of the file to john, keeps the current group.
+               |:group	           | chown :admin        file.txt	                    | Changes the group of the file to admin, keeps the current owner.
+               |----------------------------------------------------------------------------------------------------------------------------------------------------------
+               |-v	               | chown -v john       file.txt	                    | Displays a message showing the change of ownership for each file.
+               |-c	               | chown -c john:admin file.txt	                    | Only reports changes to file ownership, not files that already have the desired ownership.
+               |----------------------------------------------------------------------------------------------------------------------------------------------------------
+               |-R	               | chown -R john:admin /path/to/directory	Recursively | changes the owner and group of all files and subdirectories under the specified directory.
+               |--from=user:group  | chown --from=olduser:oldgroup john:admin file.txt	| Changes the ownership only if the current owner and group match the specified olduser:oldgroup.
+               |----------------------------------------------------------------------------------------------------------------------------------------------------------
+               |-h	               | chown -h john:admin               symbolic_link    | Changes the ownership of the symbolic link itself, not the file it points to.
+               |--dereference	   | chown --dereference john:admin    symbolic_link    | Changes the ownership of the file the symbolic link points to, not the link itself.
+               |--no-dereference   | chown --no-dereference john:admin symbolic_link	| Prevents dereferencing symlinks, applying ownership changes directly to the symlink.             
+               |___________________|____________________________________________________|_________________________________________________________________________________         
+
+sudo chgrp  [options] <group-name> 
+                __________________________________________________________________________________________________________________________________________________________
+               | Options           |              Example                               |                                        Usage                                                               
+               |___________________|____________________________________________________|_________________________________________________________________________________  
+               |                   |   chgrp     <group-name>    myfile.txt             | Change the Group of a File. 
+               |                   |   chgrp     <group-name>    file1.txt file2.txt    | Change the Group of Multiple Files 
+               |----------------------------------------------------------------------------------------------------------------------------------------------------------
+               |   -h	           |   chgrp -h  <group-name>    <symbolic_link>        | Affects symbolic links, changing the group of the symlink itself, not the file it points to.
+               |   -v	           |   chgrp -v  <group-name>    myfile.txt	            | Verbose output that provides additional information about the group change.
+               |   -R	           |   chgrp -R  <group-name>    /home/user/docs        | Changes the group of a directory and its contents recursively.
+               |___________________|____________________________________________________|_________________________________________________________________________________  
+                    
+
+sudo  umask <permission>     
+
+
+
+
+
+_________________________________________________________________________________________________________________________________________________________________________

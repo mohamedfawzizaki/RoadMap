@@ -1,0 +1,141 @@
+_________________________________________________________________________________________________________________________________________________________________________ 
+                                                      `grep` Command 
+                                                      ==============
+
+`grep` (Global Regular Expression Print) is a powerful command-line utility
+ used for searching plain-text data sets for lines that match a specified pattern.
+ 
+It is commonly used for filtering text based on regular expressions.
+
+---------------------------------------------------------------------------------------------------------
+Basic Syntax
+
+      ````````````````````````````````````````
+      grep [options] <pattern> [file...]
+      ````````````````````````````````````````
+
+      - `pattern`: The string or regular expression to search for.
+      - `file...`: One or more files to search in (optional; if omitted, reads from standard input).
+
+---------------------------------------------------------------------------------------------------------
+Common Usage
+ ________________________________________________________________________________________________________________________________________________
+| Usage                            | Example                                 | Explanation                                                                                       |
+|__________________________________|_________________________________________|___________________________________________________________________
+| Search for a string in a file    | `grep "error" logfile.txt`              | Searches for the word "error" in `logfile.txt`.                                                      |
+| Case-insensitive search          | `grep -i "error" logfile.txt`           | Performs a case-insensitive search for "error".                                                      |
+| Display line numbers             | `grep -n "error" logfile.txt`           | Shows line numbers along with matching lines.                                                        |
+| Search recursively in directories| `grep -r "TODO" /path/to/dir`           | Searches for "TODO" in all files under `/path/to/dir` recursively.                                   |
+| Count matching lines             | `grep -c "error" logfile.txt`           | Counts the number of lines containing "error".                                                       |
+| Invert match                     | `grep -v "success" logfile.txt`         | Displays lines that do not contain "success".                                                    |
+| Search for exact word match      | `grep -w "root" /etc/passwd`            | Matches only lines containing the whole word "root".                                                 |
+| Highlight matching patterns      | `grep --color "error" logfile.txt`      | Highlights the matched pattern in the output.                                                        |
+|__________________________________|_________________________________________|___________________________________________________________________
+
+---------------------------------------------------------------------------------------------------------
+Options
+ _____________________________________________________________________________________________________
+| Option             | Description                                                                    |
+|____________________|________________________________________________________________________________|
+| `-i`               | Ignores case when matching (`grep -i`).                                        |
+| `-v`               | Inverts the match, displaying lines that do not match the pattern.             |
+| `-r` or `-R`       | Recursively searches files in directories.                                     |
+| `-n`               | Displays line numbers along with matched lines.                                |
+| `-w`               | Matches only whole words.                                                      |
+| `-x`               | Matches only lines where the entire line matches the pattern.                  |
+| `-c`               | Counts the number of matching lines instead of displaying them.                |
+| `-o`               | Displays only the matched parts of lines.                                      |
+| `-l`               | Displays only the names of files with matching lines.                          |
+| `-L`               | Displays only the names of files without matching lines.                       |
+| `-e`               | Allows the use of multiple patterns (`grep -e "error" -e "fail"`).             |
+| `-f file`          | Takes patterns from a file (one pattern per line).                             |
+| `--color`          | Highlights matched patterns in the output (enabled by default in many systems).|
+|____________________|________________________________________________________________________________|
+
+---------------------------------------------------------------------------------------------------------
+Regular Expressions in `grep`
+
+`grep` supports both basic and extended regular expressions.
+To use extended regular expressions, use `grep -E` or `egrep`.
+ _________________________________________________________________________________________________________________________________
+| Pattern             | Example                  | Description                                                                    |
+|_____________________|__________________________|________________________________________________________________________________|
+| `.`                 | `grep "a.b" file.txt`    | Matches any single character (`a`, followed by any character, then `b`).       |
+| `^`                 | `grep "^root" file.txt`  | Matches lines that start with `root`.                                          |
+| `$`                 | `grep "done$" file.txt`  | Matches lines that end with `done`.                                            |
+| ``                  | `grep "fo" file.txt`     | Matches zero or more occurrences of the preceding characterز                   |
+| `[ ]`               | `grep "[aeiou]" file.txt`| Matches any one of the characters in the brackets.                             |
+| `[^ ]`              | `grep "[^0-9]" file.txt` | Matches any character not in the brackets (non-digits in this case).           |
+| `\` (escape)        | `grep "\." file.txt`     | Escapes special characters (`\.` matches a literal period).                    |
+|_____________________|__________________________|________________________________________________________________________________|
+
+---------------------------------------------------------------------------------------------------------
+Examples
+
+1.Search for multiple patterns:
+
+         ````````````````````````````````````````
+         grep -e "error" -e "fail" logfile.txt
+         ````````````````````````````````````````
+
+         - Searches for lines containing either "error" or "fail".
+
+2.Count lines without a match:
+
+         ````````````````````````````````````````
+         grep -cv "success" logfile.txt
+         ````````````````````````````````````````
+
+         - Counts lines that do not contain "success".
+
+3.Recursive search in all `.txt` files:
+
+         ````````````````````````````````````````
+         grep -r --include=".txt" "pattern" /path/to/dir
+         ````````````````````````````````````````
+
+         - Recursively searches for "pattern" only in `.txt` files under the specified directory.
+
+4.Search for lines matching an exact word:
+
+         ````````````````````````````````````````
+         grep -w "root" /etc/passwd
+         ````````````````````````````````````````
+
+         - Matches only lines where "root" is a separate word, not part of another word like "rooted".
+
+5.Search for lines with a specific number of fields:
+
+         ````````````````````````````````````````
+         grep -E '^([^ ]+ ){3}[^ ]+$' file.txt
+         ````````````````````````````````````````
+
+         - Finds lines with exactly 4 space-separated fields.
+
+---------------------------------------------------------------------------------------------------------
+Recursive and Parallel Searches
+
+- `grep` can be combined with `xargs` or `find` for more powerful recursive or parallel searches.
+
+      Example: Find and search within files
+
+               ````````````````````````````````````````
+               find /path -name ".log" | xargs grep "error"
+               ````````````````````````````````````````
+               - Finds all `.log` files under `/path` and searches for "error" in them.
+
+      Example: Using `grep` with `tar`
+
+               ````````````````````````````````````````
+               tar -cf - /path/to/files | grep "pattern"
+               ````````````````````````````````````````
+               - Searches for "pattern" in files being archived by `tar`.
+
+---------------------------------------------------------------------------------------------------------
+Summary
+
+`grep` is an essential command for text searching and pattern matching in Linux.
+It can handle complex searches with regular expressions, recursive file searches, and more.
+Mastering `grep` can greatly improve your ability to filter and process large text files efficiently.
+
+_________________________________________________________________________________________________________________________________________________________________________ 

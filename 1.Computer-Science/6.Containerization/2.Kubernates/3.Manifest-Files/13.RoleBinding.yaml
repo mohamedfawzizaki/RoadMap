@@ -1,0 +1,39 @@
+# ================================================================================
+# 📘 Definition: RoleBinding
+# --------------------------------------------------------------------------------
+# RoleBinding grants the permissions defined in a Role (namespaced) to a subject
+# (User, Group, or ServiceAccount) **within the same namespace**.
+#
+# RoleBindings can only reference:
+#   ✔️ Role (in the same namespace)
+#   ✔️ ClusterRole (applies limited to this namespace)
+#
+# 🔐 Use case: Grant a CI/CD ServiceAccount access to deploy/manage workloads
+# in a specific namespace using the permissions defined in a Role.
+# ================================================================================
+
+# --------------------------------------------------------------------------------
+# 🔗 RoleBinding: Binds CI ServiceAccount to the ci-role Role in ci-namespace
+# --------------------------------------------------------------------------------
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ci-rolebinding                         # 🆔 Name of the binding
+  namespace: ci-namespace                      # 🗂️ Must match Role's and SA's namespace
+subjects:
+  - kind: ServiceAccount                       # 👤 Type of subject (User, Group, or ServiceAccount)
+    name: ci-serviceaccount                    # 🔑 Name of the ServiceAccount being granted access
+    namespace: ci-namespace                    # 🌍 Namespace where the SA resides
+  # - kind: User                               # 👤 Subject type: individual user
+  #   name: alice@example.com                  # 🔐 Must match external identity (from OIDC, LDAP, etc.)
+  #   apiGroup: rbac.authorization.k8s.io
+  # - kind: Group                              # 👥 Subject type: user group
+  #   name: devops-team                        # 🏷️ Group name from your identity provider
+  #   apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role                                   # 📎 Binding to a namespaced Role (not ClusterRole)
+  name: ci-role                                # 🛡️ Name of the Role this binding refers to
+  apiGroup: rbac.authorization.k8s.io          # 🔧 Always rbac.authorization.k8s.io
+
+
+

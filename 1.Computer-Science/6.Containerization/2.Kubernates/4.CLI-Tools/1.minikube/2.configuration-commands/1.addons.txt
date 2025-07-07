@@ -1,0 +1,13 @@
+______________________________________________________________________________________________________________________________________
+                                            https://minikube.sigs.k8s.io/docs/commands/addons/
+
+minikube addons SUBCOMMAND [flags]
+ [flags]
+minikube addons enable ADDON_NAME [flags]
+minikube addons disable ADDON_NAME [flags]
+minikube addons configure ADDON_NAME [flags]
+minikube addons open ADDON_NAME [flags]
+
+______________________________________________________________________________________________________________________________________
+
+______________________________________________________________________________________________________________________________________

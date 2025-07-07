@@ -1,0 +1,682 @@
+_______________________________________________________________________________________________________________________________________
+                                               Network  Addresses
+                                              =====================
+                      ---------------------------------------------------------------------------------
+                      MAC Address - IP Address - Subnet Mask  -  Loopback - Ethernet Interface (`eth0`)
+                      ---------------------------------------------------------------------------------
+_______________________________________________________________________________________________________________________________________
+                                     1.MAC Address (Media Access Control Address)
+                                     --------------------------------------------
+Definition  
+        - A MAC address is a unique identifier assigned to a network interface card (NIC) of a device.
+        - It operates at the data link layer (Layer 2) of the OSI model and is used for communication within a local area network (LAN).
+
+
+Key Characteristics
+        - Format    : A MAC address is 48 bits long, usually represented in hexadecimal, e.g., `00:1A:2B:3C:4D:5E` or `00-1A-2B-3C-4D-5E`.
+       
+        - Uniqueness: Each device has a unique MAC address assigned by the NIC manufacturer.
+        - Permanent : Typically hardcoded into the hardware (but can be spoofed in software).
+
+
+Functions of a MAC Address
+        1.Local   Identification: Ensures communication within a LAN.
+        2.Data    Transmission  : Helps in identifying source and destination devices during packet transfer.
+        3.Address Resolution    : Works with the Address Resolution Protocol (ARP) to map IP addresses to MAC addresses.
+
+
+Types of MAC Addresses
+        1.Unicast  : Identifies a single device.
+        2.Multicast: Targets a group of devices.
+        3.Broadcast: Targets all devices on a LAN (e.g., `FF:FF:FF:FF:FF:FF`).
+
+_______________________________________________________________________________________________________________________________________
+                                      2.IP Address (Internet Protocol Address)
+                                      ----------------------------------------
+
+Definition  
+        - An IP address is a numerical label assigned to a device in a network.
+        - It operates at the network layer (Layer 3) and is used for communication between devices across different networks.
+
+Versions of IP Address
+        1.IPv4:
+               - 32 bits long, written in dotted decimal format, e.g., `192.168.1.1`.
+               - Provides approximately 4.3 billion unique addresses.
+
+        2.IPv6:
+               - 128 bits long, written in hexadecimal format, e.g., `2001:0db8:85a3:0000:0000:8a2e:0370:7334`.
+               - Vastly increases address space and introduces features like auto-configuration and improved security.
+
+Functions of an IP Address
+        1.Global Identification: Uniquely identifies devices in a network.
+        2.Routing              : Helps in forwarding packets across networks.
+        3.Subnetting           : Enables efficient use of IP addresses and network segmentation.
+
+Types of IP Addresses
+        1.Public  IP Address  :  Globally unique and assigned by ISPs for internet access.
+        2.Private IP Address  :  Used within a private network (e.g., `192.168.0.0/16` or `10.0.0.0/8`).
+        3.Dynamic IP Address  :  Assigned dynamically by a DHCP server.
+        4.Static  IP Address  :  Manually assigned and remains constant.
+
+_______________________________________________________________________________________________________________________________________
+                                                    3.Subnet Mask
+                                                    -------------
+Definition  
+        - A subnet mask is a 32-bit number used in IPv4 to divide an IP address into network and host portions.
+        - It enables subnetting, which improves network management and efficiency.
+
+Key Characteristics
+        - Format : Written in dotted decimal notation, e.g., `255.255.255.0`.
+        - Purpose: Identifies the range of IP addresses in a subnet.
+
+How It Works
+        - An AND operation is performed between the IP address and the subnet mask to determine the network address.
+        - Example:
+                  - IP Address     : `192.168.1.10`
+                  - Subnet Mask    : `255.255.255.0`
+                  - Network Address: `192.168.1.0`
+
+
+ Common Subnet Masks:
+                         ________________________________________________________________
+                        | CIDR Notation      | Subnet Mask       | Hosts per Subnet      |
+                        | `/24`              | `255.255.255.0`   | 254                   |
+                        | `/16`              | `255.255.0.0`     | 65,534                |
+                        | `/8`               | `255.0.0.0`       | 16,777,214            |
+                        |________________________________________________________________|
+
+Benefits of Subnetting
+        1.Reduces network congestion.
+        2.Enhances security by isolating subnets.
+        3.Optimizes IP address allocation.
+
+_______________________________________________________________________________________________________________________________________
+                                          Loopback Interface (`lo`)
+                                          -------------------------
+Definition:
+        - The loopback interface is a virtual network interface used by the system to communicate with itself.
+        - It's essential for network testing and local inter-process communication.
+        - The loopback address, commonly referred to as `localhost`, is typically mapped to the IP address 127.0.0.1 (IPv4) or ::1 (IPv6).
+        - The loopback interface allows the system to send network packets to itself for testing and debugging purposes.
+
+Characteristics of Loopback:
+        1.IP Address: 
+              - IPv4: `127.0.0.1` 
+              - IPv6: `::1`
+        2.Purpose: 
+              - Primarily used for network testing and troubleshooting.
+              - Helps in checking the network stack without needing a physical network interface.
+        
+        3.Interface Name: Commonly named `lo`.
+        
+        4.No physical hardware     : The loopback interface does not have a physical counterpart and is purely software-based.
+        
+        5.No External Communication: Traffic on the loopback interface cannot leave the local system or be routed externally.
+        
+        6.Routing                  : In many systems, the loopback interface is always up and has a route to itself.
+        
+        7.Common Use Cases:
+              - Testing applications locally before they are deployed on a network.
+              - Ensuring that the network stack is functional without needing an active network connection.
+              - Sending local packets for debugging network applications.
+
+        Example: Check Loopback Interface with `ip` Command
+        To view the loopback interface's details (address, status, etc.), use:
+                                ````````````````````````````````````````````````````````````````````
+                                ip addr show lo
+                                ```
+                                Example output:
+                                ```
+                                    1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+                                    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+                                    inet 127.0.0.1/8 scope host lo
+                                          valid_lft forever preferred_lft forever
+                                    inet6 ::1/128 scope host
+                                          valid_lft forever preferred_lft forever
+                                ````````````````````````````````````````````````````````````````````
+_______________________________________________________________________________________________________________________________________
+                                          Ethernet Interface (`eth0`)
+                                          ---------------------------
+Definition:
+        - The Ethernet interface (commonly named `eth0`, though modern systems may
+           use other naming conventions such as `enp0s3` or `ens33`) refers to a physical or virtual network 
+           interface card (NIC) that connects to a local area network (LAN) or the internet through Ethernet cables.
+        - It supports both wired and sometimes wireless Ethernet connections.
+--------------------------------------------------------------------------------------------------------------------------------------
+Characteristics of Ethernet (`eth0`):
+        1.IP Address: 
+              - Typically uses private IP ranges (e.g., `192.168.x.x`, `10.x.x.x`)
+                  or public IP addresses assigned by your network provider.
+              - DHCP (Dynamic Host Configuration Protocol) is commonly used to automatically assign an IP address.
+        2.Hardware Address: 
+              - Ethernet interfaces have a unique MAC address (Media Access Control) that identifies them on a local network.
+        3.Purpose: 
+              - Provides network connectivity to a physical device through an Ethernet cable.
+              - Primarily used for communication with other devices on a LAN or internet.
+        4.Interface Name: 
+              - Typically `eth0` in older Linux distributions, 
+                  but may be different in newer systems with "predictable network interface names" (e.g., `enp0s3`).
+        5.Communication: 
+              - The Ethernet interface handles IP-based communication, allowing data packets to travel through the network.
+
+        Example of Ethernet Interface Configuration
+        To view the Ethernet interface's details (IP, MAC, status, etc.), use the `ip` command:
+                            ``````````````````````````````````````````````````````````````````````````````````````````````````````
+                            ip addr show eth0
+                            ```
+                            Example output:
+                            ```
+                            2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+                                    link/ether 00:15:5d:ab:3a:a6 brd ff:ff:ff:ff:ff:ff
+                                    inet 172.20.140.221/20 brd 172.20.143.255 scope global eth0
+                                          valid_lft forever preferred_lft forever
+                                    inet6 fe80::215:5dff:feab:3aa6/64 scope link
+                                          valid_lft forever preferred_lft forever
+                            ``````````````````````````````````````````````````````````````````````````````````````````````````````
+--------------------------------------------------------------------------------------------------------------------------------------
+Explanation:
+        - `inet`    : Displays the IPv4 address assigned to the interface (in this case, `192.168.1.100/24`).
+        - `inet6`   : Displays the IPv6 address (if assigned).
+        - `state UP`: Indicates that the interface is currently active.
+        - `mtu 1500`: The Maximum Transmission Unit, which is the largest packet size that can be transmitted on this network interface.
+--------------------------------------------------------------------------------------------------------------------------------------
+Common Operations for Ethernet Interface (`eth0`):
+        1.Bring Interface Up or Down: 
+              - Bring the interface up (activate):  
+            ```
+            sudo ip link set eth0 up
+            ```
+              - Bring the interface down (deactivate):  
+            ```
+            sudo ip link set eth0 down
+            ```
+        2.Assign IP Address (static):
+              - Assign a static IP address:  
+            ```
+            sudo ip addr add 192.168.1.100/24 dev eth0
+            ```
+        3.Enable/Disable DHCP: 
+              - To enable DHCP on `eth0`:  
+            ```
+            sudo dhclient eth0
+            ```
+              - To release DHCP lease:  
+            ```
+            sudo dhclient -r eth0
+            ```
+--------------------------------------------------------------------------------------------------------------------------------------
+Key Differences between Loopback (`lo`) and Ethernet (`eth0`):
+
+        - Physical vs Virtual:
+                      - `eth0` is tied to physical hardware (Ethernet NIC), 
+                         while `lo` is a virtual interface that exists only on the local system.
+        - Communication Scope: 
+                      - `eth0` enables communication over local and external networks (e.g., LAN or the internet),
+                         while `lo` only enables internal communication within the system.
+        - Network Traffic: 
+                      - Traffic on `eth0` goes out to the network, while traffic on `lo` stays within the local machine.
+--------------------------------------------------------------------------------------------------------------------------------------
+ Comparison Table:
+          ____________________________________________________________________________________________________________________
+          | Component    | Purpose                             | Address Format                       | Layer in OSI Model     |
+          |______________|_____________________________________|______________________________________|________________________|
+          | MAC Address  | Device identification within a LAN  | `00:1A:2B:3C:4D:5E`                  | Data Link (Layer 2)    |
+          | IP Address   | Device identification in a network  | `192.168.1.1` (IPv4) or `2001::7334` | Network   (Layer 3)    |
+          | Subnet Mask  | Divides IP into network/host parts  | `255.255.255.0`                      | Network   (Layer 3)    |
+          | Loopback     | Tests local TCP/IP functionality    | `127.0.0.1` or `::1`                 | Network   (Layer 3)    |
+          |____________________________________________________________________________________________________________________|
+
+_______________________________________________________________________________________________________________________________________
+
+=======================================================================================================================================
+=======================================================================================================================================
+                                                           Example
+                                                        ===============
+ubunto@myWinHostMachine:~$ ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:15:5d:ab:3d:8c brd ff:ff:ff:ff:ff:ff
+    inet 172.20.140.221/20 brd 172.20.143.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::215:5dff:feab:3d8c/64 scope link
+       valid_lft forever preferred_lft forever
+=======================================================================================================================================
+                                                          Explanation
+                                                        ===============
+Let's break down the output of the `ip addr` command, 
+showing the details of the network interfaces `lo` (loopback) and `eth0` (Ethernet):
+
+Output Explanation
+---------------------------------------------------------------------------------------------------------------------------------------
+ 1.Loopback Interface (`lo`)
+```
+        1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+                link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+                inet 127.0.0.1/8 scope host lo
+                  valid_lft forever preferred_lft forever
+                inet6 ::1/128 scope host
+                  valid_lft forever preferred_lft forever
+        
+
+            - `1: lo:`: 
+                              ->> The `lo` interface is listed as the first interface (loopback interface).
+            - `<LOOPBACK,UP,LOWER_UP>`: 
+                              ->> This indicates that the interface is a loopback
+                                  interface and is both UP (active) and LOWER_UP
+                                  (physical connection is active, even though it is virtual).
+            - `mtu 65536`    : 
+                              ->> The Maximum Transmission Unit (MTU) is set to 65536 bytes.
+                              ->> The MTU defines the largest packet size the interface can handle.
+                              ->> For `lo`, it is typically very large since it is virtual and does not
+                                   deal with physical network constraints.
+            - `qdisc noqueue`: 
+                              ->> This shows that there is no queuing discipline set for the interface.
+            - `state UNKNOWN`: 
+                              ->> This means the state of the interface is unknown or cannot be determined,
+                                   which is typical for a loopback interface since it doesn't rely on a physical connection.
+            - `link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00`: 
+                              ->> This line shows the loopback MAC address (`00:00:00:00:00:00`)
+                                   and the broadcast address (`00:00:00:00:00:00`).
+            - `inet 127.0.0.1/8 scope host lo`: 
+                              ->> The IPv4 address assigned to the loopback interface is 
+                                  `127.0.0.1`, which is the localhost address.
+                              ->> The `/8` indicates that the subnet mask is `255.0.0.0`.
+              - `scope host`: 
+                              ->> This means that this address is valid only within the host itself and not reachable externally.
+            - `inet6 ::1/128 scope host`: 
+                              ->> The IPv6 address for the loopback interface is `::1`,
+                                   and the `/128` denotes a subnet mask of `128` bits.
+              - `scope host`: 
+                                ->> This is also only valid within the local system.
+---------------------------------------------------------------------------------------------------------------------------------------
+ 2.Ethernet Interface (`eth0`)
+```
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+        link/ether 00:15:5d:ab:3d:8c brd ff:ff:ff:ff:ff:ff
+        inet 172.20.140.221/20 brd 172.20.143.255 scope global eth0
+          valid_lft forever preferred_lft forever
+        inet6 fe80::215:5dff:feab:3d8c/64 scope link
+          valid_lft forever preferred_lft forever
+```
+
+          - `2: eth0:`: The second interface, `eth0`, is listed, representing an Ethernet network interface card.
+          
+          - `<BROADCAST,MULTICAST,UP,LOWER_UP>`: 
+                        - BROADCAST: The interface supports broadcasting.
+                        - MULTICAST: It can send multicast packets.
+                        - UP: The interface is active (up).
+                        - LOWER_UP: Indicates that the physical layer (Ethernet cable) is connected and functional.
+          
+          - `mtu 1500`: 
+                        - The Maximum Transmission Unit (MTU) is set to 1500 bytes, which is a standard size for Ethernet interfaces.
+          
+          - `qdisc mq`: 
+                        - This indicates that a multi-queue (mq) queuing discipline 
+                          is in use, which allows multiple queues for handling packets in parallel.
+          
+          - `state UP`: 
+                        - The interface is active and ready to transmit data.
+          
+          - `link/ether 00:15:5d:ab:3d:8c brd ff:ff:ff:ff:ff:ff`: 
+                        - The Ethernet MAC address for `eth0` is `00:15:5d:ab:3d:8c`,
+                          and the broadcast address is `ff:ff:ff:ff:ff:ff`.
+          
+          - `inet 172.20.140.221/20 brd 172.20.143.255 scope global eth0`:
+                        - The IPv4 address assigned to `eth0` is `172.20.140.221`, 
+                          with a subnet mask of `/20` (which corresponds to `255.255.240.0`).
+                        
+                        - The broadcast address for this subnet is `172.20.143.255`.
+                        
+                        - `scope global`: This means the address is globally routable
+                          (can be used across different machines within the same network or through routing).
+          
+          - `inet6 fe80::215:5dff:feab:3d8c/64 scope link`:
+                        - The IPv6 address assigned to the interface is `fe80::215:5dff:feab:3d8c`, with a subnet mask of `/64`.
+                        - `scope link`: This means that the address is link-local,
+                          and it is only valid within the local network and cannot be routed across networks.
+---------------------------------------------------------------------------------------------------------------------------------------
+ Key Points
+          - `lo`   (Loopback interface):
+                        - Used for internal communication within the same machine, 
+                          with the IP addresses `127.0.0.1` (IPv4) and `::1` (IPv6).
+          - `eth0` (Ethernet interface):
+                        - The physical network interface for connecting to an external 
+                          network (e.g., LAN or the internet), with assigned IP addresses like `172.20.140.221` (IPv4) 
+                          and `fe80::215:5dff:feab:3d8c` (IPv6).
+=======================================================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+_______________________________________________________________________________________________________________________________________
+                                            Example
+                                        ==============
+PS C:\Users\workstation\Desktop\Road-Map> ipconfig /all
+
+Windows IP Configuration
+
+   Host Name ............: myWinHostMachine
+   Primary Dns Suffix  .......:
+   Node Type ............: Hybrid
+   IP Routing Enabled........: No
+   WINS Proxy Enabled........: No
+
+Ethernet adapter vEthernet (Default Switch):
+
+   Connection-specific DNS Suffix  .:
+   Description ...........: Hyper-V Virtual Ethernet Adapter
+   Physical Address.........: 00-15-5D-C0-74-23
+   DHCP Enabled...........: No
+   Autoconfiguration Enabled ....: Yes
+   Link-local IPv6 Address .....: fe80::6ff8:2f6e:cff1:c041%38(Preferred)
+   IPv4 Address...........: 172.24.192.1(Preferred)
+   Subnet Mask ...........: 255.255.240.0
+   Default Gateway .........:
+   DHCPv6 IAID ...........: 637539677
+   DHCPv6 Client DUID........: 00-01-00-01-2E-D8-F8-5F-C0-B8-83-A7-94-A0
+   DNS Servers ...........: fec0:0:0:ffff::1%1
+                                       fec0:0:0:ffff::2%1
+                                       fec0:0:0:ffff::3%1
+   NetBIOS over Tcpip........: Enabled
+
+Ethernet adapter vEthernet (WSL):
+
+   Connection-specific DNS Suffix  .: 
+   Description ...........: Hyper-V Virtual Ethernet Adapter 2
+   Physical Address.........: 00-15-5D-AB-22-BA
+   DHCP Enabled...........: No
+   Autoconfiguration Enabled ....: Yes
+   Link    -local IPv6 Address .....: fe80::a777:e85a:41b:d707%61(Preferred)
+   IPv4 Address...........: 172.20.128.1(Preferred)
+   Subnet Mask ...........: 255.255.240.0
+   Default Gateway .........:
+   DHCPv6 IAID ...........: 1023415645
+   DHCPv6 Client DUID........: 00-01-00-01-2E-D8-F8-5F-C0-B8-83-A7-94-A0
+   DNS Servers ...........: fec0:0:0:ffff::1%1
+                                       fec0:0:0:ffff::2%1
+                                       fec0:0:0:ffff::3%1
+   NetBIOS over Tcpip........: Enabled
+
+Wireless LAN adapter Local Area Connection 1:
+
+   Media State ...........: Media disconnected
+   Connection-specific DNS Suffix  .: 
+   Description ...........: Microsoft Wi-Fi Direct Virtual Adapter
+   Physical Address.........: C0-B8-83-A7-94-A1
+   DHCP Enabled...........: Yes
+   Autoconfiguration Enabled ....: Yes
+
+Wireless LAN adapter Local Area Connection 10:
+
+   Media State ...........: Media disconnected
+   Connection-specific DNS Suffix  .:
+   Description ...........: Microsoft Wi-Fi Direct Virtual Adapter 2
+   Physical Address.........: C2-B8-83-A7-9 -A0
+   DHCP Enabled...........: Yes
+   Autoconfiguration Enabled ....: Yes
+
+Ethernet adapter vEthernet (External network):
+
+   Connection-specific DNS Suffix  .:
+   Description ...........: Hyper-V Virtual Ethernet Adapter 3
+   Physical Address.........: C0-B8-83-A7-9 -A0
+   DHCP Enabled...........: Yes
+   Autoconfiguration Enabled ....: Yes
+   Link-local IPv6 Address .....: fe80::6fe6:4ada:f402:1729%11(Preferred)
+   IPv4 Address...........: 192.168.1.5(Preferred) 
+   Subnet Mask ...........: 255.255.255.0
+   Lease Obtained..........: 25 December 2024 20:21:28
+   Lease Expires ..........: 02 January 2025 20:41:44
+   Default Gateway .........: 192.168.1.1
+   DHCP Server ...........: 192.168.1.1
+   DHCPv6 IAID ...........: 1036040323
+   DHCPv6 Client DUID........: 00-01-00-01-2E-D8-F8-5F-C0-B8-83-A7-94-A0
+   DNS Servers ...........: 192.168.1.1
+                                       0.0.0.0
+   NetBIOS over Tcpip........: Enabled
+
+Ethernet adapter Bluetooth Network Connection 3:
+
+   Media State ...........: Media disconnected
+   Connection-specific DNS Suffix  .: 
+   Description ...........: Bluetooth Device (Personal Area Network) 3
+   Physical Address.........: C0-B8-83-A7-94-A4
+   DHCP Enabled...........: Yes
+   Autoconfiguration Enabled ....: Yes
+=======================================================================================================================================
+                                                          Explanation
+                                                        ===============              
+- The output from the `ipconfig /all` command provides an in-depth view of 
+   your network interfaces and their configurations on your Windows machine.
+- Let's analyze the information in detail:
+---------------------------------------------------------------------------------------------------------------------------------------
+ 1.General Windows System Information:
+
+    - Host Name:  
+          `myWinHostMachine`  
+          This is the name of your Windows machine on the network.
+
+    - Node Type:  
+          `Hybrid`  
+          This indicates the node type of the machine.
+          Hybrid nodes are a mix of both Broadcast and Peer-to-Peer communication modes,
+           typically allowing for dynamic IP address assignments in a local network.
+
+    - IP Routing Enabled:  
+          `No`  
+          IP routing is disabled, meaning the machine does not act as a router to forward traffic between networks.
+
+    - WINS Proxy Enabled:  
+          `No`  
+          WINS (Windows Internet Name Service) proxy is disabled, 
+           meaning the system does not use this service to resolve NetBIOS names.
+---------------------------------------------------------------------------------------------------------------------------------------
+ 2.Ethernet adapter vEthernet (Default Switch):
+
+    - Description:  
+          `Hyper-V Virtual Ethernet Adapter`  
+          This indicates that this adapter is part of a Hyper-V virtual machine setup,
+           providing networking functionality for virtual machines (VMs) created via Hyper-V.
+
+    - Physical Address:  
+          `00-15-5D-C0-74-23`  
+          The MAC address of this virtual Ethernet adapter.
+
+    - DHCP Enabled:  
+          `No`  
+          This interface does not use DHCP (Dynamic Host Configuration Protocol) to get its IP address.
+          Instead, it uses static configuration.
+
+    - Autoconfiguration Enabled:  
+          `Yes`  
+          The interface can automatically assign itself an IP address if no DHCP server is available.
+
+    - Link-local IPv6 Address:  
+          `fe80::6ff8:2f6e:cff1:c041%38`  
+          A link-local IPv6 address.
+          This address is valid only within the local network and cannot be routed across different networks.
+
+    - IPv4 Address:  
+          `172.24.192.1`  
+          A private IPv4 address within the `172.24.192.0/20` subnet.
+          This address is likely used for communication between virtual machines or with the host system.
+
+    - Subnet Mask:  
+          `255.255.240.0`  
+          This subnet mask allows for a range of IP addresses from `172.24.192.1` to `172.24.207.254` within the same network.
+
+    - Default Gateway:  
+          Blank (no default gateway configured).
+
+    - DNS Servers:  
+          `fec0:0:0:ffff::1%1`, `fec0:0:0:ffff::2%1`, `fec0:0:0:ffff::3%1`  
+          These are IPv6 addresses for DNS servers, likely internal to your virtual network environment.
+
+    - NetBIOS over Tcpip:  
+          `Enabled`  
+          This allows the machine to resolve NetBIOS names over TCP/IP, enabling network file sharing and other legacy protocols.
+---------------------------------------------------------------------------------------------------------------------------------------
+ 3.Ethernet adapter vEthernet (WSL):
+
+    - Description:  
+          `Hyper-V Virtual Ethernet Adapter 2`  
+          This interface is used by Windows Subsystem for Linux (WSL) to provide network
+           connectivity for Linux-based applications running inside WSL.
+
+    - Physical Address:  
+          `00-15-5D-AB-22-BA`  
+          The MAC address of this virtual network interface.
+
+    - DHCP Enabled:  
+          `No`  
+          This adapter does not use DHCP for IP address assignment.
+
+    - Autoconfiguration Enabled:  
+          `Yes`  
+          This adapter can automatically assign an IP address if no DHCP server is available.
+
+    - Link-local IPv6 Address:  
+          `fe80::a777:e85a:41b:d707%61`  
+          This is a link-local IPv6 address for communication within the local network segment.
+
+    - IPv4 Address:  
+          `172.20.128.1`  
+          A private IPv4 address used within the WSL virtual network, likely used for communication between WSL and Windows.
+
+    - Subnet Mask:  
+          `255.255.240.0`  
+          This subnet mask allows a range of IP addresses from `172.20.128.1` to `172.20.143.254`.
+
+    - Default Gateway:  
+          Blank (no default gateway).
+
+    - DNS Servers:  
+          `fec0:0:0:ffff::1%1`, `fec0:0:0:ffff::2%1`, `fec0:0:0:ffff::3%1`  
+          Internal DNS servers likely used for virtual network name resolution.
+---------------------------------------------------------------------------------------------------------------------------------------
+ 4.Wireless LAN adapter Local Area Connection 1:
+
+    - Description:  
+          `Microsoft Wi-Fi Direct Virtual Adapter`  
+          This adapter is used for Wi-Fi Direct, a technology that allows direct wireless
+           communication between devices without a traditional router.
+
+    - Media State:  
+          `Media disconnected`  
+          The adapter is not currently active or connected to any network.
+
+    - DHCP Enabled:  
+          `Yes`  
+          If the adapter were active, it would attempt to get an IP address via DHCP.
+---------------------------------------------------------------------------------------------------------------------------------------
+ 5.Wireless LAN adapter Local Area Connection 10:
+
+    - Description:  
+          `Microsoft Wi-Fi Direct Virtual Adapter 2`  
+          A second Wi-Fi Direct virtual adapter, 
+           similar to the one above, but likely used for a different connection or device.
+
+    - Media State:  
+          `Media disconnected`  
+          The adapter is not active.
+
+    - DHCP Enabled:  
+          `Yes`  
+          Like the previous adapter, it would use DHCP if active.
+---------------------------------------------------------------------------------------------------------------------------------------
+ 6.Ethernet adapter vEthernet (External network):
+
+    - Description:  
+          `Hyper-V Virtual Ethernet Adapter 3`  
+          This virtual network interface is likely used for external
+           network connectivity, bridging virtual machines or networks to the physical network.
+
+    - Physical Address:  
+          `C0-B8-83-A7-94-A0`  
+          The MAC address of this virtual interface.
+
+    - DHCP Enabled:  
+          `Yes`  
+          This interface uses DHCP for IP address assignment.
+
+    - IPv4 Address:  
+          `192.168.1.5`  
+          A private IPv4 address assigned to the external virtual network interface.
+
+    - Subnet Mask:  
+          `255.255.255.0`  
+          The subnet mask allows for up to 254 devices on the same network.
+
+    - Default Gateway:  
+          `192.168.1.1`  
+          The default gateway is the router or device that routes traffic from this network to other networks or the internet.
+
+    - DHCP Server:  
+          `192.168.1.1`  
+          The DHCP server that assigned the IP address to this interface.
+
+    - DNS Servers:  
+          `192.168.1.1` (Primary)  
+          This is the DNS server assigned by the DHCP server.
+---------------------------------------------------------------------------------------------------------------------------------------
+ 7.Ethernet adapter Bluetooth Network Connection 3:
+
+    - Description:  
+          `Bluetooth Device (Personal Area Network) 3`  
+          This interface is used for Bluetooth network connections.
+
+    - Media State:  
+          `Media disconnected`  
+          The Bluetooth network adapter is not active.
+
+    - DHCP Enabled:  
+          `Yes`  
+          The adapter would use DHCP if it were active.
+---------------------------------------------------------------------------------------------------------------------------------------
+ Summary of Key Insights:
+
+    - Hyper-V Virtual Adapters:  
+          There are several virtual network interfaces created by Hyper-V for 
+           managing virtual machines and network connectivity between the host 
+           and the virtual environment (WSL, Default Switch, and External Network).
+
+    - IP Addressing:  
+          The IP addresses assigned to the virtual interfaces are in the private IP 
+          ranges (`172.24.192.x`, `172.20.128.x`, `192.168.1.x`), which are used for 
+          local and internal communication within your network or virtual environment.
+
+    - Active Interfaces:  
+          - The vEthernet (External network) interface is active with 
+            a valid IP address (`192.168.1.5`), and it has a default gateway
+            (`192.168.1.1`), meaning it is connected to an external network.
+          - Other virtual interfaces (for WSL, Default Switch) are configured but not connected to external networks.
+---------------------------------------------------------------------------------------------------------------------------------------

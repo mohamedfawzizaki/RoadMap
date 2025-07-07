@@ -1,0 +1,148 @@
+_______________________________________________________________________________________________________________________________
+                                  Denial-of-Service (DoS) Attacks 
+
+ 1. What is a DoS Attack?  
+A Denial-of-Service (DoS) attack is a cyberattack where an attacker overwhelms a system,
+ server, or network with excessive requests, making it slow or completely unavailable for legitimate users.  
+
+ 📌 Key Characteristics of a DoS Attack  
+✅ Floods the target system with malicious traffic or heavy processing tasks.  
+✅ Exploits vulnerabilities to crash or degrade system performance.  
+✅ Typically launched from a single machine (unlike DDoS, which uses multiple machines).  
+
+----------------------------------------------------------------------------------------
+
+ 2. Types of DoS Attacks  
+
+ 1️⃣ Volume-Based Attacks  
+Goal: Consume the target’s bandwidth, making it unreachable.  
+ 🔹 UDP Flood
+- Sends a massive number of UDP packets to random ports.  
+- Overloads the system, causing high CPU usage.  
+- Example:
+  `````````````````````````````````````````````````````````````````bash
+  hping3 --flood --udp -p 80 target.com
+  `````````````````````````````````````````````````````````````````
+  
+ 🔹 ICMP (Ping) Flood
+- Attacker sends a large number of ICMP Echo Requests (pings) to overwhelm the system.  
+- Example:  
+  `````````````````````````````````````````````````````````````````bash
+  ping -f -s 65500 target.com
+  `````````````````````````````````````````````````````````````````
+  
+ 🔹 SYN Flood
+- Exploits TCP handshake by sending half-open connections (SYN packets) without completing them.  
+- Consumes server resources and prevents new connections.  
+- Example:
+  `````````````````````````````````````````````````````````````````bash
+  hping3 --flood --syn -p 80 target.com
+  `````````````````````````````````````````````````````````````````
+
+----------------------------------------------------------------------------------------
+
+ 2️⃣ Application-Layer Attacks  
+Goal: Overload an application’s processing capacity rather than network bandwidth.  
+ 🔹 HTTP Flood
+- Sends a huge number of legitimate-looking HTTP requests to exhaust server processing.  
+- Harder to detect because it mimics normal traffic.  
+- Example using Curl:  
+  `````````````````````````````````````````````````````````````````bash
+  while true; do curl http://target.com; done
+  `````````````````````````````````````````````````````````````````
+
+ 🔹 Slowloris Attack
+- Opens many partial HTTP connections and keeps them open for a long time.  
+- Prevents the server from handling real requests.  
+- Example using Slowloris Tool:  
+  `````````````````````````````````````````````````````````````````bash
+  slowloris target.com -p 80
+  `````````````````````````````````````````````````````````````````
+
+----------------------------------------------------------------------------------------
+
+ 3️⃣ Protocol-Based Attacks  
+Goal: Exploit vulnerabilities in network protocols.  
+ 🔹 Ping of Death
+- Sends oversized ICMP packets to crash the target system.  
+- Modern systems have protections against it.  
+
+ 🔹 Teardrop Attack
+- Sends malformed fragmented packets that the system fails to reassemble, causing a crash.  
+
+----------------------------------------------------------------------------------------
+
+ 3. Difference Between DoS & DDoS Attacks  
+
+| Feature     | DoS Attack      | DDoS Attack |
+| Source      | Single machine  | Multiple machines (botnet)    |
+| Complexity  | Simple          | More sophisticated            |
+| Impact      | Slower          | More devastating              |
+| Mitigation  | Easier          | Requires specialized defense  |
+
+----------------------------------------------------------------------------------------
+
+ 4. Real-World Examples of DoS Attacks  
+
+| Year | Attack           | Impact                                                              |
+| 2000 | Yahoo DoS Attack | Crashed Yahoo’s website for hours.                                  |
+| 2016 | Dyn DNS Attack   | Slowed down Twitter, Netflix, and PayPal.                           |
+| 2023 | Cloudflare DDoS  | Largest-ever HTTPS DDoS attack recorded (71M requests per second).  |
+
+----------------------------------------------------------------------------------------
+
+ 5. How to Prevent DoS Attacks?  
+
+ 🛡️ 1. Rate-Limiting Requests  
+✅ Limit requests per IP using Laravel’s built-in middleware.  
+`````````````````````````````````````````````````````````````````php
+// In app/Http/Kernel.php
+protected $middleware = [
+    \Illuminate\Routing\Middleware\ThrottleRequests::class,
+];
+
+// In routes/web.php
+Route::middleware('throttle:10,1')->get('/api/data', function () {
+    return response()->json(['message' => 'Success']);
+});
+`````````````````````````````````````````````````````````````````
+> Prevents excessive requests from a single source.  
+
+----------------------------------------------------------------------------------------
+
+ 🛡️ 2. Use a Web Application Firewall (WAF)  
+✅ Cloudflare, AWS WAF, ModSecurity can block attack traffic.  
+✅ Blocks bad bots and known attack patterns.  
+
+----------------------------------------------------------------------------------------
+
+ 🛡️ 3. Enable TCP SYN Cookies  
+✅ Protects against SYN flood attacks.  
+✅ On Linux, enable SYN cookies:  
+`````````````````````````````````````````````````````````````````bash
+echo 1 > /proc/sys/net/ipv4/tcp_syncookies
+`````````````````````````````````````````````````````````````````
+
+----------------------------------------------------------------------------------------
+
+ 🛡️ 4. Use a Content Delivery Network (CDN)  
+✅ CDNs like Cloudflare & Akamai absorb attack traffic.  
+✅ Distributes requests across multiple servers.  
+
+----------------------------------------------------------------------------------------
+
+ 🛡️ 5. Monitor & Detect Anomalies  
+✅ Use fail2ban, Suricata, or Snort to detect unusual traffic patterns.  
+✅ Example fail2ban rule:  
+`````````````````````````````````````````````````````````````````bash
+[http-dos]
+enabled  = true
+port     = http,https
+filter   = http-dos
+logpath  = /var/log/apache2/access.log
+bantime  = 3600
+maxretry = 20
+`````````````````````````````````````````````````````````````````
+
+----------------------------------------------------------------------------------------
+_______________________________________________________________________________________________________________________________

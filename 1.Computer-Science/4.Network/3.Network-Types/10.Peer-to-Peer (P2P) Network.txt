@@ -1,0 +1,12 @@
+_______________________________________________________________________________________________________________________________________
+Peer-to-Peer (P2P) Networks
+        - Networks where all nodes act as both clients and servers, sharing resources directly.
+
+        Characteristics:
+            - Decentralized communication.
+            - No central server.
+
+        Examples:
+            - File-sharing applications like BitTorrent.
+            - Collaborative computing projects like SETI@home.
+_______________________________________________________________________________________________________________________________________

@@ -1,0 +1,26 @@
+ ___________________________________________________________________________________________________________________________________
+|   vagrant ssh-config [options] [name|id]                         Outputs SSH configuration for the running VM.
+                 --host NAME                                       Name the host for the config       
+|___________________________________________________________________________________________________________________________________
+|   vagrant ssh [options] [name|id] [-- extra ssh args]            Logs into the running VM via SSH.
+                 -c, --command COMMAND                             Execute an SSH command directly
+                 -p, --plain                                       Plain mode, leaves authentication up to user
+                 -t, --[no-]tty                                    Enables tty when executing an ssh command (defaults to true)
+|___________________________________________________________________________________________________________________________________
+|   vagrant port [options] [name|id]                               Displays the guest machine's forwarded ports.
+                 --guest PORT                                      Output the host port that maps to the given guest port
+|___________________________________________________________________________________________________________________________________
+|   vagrant rsync [vm-name]                                        This command forces any synced folders with type 'rsync' to sync.
+                 --[no-]rsync-chown                                Use rsync to modify ownership
+|___________________________________________________________________________________________________________________________________
+|   vagrant rsync-auto [vm-name]                                   Continuously syncs files to the guest machine.
+                 --[no-]poll                                       Force polling filesystem (slow)
+                 --[no-]rsync-chown                                Use rsync to modify ownership
+|___________________________________________________________________________________________________________________________________
+|   vagrant rdp [options] [name|id] [-- extra args]                Starts an RDP (Remote Desktop Protocol) connection to the guest machine.
+|___________________________________________________________________________________________________________________________________
+|   vagrant upload [options] <source> [destination] [name|id]      This command uploads files and directories from the host to the guest machine.
+                 -t, --temporary                                   Upload source to temporary directory 
+                 -c, --compress                                    Use gzip compression for upload      
+                 -C, --compression-type=TYPE                       Type of compression to use (tgz, zip)
+|___________________________________________________________________________________________________________________________________

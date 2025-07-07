@@ -1,0 +1,78 @@
+______________________________________________________________________________________________________________________________________
+                                                    `/` (Root Directory)
+                                                    ====================
+
+The `/` (root directory) is the top-level directory in a Linux file system.
+All other directories, files, devices, and mounts branch out from this directory, forming a hierarchical structure.
+
+The root directory is where the entire file system hierarchy begins.
+It contains critical subdirectories required for the operating system to function.
+
+Unlike in other operating systems (such as Windows, where drives are labeled separately),
+ Linux mounts all file systems (local or remote) under this unified directory tree.
+
+---------------------------------------------------------------------------------------------------------
+Common Subdirectories under `/`:
+             ____________________________________________________________________________________________________
+            |     Directory    |                            Description                                          |
+            |__________________|_________________________________________________________________________________|
+            | `/boot`          | Files required for booting, including the kernel and bootloader.                |
+            | `/root`          | Home directory for the root (superuser) account.                                |
+            | `/home`          | Home directories for users (e.g., `/home/user1`, `/home/user2`).                |
+            | `/etc`           | System configuration files (e.g., `/etc/passwd`, `/etc/hostname`).              |
+            | `/bin`           | Essential user binaries (e.g., common commands like `ls`, `cat`, `cp`, `mv`).   |
+            | `/sbin`          | Essential system binaries used by the superuser (e.g., `fsck`, `reboot`).       |
+            | `/lib`           | Shared libraries required by binaries in `/bin` and `/sbin`.                    |
+            | `/srv`           | Data for services provided by the system (e.g., web servers, FTP servers).      |
+            | `/sys`           | Virtual filesystem providing information about hardware and system devices.     |
+            | `/usr`           | User utilities and applications (non-essential for booting).                    |
+            | `/tmp`           | Temporary files created by applications.                                        |
+            | `/var`           | Variable data such as logs, caches, and spool files.                            |
+            | `/dev`           | Device files representing hardware components (e.g., `/dev/sda` for disks).     |
+            | `/mnt`           | Temporary mount point for manually mounted filesystems.                         |
+            | `/media`         | Mount point for removable media (e.g., USB drives, CDs).                        |
+            | `/opt`           | Optional software packages and add-on applications.                             |
+            | `/proc`          | Virtual filesystem providing information about running processes and the kernel.|
+            | `/run`           | Runtime data for processes (e.g., PID files and sockets).                       |
+            |__________________|_________________________________________________________________________________|
+
+
+---------------------------------------------------------------------------------------------------------
+Mount Points:
+        In Linux, different filesystems and devices are mounted into the directory tree under the root (`/`) directory.
+        Some common mount points include:
+                1.`/mnt`   –  Used for temporary mounting of filesystems manually.
+                2.`/media` –  Used for mounting removable media like USB drives and CDs automatically.
+                3.`/boot`  –  Contains files needed for booting the system, such as the kernel and bootloader.
+
+---------------------------------------------------------------------------------------------------------
+Filesystem Hierarchy Standard (FHS):
+        The structure of the `/` directory and its subdirectories follows the Filesystem Hierarchy Standard (FHS), 
+         which defines standard locations for files and directories in Unix-like operating systems.
+---------------------------------------------------------------------------------------------------------
+Key Points
+        1.Single Root Hierarchy: 
+                - Unlike Windows, Linux doesn’t use drive letters.
+                - All devices and partitions are mounted under a single root (`/`) directory.
+        2.Separation of Concerns: 
+                - Critical system files, user files, application files, 
+                  and temporary files are stored in different directories for better organization and management.
+        3.Permissions: 
+                - Access to most subdirectories under `/` requires superuser privileges,
+                  ensuring the security of critical system files.
+---------------------------------------------------------------------------------------------------------
+'.' :
+        - The current working directory is the directory that the user is currently in.
+        - It is denoted by a dot (.) and is the default directory for the user.
+'..' :
+        - The parent directory is the directory that contains the current working directory.
+        - The parent directory is used to navigate up the file system hierarchy.
+        - It is denoted by a dot-dot (..) and is one level up in the
+---------------------------------------------------------------------------------------------------------
+Conclusion
+        The `/` (root directory) is the foundation of the Linux filesystem hierarchy,
+        containing essential subdirectories that organize files for different purposes,
+        such as system binaries, libraries, configuration files, and user data.
+        Proper understanding of these directories helps in managing,
+        troubleshooting, and maintaining a Linux system effectively.
+______________________________________________________________________________________________________________________________________

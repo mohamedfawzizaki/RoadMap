@@ -1,0 +1,100 @@
+# --------------------------------------------------------------------------------------------------------
+# Kubernetes Deployment
+# --------------------------------------------------------------------------------------------------------
+# PURPOSE:
+# - Automatically manages Pod replicas for stateless applications.
+# - Supports rolling updates, rollbacks, health checks, and declarative scaling.
+#
+# TYPICAL USE CASES:
+# - Web servers, APIs, frontend apps, services that can scale horizontally.
+#
+# NOTES:
+# - Requires a matching PVC named `nginx-logs-pvc` for persistent volume.
+# - Uses liveness and readiness probes for better lifecycle management.
+# --------------------------------------------------------------------------------------------------------
+
+apiVersion: apps/v1                     # API version for Deployment resources.
+kind: Deployment                        # Defines this resource as a Deployment.
+
+metadata:
+  name: my-nginx-deployment            # Name of the Deployment.
+  namespace: default                   # Namespace in which to create the Deployment.
+  labels:                              # Metadata labels for identification or grouping.
+    app: nginx
+    tier: frontend
+
+spec:
+  replicas: 3                          # Desired number of Pod replicas to maintain.
+  strategy:                            # Deployment strategy for rolling updates.
+    type: RollingUpdate                # Default type. Allows rolling updates.
+    rollingUpdate:
+      maxSurge: 25%                    # Allows up to 25% more Pods than desired during rollout.
+      maxUnavailable: 25%              # Allows up to 25% of Pods to be unavailable during rollout.
+  minReadySeconds: 5                   # New Pod must be ready for 5s before considered "available".
+  revisionHistoryLimit: 10             # Keeps 10 old ReplicaSets for rollback history.
+  progressDeadlineSeconds: 600         # If rollout doesn't progress within 600s, mark it as failed.
+
+  selector:                            # REQUIRED. Determines which Pods this Deployment manages.
+    matchLabels:
+      app: nginx                      # Must match template.metadata.labels exactly.
+
+  template:                            # Blueprint for the Pods the Deployment creates.
+    metadata:
+      labels:
+        app: nginx                    # These labels must match .spec.selector.matchLabels.
+    spec:
+      containers:
+        - name: nginx                 # Name of the container.
+          image: nginx:1.25.3         # Docker image to use in the container.
+          imagePullPolicy: IfNotPresent # Only pull the image if it doesn't exist on the node.
+
+          ports:
+            - containerPort: 80       # Expose port 80 on the container for HTTP traffic.
+          volumeMounts:                 # Mount volumes into the container.
+            - name: logs-volume         # Mounts the PVC to /var/log/nginx
+              mountPath: /var/log/nginx
+            - name: cache-volume        # Mounts an emptyDir to /tmp/cache
+              mountPath: /tmp/cache
+          resources:                  # Resource requests and limits.
+            requests:                 # Guaranteed minimum resources.
+              memory: "64Mi"
+              cpu: "250m"
+            limits:                   # Maximum allowed resources.
+              memory: "128Mi"
+              cpu: "500m"
+
+          livenessProbe:              # Checks if the app is alive; restart if this fails.
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+          readinessProbe:             # Checks if the app is ready to serve traffic.
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+      volumes:                          # Volumes available to containers in this Pod.
+        - name: logs-volume             # Volume backed by a PVC (persistent).
+          persistentVolumeClaim:
+            claimName: nginx-logs-pvc   # You must create this PVC separately.
+        - name: cache-volume            # Ephemeral volume.
+          emptyDir: {}                  # Emptied on Pod restart.
+
+
+
+
+#
+# | Feature                | Deployment                       | StatefulSet                                      |
+# | ---------------------- | -------------------------------- | ------------------------------------------------ |
+# | Pod identity           | All pods are interchangeable     | Each pod has a **unique, stable identity**       |
+# | Pod name               | Random suffix (e.g. `myapp-abc`) | Predictable: `myapp-0`, `myapp-1`                |
+# | Pod order (start/stop) | Any order                        | **Sequentially ordered**                         |
+# | Persistent volumes     | Shared or ephemeral              | **One persistent volume per pod**, bound by name |
+# | Use case               | Stateless apps (web, API)        | Stateful apps (databases, brokers)               |

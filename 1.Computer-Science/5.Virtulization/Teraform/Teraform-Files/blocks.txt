@@ -1,0 +1,32 @@
+_________________________________________________________________________________________________________________________________________________
+                                                      main.tf blocks
+                                                      ============== 
+
+ ___________________________________________________________________________________________________________________________________________________
+|         Block Name           |                                                  Description                                                       |
+|______________________________|____________________________________________________________________________________________________________________|
+| `provider`                   | Specifies the provider and any required configurations such as API credentials or region.                          |
+| `resource`                   | Represents infrastructure objects that Terraform will manage.                                                      |
+| `variable`                   | Allows you to pass values into your Terraform configuration, making the configuration reusable and dynamic.        |
+| `output`                     | Used to return information like IP addresses, resource IDs, or other computed values.                              |
+| `data`                       | Queries external systems for data that can be used in resource definitions or outputs.                             |
+| `module`                     | Helps to organize complex configurations into modular pieces that can be reused across different parts of a project|
+| `provisioner`                | Used to execute commands on the resource (e.g., to install software) during the lifecycle of the resource.         |
+| `backend`                    | Defines how Terraform stores and manages the state file, often in remote storage for collaboration.                |
+| `terraform`                  | Used for Terraform settings like the required version or backend configuration.                                    |
+| `lifecycle`                  | Provides options for controlling the lifecycle of resources, such as preventing destruction or ignoring changes.   |
+| `locals`                     | Allows you to create intermediate values that can be used in other parts of the configuration.                     |
+|------------------------------|--------------------------------------------------------------------------------------------------------------------| 
+| `required_providers`         | Helps to ensure that the configuration uses compatible versions of providers.                                      |
+| `dynamic`                    | Allows for the dynamic creation of blocks based on input data (e.g., variable lists).                              |
+| `input`                      | These allow for passing values into the configuration for reuse and customization.                                 |
+| `state`                      | Used to configure the handling and storage of Terraform's state files (often used in a remote setup).              |
+| `verify_host_key`            | Specifies how Terraform should handle host key verification for SSH (for security).                                |
+| `remote-exec` (Provisioner)  | Allows running shell scripts or commands remotely after a resource is created.                                     |
+| `local-exec` (Provisioner)   | Allows running local scripts after a resource is created.                                                          |
+| `ssh_key`                    | Specifies the path to an SSH private key for use with remote or local provisioning.                                |
+|______________________________|____________________________________________________________________________________________________________________|
+
+
+
+_________________________________________________________________________________________________________________________________________________

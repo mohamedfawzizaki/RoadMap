@@ -1,0 +1,81 @@
+# --------------------------------------------------------------------------------------------------
+# Kubernetes ResourceQuota: Limits Team A's Resource Usage in the Namespace "team-a"
+# --------------------------------------------------------------------------------------------------
+# PURPOSE:
+# A ResourceQuota is used to constrain the total amount of resources (compute, storage, object count)
+# that a namespace (in this case, `team-a`) can consume.
+#
+# This ensures fair usage and helps avoid any one team or workload from exhausting shared cluster
+# resources.
+#
+# STRUCTURE:
+# - metadata.name: Name of the ResourceQuota object
+# - metadata.namespace: Namespace this quota applies to
+# - spec.hard: The hard resource usage limits across this namespace
+# - spec.scopeSelector: Further filters the resources to which the quota applies
+#
+# COMMON USES:
+# - Enforcing CPU/memory/storage budgets
+# - Capping the number of objects like pods, deployments, or configmaps
+# - Enforcing limits for specific storage classes or workloads (via scopes)
+#
+# NOTES:
+# - Must be created **after** the namespace it targets
+# - Applies only to the specified namespace
+# - Does not retroactively apply to already created resources
+# - Works well in combination with LimitRanges to apply defaults
+# --------------------------------------------------------------------------------------------------
+
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: team-a-quota               # Quota name
+  namespace: team-a                # Namespace to which this quota applies
+spec:
+  hard:
+    # ------------------------------
+    # Compute Resource Quotas
+    # ------------------------------
+    requests.cpu: "4"              # Sum of CPU requests cannot exceed 4 cores
+    requests.memory: 8Gi          # Sum of memory requests cannot exceed 8GiB
+    limits.cpu: "8"               # Sum of CPU limits cannot exceed 8 cores
+    limits.memory: 16Gi           # Sum of memory limits cannot exceed 16GiB
+
+    # ------------------------------
+    # Ephemeral Storage Quotas
+    # ------------------------------
+    requests.ephemeral-storage: 4Gi   # Max ephemeral storage requests
+    limits.ephemeral-storage: 8Gi    # Max ephemeral storage limits
+
+    # ------------------------------
+    # Persistent Storage Quotas
+    # ------------------------------
+    requests.storage: 100Gi       # Sum of all PVC storage requests
+    persistentvolumeclaims: "10" # Max number of PVCs allowed
+
+    # Optional: StorageClass-specific storage quotas
+    # gold.storageclass.storage.k8s.io/requests.storage: 60Gi
+    # bronze.storageclass.storage.k8s.io/requests.storage: 40Gi
+
+    # ------------------------------
+    # Object Count Quotas
+    # ------------------------------
+    count/pods: "50"              # Max number of pods (non-terminal state)
+    count/secrets: "100"          # Max number of secrets
+    count/configmaps: "50"        # Max number of configmaps
+    count/services: "10"          # Max number of services
+    count/deployments.apps: "20"  # Max deployments (apps/v1)
+    count/replicasets.apps: "30"  # Max ReplicaSets
+    count/jobs.batch: "20"        # Max Jobs
+    count/cronjobs.batch: "5"     # Max CronJobs
+
+  # ------------------------------
+  # Scope Selector (Optional)
+  # ------------------------------
+  # Restrict quota enforcement to a subset of resources matching a scope
+  scopeSelector:
+    matchExpressions:
+      - scopeName: PriorityClass           # Only apply quota to pods using this priority class
+        operator: In
+        values:
+          - high-priority

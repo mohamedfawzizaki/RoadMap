@@ -1,0 +1,16 @@
+______________________________________________________________________________________________________________________________________
+
+from host to specific node in te cluster:
+                minikube cp <source file path> <target node name>:<target file absolute path> [flags]
+                        minikube cp ./Mo.txt mycluster-m05:/home/docker/ -p mycluster
+from one node to one node in the cluster:
+                minikube cp <source node name>:<source file path> <target node name>:<target file absolute path> [flags]
+
+______________________________________________________________________________________________________________________________________
+ 
+If source node is omitted, Minikube assumes source is your local machine.
+
+If target node is omitted, Minikube assumes target is the default control-plane node.
+
+This command is handy for moving files to and between 
+ Minikube nodes without needing to use kubectl cp or manually SSH in multiple times.

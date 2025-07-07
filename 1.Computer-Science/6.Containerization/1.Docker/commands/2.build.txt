@@ -1,0 +1,30 @@
+                                    
+                                            docker build [OPTIONS] [PATH|URL]
+
+ _________________________________________________________________________________________________________________________________________________________________________
+|       Option      |                            Description                                | Example                                                                     |
+|-------------------|-----------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| -t, --tag         | Name and tag the resulting image (name:tag)                           | -t myapp:latest                                                             |
+| -f, --file        | Path to the Dockerfile (default: ./Dockerfile)                        | -f Dockerfile.dev                                                           |
+| --target          | Build only up to a specified stage in a multi-stage Dockerfile        | --target builder                                                            |
+| --add-host        | Add a custom host-to-IP mapping (similar to modifying /etc/hosts)     | --add-host example.com:127.0.0.1                                            |
+| --build-arg       | Set build-time variables accessible via ARG in Dockerfile             | --build-arg VERSION=1.2.3                                                   |
+| --secret          | Pass secrets into the build securely (--secret id=mysecret,src=path)  | --secret id=mysecret,src=secret.txt                                         |
+| --pull            | Always attempt to pull newer base images                              | --pull                                                                      |
+|-------------------|-----------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| --cache-from      | Use an external image/cache as a cache source                         | --cache-from=type=registry,ref=myimage:cache                                |
+| --cache-to        | Export build cache to a registry or local directory                   | --cache-to=type=local,dest=./my-cache                                       |
+| --no-cache        | Do not use the cache when building the image                          | --no-cache                                                                  |
+| --no-cache-filter | Skip cache selectively by stage or step                               | --no-cache-filter=frontend                                                  |
+|-------------------|-----------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| --iidfile         | Write the resulting image ID to the specified file                    | --iidfile=image-id.txt                                                      |
+| --label           | Add metadata label to the image (e.g., --label version=1.0)           | --label version=1.0                                                         |
+| --annotation      | Add OCI image annotation metadata (e.g., source repo URL)             | --annotation "org.opencontainers.image.source=https://github.com/user/repo" |
+| --platform        | Set target platform(s), e.g., linux/amd64, linux/arm64                | --platform=linux/amd64,linux/arm64                                          |
+| --load            | Load the built image into the local Docker daemon (cannot be used with --push)| --load                                                              |
+| --metadata-file   | Write build metadata (e.g., cache usage) to a file                    | --metadata-file=build-meta.json                                             |
+| -o, --output      | Define the output destination (e.g., type=registry, type=local)       | -o type=local,dest=./output                                                 |
+| --push            | Push the image to a container registry after building                 | --push                                                                      |
+|-------------------|-----------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| -q, --quiet       | Suppress the build output (quiet mode)                                | --quiet                                                                     |
+|___________________|_______________________________________________________________________|_____________________________________________________________________________|

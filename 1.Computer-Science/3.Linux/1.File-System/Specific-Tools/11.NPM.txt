@@ -1,0 +1,92 @@
+______________________________________________________________________________________________________________________________________
+                                                Location of NPM Files in Linux
+                                                ==============================
+
+When you install Node.js and use NPM (Node Package Manager), various files and directories are created.
+Below are the typical locations of NPM files in Linux:
+---------------------------------------------------------------------------------------------------------
+1.NPM Executable
+
+- Global Location:  
+  The `npm` and `node` binaries are typically located in one of the following directories:
+  - `/usr/local/bin/`  
+  - `/usr/bin/`  
+  You can verify the exact location using the following command:
+  ```bash
+  which npm
+  which node
+  ```
+---------------------------------------------------------------------------------------------------------
+2.Global NPM Packages
+
+- Global Installation Directory:  
+  By default, globally installed NPM packages are stored in:
+  - `/usr/local/lib/node_modules/`  
+    This directory contains the globally installed packages.You can check the global installation path with:
+    ```bash
+    npm root -g
+    ```
+  - Executable binaries from global packages are placed in:
+    - `/usr/local/bin/`  
+      These are symlinks pointing to the actual package executables in `/usr/local/lib/node_modules/`.
+---------------------------------------------------------------------------------------------------------
+3.Local NPM Packages
+
+- Per-Project Installation:  
+  When you install packages locally in a project (using `npm install` without `-g`), 
+  they are stored in the project's `node_modules` directory:
+  - `/path/to/project/node_modules/`  
+    This directory contains the installed packages and their dependencies.
+  - `/path/to/project/package.json`  
+    The project's `package.json` file lists the dependencies and their versions.
+  - `/path/to/project/package-lock.json`  
+    This file locks the installed versions of packages to ensure consistency across installations.
+---------------------------------------------------------------------------------------------------------
+4.NPM Cache
+
+- NPM caches downloaded packages and metadata to improve performance and avoid redundant downloads:
+  - Cache Location:  
+    - `~/.npm/` (This is the default cache directory on Linux systems)
+  - You can check or change the cache location using:
+    ```bash
+    npm config get cache
+    npm config set cache /new/cache/path
+    ```
+---------------------------------------------------------------------------------------------------------
+5.NPM Configuration Files
+
+- Global Configuration File:  
+  The global NPM configuration file is located at:
+  - `/etc/npmrc`  
+    This file can contain global settings for all users.
+  
+- User Configuration File:  
+  Each user can have their own configuration file at:
+  - `~/.npmrc`  
+    This file can override the global settings for the specific user.You can list your current NPM configuration using:
+    ```bash
+    npm config list
+    ```
+---------------------------------------------------------------------------------------------------------
+Common NPM Commands
+
+1.Check NPM Version
+   ```bash
+   npm --version
+   ```
+
+2.Check Global Packages
+   ```bash
+   npm list -g --depth=0
+   ```
+
+3.Change Global Package Installation Path
+   ```bash
+   npm config set prefix /custom/path
+   ```
+
+4.Clear NPM Cache
+   ```bash
+   npm cache clean --force
+   ```
+______________________________________________________________________________________________________________________________________

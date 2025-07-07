@@ -1,0 +1,42 @@
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                                         Backup  Management 
+                                                         ==================
+
+                                                             ---------
+                                                               rsync
+                                                             ---------
+ _________________________________________________________________________________________________________________________________________________________________
+|      Option    |                   Example                                 |                    Description                                                     |
+|________________|___________________________________________________________|____________________________________________________________________________________|
+| -a (archive)   |  rsync  -a                      source/    dest/          | Enables archive mode, preserving symbolic links, permissions, timestamps, and more.|
+| -v (verbose)   |  rsync  -av                     source/    dest/          | Displays detailed output of the operation.                                         |
+| -r (recursive) |  rsync  -r                      source/    dest/          | Recursively copies directories.                                                    |
+| -z (compress)  |  rsync  -az                     source/    dest/          | Compresses data during transfer to save bandwidth.                                 |
+| -P             |  rsync  -aP                     source/    dest/          | Shows progress and allows resuming of partially transferred files.                 |
+| -e             |  rsync  -e ssh source/ user@remote:/path/                 | Specifies the remote shell (e.g., SSH) for the connection.                         |
+| --dry-run      |  rsync  -a --dry-run            source/ dest/             | Simulates the transfer without making any actual changes.                          |
+| --delete       |  rsync  -a --delete             source/ dest/             | Deletes files in the destination that are no longer in the source.                 |
+| --exclude      |  rsync  -a --exclude '.log'              source/ dest/    | Excludes specific files or patterns from transfer.                                 |
+| --include      |  rsync  -a --include '.txt' --exclude '' source/ dest/    | Includes specific files or patterns (often used with --exclude).                   |
+| --progress     |  rsync  -a --progress           source/    dest/          | Displays progress during file transfer.                                            |
+| --checksum     |  rsync  -a --checksum           source/    dest/          | Compares files using checksum instead of size and timestamp.                       |
+| --max-size     |  rsync  -a --max-size=10M       source/    dest/          | Transfers only files smaller than the specified size.                              |
+| --min-size     |  rsync  -a --min-size=1M        source/    dest/          | Transfers only files larger than the specified size.                               |
+| --partial      |  rsync  -a --partial            source/    dest/          | Keeps partially transferred files for resuming later.                              |
+| --bwlimit      |  rsync  -a --bwlimit=1000       source/    dest/          | Limits transfer bandwidth (in KB/s).                                               |
+| --log-file     |  rsync  -a --log-file=rsync.log source/    dest/          | Writes a log of the transfer to a specified file.                                  |
+|________________|___________________________________________________________|____________________________________________________________________________________|
+
+ 
+
+                                                             ---------
+                                                                dd
+                                                             ---------
+ _________________________________________________________________________________________________________________________________________________________________
+|      Option    |                   Example                                 |                    Description                                                     |
+|________________|___________________________________________________________|____________________________________________________________________________________|
+| -a (archive)   |  rsync  -a                      source/    dest/          | Enables archive mode, preserving symbolic links, permissions, timestamps, and more.|
+|________________|___________________________________________________________|____________________________________________________________________________________|
+
+
+#_________________________________________________________________________________________________________________________________________________________________________# 

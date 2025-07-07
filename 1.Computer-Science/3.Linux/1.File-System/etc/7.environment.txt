@@ -1,0 +1,133 @@
+==================================================================================================================
+                                                 `/etc/environment`
+
+The `/etc/environment` file is a system-wide configuration file used to set up global environment variables for all users. 
+Unlike shell-specific initialization files (e.g., `/etc/profile`, `.bashrc`), `/etc/environment` 
+is a simple key-value pair file that does not involve any shell scripting or command execution.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Purpose of `/etc/environment`
+
+- It defines environment variables that are available system-wide to all processes and users, regardless of the shell or terminal being used.
+- It is particularly useful for non-interactive shells or graphical login environments 
+   where shell-specific scripts (like `/etc/profile`) might not be executed.
+- The settings in `/etc/environment` apply before the user's shell environment or session starts, 
+   making it a reliable place to set critical variables such as `LANG`, `PATH`, or custom application-specific variables.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Structure of `/etc/environment`
+
+The file format is simple, with each line defining an environment variable in the form:
+
+```plaintext
+VARIABLE_NAME="value"
+```
+
+- No shell commands or expansions are allowed.  
+- Variables are typically enclosed in double quotes to handle values containing spaces.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Example of `/etc/environment`
+
+```bash
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+LANG="en_US.UTF-8"
+LC_ALL="en_US.UTF-8"
+JAVA_HOME="/usr/lib/jvm/java-11-openjdk"
+EDITOR="vim"
+```
+
+ Explanation:
+1. `PATH`: Defines the system-wide executable search path.
+2. `LANG` and `LC_ALL`: Set the default language and locale for the system.
+3. `JAVA_HOME`: Specifies the path to the Java installation directory.
+4. `EDITOR`: Sets the default text editor for command-line operations.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ When is `/etc/environment` Read?
+
+- PAM (Pluggable Authentication Module) reads this file during the user login process. 
+Specifically, the PAM module `pam_env` loads the variables defined in `/etc/environment`.
+- It is processed by graphical login managers like GDM, LightDM, or SSDM, ensuring that the environment variables are available in graphical desktop sessions.
+- It is not shell-specific, meaning it applies to all shells (Bash, Zsh, Fish, etc.) and GUI applications equally.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Difference Between `/etc/environment` and Other Files
+
+| File              | Purpose                                                    | Shell-Specific       | Execution             
+| `/etc/environment`| Sets global environment variables for all users            | No                   | Parsed by PAM during login 
+| `/etc/profile`    | System-wide initialization for login shells                | Yes                  | Executed by login shells   
+| `/etc/bashrc`     | System-wide configuration for non-login interactive shells | Yes                  | Executed by interactive shells 
+| `~/.bash_profile` | User-specific configuration for login shells               | Yes                  | Executed by login shells   
+| `~/.bashrc`       | User-specific configuration for non-login shells           | Yes                  | Executed by interactive shells 
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Modifying `/etc/environment`
+
+1. Editing the File  
+   To modify `/etc/environment`, use a text editor like `nano` or `vim` with root privileges:
+   ```bash
+   sudo nano /etc/environment
+   ```
+
+2. Applying Changes  
+   Since `/etc/environment` is read during the login process, changes take effect after the user logs out and logs back in. 
+   To apply changes immediately without logging out, you can export the variables in the current shell manually:
+   ```bash
+   export VARIABLE_NAME="value"
+   ```
+
+3. Verifying Changes  
+   After logging back in, you can check whether the variables are correctly set using the `printenv` or `env` command:
+   ```bash
+   printenv VARIABLE_NAME
+   ```
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Best Practices
+
+1. Use `/etc/environment` for Static Variables  
+   Since `/etc/environment` does not support shell commands or expansions, only define static values (e.g., paths, locales) in this file. 
+   For dynamic values, use shell-specific configuration files like `/etc/profile` or `.bashrc`.
+
+2. Avoid Overwriting Critical Variables  
+   Be cautious when modifying system-critical variables like `PATH` or `LANG`. Incorrect values can lead to login issues or system instability.
+
+3. Backup the Original File  
+   Always create a backup before making changes:
+   ```bash
+   sudo cp /etc/environment /etc/environment.bak
+   ```
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Common Issues with `/etc/environment`
+
+1. Login Failures  
+   If there is a syntax error (e.g., missing quotes or invalid characters),
+    the login process may fail. To recover, boot into a recovery shell and fix the file.
+
+2. Ignored Variables  
+   If a variable defined in `/etc/environment` is not appearing in the session, ensure that:
+   - The variable is correctly formatted (`NAME="value"`).
+   - The session uses PAM and processes `/etc/environment`.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ Conclusion
+
+The `/etc/environment` file is a critical component of the Linux environment setup, providing a simple way to define 
+global variables that apply across all users and shells. 
+
+Its simplicity, along with its system-wide scope, makes it ideal for setting
+ static environment variables like `PATH`, `LANG`, and application-specific paths. 
+ 
+Proper management of this file ensures a consistent environment for both command-line and graphical applications.
+===================================================================================================================

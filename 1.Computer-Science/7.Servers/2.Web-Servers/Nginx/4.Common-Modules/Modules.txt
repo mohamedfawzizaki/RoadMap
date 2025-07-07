@@ -1,0 +1,21 @@
+ngx_http_limit_req_module       https://nginx.org/en/docs/http/ngx_http_limit_req_module.html
+ngx_http_log_module             https://nginx.org/en/docs/http/ngx_http_log_module.html
+ngx_http_proxy_module           https://nginx.org/en/docs/http/ngx_http_proxy_module.html
+ngx_http_rewrite_module         https://nginx.org/en/docs/http/ngx_http_rewrite_module.html
+ngx_http_secure_link_module     https://nginx.org/en/docs/http/ngx_http_secure_link_module.html
+ngx_http_ssl_module             https://nginx.org/en/docs/http/ngx_http_ssl_module.html
+ngx_http_upstream_module        https://nginx.org/en/docs/http/ngx_http_upstream_module.html
+ngx_stream_geo_module           https://nginx.org/en/docs/stream/ngx_stream_geo_module.html
+ngx_stream_geoip_module         https://nginx.org/en/docs/stream/ngx_stream_geoip_module.html
+ngx_http_map_module             https://nginx.org/en/docs/http/ngx_http_map_module.html
+ngx_http_geo_module             https://nginx.org/en/docs/http/ngx_http_geo_module.html
+ngx_http_geoip_module           https://nginx.org/en/docs/http/ngx_http_geoip_module.html
+
+
+ngx_http_core_module            https://nginx.org/en/docs/http/ngx_http_core_module.html   
+ngx_http_access_module          https://nginx.org/en/docs/http/ngx_http_access_module.html
+ngx_http_addition_module        https://nginx.org/en/docs/http/ngx_http_addition_module.html
+ngx_http_api_module             https://nginx.org/en/docs/http/ngx_http_api_module.html
+ngx_http_auth_basic_module      https://nginx.org/en/docs/http/ngx_http_auth_basic_module.html
+ngx_http_auth_jwt_module        https://nginx.org/en/docs/http/ngx_http_auth_jwt_module.html
+ngx_http_auth_request_module    https://nginx.org/en/docs/http/ngx_http_auth_request_module.html  

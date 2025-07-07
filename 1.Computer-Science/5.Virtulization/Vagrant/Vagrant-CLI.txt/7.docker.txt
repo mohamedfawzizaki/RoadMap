@@ -1,0 +1,63 @@
+ ___________________________________________________________________________________________________________________________________
+|   vagrant docker-run <vm-name> [command...]
+                 --[no-]detach                              Run in the background
+                 -t, --[no-]tty                             Allocate a pty
+                 -r, --[no-]rm,                             Remove container after execution
+|___________________________________________________________________________________________________________________________________
+|   vagrant docker-exec [options] [vm-name] -- <command> [args]
+                     --[no-]detach                          Run in the background
+                 -i, --[no-]interactive                     Keep STDIN open even if not attached
+                 -t, --[no-]tty                             Allocate a pty
+                 -u, --user USER                            User or UID
+                     --[no-]prefix                          Prefix output with machine names    
+|___________________________________________________________________________________________________________________________________
+|   vagrant docker-logs [options] [vm-name]
+                 --[no-]follow                              Continue streaming in log output
+                 --[no-]prefix                              Prefix output with machine names
+|___________________________________________________________________________________________________________________________________
+
+
+
+
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.define "web" do
+    config.vm.provider "docker" do |d|
+      d.image = "nginx:latest"
+    end
+  end
+
+  config.vm.define "consul" do
+    config.vm.provider "docker" do |d|
+      d.image = "hashicorp/consul:latest"
+    end
+  end
+end
+
+
+
+
+E:\Projects\DevOps\vagrant> vagrant docker-exec web -- ls
+==> web: bin    
+==> web: consul 
+==> web: dev    
+==> web: etc    
+==> web: home   
+==> web: lib    
+==> web: lib64  
+==> web: media  
+==> web: mnt    
+==> web: opt    
+==> web: proc   
+==> web: root   
+==> web: run    
+==> web: sbin   
+==> web: srv    
+==> web: sys    
+==> web: tmp    
+==> web: usr    
+==> web: vagrant
+==> web: var 
+

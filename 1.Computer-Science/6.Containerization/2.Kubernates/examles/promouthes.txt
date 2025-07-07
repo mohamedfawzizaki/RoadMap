@@ -1,0 +1,433 @@
+Deploying **Prometheus on Kubernetes without Helm** is a great way to understand how it works under the hood. Below is a **complete step-by-step workflow** to deploy **Prometheus, Alertmanager, and Node Exporter manually using YAML manifests**.
+
+---
+
+## 📦 Components We’ll Deploy
+
+| Component     | Purpose                                     |
+| ------------- | ------------------------------------------- |
+| Prometheus    | Scrapes metrics and stores time-series data |
+| Alertmanager  | Handles alerts sent by Prometheus           |
+| Node Exporter | Exposes node-level metrics                  |
+| ConfigMaps    | Holds configs for Prometheus & Alertmanager |
+| Services      | Exposes Prometheus and Alertmanager         |
+
+---
+
+## 🛠 Directory Structure (Suggestion)
+
+```bash
+prometheus-setup/
+├── prometheus-deployment.yaml
+├── prometheus-service.yaml
+├── prometheus-configmap.yaml
+├── alertmanager-deployment.yaml
+├── alertmanager-service.yaml
+├── alertmanager-configmap.yaml
+├── node-exporter-daemonset.yaml
+```
+
+---
+
+## ✅ 1. Prometheus ConfigMap
+
+```yaml
+# prometheus-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: monitoring
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+
+    scrape_configs:
+      - job_name: 'prometheus'
+        static_configs:
+          - targets: ['localhost:9090']
+
+      - job_name: 'node-exporter'
+        static_configs:
+          - targets: ['node-exporter:9100']
+```
+
+---
+
+## ✅ 2. Prometheus Deployment
+
+```yaml
+# prometheus-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus:latest
+          args:
+            - "--config.file=/etc/prometheus/prometheus.yml"
+          ports:
+            - containerPort: 9090
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/prometheus
+      volumes:
+        - name: config-volume
+          configMap:
+            name: prometheus-config
+```
+
+---
+
+## ✅ 3. Prometheus Service
+
+```yaml
+# prometheus-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  namespace: monitoring
+spec:
+  type: ClusterIP
+  selector:
+    app: prometheus
+  ports:
+    - port: 9090
+      targetPort: 9090
+```
+
+---
+
+## ✅ 4. Node Exporter DaemonSet
+
+```yaml
+# node-exporter-daemonset.yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-exporter
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: node-exporter
+  template:
+    metadata:
+      labels:
+        app: node-exporter
+    spec:
+      containers:
+        - name: node-exporter
+          image: quay.io/prometheus/node-exporter:latest
+          ports:
+            - containerPort: 9100
+              hostPort: 9100
+              name: metrics
+          volumeMounts:
+            - name: proc
+              mountPath: /host/proc
+              readOnly: true
+            - name: sys
+              mountPath: /host/sys
+              readOnly: true
+      volumes:
+        - name: proc
+          hostPath:
+            path: /proc
+        - name: sys
+          hostPath:
+            path: /sys
+```
+
+---
+
+## ✅ 5. Alertmanager ConfigMap
+
+```yaml
+# alertmanager-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+  namespace: monitoring
+data:
+  alertmanager.yml: |
+    global:
+      resolve_timeout: 5m
+
+    route:
+      group_by: ['alertname']
+      group_wait: 10s
+      receiver: 'default'
+
+    receivers:
+      - name: 'default'
+        email_configs:
+          - to: 'you@example.com'
+```
+
+---
+
+## ✅ 6. Alertmanager Deployment
+
+```yaml
+# alertmanager-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alertmanager
+  template:
+    metadata:
+      labels:
+        app: alertmanager
+    spec:
+      containers:
+        - name: alertmanager
+          image: prom/alertmanager
+          args:
+            - "--config.file=/etc/alertmanager/alertmanager.yml"
+          ports:
+            - containerPort: 9093
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/alertmanager
+      volumes:
+        - name: config-volume
+          configMap:
+            name: alertmanager-config
+```
+
+---
+
+## ✅ 7. Alertmanager Service
+
+```yaml
+# alertmanager-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager
+  namespace: monitoring
+spec:
+  type: ClusterIP
+  selector:
+    app: alertmanager
+  ports:
+    - port: 9093
+      targetPort: 9093
+```
+
+---
+
+## ✅ 8. Apply Everything
+
+```bash
+kubectl create namespace monitoring
+
+kubectl apply -f prometheus-configmap.yaml
+kubectl apply -f prometheus-deployment.yaml
+kubectl apply -f prometheus-service.yaml
+
+kubectl apply -f alertmanager-configmap.yaml
+kubectl apply -f alertmanager-deployment.yaml
+kubectl apply -f alertmanager-service.yaml
+
+kubectl apply -f node-exporter-daemonset.yaml
+```
+
+---
+
+## 🔍 Access Prometheus Dashboard
+
+```bash
+kubectl port-forward svc/prometheus -n monitoring 9090:9090
+```
+
+Then open: [http://localhost:9090](http://localhost:9090)
+
+---
+
+## ⚠️ Optional Enhancements
+
+* Add **Grafana** (manually or using YAML)
+* Persist Prometheus data with **PVCs**
+* Use **ServiceMonitor** if you install Prometheus Operator later
+* Secure with Ingress + TLS
+
+---
+
+
+with helm:
+
+
+Great! Here's a **complete guide to deploying Prometheus** on Kubernetes, tailored for a production-ready environment. We'll cover:
+
+---
+
+## 📦 What Is Prometheus?
+
+**Prometheus** is an open-source monitoring system and time-series database. It:
+
+* Scrapes metrics from targets via HTTP (e.g., Node Exporter, apps)
+* Stores time-series data with labels
+* Supports PromQL for querying metrics
+* Integrates with **Alertmanager** for alerting
+
+---
+
+## 🚀 Deployment Options
+
+You can deploy Prometheus in Kubernetes using:
+
+| Option                    | Description                              |
+| ------------------------- | ---------------------------------------- |
+| 🧠 **Helm (Recommended)** | Easiest, flexible, production-grade      |
+| 🛠️ Manual YAML           | Educational, but complex                 |
+| 🧱 Operator               | Advanced, CRD-based lifecycle management |
+
+Let’s go with **Helm**, using the [**kube-prometheus-stack**](https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack) chart.
+
+---
+
+## 🔧 1. Install Prerequisites
+
+```bash
+# Add Prometheus Helm repo
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+
+# Create a monitoring namespace
+kubectl create namespace monitoring
+```
+
+---
+
+## 📥 2. Install Prometheus Stack (with Grafana + Node Exporter)
+
+```bash
+helm install prometheus prometheus-community/kube-prometheus-stack \
+  --namespace monitoring \
+  --set grafana.enabled=true \
+  --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
+```
+
+This includes:
+
+* Prometheus
+* Grafana
+* Alertmanager
+* Node Exporter (as a DaemonSet)
+* Kube-state-metrics
+* Custom resource definitions (CRDs)
+
+---
+
+## 🔍 3. Access Prometheus & Grafana
+
+### Grafana:
+
+```bash
+kubectl port-forward svc/prometheus-grafana -n monitoring 3000:80
+```
+
+Then visit: [http://localhost:3000](http://localhost:3000)
+**Default login:**
+
+* Username: `admin`
+* Password: get it via:
+
+  ```bash
+  kubectl get secret --namespace monitoring prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 -d
+  ```
+
+### Prometheus:
+
+```bash
+kubectl port-forward svc/prometheus-kube-prometheus-prometheus -n monitoring 9090:9090
+```
+
+Access at: [http://localhost:9090](http://localhost:9090)
+
+---
+
+## 📊 4. What’s Preconfigured?
+
+✅ Scrapes:
+
+* kubelet
+* cAdvisor
+* Node Exporter
+* Kube-state-metrics
+
+✅ Dashboards:
+
+* Cluster overview
+* Pod resource usage
+* Node metrics
+* Alerts overview
+
+✅ Rules:
+
+* CPU/memory alert thresholds
+* Pod crash loops
+* Disk pressure
+
+---
+
+## 📄 5. Optional Custom Monitoring
+
+You can monitor your own apps by creating a **ServiceMonitor**:
+
+```yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: my-app-monitor
+  namespace: monitoring
+labels:
+  release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: my-app
+  namespaceSelector:
+    matchNames:
+      - default
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+```
+
+---
+
+## 🧠 Want More?
+
+Would you like me to generate:
+
+* ✅ Custom **alerts** (PrometheusRule)?
+* ✅ A **values.yaml** for custom Prometheus install?
+* ✅ A complete monitoring stack with Loki (logs) and Tempo (traces)?
+* ✅ Setup for remote storage (Thanos or Cortex)?
+
+Let me know how far you want to go with Prometheus!

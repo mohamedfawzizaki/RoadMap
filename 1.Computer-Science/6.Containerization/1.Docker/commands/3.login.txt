@@ -1,0 +1,29 @@
+docker login [OPTIONS] [SERVER]              docker logout [SERVER] 
+
+If no server is specified, the default is defined by the daemon.
+
+
+    Option	                            Description
+-p, --password		    Password or Personal Access Token (PAT)
+--password-stdin		Take the Password or Personal Access Token (PAT) from stdin
+-u, --username		    Username
+
+
+Authenticate to a registry with a username and password
+To authenticate to a registry with a username and password, you can use the --username or -u flag. The following example authenticates to Docker Hub with the username moby. The password is entered interactively.
+
+
+ docker login -u moby
+Provide a password using STDIN (--password-stdin)
+To run the docker login command non-interactively, you can set the --password-stdin flag to provide a password through STDIN. Using STDIN prevents the password from ending up in the shell's history, or log-files.
+
+The following example reads a password from a file, and passes it to the docker login command using STDIN:
+
+
+ cat ~/my_password.txt | docker login --username foo --password-stdin
+
+
+
+
+
+ 	

@@ -1,0 +1,104 @@
+______________________________________________________________________________________________________________________________________
+                                                            `/media/` 
+                                                            =========
+
+The `/media/` directory is typically used to mount removable media devices,
+ such as CDs, DVDs, USB drives, external hard drives, or other external storage devices.
+It provides a standard location for the operating system to mount and access these devices.
+---------------------------------------------------------------------------------------------------------
+Purpose of `/media/` Directory
+
+The `/media/` directory is designed to be a temporary mount point
+ for removable storage devices that are automatically mounted by the system or by the user.
+When a user plugs in a USB drive or inserts a CD, the system will often mount the 
+ device in `/media/`, allowing the user to easily access the contents.
+
+---------------------------------------------------------------------------------------------------------
+Typical Contents of `/media/`
+
+1.Mount Points for Removable Media: 
+   - Each removable media device that is connected to 
+      the system might automatically get mounted in its own subdirectory within `/media/`.
+   - The directory name is typically based on the device name or label (e.g., `USB_DRIVE`, `DVD_DISC`, etc.).
+   
+2.Example:
+   ```
+   /media/
+       usb_drive/
+           file1.txt
+           file2.jpg
+       cdrom/
+           some_cd_file.iso
+   ```
+
+   - USB Drive: A USB drive may be mounted under `/media/usb_drive/` when plugged in.
+   - CD/DVD: A CD or DVD might be mounted under `/media/cdrom/`.
+
+3.Automatic Mounting:
+   - On many modern Linux distributions, desktop environments like GNOME 
+      or KDE will automatically mount devices and make them available under `/media/` when they are inserted or plugged in.
+   
+   - For example, if you insert a USB stick named "My_USB", it could be mounted to `/media/My_USB/`.
+
+4.Device-specific Names: 
+   - Sometimes the mount points will have the device name or label automatically assigned to them by the system.
+   - For example, a USB drive could be mounted as `/media/username/USB_DRIVE/`, with `username` 
+      being the user's login name and `USB_DRIVE` being the label of the drive.
+---------------------------------------------------------------------------------------------------------
+Automatic vs.Manual Mounting
+
+- Automatic Mounting: 
+    - Most modern Linux systems will automatically mount devices when they 
+      are plugged in (e.g., USB sticks, CDs).This is typically managed by utilities like udevadm or systemd.
+  
+    - You may see pop-up notifications or automatically open file managers for the media once mounted.
+  
+- Manual Mounting: 
+    - In some cases, users may choose to manually mount media to a directory of their choice using the `mount` command:
+    ```bash
+    sudo mount /dev/sdb1 /media/my_device
+    ```
+    - Here, `/dev/sdb1` represents the device, and `/media/my_device` is the mount point where the device will be accessed.
+
+---------------------------------------------------------------------------------------------------------
+Unmounting Devices
+
+- Devices should be properly unmounted to ensure that all data is written and that the device is safely removed.
+- This can be done using the `umount` command:
+  ```bash
+  sudo umount /media/my_device
+  ```
+
+- In desktop environments, you can usually unmount devices by right-clicking
+  the device in the file manager and selecting "Eject" or "Unmount."
+---------------------------------------------------------------------------------------------------------
+Permissions in `/media/`
+
+- Typically, the root user has full control over the `/media/` directory, 
+  but regular users can access and write to mount points for devices they own (e.g., USB sticks).
+  
+- If you want users to be able to mount devices to `/media/`, you can configure
+  appropriate permissions, or use `udisks2` (a utility for managing disk drives and media).
+
+---------------------------------------------------------------------------------------------------------
+Example Scenario
+
+1.Insert USB Drive: When a user plugs in a USB drive,
+  the system might mount it automatically to `/media/username/USB_DRIVE/`.
+   
+2.Access the Drive: The user can access files on the USB drive by navigating to `/media/username/USB_DRIVE/`.
+
+3.Unmount the Drive: Once the user is done, they should safely unmount the drive to ensure data integrity.
+---------------------------------------------------------------------------------------------------------
+Summary of `/media/` Directory
+
+- Purpose: 
+      - The `/media/` directory is used for automatically or manually mounting 
+        removable media devices, such as USB drives, CDs, DVDs, and external hard drives.
+- Typical Contents: 
+      - It contains subdirectories where the media devices are mounted (e.g., `/media/usb_drive/`, `/media/cdrom/`).
+- Automatic and Manual Mounting: 
+      - Devices are typically mounted automatically by the system but can also be manually mounted by the user.
+- Unmounting: 
+      - Devices should be unmounted properly using the `umount` command or by using the desktop environment's "Eject" feature.
+______________________________________________________________________________________________________________________________________

@@ -1,0 +1,20 @@
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                                     User Management
+                                                     ===============
+ _________________________________________________________________________________________________________________________________________________________________________
+|     Option    |                                Example                                          |                                Description                               
+|_______________|_________________________________________________________________________________|_______________________________________________________________________
+| scp           | scp   file.txt user@remote:/path/to/destination                                 | Basic command to copy a file from the local machine to a remote server.                                     
+|---------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------- 
+| -r            | scp   -r       dir user@remote:/path/to/destination                             | Copy directories recursively.                                                                                
+| -v            | scp   -v       file.txt   user@remote:/path/to/destination                      | Enables verbose mode, showing the progress of the transfer.                                               
+| -C            | scp   -C       file.txt   user@remote:/path/to/destination                      | Enables compression during file transfer.                                                                   
+| -q            | scp   -q       file.txt   user@remote:/path/to/destination                      | Suppresses non-error output (quiet mode).                                                                   
+| -P            | scp   -P 2222  file.txt   user@remote:/path/to/destination                      | Specifies the remote port (default is 22).                                                                   
+| -l            | scp   -l 1000  file.txt   user@remote:/path/to/destination                      | Limits the bandwidth used by SCP to a specific amount (in Kbps).                                            
+| -i            | scp   -i       ~/.ssh/id_rsa file.txt user@remote:/path/to/destination          | Specifies the private key for authentication.                                                              
+| -o            | scp   -o     StrictHostKeyChecking=no file.txt user@remote:/path/to/destination | Pass SSH options to scp, like disabling host key checking.                                                
+|_______________|_________________________________________________________________________________|_______________________________________________________________________
+
+
+_________________________________________________________________________________________________________________________________________________________________________

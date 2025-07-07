@@ -1,0 +1,35 @@
+_________________________________________________________________________________________________________________________________________________________________________ 
+                                                     ssh (secure shell)
+                                                     ==================
+ __________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+|    Command/Option      |                Example                          |                 Description                                                                                                                           |
+|________________________|_________________________________________________|_______________________________________________________________________________________________________________________________________________________|
+|------------------------|-------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ssh user@host          | ssh alice@192.168.1.10                          | Connect to a remote server using SSH.                                                                                                                 |
+|------------------------|-------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| -p <port>              | ssh  -p   2222 alice@192.168.1.10               | Specifies the port number to connect to (default is 22), on a non-default port.                                                                       |
+| -i <identity_file>     | ssh  -i   ~/.ssh/id_rsa alice@192.168.1.10      | Specifies the private key file for authentication.                                                                                                    |
+| -L <local>:<remote>    | ssh  -L   8080:localhost:80 alice@192.168.1.10  | Creates a local port forwarding tunnel. In this case, accessing localhost:8080 on the client machine forwards traffic to port 80 on the remote host.  |
+| -R <remote>:<local>    | ssh  -R   8080:localhost:80 alice@192.168.1.10  | Creates a remote port forwarding tunnel. This allows a remote host to access a service on the client machine.                                         |
+| -D <port>              | ssh  -D   1080 alice@192.168.1.10               | Creates a dynamic port forwarding tunnel (acts as a SOCKS proxy).                                                                                     |
+| -f                     | ssh  -f   -N alice@192.168.1.10                 | Requests SSH to go into the background before command execution. Useful for creating persistent tunnels.                                              |
+| -N                     | ssh  -N   alice@192.168.1.10                    | Prevents the execution of remote commands. Used when only forwarding ports.                                                                           |
+| -q                     | ssh  -q   alice@192.168.1.10                    | Suppresses non-error output messages.                                                                                                                 |
+| -T                     | ssh  -T   alice@192.168.1.10                    | Disables pseudo-terminal allocation. Useful for executing commands in scripts.                                                                        |
+| -o <option>            | ssh  -o   StrictHostKeyChecking=no alice@host   | Allows you to pass specific options, such as disabling host key verification.                                                                         |
+| -C                     | ssh  -C   alice@192.168.1.10                    | Enables compression, which can improve performance over slow connections.                                                                             |
+| -X                     | ssh  -X   alice@192.168.1.10                    | Enables X11 forwarding, allowing GUI applications to be displayed on the local machine.                                                               |
+| -Y                     | ssh  -Y   alice@192.168.1.10                    | Enables trusted X11 forwarding (less secure than -X).                                                                                                 |
+| -4                     | ssh  -4   alice@192.168.1.10                    | Forces SSH to use IPv4 only.                                                                                                                          |
+| -6                     | ssh  -6   alice@192.168.1.10                    | Forces SSH to use IPv6 only.                                                                                                                          |
+| -v                     | ssh  -v   alice@192.168.1.10                    | Enables verbose output, useful for debugging SSH connections.                                                                                         |
+| -vv                    | ssh  -vv  alice@192.168.1.10                    | More verbose output than -v.                                                                                                                          |
+| -vvv                   | ssh  -vvv alice@192.168.1.10                    | Maximum verbosity for debugging SSH connections.                                                                                                      |
+| -K                     | ssh  -K   alice@192.168.1.10                    | Use Kerberos for authentication if supported.                                                                                                         |
+| -E <logfile>           | ssh  -E   ssh_log.txt alice@192.168.1.10        | Appends debug logs to a file instead of displaying them in the terminal.                                                                              |
+| -F <config_file>       | ssh  -F   /path/to/config alice@192.168.1.10    | Specifies an alternative SSH configuration file.                                                                                                      |
+| -b <bind_address>      | ssh  -b   192.168.1.2 alice@host                | Binds the SSH client to a specific IP address on the local machine.                                                                                   |
+|________________________|_________________________________________________|_______________________________________________________________________________________________________________________________________________________|
+
+
+_________________________________________________________________________________________________________________________________________________________________________ 

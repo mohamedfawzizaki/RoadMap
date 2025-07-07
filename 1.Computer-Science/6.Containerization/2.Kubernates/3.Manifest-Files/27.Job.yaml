@@ -1,0 +1,68 @@
+# --------------------------------------------------------------------------------------------------------
+# Kubernetes Job - One-Time Task Runner
+# --------------------------------------------------------------------------------------------------------
+# PURPOSE:
+# A Job in Kubernetes ensures that a specified number of pods successfully terminate (exit 0).
+# It is used for **short-lived, one-off** tasks like:
+#   - Batch processing
+#   - Data migration
+#   - Cleanup tasks
+#
+# Unlike a Deployment (which runs continuously) or a CronJob (which schedules tasks), a Job runs once.
+#
+# CORE FIELDS:
+# - completions: total number of successful pod runs required
+# - parallelism: number of pods allowed to run at the same time
+# - backoffLimit: number of retries before considering it failed
+# - ttlSecondsAfterFinished: optional cleanup timeout for finished Job
+# - suspend: pause execution temporarily (can resume later)
+#
+# MODES:
+# - completionMode: 
+#     - NonIndexed (default): any pod can finish a completion
+#     - Indexed: each pod gets an index (used when order matters)
+#
+# CLEANUP:
+# - ttlSecondsAfterFinished allows for automatic removal after completion.
+# --------------------------------------------------------------------------------------------------------
+
+apiVersion: batch/v1            # API version for batch resources like Job
+kind: Job                       # This resource is a Job (runs once or with specified parallelism)
+
+metadata:
+  name: example-job             # Name of the Job
+  namespace: default            # Optional: defaults to "default" if not set
+  labels:
+    app: job-runner             # Labels for categorizing or selecting
+
+spec:
+  completions: 3                # Total successful pods required before Job is considered complete
+  parallelism: 2                # Max pods running in parallel. Can be <= completions
+  completionMode: NonIndexed    # 'NonIndexed' (default) or 'Indexed'
+                                # 'Indexed' assigns unique index to each Pod (0 to completions-1)
+
+  backoffLimit: 4               # Retry this many times before marking job as failed
+  activeDeadlineSeconds: 300    # Max time job can run before termination (in seconds)
+  ttlSecondsAfterFinished: 60   # After job finishes (succeed/fail), auto-delete after N seconds
+
+  suspend: false                # If true, Job controller will not create pods (can be resumed later)
+
+  template:                     # PodTemplateSpec: defines the pods this job will run
+    metadata:
+      labels:
+        app: job-runner
+    spec:
+      restartPolicy: OnFailure  # Allowed values: Never, OnFailure
+
+      containers:
+        - name: example
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: ["sh", "-c", "echo Processing data... && sleep 10 && echo Job done."]
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+            requests:
+              cpu: "250m"
+              memory: "64Mi"

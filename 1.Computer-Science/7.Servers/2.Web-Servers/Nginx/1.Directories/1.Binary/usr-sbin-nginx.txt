@@ -1,0 +1,304 @@
+_______________________________________________________________________________________________________________________________________
+                                            Nginx Binary Directory and Files 
+
+The binary directory contains the main Nginx executable (`nginx`) and related shared libraries or dynamically loaded modules.
+
+_______________________________________________________________________________________________________________________________________
+
+ 1. Nginx Binary Location
+The location of the Nginx binary (`nginx`) depends on the operating system and installation method.
+
+ Linux (Ubuntu, Debian, CentOS, RHEL)
+| Binary File                 | Location            | Description 
+| `/usr/sbin/nginx`           | Main Nginx binary.  | Used to start, stop, and reload Nginx. 
+| `/usr/lib/nginx/`           | Module directory (dynamically loaded modules). 
+| `/usr/lib/nginx/modules/`   | Stores dynamically loaded `.so` modules. 
+| `/usr/bin/nginx`            | Sometimes a symlink to `/usr/sbin/nginx`. 
+
+ macOS (Homebrew Installation)
+| Binary File                 | Location            
+| `/usr/local/bin/nginx`      | Main Nginx binary. 
+
+ Windows
+| Binary File                 | Location        
+| `C:\nginx\nginx.exe`        | Main Nginx binary. 
+
+_______________________________________________________________________________________________________________________________________
+
+ 2. Checking Nginx Binary Version
+You can verify the installed Nginx binary version and compilation details using:
+
+````````````````````````````````````````````````````````````````````bash
+nginx -v
+````````````````````````````````````````````````````````````````````
+or for more details:
+````````````````````````````````````````````````````````````````````bash
+nginx -V
+````````````````````````````````````````````````````````````````````
+Example Output:
+````````````````````````````````````````````````````````````````````text
+nginx version: nginx/1.24.0
+built by gcc 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04)
+built with OpenSSL 1.1.1f  31 Mar 2020
+TLS SNI support enabled
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 3. Nginx Binary Commands
+| Command                 | Description 
+| `nginx`                 | Starts Nginx using the default configuration. 
+| `nginx -t`              | Tests the configuration for syntax errors. 
+| `nginx -s stop`         | Stops the Nginx process immediately. 
+| `nginx -s quit`         | Gracefully stops Nginx after processing requests. 
+| `nginx -s reload`       | Reloads Nginx without stopping service. 
+| `nginx -s reopen`       | Reopens log files. 
+| `nginx -V`              | Shows detailed version info including compiled modules. 
+
+_______________________________________________________________________________________________________________________________________
+
+ 4. Nginx Modules in Binary Directory
+Nginx supports statically compiled modules and dynamically loaded modules.
+
+- Statically compiled modules: These are built into the Nginx binary (`nginx`).
+- Dynamically loaded modules: Stored as `.so` files in `/usr/lib/nginx/modules/`.
+
+ Listing Available Modules
+To check modules compiled into Nginx:
+````````````````````````````````````````````````````````````````````bash
+nginx -V 2>&1 | grep 'modules'
+````````````````````````````````````````````````````````````````````
+
+ Example Module Directory (`/usr/lib/nginx/modules/`)
+````````````````````````````````````````````````````````````````````bash
+ls -l /usr/lib/nginx/modules/
+````````````````````````````````````````````````````````````````````
+Output:
+````````````````````````````````````````````````````````````````````text
+-rw-r--r-- 1 root root  120K Jun 10  2023 ngx_http_geoip_module.so
+-rw-r--r-- 1 root root   90K Jun 10  2023 ngx_http_image_filter_module.so
+-rw-r--r-- 1 root root  100K Jun 10  2023 ngx_http_ssl_module.so
+````````````````````````````````````````````````````````````````````
+
+# Enabling a Dynamic Module
+Edit `/etc/nginx/nginx.conf` and add:
+````````````````````````````````````````````````````````````````````nginx
+load_module modules/ngx_http_ssl_module.so;
+````````````````````````````````````````````````````````````````````
+Then reload Nginx:
+````````````````````````````````````````````````````````````````````bash
+nginx -t && systemctl reload nginx
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 5. Checking the Nginx Binary Path
+To verify where Nginx is installed:
+````````````````````````````````````````````````````````````````````bash
+which nginx
+````````````````````````````````````````````````````````````````````
+or
+````````````````````````````````````````````````````````````````````bash
+whereis nginx
+````````````````````````````````````````````````````````````````````
+
+ Output Example
+````````````````````````````````````````````````````````````````````text
+nginx: /usr/sbin/nginx /etc/nginx /usr/lib/nginx
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 6. Manually Starting and Stopping Nginx Using the Binary
+Instead of using `systemctl`, you can start Nginx manually:
+
+# Start Nginx
+````````````````````````````````````````````````````````````````````bash
+/usr/sbin/nginx
+````````````````````````````````````````````````````````````````````
+
+# Stop Nginx
+````````````````````````````````````````````````````````````````````bash
+/usr/sbin/nginx -s stop
+````````````````````````````````````````````````````````````````````
+
+# Restart Nginx
+````````````````````````````````````````````````````````````````````bash
+/usr/sbin/nginx -s reload
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+                                                            Conclusion
+
+The Nginx binary (`nginx`) is stored in `/usr/sbin/nginx` (Linux) or `C:\nginx\nginx.exe` (Windows). 
+It provides various commands to start, stop, reload, and manage Nginx, with modules stored in `/usr/lib/nginx/modules/`.
+
+ All Nginx Binary Commands   
+
+The `nginx` binary provides multiple commands to start, stop, reload, and test the server. 
+Below is a detailed breakdown of all Nginx commands.
+
+_______________________________________________________________________________________________________________________________________
+
+ 1. Basic Nginx Commands
+| Command               | Description 
+| `nginx`               | Starts Nginx using the default configuration file (`/etc/nginx/nginx.conf`). 
+| `nginx -v`            | Displays the Nginx version. 
+| `nginx -V`            | Displays the Nginx version along with compiled options, modules, and dependencies. 
+
+ Example Output for `nginx -V`
+````````````````````````````````````````````````````````````````````text
+nginx version: nginx/1.24.0
+built by gcc 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04)
+built with OpenSSL 1.1.1f  31 Mar 2020
+TLS SNI support enabled
+configure arguments: --with-http_ssl_module --with-http_v2_module ...
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 2. Configuration and Syntax Testing Commands
+| Command               | Description 
+| `nginx -t`            | Tests the Nginx configuration file syntax. 
+| `nginx -T`            | Tests the configuration and prints the entire config file, including included files. 
+
+ Example Usage
+````````````````````````````````````````````````````````````````````bash
+nginx -t
+````````````````````````````````````````````````````````````````````
+Output (Success)
+````````````````````````````````````````````````````````````````````text
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+````````````````````````````````````````````````````````````````````
+Output (Error)
+````````````````````````````````````````````````````````````````````text
+nginx: [emerg] invalid number of arguments in "server" directive in /etc/nginx/nginx.conf:30
+````````````````````````````````````````````````````````````````````
+_______________________________________________________________________________________________________________________________________
+
+ 3. Stopping and Restarting Nginx
+| Command                  | Description 
+| `nginx -s stop`          | Immediately stops Nginx (forceful kill). 
+| `nginx -s quit`          | Gracefully stops Nginx after finishing active requests. 
+| `nginx -s reload`        | Reloads the Nginx configuration without stopping the server. 
+| `nginx -s reopen`        | Reopens log files (useful for log rotation). 
+
+ Example Usage
+````````````````````````````````````````````````````````````````````bash
+nginx -s stop
+nginx -s quit
+nginx -s reload
+nginx -s reopen
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 4. Managing Nginx with Systemd (Linux)
+For system-wide management, you can use `systemctl` (Linux):
+
+| Command                      | Description 
+| `systemctl start nginx`      | Starts Nginx. 
+| `systemctl stop nginx`       | Stops Nginx. 
+| `systemctl restart nginx`    | Stops and starts Nginx. 
+| `systemctl reload nginx`     | Reloads the configuration without stopping Nginx. 
+| `systemctl status nginx`     | Shows whether Nginx is running. 
+| `journalctl -xeu nginx`      | Shows detailed logs for Nginx. 
+
+ Example
+````````````````````````````````````````````````````````````````````bash
+systemctl status nginx
+````````````````````````````````````````````````````````````````````
+Output:
+````````````````````````````````````````````````````````````````````text
+● nginx.service - A high-performance web server and a reverse proxy server
+   Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
+   Active: active (running) since Tue 2024-03-25 12:34:56 UTC; 5min ago
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 5. Specifying Custom Configuration Files
+By default, Nginx loads `/etc/nginx/nginx.conf`, but you can specify a different configuration file.
+
+| Command                           | Description 
+| `nginx -c /path/to/nginx.conf`    | Starts Nginx with a custom config file. 
+
+ Example
+````````````````````````````````````````````````````````````````````bash
+nginx -c /home/user/nginx_custom.conf
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 6. Running Nginx in the Foreground (Non-Daemon Mode)
+| Command            | Description |
+| `nginx -g "daemon off;"` | Runs Nginx in the foreground instead of as a daemon (useful for debugging). |
+
+ Example
+````````````````````````````````````````````````````````````````````bash
+nginx -g "daemon off;"
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 7. Setting Global Configuration Directives from CLI
+You can override Nginx configuration directives directly via the CLI.
+
+| Command                               | Description 
+| `nginx -g "worker_processes 4;"`      | Runs Nginx with 4 worker processes, overriding the default config. 
+
+ Example
+````````````````````````````````````````````````````````````````````bash
+nginx -g "worker_processes auto;"
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 8. Debugging and Logging
+| Command                      | Description 
+| `nginx -T`                   | Displays the full configuration file, including all includes. 
+| `strace -f nginx`            | Traces system calls made by Nginx (useful for debugging). 
+| `nginx -p /path/to/prefix`   | Runs Nginx with a custom prefix (useful in development). 
+
+ Example Debugging
+To run Nginx with detailed debugging:
+````````````````````````````````````````````````````````````````````bash
+nginx -T | less
+strace -f -o nginx_trace.log nginx
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 9. Checking Active Connections
+You can check active connections if the Nginx stub_status module is enabled.
+
+````````````````````````````````````````````````````````````````````bash
+curl http://localhost/nginx_status
+````````````````````````````````````````````````````````````````````
+Output Example:
+````````````````````````````````````````````````````````````````````text
+Active connections: 5
+server accepts handled requests
+ 1000 1000 5000
+Reading: 0 Writing: 1 Waiting: 4
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 10. Killing Nginx Processes Manually
+If `nginx -s stop` fails, you can manually kill the processes.
+
+| Command                         | Description 
+| `pkill nginx`                   | Kills all running Nginx processes. 
+| `killall nginx`                 | Another way to kill all Nginx processes. 
+| `ps aux | grep nginx`           | Lists all Nginx processes. 
+| `kill -9 <PID>`                 | Forcefully kills a specific Nginx process. 
+
+ Example
+````````````````````````````````````````````````````````````````````bash
+ps aux | grep nginx
+kill -9 12345  # Replace 12345 with the actual process ID
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________

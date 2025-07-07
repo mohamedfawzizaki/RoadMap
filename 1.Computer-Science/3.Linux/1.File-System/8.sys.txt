@@ -1,0 +1,163 @@
+______________________________________________________________________________________________________________________________________
+                                                         `/sys/` 
+                                                         =======
+
+- The `/sys/` directory is part of the sysfs virtual filesystem in Linux.
+- It provides a hierarchical view of various kernel parameters
+   and system information, making it essential for interacting with the kernel and hardware devices.
+- This directory is dynamically created by the kernel at boot and exposes
+   information about the system’s kernel, hardware devices, and various kernel parameters that can be modified at runtime.
+
+---------------------------------------------------------------------------------------------------------
+Purpose of `/sys/`
+
+      - Kernel and Hardware Information: `/sys/` contains files that allow you
+         to view and modify kernel parameters and interact with hardware components in real time.
+      - It is a mechanism for the kernel to expose information to userspace.
+      - System Tuning: It provides an interface for users and administrators 
+         to modify certain system settings (such as tuning hardware devices or kernel parameters)
+         dynamically without the need to reboot the system.
+---------------------------------------------------------------------------------------------------------
+Structure of `/sys/`
+
+The contents of `/sys/` are organized hierarchically into directories and files,
+ which represent various aspects of the kernel, devices, and system parameters.
+Here are the main components:
+
+1.`/sys/class/`
+
+      - Purpose: 
+            - Contains subdirectories for different device types (e.g., block devices, network interfaces, power management, etc.).
+      - Example: 
+            - `/sys/class/net/`          – Contains subdirectories for network interfaces like `eth0` and `wlan0`.
+            - `/sys/class/block/`        – Contains subdirectories for block devices like hard drives (`sda`, `sdb`).
+            - `/sys/class/power_supply/` – Contains information related to battery and power supplies.
+---------------------------------------------------------------------------------------------------------
+2.`/sys/devices/`
+
+      - Purpose: 
+            - Provides a tree-like structure for physical devices on the system.
+            - Each device is represented as a subdirectory.
+      - Example: 
+            - `/sys/devices/system/cpu/` – Contains information and parameters related to CPU cores and their states.
+            - `/sys/devices/pci0000:00/` – Contains information about PCI devices attached to the system.
+---------------------------------------------------------------------------------------------------------
+3.`/sys/fs/`
+
+      - Purpose: 
+            - Contains files related to virtual filesystems and kernel options that affect the way the kernel manages filesystems.
+      - Example:
+            - `/sys/fs/cgroup/` – Contains directories for control groups (cgroups) that manage resource allocation for processes.
+            - `/sys/fs/ext4/`   – Contains information about ext4 filesystems.
+---------------------------------------------------------------------------------------------------------
+4.`/sys/kernel/`
+
+      - Purpose: 
+            - Contains files that expose information about the kernel itself, such as parameters and capabilities.
+      - Example: 
+            - `/sys/kernel/osrelease` – Contains the kernel version string.
+            - `/sys/kernel/hostname`  – Contains the system’s hostname.
+---------------------------------------------------------------------------------------------------------
+5.`/sys/module/`
+
+      - Purpose: 
+            - Provides information about kernel modules (drivers) that are loaded into the kernel.
+            - It allows you to query, configure, or unload kernel modules.
+      - Example: 
+            - `/sys/module/<module_name>/` – Contains information about each 
+               loaded module, such as parameters, version, and dependencies.
+---------------------------------------------------------------------------------------------------------
+6.`/sys/firmware/`
+
+      - Purpose: 
+            - Contains information about the system’s firmware, such as UEFI or BIOS settings.
+      - Example: 
+            - `/sys/firmware/efi/` – Provides details on the EFI (Extensible Firmware Interface) firmware and its variables.
+---------------------------------------------------------------------------------------------------------
+Example of `/sys/` Contents
+
+      Here’s an example of what you might see when browsing `/sys/`:
+
+      ```
+      /sys/
+      │
+      ├── class/             Device classes (e.g., net, block, power supply)
+      ├── devices/           Physical devices (e.g., cpu, pci, usb)
+      ├── fs/                Filesystems, control groups (cgroups), etc.
+      ├── kernel/            Kernel parameters (e.g., hostname, osrelease)
+      ├── module/            Loaded kernel modules
+      ├── firmware/          Firmware-related information (e.g., BIOS, UEFI)
+      └── power/             Power management
+      ```
+---------------------------------------------------------------------------------------------------------
+Key Uses of `/sys/`
+
+      1.Device Management: 
+         - You can inspect and modify the behavior of devices in real time.
+         - For example, you can control CPU frequency scaling via `/sys/devices/system/cpu/cpu0/cpufreq/`.
+         
+      2.Kernel Parameter Tweaks: 
+         - Many kernel parameters, such as network settings, security 
+         features, and memory management options, are exposed in `/sys/`.
+         - These parameters can often be modified at runtime (for example,
+         increasing the maximum number of open files via `/sys/fs/file-max`).
+         
+      3.System Information: 
+         - You can gather a wealth of system information, such as CPU architecture,
+            memory size, kernel version, and more, from `/sys/kernel/` and `/sys/devices/`.
+         
+      4.Kernel Module Configuration: 
+         - If you want to load or configure kernel modules dynamically, you can interact with `/sys/module/`.
+         - This allows you to inspect loaded modules, change parameters, or unload modules if necessary.
+         
+      5.Power Management: 
+         - `/sys/class/power_supply/` allows you to manage and monitor the system’s power sources, 
+            such as the battery and AC power, while `/sys/class/net/` contains information about network 
+            interfaces, which can be adjusted as well.
+---------------------------------------------------------------------------------------------------------
+Common Tasks Using `/sys/`
+
+Here are a few practical examples of how `/sys/` can be used:
+
+1.View Kernel Version:
+   ```````````````````````````````````````````````````````````````````````````````bash
+   cat /sys/kernel/osrelease
+   ```````````````````````````````````````````````````````````````````````````````
+
+2.View CPU Frequency Scaling Information:
+   ```````````````````````````````````````````````````````````````````````````````bash
+   cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
+   ``````````````````````````````````````````````````````````````````````````````` 
+
+3.Set CPU Frequency Governor (e.g., Performance Mode):
+   ```````````````````````````````````````````````````````````````````````````````bash
+   echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+   ```````````````````````````````````````````````````````````````````````````````
+
+4.View Battery Information:
+   ```````````````````````````````````````````````````````````````````````````````bash
+   cat /sys/class/power_supply/BAT0/capacity
+   ```````````````````````````````````````````````````````````````````````````````
+
+5.View Network Interfaces:
+   ```````````````````````````````````````````````````````````````````````````````bash
+   ls /sys/class/net/
+   ```````````````````````````````````````````````````````````````````````````````
+---------------------------------------------------------------------------------------------------------
+Differences Between `/sys/` and `/proc/`
+ _____________________________________________________________________________________________________________________________________________________________
+| Feature    | `/sys/`                                                              | `/proc/`                                                                |
+|____________|______________________________________________________________________|_________________________________________________________________________|
+| Purpose    | Provides information and settings related to the kernel and hardware.| Provides information about processes and system stats.                  |
+| Content    | Files related to devices, kernel parameters, modules, firmware, etc. | Files related to active processes, memory, CPU stats, etc.              |
+| Structure  | Hierarchical, representing devices and kernel settings.              | Flat structure, each file corresponds to a process or a system statistic|
+|____________|______________________________________________________________________|_________________________________________________________________________|
+
+---------------------------------------------------------------------------------------------------------
+Conclusion
+
+The `/sys/` directory is a vital part of the Linux system, providing a direct interface
+ to interact with the kernel, hardware devices, and kernel parameters.
+It is dynamic and constantly reflects the current state of the system, making it a
+ powerful tool for system monitoring, tuning, and troubleshooting.
+______________________________________________________________________________________________________________________________________

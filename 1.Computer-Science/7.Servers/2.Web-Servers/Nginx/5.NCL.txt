@@ -1,0 +1,317 @@
+_______________________________________________________________________________________________________________________________________
+                                        Nginx Configuration Language (NCL) 
+
+
+Nginx Configuration Language (NCL) is a domain-specific language (DSL) used to configure the Nginx web server and reverse proxy. 
+It follows a structured, directive-based syntax to define server behavior, traffic handling, and security settings.
+
+_______________________________________________________________________________________________________________________________________
+                                    1️⃣ Core Features of Nginx Configuration Language
+
+ 🔹 Block-Based Structure
+- Configuration files use blocks (`{}`) to define sections such as `http`, `server`, `location`, etc.
+- Blocks contain directives that define behavior.
+
+Example:
+
+````````````````````````````````````````````````````````````````````nginx
+http {
+    server {
+        listen 80;
+        server_name example.com;
+        
+        location / {
+            root /var/www/html;
+            index index.html;
+        }
+    }
+}
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 Directives (Key-Value Pairs)
+- Directives are configuration commands.
+- Each directive must end with a semicolon (`;`).
+- Some directives accept a single value (`root`), while others accept multiple values (`listen`).
+
+Example:
+````````````````````````````````````````````````````````````````````nginx
+listen 443 ssl;    # Multi-value directive
+server_name mysite.com;  # Single-value directive
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 Contexts (Blocks)
+Nginx configuration is divided into contexts (or blocks) where directives are placed. 
+The main contexts are:
+
+| Context   |                       Purpose 
+| Global    | Sets system-wide settings (e.g., user, worker processes) 
+| Events    | Defines how Nginx handles connections 
+| HTTP      | Configures web traffic (used for websites, APIs, etc.) 
+| Stream    | Configures TCP/UDP proxying (for databases, non-HTTP protocols) 
+| Server    | Defines virtual hosts (listens on a specific port & domain) 
+| Location  | Configures request handling for specific URIs 
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 Variables
+Nginx provides built-in variables that store request-related information.
+
+Example Variables:
+| Variable              | Description 
+| `$remote_addr`        | Client's IP address 
+| `$http_user_agent`    | Browser/User-Agent of the client 
+| `$request_uri`        | Full requested URL (excluding domain) 
+| `$server_name`        | Server name handling the request 
+
+Example Usage:
+````````````````````````````````````````````````````````````````````nginx
+log_format custom_log 'Client IP: $remote_addr - URL: $request_uri';
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 Inheritance and Precedence
+- Directives in outer blocks (e.g., `http {}`) apply to inner blocks (e.g., `server {}`).
+- Inner directives override outer ones when there's a conflict.
+
+Example:
+````````````````````````````````````````````````````````````````````nginx
+http {
+    index index.html;  # Global setting
+
+    server {
+        index index.php;  # Overrides for this server block
+    }
+}
+````````````````````````````````````````````````````````````````````
+📌 The `server` block overrides the `http` block’s `index` directive.
+
+_______________________________________________________________________________________________________________________________________
+                                        2️⃣ Configuration Contexts and Directives
+ 1. Global Context
+The outermost block, affecting all Nginx settings.
+
+Common Global Directives:
+| Directive             | Description 
+| `user`                | Defines the user Nginx runs under 
+| `worker_processes`    | Number of worker processes for handling requests 
+| `error_log`           | Specifies the error log file 
+| `pid`                 | Sets the PID file for process management 
+
+Example:
+````````````````````````````````````````````````````````````````````nginx
+user www-data;
+worker_processes auto;
+error_log /var/log/nginx/error.log warn;
+pid /run/nginx.pid;
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 2. Events Context
+Handles connection-level settings (not HTTP-specific).
+
+Common Event Directives:
+| Directive             | Description 
+| `worker_connections`  | Max connections per worker process 
+| `use`                 | Specifies the event handling mechanism (epoll, kqueue, etc.) 
+| `multi_accept`        | Enables accepting multiple connections at once 
+
+Example:
+````````````````````````````````````````````````````````````````````nginx
+events {
+    worker_connections 1024;
+    use epoll;
+}
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 3. HTTP Context
+Handles web traffic and HTTP-related settings.
+
+Common HTTP Directives:
+| Directive             | Description 
+| `server_tokens off;`  | Hides Nginx version in responses 
+| `sendfile on;`        | Enables optimized file transfer 
+| `gzip on;`            | Enables response compression 
+| `log_format`          | Defines custom access logs 
+
+Example:
+````````````````````````````````````````````````````````````````````nginx
+http {
+    sendfile on;
+    gzip on;
+    log_format main '$remote_addr - $request_uri';
+}
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 4. Stream Context (TCP/UDP Proxying)
+Used for non-HTTP protocols (e.g., MySQL, SSH).
+
+Common Stream Directives:
+| Directive     | Description 
+| `proxy_pass`  | Forwards connections to a backend server 
+| `listen`      | Specifies port to listen on 
+| `udp`         | Enables UDP proxying 
+
+Example:
+````````````````````````````````````````````````````````````````````nginx
+stream {
+    server {
+        listen 3306;
+        proxy_pass 127.0.0.1:3306;
+    }
+}
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 5. Server Block (Virtual Hosts)
+Defines websites and API endpoints.
+
+Common Server Directives:
+| Directive     | Description 
+| `listen`      | Specifies port (e.g., 80, 443) 
+| `server_name` | Defines domain names 
+| `root`        | Sets the document root 
+
+Example:
+````````````````````````````````````````````````````````````````````nginx
+server {
+    listen 80;
+    server_name mysite.com;
+    root /var/www/html;
+}
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 6. Location Block
+Handles URL routing and request processing.
+
+Common Location Directives:
+| Directive     | Description 
+| `root`        | Sets the directory for file requests 
+| `index`       | Specifies the default file 
+| `proxy_pass`  | Forwards requests to another server 
+| `try_files`   | Specifies fallback file handling 
+
+Example:
+````````````````````````````````````````````````````````````````````nginx
+server {
+    location / {
+        root /var/www/html;
+        index index.html;
+    }
+
+    location /api/ {
+        proxy_pass http://backend_server;
+    }
+}
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 7. Geo Block
+Used to create IP-based rules (e.g., geo-blocking).
+
+Example:
+````````````````````````````````````````````````````````````````````nginx
+geo $country {
+    default US;
+    192.168.1.1 RU;
+}
+
+server {
+    if ($country = RU) {
+        return 403;
+    }
+}
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+                                                 3️⃣ Conditional Directives
+ if Statements
+Nginx supports conditional statements but has limited logic.
+
+````````````````````````````````````````````````````````````````````nginx
+server {
+    if ($request_method = POST) {
+        return 405;
+    }
+}
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+                                                     4️⃣ Comments
+- Single-line comments use `#`
+````````````````````````````````````````````````````````````````````nginx
+# This is a comment
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+                                                How to declare variable:
+
+````````````````````````````````````````````````````````````````````nginx
+set $varname "value";
+````````````````````````````````````````````````````````````````````
+
+
+http {
+    # Load the GeoIP2 module
+    geoip2 /etc/nginx/GeoLite2-Country.mmdb {
+        $geoip2_data_country_code country iso_code;
+    }
+
+    upstream us_servers {
+        server us-server1.example.com;
+        server us-server2.example.com;
+    }
+
+    upstream eu_servers {
+        server eu-server1.example.com;
+        server eu-server2.example.com;
+    }
+
+    upstream default_servers {
+        server global-server.example.com;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            set $backend "default_servers";
+
+            if ($geoip2_data_country_code = "US") {
+                set $backend "us_servers";
+            }
+
+            if ($geoip2_data_country_code = "FR") {
+                set $backend "eu_servers";
+            }
+
+            proxy_pass http://$backend;
+        }
+    }
+}
+
+
+
+
+_______________________________________________________________________________________________________________________________________
+                                                      5️⃣ Summary
+
+✅ Nginx Configuration Language (NCL) is a directive-based configuration system.  
+✅ Uses blocks (`{}`) and directives to define settings.  
+✅ Supports contexts, variables, inheritance, and conditional logic.  
+✅ Optimized for performance, security, and flexibility.  
+
+_______________________________________________________________________________________________________________________________________

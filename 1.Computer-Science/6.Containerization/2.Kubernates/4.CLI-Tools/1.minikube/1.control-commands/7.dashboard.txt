@@ -1,0 +1,11 @@
+______________________________________________________________________________________________________________________________________
+                                                minikube dashboard [flags]
+______________________________________________________________________________________________________________________________________
+             --url                   Display dashboard URL instead of opening a browser
+             --port int              Exposed port of the proxyfied dashboard. Set to 0 to pick a random port.
+         -p, --profile string        The name of the minikube VM being used. This can be set to allow having multiple instances of minikube independently. (default "minikube")
+             --rootless              Force to use rootless driver (docker and podman driver only)
+             --user string           Specifies the user executing the operation. Useful for auditing operations executed by 3rd party tools. Defaults to the operating system username.
+        
+ 
+______________________________________________________________________________________________________________________________________

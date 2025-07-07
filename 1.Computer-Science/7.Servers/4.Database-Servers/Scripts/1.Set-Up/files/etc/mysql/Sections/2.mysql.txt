@@ -1,0 +1,25 @@
+
+                                                [mysql] Section
+
+                            This section configures the MySQL command-line client (mysql).
+
+         ____________________________________________________________________________________________________________________________
+        |      Directive         |                                      Description                                                  |
+        |________________________|___________________________________________________________________________________________________|
+        | user                   | Specifies the default MySQL user for the client.                                                  |
+        | password               | Defines the default password for authentication (not recommended for security reasons).           |
+        | host                   | Specifies the default server hostname or IP to connect to.                                        |
+        | port                   | Sets the default port for MySQL connections.                                                      |
+        | socket                 | Defines the Unix socket file for local connections.                                               |
+        | default-character-set  | Sets the default character set for the client session (e.g., utf8mb4).                            |
+        |------------------------|---------------------------------------------------------------------------------------------------|
+        | auto-rehash            | Enables automatic tab completion for MySQL commands.                                              |
+        | connect-timeout        | Defines the timeout in seconds for client connections.                                            |
+        | prompt                 | Customizes the MySQL prompt format.                                                               |
+        | max_allowed_packet     | Sets the maximum packet size the client can send to the server.                                   |
+        |------------------------|---------------------------------------------------------------------------------------------------|
+        | ssl-ca                 | Specifies the CA certificate file for SSL connections.                                            |
+        | ssl-cert               | Defines the client certificate for SSL authentication.                                            |
+        | ssl-key                | Specifies the client private key for SSL authentication.                                          |
+        |________________________|___________________________________________________________________________________________________|
+

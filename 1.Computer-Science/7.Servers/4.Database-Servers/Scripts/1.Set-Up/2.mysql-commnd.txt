@@ -1,0 +1,85 @@
+____________________________________________________________________________________________________________________________________________
+                                                    mysql command-line client
+                                                    =========================
+                                                    mysqld command-line
+
+
+
+
+The mysql command-line client has various options to control how you connect and interact with the MySQL server. 
+
+Here are some of the most useful ones:
+____________________________________________________________________________________________________________________________________________
+                                                   mysql [OPTIONS]
+
+ ___________________________________________________________________________________________________________________________________________
+|          Option           |               Description                         |                       Example                             |
+|___________________________|___________________________________________________|___________________________________________________________|
+| -u USERNAME               | Specify MySQL user                                | mysql -u root -p                                          |
+| -p                        | Prompt for password                               | mysql -u root -p                                          |
+| -h HOST                   | Connect to a remote MySQL server                  | mysql -u root -p -h 192.168.1.100                         |
+| -P PORT                   | Specify port number                               | mysql -u root -p -P 3306                                  |
+| --protocol={TCP|SOCKET|PIPE|MEMORY} | Choose connection protocol              | mysql -u root -p --protocol=TCP                           |
+| --socket=SOCKET_PATH      | Use a Unix socket instead of TCP/IP               | mysql -u root -p --socket=/var/run/mysqld/mysqld.sock     |
+|---------------------------|---------------------------------------------------|-----------------------------------------------------------|
+| --ssl                     | Enable SSL encryption for secure connections      | mysql -u root -p --ssl                                    |
+| --ssl-mode=REQUIRED       | Require SSL for secure connections                | mysql -u root --ssl-mode=REQUIRED                         |
+| --ssl-cert=FILE           | Specify SSL certificate file                      | mysql -u root --ssl-cert=/etc/mysql/client-cert.pem       |
+| --ssl-key=FILE            | Specify SSL key file                              | mysql -u root --ssl-key=/etc/mysql/client-key.pem         |
+| --secure-auth             | Enforce secure authentication                     | mysql -u root --secure-auth                               |
+|---------------------------|---------------------------------------------------|-----------------------------------------------------------|
+| -D DATABASE               | Connect to a specific database                    | mysql -u root -p -D my_database                           |
+| -e "SQL_QUERY"            | Execute a SQL query from the command line         | mysql -u root -p -e "SELECT * FROM users;"                |
+| --execute="SQL_QUERY"     | Similar to -e, runs SQL queries non-interactively | mysql -u root -p --execute="SHOW DATABASES;"              |
+| --verbose                 | Display detailed query execution output           | mysql -u root -p --verbose                                |
+| --show-warnings           | Show warnings after executing queries             | mysql -u root -p --show-warnings                          |
+| --default-character-set=CHARSET | Set the default character set for session   | mysql --u root -p --default-character-set=CHARSET         |
+|---------------------------|---------------------------------------------------|-----------------------------------------------------------|
+| --xml                     | Output results in XML format                      | mysql -u root -p -e "SELECT  FROM users;" --xml           |
+| --json                    | Output results in JSON format                     | mysql -u root -p -e "SELECT  FROM users;" --json          |
+| --dump                    | Export database (similar to mysqldump)            | mysql -u root -p --dump my_database > backup.sql          |
+|---------------------------|---------------------------------------------------|-----------------------------------------------------------|
+| < script.sql              | Execute SQL commands from a file                  | mysql -u root -p < script.sql                             |
+| < script.sql              | Import a database from a SQL file                 | mysql -u root -p my_database < backup.sql                 |
+| > script.sql              | Export data to a file                             | mysql -u root -p -e "SELECT  FROM users;" > output.txt    |
+| < script.sql > output.log | Execute script and log output                     | mysql -u root -p < script.sql > output.log                |
+| --tee=FILE                | Log session activities to a file                  | mysql -u root -p --tee=mysql_log.txt                      |
+|---------------------------|---------------------------------------------------|-----------------------------------------------------------|
+| --debug[=DEBUG_OPTIONS]   | Enable MySQL debugging                            | mysql -u root -p --debug                                  |
+| --compress                | Enable compression for connections                | mysql -u root -p --compress                               |
+| --quick                   | Send queries without storing them in memory       | mysql -u root -p --quick                                  |
+| --max_allowed_packet=SIZE | Set the max packet size for communication         | mysql -u root -p --max_allowed_packet=64M                 |
+| --net-buffer-length=SIZE  | Adjust network buffer size                        | mysql -u root -p --net-buffer-length=8192                 |
+| --wait-timeout=SECONDS    | Set timeout for idle connections                  | mysql -u root -p --wait-timeout=300                       |
+| --disable-reconnect       | Prevent automatic reconnection                    | mysql -u root -p --disable-reconnect                      |
+| --pager=COMMAND           | Pipe output to a pager program (e.g., less)       | mysql -u root -p --pager="less -S"                        |
+| --skip-column-names       | Hide column names in query results                | mysql -u root -p --skip-column-names                      |
+| --safe-updates            | Prevent accidental DELETE and UPDATE without WHERE| mysql -u root -p --safe-updates                           |
+| --local-infile=1          | Enable LOAD DATA INFILE for importing files       | mysql -u root -p --local-infile=1                         |
+| --binary-mode             | Disable escaping for binary data                  | mysql -u root -p --binary-mode                            |
+| --batch                   | Run queries in batch mode (useful for scripts)    | mysql -u root -p --batch -e "SELECT COUNT() FROM users;"  |
+| --silent                  | Suppress unnecessary output (useful in automation)| mysql -u root -p --silent -e "SHOW TABLES;"               |
+| --no-beep                 | Disable beep sound on errors                      | mysql -u root -p --no-beep                                |
+| --named-commands          | Allow \ commands in SQL queries                   | mysql -u root -p --named-commands                         |
+| --reconnect               | Auto-reconnect on connection loss                 | mysql -u root -p --reconnect                              |
+|---------------------------|---------------------------------------------------|-----------------------------------------------------------|
+| mysqladmin status         | Check MySQL server uptime                         | mysqladmin -u root -p status                              |
+| mysqladmin processlist    | View active MySQL processes                       | mysqladmin -u root -p processlist                         |
+| mysqladmin kill ID        | Kill a specific MySQL process                     | mysqladmin -u root -p kill 12345                          |
+|___________________________|___________________________________________________|___________________________________________________________|
+
+____________________________________________________________________________________________________________________________________________
+
+
+____________________________________________________________________________________________________________________________________________
+                                                   mysqld [OPTIONS]
+                                                see Sections directory
+mysqld --print-defaults
+mysqld --verbose --help
+mysqld --help
+____________________________________________________________________________________________________________________________________________
+                                                   mysqldump [OPTIONS]
+                                                see Sections directory
+
+mysqladmin -u root -p variables
+____________________________________________________________________________________________________________________________________________

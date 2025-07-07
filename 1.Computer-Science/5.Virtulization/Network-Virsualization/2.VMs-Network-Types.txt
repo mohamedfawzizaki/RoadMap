@@ -1,0 +1,134 @@
+_______________________________________________________________________________________________________________________________________
+                                              Virtual machines (VMs) Network Types
+
+They can use several types of network configurations, each serving specific use cases and requirements. 
+
+The choice of network type determines how a VM connects to other VMs, the host system, and external networks. 
+
+Below are the primary types of networks that virtual machines use:
+
+_______________________________________________________________________________________________________________________________________
+
+### 1. Bridged Networking
+- Description:  
+  The VM connects directly to the host's physical network as if it were another physical machine on the same network. 
+  The VM gets its own IP address from the network's DHCP server or can use a static IP.
+
+- Use Case:  
+  Useful when VMs need to communicate directly with other devices on the network,
+   such as servers or printers, and require a dedicated IP address.
+
+- Advantages:
+  - Full access to the external network.
+  - Independent IP for the VM, similar to any other device on the LAN.
+  - Ideal for running services accessible from the host network.
+
+- Disadvantages:
+  - May require additional configuration on the network switch or router.
+  - Potential security concerns as the VM is exposed to the external network.
+
+_______________________________________________________________________________________________________________________________________
+
+### 2. NAT (Network Address Translation) Networking
+- Description:  
+  The VM connects to the host's network through a virtual NAT device. 
+  The VM shares the host's IP address and appears to the external network as the host.
+
+- Use Case:  
+  Suitable for VMs that need internet access but don't need to be directly accessible from the external network.
+
+- Advantages:
+  - Simple configuration; works out-of-the-box in most virtualization platforms.
+  - VMs are protected from direct external access by NAT.
+  - Host manages internet access for the VM.
+
+- Disadvantages:
+  - VMs cannot be directly accessed from the host network or the internet without port forwarding.
+  - Performance might be slightly impacted due to NAT processing.
+
+_______________________________________________________________________________________________________________________________________
+
+### 3. Host-Only Networking
+- Description:  
+  A private network between the VM and the host. 
+  The VM can communicate only with the host and other VMs connected to the same host-only network.
+
+- Use Case:  
+  Useful for testing and development environments where internet or external network access is not required.
+
+- Advantages:
+  - Isolated from external networks, enhancing security.
+  - Simple setup for internal testing and communication between VMs.
+
+- Disadvantages:
+  - No internet or external network access for the VM.
+  - Limited to communication with the host and other VMs in the host-only network.
+
+_______________________________________________________________________________________________________________________________________
+
+### 4. Internal Networking
+- Description:  
+  Similar to host-only networking but does not involve the host. 
+  Only VMs connected to the same internal network can communicate with each other.
+
+- Use Case:  
+  Ideal for isolated environments where VMs need to communicate among themselves without involving the host or external network.
+
+- Advantages:
+  - Completely isolated from the host and external networks.
+  - Useful for testing internal VM-to-VM communication.
+
+- Disadvantages:
+  - No access to the host or external network.
+  - Requires additional configuration to set up services like DHCP within the internal network.
+
+_______________________________________________________________________________________________________________________________________
+
+### 5. Custom or Advanced Networking (Software-Defined Networking - SDN)
+- Description:  
+  Advanced configurations allow for virtual networks that mimic complex physical networks. 
+  These might include VLANs, VXLANs, or integration with SDN platforms like VMware NSX,
+   OpenStack Neutron, or Azure Virtual Network.
+
+- Use Case:  
+  Used in enterprise environments to create scalable, segmented, and manageable virtual network topologies.
+
+- Advantages:
+  - Highly customizable for complex network scenarios.
+  - Support for advanced features like segmentation, QoS, and virtualized security.
+
+- Disadvantages:
+  - Complex setup and management.
+  - Requires expertise and possibly additional software or licenses.
+
+_______________________________________________________________________________________________________________________________________
+
+### 6. Macvtap Networking
+- Description:  
+  A Linux-based networking mode that allows a VM to
+   have direct access to a physical network interface (similar to bridged networking) but uses a kernel-level macvtap device.
+
+- Use Case:  
+  Used in scenarios where bridged networking is not feasible due to limitations on the host or network.
+
+- Advantages:
+  - Low overhead as it bypasses the host's software network stack.
+  - Provides direct connectivity to the physical network.
+
+- Disadvantages:
+  - Limited compatibility with certain network setups.
+  - The host cannot use the physical interface for its own communication while it is attached to the VM.
+
+_______________________________________________________________________________________________________________________________________
+
+### Summary Table
+
+|       Type        |   VM to Host   |   VM to VM   |  VM to External Network    | Common Use Case                      |
+| Bridged           | Yes            | Yes          | Yes                        | Full network integration             |
+| NAT               | Yes            | Yes          | Limited (via host's IP)    | Internet access for isolated VMs     |
+| Host-Only         | Yes            | Yes          | No                         | Testing host-VM communication        |
+| Internal          | No             | Yes          | No                         | Isolated multi-VM environments       |
+| Advanced/SDN      | Depends        | Depends      | Depends                    | Scalable, enterprise-level setups    |
+| Macvtap           | Limited        | Yes          | Yes                        | Low-overhead direct network access   |
+
+_______________________________________________________________________________________________________________________________________

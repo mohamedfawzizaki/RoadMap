@@ -1,0 +1,93 @@
+_______________________________________________________________________________________________________________________________________
+                                            🔹 Understanding the Nginx PID File  
+
+ 1️⃣ What is the Nginx PID File?  
+The PID (Process ID) file is a file where Nginx stores the process ID of its master process. 
+
+This file allows system utilities and administrators to manage Nginx processes easily.
+
+📌 Default Location of the PID File:  
+````````````````````````````````````````````````````````````````````plaintext
+/var/run/nginx.pid
+````````````````````````````````````````````````````````````````````
+💡 The file contains a single number, which is the PID of the master Nginx process.
+
+_______________________________________________________________________________________________________________________________________
+
+ 2️⃣ Checking the Nginx PID File  
+
+📌 View the PID File:  
+````````````````````````````````````````````````````````````````````bash
+cat /var/run/nginx.pid
+````````````````````````````````````````````````````````````````````
+✅ Output Example:
+````````````````````````````````````````````````````````````````````plaintext
+1234
+````````````````````````````````````````````````````````````````````
+This means the Nginx master process is running with PID `1234`.
+
+📌 Find the Nginx Process using the PID:  
+````````````````````````````````````````````````````````````````````bash
+ps -fp $(cat /var/run/nginx.pid)
+````````````````````````````````````````````````````````````````````
+✅ Output Example:
+````````````````````````````````````````````````````````````````````plaintext
+UID        PID  PPID  C STIME TTY          TIME CMD
+root      1234     1  0 10:00 ?        00:00:00 nginx: master process /usr/sbin/nginx
+````````````````````````````````````````````````````````````````````
+This confirms the running Nginx master process.
+
+_______________________________________________________________________________________________________________________________________
+
+ 3️⃣ Configuring a Custom PID File Location  
+You can define a custom PID file location in the Nginx configuration (`nginx.conf`).
+
+📌 Example Configuration (`/etc/nginx/nginx.conf`):  
+````````````````````````````````````````````````````````````````````nginx
+pid /var/run/custom-nginx.pid;
+````````````````````````````````````````````````````````````````````
+📌 Restart Nginx to Apply Changes:  
+````````````````````````````````````````````````````````````````````bash
+sudo systemctl restart nginx
+````````````````````````````````````````````````````````````````````
+📌 Check if the Custom PID File Exists:  
+````````````````````````````````````````````````````````````````````bash
+cat /var/run/custom-nginx.pid
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 4️⃣ Managing Nginx Using the PID File  
+
+📌 Stopping Nginx Using the PID File:  
+````````````````````````````````````````````````````````````````````bash
+sudo kill -QUIT $(cat /var/run/nginx.pid)
+````````````````````````````````````````````````````````````````````
+📌 Reloading Nginx Configuration Without Stopping It:  
+````````````````````````````````````````````````````````````````````bash
+sudo kill -HUP $(cat /var/run/nginx.pid)
+````````````````````````````````````````````````````````````````````
+📌 Stopping Nginx Immediately:  
+````````````````````````````````````````````````````````````````````bash
+sudo kill -TERM $(cat /var/run/nginx.pid)
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 5️⃣ Troubleshooting PID File Issues
+| Issue                                                 | Solution 
+| `nginx.pid not found`                                 | Nginx may not be running. Start it with `sudo systemctl start nginx`. 
+| `Permission denied`                                   | Use `sudo cat /var/run/nginx.pid` to check the file. 
+| `nginx: [emerg] open() "/var/run/nginx.pid" failed`   | The PID file may be missing or corrupt. Try `sudo rm -f /var/run/nginx.pid` and restart Nginx. |
+| `nginx.pid contains an incorrect PID`                 | Restart Nginx to regenerate the file: `sudo systemctl restart nginx`. 
+
+_______________________________________________________________________________________________________________________________________
+
+ 6️⃣ Summary
+- The Nginx PID file is stored at `/var/run/nginx.pid`.
+- It contains the process ID of the master Nginx process.
+- You can view, modify, and use the PID file for process management.
+- Custom PID file locations can be set in `nginx.conf` using `pid /path/to/file.pid;`.
+- If the PID file is missing or incorrect, restarting Nginx usually fixes it.
+
+_______________________________________________________________________________________________________________________________________

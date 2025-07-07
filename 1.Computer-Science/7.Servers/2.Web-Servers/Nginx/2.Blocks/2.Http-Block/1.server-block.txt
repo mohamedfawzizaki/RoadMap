@@ -1,0 +1,213 @@
+_______________________________________________________________________________________________________________________________________
+                                            🔹 `server` Block in Nginx  
+
+The `server {}` block in Nginx defines a virtual host that handles HTTP and HTTPS traffic for a particular domain or IP. 
+It is the main component responsible for directing incoming requests based on domain, port, and location.  
+
+_______________________________________________________________________________________________________________________________________
+                                            📌 Key Directives in `server {}`
+
+Inside the `server` block, you can define multiple directives, such as:  
+
+1. `listen`                     – Specifies the port Nginx should listen on.  
+2. `server_name`                – Defines the domain or subdomain the server should respond to.  
+3. `location`                   – Defines request handling rules.  
+4. `root`                       – Specifies the root directory for serving files.  
+5. `index`                      – Defines the default file to serve (e.g., `index.html`).  
+6. `error_page`                 – Custom error pages for HTTP errors.  
+7. `access_log` / `error_log`   – Defines log file locations.  
+8. `proxy_pass`                 – For reverse proxying requests to backend servers.  
+9. `return` / `rewrite`         – Redirects or modifies requests.  
+10. `ssl_certificate` / `ssl_certificate_key` – Defines SSL/TLS settings.  
+
+_______________________________________________________________________________________________________________________________________
+                                            🔹 Basic `server {}` Block Example
+
+````````````````````````````````````````````````````````````````````nginx
+server {
+    listen 80;  # Listen on port 80 (HTTP)
+    server_name example.com www.example.com;  # Domain name
+
+    root /var/www/html;  # Root directory
+    index index.html index.htm;  # Default index files
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+````````````````````````````````````````````````````````````````````
+✅ This serves files from `/var/www/html` when users access `example.com`.
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 1️⃣ `listen` Directive (Port & IP)
+- Defines which port Nginx listens on.  
+- Can listen on specific IP addresses or all (`0.0.0.0`).  
+````````````````````````````````````````````````````````````````````nginx
+server {
+    listen 80;          # HTTP on all IPs
+    listen 443 ssl;     # HTTPS with SSL/TLS
+    listen [::]:80;     # IPv6 support
+}
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 2️⃣ `server_name` Directive (Domain Name)
+- Specifies which domains or subdomains this block should handle.  
+- Supports wildcards (`*.example.com`) for subdomains.  
+````````````````````````````````````````````````````````````````````nginx
+server {
+    server_name example.com www.example.com api.example.com;
+}
+````````````````````````````````````````````````````````````````````
+✅ Requests to example.com or www.example.com are handled here.
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 3️⃣ `location` Block (Request Handling)
+Defines rules for different request paths (`/`, `/api`, `/static`).  
+````````````````````````````````````````````````````````````````````nginx
+server {
+    location / {
+        root /var/www/html;
+        index index.html;
+    }
+
+    location /images/ {
+        root /var/www/media;
+    }
+}
+````````````````````````````````````````````````````````````````````
+✅ Requests to `/images/photo.jpg` are served from `/var/www/media/images/photo.jpg`.
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 4️⃣ `root` and `index` Directives (Static Files)
+Defines where to find website files.  
+````````````````````````````````````````````````````````````````````nginx
+server {
+    root /var/www/mywebsite;
+    index index.html index.htm;
+}
+````````````````````````````````````````````````````````````````````
+✅ Requests to `/` will load `/var/www/mywebsite/index.html`.
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 5️⃣ `error_page` (Custom Error Pages)
+Custom pages for 404, 500, 502 errors.  
+````````````````````````````````````````````````````````````````````nginx
+server {
+    error_page 404 /custom_404.html;
+    location = /custom_404.html {
+        root /var/www/errors;
+    }
+}
+````````````````````````````````````````````````````````````````````
+✅ A missing page will show `/var/www/errors/custom_404.html` instead of the default Nginx 404.
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 6️⃣ `access_log` and `error_log` (Logging)
+Defines where logs are saved.  
+````````````````````````````````````````````````````````````````````nginx
+server {
+    access_log /var/log/nginx/access.log;
+    error_log  /var/log/nginx/error.log warn;
+}
+````````````````````````````````````````````````````````````````````
+✅ Access logs are stored in `/var/log/nginx/access.log`.
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 7️⃣ `proxy_pass` (Reverse Proxy)
+Forwards requests to a backend server (e.g., Node.js, PHP, Python).  
+````````````````````````````````````````````````````````````````````nginx
+server {
+    location /api/ {
+        proxy_pass http://127.0.0.1:3000;  # Forward requests to Node.js app
+    }
+}
+````````````````````````````````````````````````````````````````````
+✅ Requests to `/api/` are forwarded to localhost:3000.
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 8️⃣ `return` and `rewrite` (Redirection & URL Rewriting)
+ 🔹 Redirecting URLs
+````````````````````````````````````````````````````````````````````nginx
+server {
+    return 301 https://example.com$request_uri;  # Redirect to HTTPS
+}
+````````````````````````````````````````````````````````````````````
+✅ Redirects all HTTP traffic to HTTPS.
+
+ 🔹 Rewriting URLs
+````````````````````````````````````````````````````````````````````nginx
+server {
+    location /old-page {
+        rewrite ^/old-page$ /new-page permanent;
+    }
+}
+````````````````````````````````````````````````````````````````````
+✅ Requests to `/old-page` are redirected to `/new-page`.
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 9️⃣ `ssl_certificate` and `ssl_certificate_key` (HTTPS)
+Enables SSL/TLS encryption for HTTPS.  
+````````````````````````````````````````````````````````````````````nginx
+server {
+    listen 443 ssl;
+    server_name example.com;
+
+    ssl_certificate /etc/nginx/ssl/example.com.crt;
+    ssl_certificate_key /etc/nginx/ssl/example.com.key;
+}
+````````````````````````````````````````````````````````````````````
+✅ Enables HTTPS for `example.com`.
+
+_______________________________________________________________________________________________________________________________________
+                                        📌 Complete Example: Advanced `server {}` Block
+
+````````````````````````````````````````````````````````````````````nginx
+server {
+    listen 80;
+    server_name example.com www.example.com;
+
+    root /var/www/html;
+    index index.html index.php;
+
+    access_log /var/log/nginx/example_access.log;
+    error_log /var/log/nginx/example_error.log warn;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/run/php/php8.0-fpm.sock;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+
+    error_page 404 /custom_404.html;
+    location = /custom_404.html {
+        root /var/www/errors;
+    }
+
+    listen 443 ssl;
+    ssl_certificate /etc/nginx/ssl/example.com.crt;
+    ssl_certificate_key /etc/nginx/ssl/example.com.key;
+}
+````````````````````````````````````````````````````````````````````
+✅ Handles static files, PHP requests, reverse proxy, logging, and HTTPS.
+
+_______________________________________________________________________________________________________________________________________

@@ -1,0 +1,197 @@
+____________________________________________________________________________________________________________________________________________________________
+                                                      Positional Parameters 
+                                                      =====================
+
+Positional parameters are special variables in a shell script used to pass and manage command-line arguments. 
+These are essential for creating dynamic scripts that can handle different inputs.
+
+________________________________________________________________________________________________________________________________
+                                                     Key Positional Parameters
+                                                     =========================
+ ____________________________________________________________________________________________________________________________
+|   Parameter   |                                      Description                                                           |
+|_______________|____________________________________________________________________________________________________________|
+| `$0`          | The name of the script or shell.                                                                           |
+| `$1, $2, ...` | Arguments passed to the script or function, starting from the first argument.                              |
+| `$#`          | The number of arguments passed to the script or function.                                                  |
+| `$@`          | All the arguments passed to the script or function, treated as separate quoted strings.                    |
+| `$*`          | All the arguments passed to the script or function, treated as a single string (subject to word splitting).|
+|_______________|____________________________________________________________________________________________________________|
+
+________________________________________________________________________________________________________________________________
+                                                     Detailed Descriptions
+                                                     =====================
+
+1. `$0`
+
+- Contains the name of the script or the shell.
+- Example:
+        ``````````````````````````````````````````bash
+        #!/bin/bash
+        echo "Script name: $0"
+        ``````````````````````````````````````````
+  Output:
+        ``````````````````````````````````````````
+        Script name: ./myscript.sh
+        ``````````````````````````````````````````
+
+2. `$1`, `$2`, ...
+
+- Refer to the individual arguments passed to the script.
+- Example:
+      ``````````````````````````````````````````bash
+      #!/bin/bash
+      echo "First argument: $1"
+      echo "Second argument: $2"
+      ``````````````````````````````````````````
+  Command: `./myscript.sh arg1 arg2`
+  Output:
+      ``````````````````````````````````````````
+      First argument: arg1
+      Second argument: arg2
+      ``````````````````````````````````````````
+
+3. `$#`
+
+- Returns the count of arguments passed.
+- Example:
+      ``````````````````````````````````````````bash
+      #!/bin/bash
+      echo "Number of arguments: $#"
+      ``````````````````````````````````````````
+  Command: `./myscript.sh arg1 arg2 arg3`
+  Output:
+      ``````````````````````````````````````````
+      Number of arguments: 3
+      ``````````````````````````````````````````
+
+4. `$@`
+
+- Expands to all arguments as separate quoted strings.
+- Example:
+      ``````````````````````````````````````````bash
+      #!/bin/bash
+      echo "All arguments: $@"
+      ``````````````````````````````````````````
+  Command: `./myscript.sh "arg 1" "arg 2"`
+  Output:
+      ``````````````````````````````````````````
+      All arguments: arg 1 arg 2
+      ``````````````````````````````````````````
+
+5. `$*`
+
+- Expands to all arguments as a single string (subject to word splitting).
+- Example:
+      ``````````````````````````````````````````bash
+      #!/bin/bash
+      echo "All arguments as a single string: $*"
+      ``````````````````````````````````````````
+  Command: `./myscript.sh "arg 1" "arg 2"`
+  Output:
+      ``````````````````````````````````````````
+      All arguments as a single string: arg 1 arg 2
+      ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                     Comparison: `$@` vs. `$*`
+ ___________________________________________________________________________________________________________________________________________________________
+|           Aspect      |                     $@                                                       |                  $*                                 |
+|_______________________|______________________________________________________________________________|____________________________________________________|
+| Behavior              | Treats each argument as a separate string.                                   | Combines all arguments into a single string.       |
+| Use Case              | Useful for passing arguments to other commands or scripts without splitting. | Less common, used for single-string concatenation. |
+| Example Script Output | `$@` outputs: `arg1 arg2`.                                                   | `$*` outputs: `arg1 arg2`.                          |
+|_______________________|______________________________________________________________________________|____________________________________________________|
+
+________________________________________________________________________________________________________________________________
+                                                     Examples
+                                                     ========
+
+1. Passing Arguments
+Script (`args_example.sh`):
+      ``````````````````````````````````````````bash
+      #!/bin/bash
+      echo "Script name: $0"
+      echo "First argument: $1"
+      echo "Second argument: $2"
+      echo "All arguments: $@"
+      echo "Number of arguments: $#"
+      ``````````````````````````````````````````
+
+Command:  
+      ``````````````````````````````````````````bash
+      ./args_example.sh "Linux" "Shell Scripting"
+      ``````````````````````````````````````````
+
+Output:
+      ``````````````````````````````````````````
+      Script name: ./args_example.sh
+      First argument: Linux
+      Second argument: Shell Scripting
+      All arguments: Linux Shell Scripting
+      Number of arguments: 2
+      ``````````````````````````````````````````
+
+2. Iterating Through Arguments
+Script (`loop_example.sh`):
+      ``````````````````````````````````````````bash
+      #!/bin/bash
+      echo "Iterating through arguments:"
+      for arg in "$@"; do
+          echo "$arg"
+      done
+      ``````````````````````````````````````````
+
+Command:
+      ``````````````````````````````````````````bash
+      ./loop_example.sh arg1 arg2 arg3
+      ``````````````````````````````````````````
+
+Output:
+      ``````````````````````````````````````````
+      Iterating through arguments:
+      arg1
+      arg2
+      arg3
+      ``````````````````````````````````````````
+
+3. Handling No Arguments
+Script (`check_args.sh`):
+      ``````````````````````````````````````````bash
+      #!/bin/bash
+      if [ $# -eq 0 ]; then
+          echo "No arguments provided!"
+      else
+          echo "Arguments received: $@"
+      fi
+      ``````````````````````````````````````````
+
+Command 1 (no arguments):
+      ``````````````````````````````````````````bash
+      ./check_args.sh
+      ``````````````````````````````````````````
+Output:
+      ``````````````````````````````````````````
+      No arguments provided!
+      ``````````````````````````````````````````
+
+Command 2 (with arguments):
+      ``````````````````````````````````````````bash
+      ./check_args.sh arg1 arg2
+      ``````````````````````````````````````````
+Output:
+      ``````````````````````````````````````````
+      Arguments received: arg1 arg2
+      ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                     Best Practices
+                                                     ==============
+1. Quote `$@` and `$*`:  
+                            - Always use double quotes (`"$@"` and `"$*"`) to handle arguments with spaces correctly.
+2. Use `$@` for Iteration:  
+                            - Prefer `$@` over `$` in scripts to handle arguments as individual items.
+3. Check Argument Count:  
+                            - Use `$#` to validate the required number of arguments.
+
+________________________________________________________________________________________________________________________________

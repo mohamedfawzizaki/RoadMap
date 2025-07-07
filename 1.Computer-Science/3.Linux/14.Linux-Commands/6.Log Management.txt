@@ -1,0 +1,36 @@
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                                     Log     Management 
+                                                     ==================
+
+
+ ____________________________________________________________________________________________________________________________________________________________________
+|       Option         |               Example                       |                          Description                                                          |
+|______________________|_____________________________________________|_______________________________________________________________________________________________|
+| -b [ID|offset]       |    journalctl -b                            | Show logs from the current boot. Use -b -1 for the previous boot or -b 2 for two boots ago.   |
+| -k                   |    journalctl -k                            | Display only kernel messages (equivalent to dmesg).                                           |
+| -p <PRIORITY>        |    journalctl -p err                        | Show logs with priority level or lower (e.g., emerg, alert, err, etc.).                       |
+| -u <UNIT>            |    journalctl -u sshd.service               | Display logs for a specific systemd unit, such as nginx.service or sshd.service.              |
+| --since <TIME>       |    journalctl --since "2025-01-01 12:00:00" | Show logs since a specific time. Accepts human-readable strings like yesterday or -1h.        |
+| --until <TIME>       |    journalctl --until "2025-01-01 18:00:00" | Show logs up to a specific time.                                                              |
+| -f                   |    journalctl -f                            | Follow logs in real-time, similar to tail -f.                                                 |
+| -n <NUMBER>          |    journalctl -n 50                         | Show the last <NUMBER> lines of logs (default is 10).                                         |
+| -o <OUTPUT-FORMAT>   |    journalctl -o json                       | Specify output format (e.g., short, json, verbose, etc.).                                     |
+| --grep <PATTERN>     |    journalctl --grep "error"                | Filter logs by a specific keyword or pattern (case-insensitive).                              |
+| --list-boots         |    journalctl --list-boots                  | List all recorded boots with their boot IDs and timestamps.                                   |
+| --disk-usage         |    journalctl --disk-usage                  | Display the total disk space used by journal logs.                                            |
+| --vacuum-size=<SIZE> |    journalctl --vacuum-size=1G              | Reduce journal size to below the specified limit (e.g., 1G, 500M).                            |
+| --vacuum-time=<TIME> |    journalctl --vacuum-time=1month          | Remove journal logs older than the specified time (e.g., 1month, 1week).                      |
+| -x                   |    journalctl -x                            | Show explanations for log messages when available.                                            |
+| --no-pager           |    journalctl --no-pager                    | Display logs without paging, outputting directly to the terminal.                             |
+| --reverse            |    journalctl --reverse                     | Show logs in reverse chronological order.                                                     |
+| --no-hostname        |    journalctl --no-hostname                 | Suppress the hostname in log output.                                                          |
+| --priority           |    journalctl --priority=warning            | Show logs matching a specific priority level.                                                 |
+| -r                   |    journalctl -r                            | Reverse the order of log entries (latest first).                                              |
+| --user               |    journalctl --user -u gnome-session       | Display user-specific logs.                                                                   |
+| --since today        |    journalctl --since today                 | Show logs from the start of the current day.                                                  |
+| --catalog            |    journalctl --catalog                     | Include message catalog entries in the log output for additional explanations.                |
+|______________________|_____________________________________________|_______________________________________________________________________________________________|
+
+
+
+#_________________________________________________________________________________________________________________________________________________________________________# 

@@ -1,0 +1,27 @@
+_______________________________________________________________________________________________________________________________________
+                                                    Computer Networks
+                                    https://en.wikipedia.org/wiki/Computer_network#                
+                                ===========================================================
+Definition:
+    -> It is a collection of interconnected devices (computers, servers, routers, switches, etc.) 
+       that communicate with each other to share resources, data, and applications.
+    -> Networks are the backbone of modern communication, enabling everything from 
+       email and file sharing to video conferencing and internet access.
+    -> Why Networks Are Essential:
+            - Resource Sharing:  Centralized storage (e.g., servers), printers, and internet access.
+            - Communication   :  Email, messaging, video conferencing.
+            - Data Sharing    :  Collaboration through file transfers and shared drives.
+            - Scalability     :  Growing or modifying systems to meet user needs.   
+
+Network Components
+Network Topologies
+Network Types
+Network Addresses
+Network Models
+Network Protocols
+Network Security
+Network Virtualization
+
+Network Commands
+
+_______________________________________________________________________________________________________________________________________

@@ -1,0 +1,119 @@
+_______________________________________________________________________________________________________________________________________
+                                            📌 `geo` Block Directives in Nginx 🌍  
+
+The `geo` block in Nginx is used to map client IP addresses (or ranges) to custom variables. 
+This is useful for geo-based access control, redirections, logging, and load balancing.
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 1️⃣ Basic Syntax of `geo` Block
+````````````````````````````````````````````````````````````````````nginx
+geo $country_code {
+    default         "US";
+    192.168.1.0/24  "IN";
+    203.0.113.0/24  "UK";
+}
+````````````````````````````````````````````````````````````````````
+✅ This example sets:
+- The default value of `$country_code` to `"US"`.
+- Clients from `192.168.1.0/24` get `"IN"`.
+- Clients from `203.0.113.0/24` get `"UK"`.
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 2️⃣ Using `geo` for Conditional Blocking
+You can block traffic from specific regions.
+````````````````````````````````````````````````````````````````````nginx
+geo $block_country {
+    default          0;
+    192.168.1.0/24   1;
+    203.0.113.0/24   1;
+}
+
+server {
+    location / {
+        if ($block_country = 1) {
+            return 403;
+        }
+    }
+}
+````````````````````````````````````````````````````````````````````
+✅ This blocks access to users from `192.168.1.0/24` and `203.0.113.0/24`.
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 3️⃣ Geo-Based Redirection
+Redirect users based on their country code.
+````````````````````````````````````````````````````````````````````nginx
+geo $redirect_url {
+    default         "https://global.example.com";
+    192.168.1.0/24  "https://in.example.com";
+    203.0.113.0/24  "https://uk.example.com";
+}
+
+server {
+    location / {
+        return 302 $redirect_url;
+    }
+}
+````````````````````````````````````````````````````````````````````
+✅ This redirects users to different websites based on IP.
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 4️⃣ Geo-Based Load Balancing
+Distribute traffic to different backend servers based on user location.
+````````````````````````````````````````````````````````````````````nginx
+geo $backend {
+    default         "server1";
+    192.168.1.0/24  "server2";
+    203.0.113.0/24  "server3";
+}
+
+upstream my_backend {
+    server backend1.example.com;
+    server backend2.example.com;
+}
+
+server {
+    location / {
+        proxy_pass http://$backend;
+    }
+}
+````````````````````````````````````````````````````````````````````
+✅ Users from different regions are routed to different servers.
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 5️⃣ Advanced Geo-IP Lookup (Using `geoip` Module)
+Nginx supports MaxMind GeoIP databases to map IPs to countries dynamically.
+
+ 🔸 Enable GeoIP Module
+````````````````````````````````````````````````````````````````````nginx
+http {
+    geoip_country /etc/nginx/geoip/GeoIP.dat;
+    geoip_city /etc/nginx/geoip/GeoLiteCity.dat;
+}
+````````````````````````````````````````````````````````````````````
+
+ 🔸 Use GeoIP Data in a Server Block
+````````````````````````````````````````````````````````````````````nginx
+server {
+    location / {
+        if ($geoip_country_code = "IN") {
+            return 403;  # Block users from India
+        }
+    }
+}
+````````````````````````````````````````````````````````````````````
+✅ This blocks all traffic from India (`IN`).
+
+_______________________________________________________________________________________________________________________________________
+                                            📌 Summary of `geo` Directives
+
+|       Directive       | Description 
+| `geo $variable {}`    | Defines a mapping of IP ranges to variables. 
+| `default`             | Specifies a default value if no match is found. 
+| `IP Range`            | Assigns a value to specific IP addresses or subnets. 
+
+_______________________________________________________________________________________________________________________________________

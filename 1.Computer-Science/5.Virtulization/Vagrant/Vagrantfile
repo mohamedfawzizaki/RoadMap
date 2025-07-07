@@ -1,0 +1,453 @@
+Vagrant.require_version ">= 2.3.0", "< 3.0.0"
+
+cpus = ENV.fetch("VM_CPUS", "1").to_i
+box_name = "ubuntu/bionic64"
+nodes = [
+    { name: "app1", ip: "192.168.56.11" },
+    { name: "app2", ip: "192.168.56.12" }
+]
+vm_name = node[:name]
+vm_ip = node[:ip]
+
+Vagrant.configure("2") do |config|
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # PROVIDER
+    config.vm.provider "virtualbox" do |vb|
+        # Linked Clones
+        # By default, Vagrant imports the base box every time a new VM is created, which is slow and space-consuming.
+        # You can enable linked clones to optimize this:
+        vb.linked_clone = true
+        #----------------------------------------------------------------
+        # Display the VirtualBox GUI when booting the machine
+        vb.gui = true
+        #----------------------------------------------------------------
+        # Naming the Virtual Machine
+        # Vagrant automatically assigns a VM name based on the directory name and a timestamp. 
+        # You can override this with a custom name:
+        vb.name = "my_vm"
+        #----------------------------------------------------------------
+        # Customize the amount of memory on the VM:
+        vb.memory = "2048"
+        # remains_running = false
+        #----------------------------------------------------------------
+        # By default Vagrant will not set the NIC type for network interfaces. 
+        # This allows VirtualBox to apply the default NIC type for the guest. 
+        # If you would like to use a specific NIC type by default for guests, set the default_nic_type option:
+        vb.default_nic_type = "82543GC" # Intel PRO/1000 MT Desktop (most common)
+        #----------------------------------------------------------------
+        # Checking for Guest Additions
+        # By default Vagrant will check for the VirtualBox Guest Additions when starting a machine, 
+        # and will output a warning if the guest additions are missing or out-of-date. 
+        # You can skip the guest additions check by setting the check_guest_additions option:
+        vb.check_guest_additions = false
+        #----------------------------------------------------------------
+        # Customize the number of CPUs and the Memory on the VM:
+        vb.cpus = cpus
+        vb.memory = 1024
+        #----------------------------------------------------------------
+        # VBoxManage Customizations
+        # VBoxManage is a utility that can be used to make modifications to VirtualBox virtual machines from the command line.
+        # Vagrant exposes a way to call any command against VBoxManage just prior to booting the machine:
+        v.customize ["modifyvm", :id, "--cpuexecutioncap", "50"]
+        #----------------------------------------------------------------
+        # Customize the boot order of the VM:
+        # The boot order is the order in which VirtualBox will attempt to boot the VM.
+        # The order is as follows: floppy, optical, hard disk, network (PXE),
+        # and then the floppy again. You can change the order by setting the boot_order option:
+        vb.boot_order = ["d", "n"]
+    end
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    config.vm.provider "docker" do |d|
+        #----------------------------------------------------------------
+        # Customize the Docker image to use
+        # The default Docker image is ubuntu:14.04. You can change this by setting th
+        # e image option:
+        d.image = "ubuntu:14.04"
+        #----------------------------------------------------------------
+        # pull (bool) - If true, the image will be pulled on every up and reload. Defaults to false.
+        d.pull = true
+        #----------------------------------------------------------------
+        # local Dockerfile:
+        # Vagrant can also automatically build and run images based on a local Dockerfile. 
+        # This is useful for iterating on an application locally that is built into an image later. 
+        # An example is shown below: 'path' where the Dockerfile exists:
+        d.build_dir = "./my_app"
+        #----------------------------------------------------------------
+        # The URL of a git repository to build the image from, that contains a Dockerfile:
+        d.git_repo = "https://github.com/user/app.git"
+        #----------------------------------------------------------------
+        # Extra arguments to pass to docker build when build_dir is in use.
+        d.build_args = ["--no-cache", "--build-arg", "APP_ENV=production"]
+        # Custom command to run on the container. Example: ["command", "arg"].
+        d.cmd = ["npm", "run", "dev"]
+        d.cmd = ["ls", "-a", "/app"]
+        #----------------------------------------------------------------
+        # Compose : if true, Vagrant will use docker-compose to manage the lifecycle and configuration of containers. 
+        # This defaults to false.
+        d.compose = true
+        #----------------------------------------------------------------
+        # compose_configuration:
+        # Configuration values used for populating the docker-compose.yml file. 
+        # The value of this Hash is directly merged and written to the docker-compose.yml 
+        # file allowing customization of non-services items like networks and volumes.
+        d.compose_configuration = {
+            "networks" => {
+                "custom_net" => { "driver" => "bridge" }
+            }
+        }
+        #----------------------------------------------------------------
+        # create_args (array of strings) - Additional arguments to pass to docker run when the container is started. 
+        # This can be used to set parameters that are not exposed via the Vagrantfile.
+        d.create_args = ["--name", "my_container", "--rm"]
+        #----------------------------------------------------------------
+        # dockerfile (string) - Name of the Dockerfile in the build directory. This defaults to "Dockerfile"
+        d.dockerfile = "Dockerfile"
+        #----------------------------------------------------------------
+        # env (hash) - Environmental variables to expose into the container.
+        d.env = {
+            "RACK_ENV" =>"production",
+            "RAILS_ENV" =>"production",
+        }
+        #----------------------------------------------------------------
+        # expose (array of integers) - Ports to expose from the container but not to the host machine. Useful for links.
+        d.expose = [3000]
+        #----------------------------------------------------------------
+        # link (method, string argument) - Link this container to another by name. 
+        # The argument should be in the format of (name:alias). 
+        # Example: docker.link("db:database"). Note, if you are linking to another container in the same Vagrantfile, 
+        # make sure you call vagrant up with the --no-parallel flag.
+        d.link = "db:database"
+        #----------------------------------------------------------------
+        # has_ssh (boolean) - If true, then Vagrant will support SSH with the container. 
+        # This allows vagrant ssh to work, provisioners, etc. This defaults to false.
+        d.has_ssh = true
+        #----------------------------------------------------------------
+        # host_vm_build_dir_options (hash) - Synced folder options for the build_dir, 
+        # since the build directory is synced using a synced folder if a host VM is in use.
+        d.host_vm_build_dir_options = {
+            mount_options: ["ro"]
+        }
+        #----------------------------------------------------------------
+        # name (string) - Name of the container. 
+        # Note that this has to be unique across all containers on the host VM. 
+        # By default Vagrant will generate some random name.
+        d.name = "my_container"
+        #----------------------------------------------------------------
+        # ports (array of strings) - Ports to expose from the container to the host. 
+        # These should be in the format of host:container.
+        d.ports = ["8080:80", "443:443"]
+        #----------------------------------------------------------------
+        # volumes (array of strings) - List of directories to mount as volumes into the container. 
+        # These directories must exist in the host where Docker is running. 
+        # If you want to sync folders from the host Vagrant is running, just use synced folders.
+        d.volumes = ["/var/log:/log", "/data:/app/data"]
+        #----------------------------------------------------------------
+        # remains_running (boolean) 
+        # If true, Vagrant expects this container to remain running and will make sure 
+        # that it does for a certain amount of time. 
+        # If false, then Vagrant expects that this container will automatically stop at some point,
+        # and will not error if it sees it do that.
+        d.remains_running = true
+        #----------------------------------------------------------------
+        # stop_timeout (integer) - The amount of time to wait when stopping a container before sending a SIGTERM to the process.
+        d.stop_timeout = 30
+        #----------------------------------------------------------------
+        # Customize the Docker command to use
+        # The default Docker command is `docker run`. You can change this by setting the command option
+        # The command is used to start the Docker container. You can use any valid Docker command her
+        # e, such as `docker run -it` to start the container in interactive mode:
+        d.command = "docker run -it --rm ubuntu:14.04 /bin/bash"
+        #----------------------------------------------------------------
+        # Customize the Docker network to use
+        # The default Docker network is the default bridge network. You can change this by setting the network
+        # option:
+        d.network = "default"
+        #----------------------------------------------------------------
+        # Customize the Docker port mappings
+        # The default port mappings are 22 (SSH) and 80 (HTTP). You can
+        # change these by setting the port_forward option:
+        d.port_forward = [22, 80]
+        #----------------------------------------------------------------
+        # Below, we have settings related to auth. 
+        # If these are set, then Vagrant will docker login prior to starting containers,
+        # allowing you to pull images from private repositories.
+        # email (string) - Email address for logging in.
+        # username (string) - Username for logging in.
+        # password (string) - Password for logging in.
+        # auth_server (string) - The server to use for authentication. If not set, the Docker Hub will be used.
+        d.username = "myuser"
+        d.email = "user@example.com"
+        d.password = "mypassword"
+        d.auth_server = "https://myregistry.io"
+        #----------------------------------------------------------------
+    end
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # Specifies which base box to use when provisioning the virtual machine. 
+    # Value: Can be a box installed locally. Or a shorthand reference from Vagrant Cloud, e.g., "ubuntu/bionic64".
+    config.vm.box = box_name
+    # Provides a direct URL (or list of URLs) to download the box if it’s not found locally or on Vagrant Cloud. 
+    # Use cases: Using custom boxes not published to Vagrant Cloud. Hosting boxes internally or using local .box files.
+    config.vm.box_url = [
+        "https://example.com/vagrant/boxes/centos.box",
+        "file:///Users/me/boxes/centos.box"
+    ]
+    #  Specifies version constraints for the box.
+    config.vm.box_version = ">= 18.04, < 20.04"
+    # Specifies the CPU architecture for the box to match host or target needs. 
+    # Supported values: "i386", "amd64", "arm", "arm64", "mips", "s390x" :auto (default) — automatically detect host architecture nil — use box’s default architecture
+    config.vm.box_architecture = :auto
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # Discs
+    # define and attach additional virtual disks to a guest machine. 
+    # This is useful for simulating real-world storage scenarios, testing disk I/O, adding swap space, or isolating data.
+    # ''disk_ext''  (string) - Optional argument that defines what kind of file extension a disk should have. Defaults to "vdi" if unspecified. For a list of supported disk extensions, please check the specific provider being used. Not used for type :dvd.
+    # ''file''      (string) - For type :dvd, this is a required argument that should point to an .iso file on the host machine. For type :disk, this is an optional argument that can point to the location of a disk file that already exists.
+    # ''name''      (string) - Required option to give the disk a name. This name will also be used as the filename when creating a virtual hard disk.
+    # ''primary''   (boolean)- Optional argument that configures a given disk to be the "primary" disk to manage on the guest. There can only be one primary disk per guest, and it must be of type :disk. Defaults to false if not specified.
+    # ''size''      (String) - The size of the disk to create. For example, "10GB". Not used for type :dvd.
+    # 'provider_config' (hash) - Additional provider specific options for managing a given disk. Please refer to the provider specific documentation to see any available provider_config options.
+                            # Generally, the disk option accepts two kinds of ways to define a provider config:
+                            # providername__diskoption: value
+                                # The provider name followed by a double underscore, and then the provider specific option for that disk
+                                # {providername: {diskoption: value}, otherprovidername: {diskoption: value}
+                                # A hash where the top level key(s) are one or more providers, and each provider keys values are a hash of options and their values.
+    # Expand primary disk to 100GB, primary: true targets the main boot disk, Only works for expansion (VirtualBox doesn't support shrinking)
+    # Changes take effect on vagrant reload
+    config.vm.disk :disk, size: "100GB", primary: true
+    # Basic secondary disk
+    config.vm.disk :disk, name: "database", size: "50GB"
+    # Primary boot disk (only one allowed)
+    config.vm.disk :disk, name: "main", size: "100GB", primary: true
+    # Using existing disk file
+    config.vm.disk :disk, name: "storage", file: "./existing_disk.vdi"
+    # Mounting an ISO
+    config.vm.disk :dvd, name: "ubuntu_iso", file: "./ubuntu-22.04.iso"
+    # For providers that support empty drives
+    config.vm.disk :dvd, name: "empty_cdrom"
+    # provider_config for vendor-specific options:
+    config.vm.disk :disk,
+    name: "virtualbox_disk",
+    size: "30GB",
+    provider_config: {
+        virtualbox__controller: "SATA Controller",
+        virtualbox__port: 1
+    }
+    config.vm.disk :disk,
+    name: "multi_disk",
+    provider_config: {
+        virtualbox: { controller: "SCSI" },
+        libvirt: { bus: "virtio" }
+    }
+
+
+    # to mount a folder to a disk: 'in the provision section'
+    #   mkfs.ext4 /dev/sdb
+    #   mkdir -p /mnt/app_data
+    #   echo "/dev/sdb /mnt/app_data ext4 defaults 0 0" >> /etc/fstab
+    #   mount -a
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # Controls whether Vagrant checks for box updates on every vagrant up. 
+    # Default: true, Set to false if You want faster vagrant up and don’t need update checks. 
+    # You’re using version-pinned or internal boxes.
+    config.vm.box_check_update = false  
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # Specifies the algorithm used for the checksum Supported values: "md5", "sha1", "sha256", "sha384", "sha512"
+    config.vm.box_download_checksum_type = "sha256"
+    # Verifies the downloaded box's integrity using a checksum Must be used with: config.vm.box_download_checksum_type
+    config.vm.box_download_checksum = "af5f1c3d8..."
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # Path to a directory of CA certificates.
+    config.vm.box_download_ca_path = "/etc/ssl/custom-certs/"
+    # Path to a client certificate (typically .pem) used to authenticate when downloading a box.
+    # Use case: Private servers or enterprise deployments requiring client TLS authentication.
+    config.vm.box_download_client_cert = "/path/to/client.crt"
+    # Path to a custom CA certificate bundle for verifying the server’s SSL certificate.
+    config.vm.box_download_ca_cert = "/path/to/custom-ca.pem"
+    # Windows-only Purpose: Enforce strict SSL revocation checking. 
+    # Default: false — best-effort; will not block on revocation check failures. Set to true if: You need strict SSL cert validation.
+    config.vm.box_download_disable_ssl_revoke_best_effort = true
+    # Passes extra options to the downloader (curl).
+    config.vm.box_download_options = { key: "/path/to/key.pem" }
+    #  If true, disables SSL certificate verification. Default: false, Use only for testing, as it introduces security risks.
+    config.vm.box_download_insecure = true
+    # Controls whether HTTP redirects inherit the original credentials. 
+    # Default: false (secure; credentials not reused on redirect) 
+    # Set to true if: You're using authenticated mirrors that redirect internally.
+    config.vm.box_download_location_trusted = true
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # Specifies the protocol Vagrant uses to communicate with the guest machine.
+    # Default: "ssh" (suitable for Linux/Unix-based guests), config.vm.communicator = "winrm"  # For Windows guests
+    config.vm.communicator = "ssh"    # For Linux/Unix
+    # Declares the type of guest OS inside the VM. 
+    # Default: :linux — Vagrant will attempt to auto-detect Common values: :linux (default) :windows :bsd 
+    # Set this explicitly if: Auto-detection fails or causes issues (especially with shared folders or networking). 
+    # You're provisioning for Windows and need correct guest-specific behaviors.
+    config.vm.guest = :linux
+    # Sets the hostname inside the guest machine. If left unset (nil), Vagrant won’t modify the hostname. 
+    # If set, Vagrant will: Configure the guest machine’s hostname. Optionally update /etc/hosts in the guest (not on the host).
+    # A hostname may be defined for a Vagrant VM using the config.vm.hostname setting. 
+    # By default, this will modify /etc/hosts, adding the hostname on a loopback interface that is not in use.
+    # will add the entry 127.0.X.1 myhost myhost.local to /etc/hosts.
+    config.vm.hostname = "my-dev-machine"
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # ⚠️ If disabled 'false', synced folders (especially rsync or nfs) won't be mounted automatically after a reboot.
+    config.vm.allow_fstab_modification = true
+    # ⚠️if is false, features like config.vm.hostname may not work as expected without manual entries in /etc/hosts.
+    config.vm.allow_hosts_modification = true
+    # Limits the synced folder types Vagrant will consider when choosing the best plugin (e.g., "nfs", "rsync", "virtualbox", "smb").
+    config.vm.allowed_synced_folder_types = ["rsync", "nfs", "virtualbox"]
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # Network
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # Sets a custom MAC address for the default NAT interface of the guest VM. 
+    # ⚠️ Must be a valid MAC format (e.g., "080027D14A66" or "08:00:27:d1:4a:66").
+    config.vm.base_mac = "080027D14A66"
+    # Assigns a specific IP address to the default NAT interface inside the guest VM. 
+    # This option is rarely needed unless you’re customizing NAT behavior at a low level.
+    config.vm.base_address = "10.0.2.15"
+    # Defines the range of ports Vagrant can use on the host machine to handle port forwarding when default ports (like 22 for SSH) are in use or collide.
+    config.vm.usable_port_range = 3000..3100
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # forwarded_port:
+    # 'guest_ip'     (string) - The guest IP to bind the forwarded port to. If this is not set, the port will go to every IP interface. By default, this is empty.
+    # 'guest'        (int)    - The port on the guest that you want to be exposed on the host. This can be any port.
+    # 'host_ip'      (string) - The IP on the host you want to bind the forwarded port to. If not specified, it will be bound to every IP. By default, this is empty.
+    # 'host'         (int)    - The port on the host that you want to use to access the port on the guest. This must be greater than port 1024 unless Vagrant is running as root (which is not recommended).
+    # 'protocol'     (string) - Either "udp" or "tcp". This specifies the protocol that will be allowed through the forwarded port. By default this is "tcp".
+    # 'id'           (string) - Name of the rule (can be visible in VirtualBox). By default this is "protocol""guest" (example : "tcp123").
+    # 'auto_correct' (boolean)- If true, the host port will be changed automatically in case it collides with a port already in use. By default, this is false.
+    config.vm.network "forwarded_port", guest: 80, host: 8080, protocol: "tcp", auto_correct: true, id: "nginx"
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # private_network 'host-only networks'
+    # 'ip'           (string) - The IP address to assign to the guest
+    # 'netmask'      (string) - The netmask to use for the network.
+    # 'gateway'      (string) - The gateway IP address for the guest.
+    # 'type'         (string) - Sets the VirtualBox adapter type (e.g., static, dhcp)   
+    # 'name'         (string) - Optional – defines a specific network interface name ("vboxnet3")
+    # virtualbox__intnet      - Used to configure internal networking in VirtualBox (similar to isolated network, no host access)
+    config.vm.network "private_network", 
+        ip: "192.168.56.10",
+        netmask: "255.255.255.0",
+        gateway: "192.168.56.1",
+        name: "vboxnet0"
+        type: "static"
+        virtualbox__intnet: "internal_lan"
+        # 🛑 Note: VMs connected to virtualbox__intnet can only talk to each other, not the host or Internet.
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # public_network
+    config.vm.network "public_network", ip: "192.168.0.2"
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # Sync Folders:
+    # It create a shared directory between your host machine (your physical computer) and the guest machine (the virtual machine). 
+    # When you run vagrant up for the first time:
+    # -> Vagrant automatically shares the directory containing your Vagrantfile
+    # -> This directory is mounted inside the VM at /vagrant
+    # -> The sharing is bidirectional - changes on either side are reflected on the other
+    # 'create'        (boolean) - If true, the host path will be created if it does not exist. Defaults to false.
+    # 'disabled'      (boolean) - If true, this synced folder will be disabled and will not be setup. This can be used to disable a previously defined synced folder or to conditionally disable a definition based on some external factor.
+    # 'owner'         (string)  - The user who should be the owner of this synced folder. By default this will be the SSH user. Some synced folder types do not support modifying the owner.
+    # 'group'         (string)  - The group that will own the synced folder. By default this will be the SSH user. Some synced folder types do not support modifying the group.
+    # 'mount_options' (array)   - A list of additional mount options to pass to the mount command.
+    # 'type'          (string)  - The type of synced folder. If this is not specified, Vagrant will automatically choose the best synced folder option for your environment. Otherwise, you can specify a specific type such as "nfs".
+    # 'id'            (string)  - The name for the mount point of this synced folder in the guest machine. This shows up when you run mount in the guest machine.
+    # ---------------------------------------------------------------------------------
+    # Disabling the default /vagrant share can be done as follows:
+    config.vm.synced_folder ".", "/vagrant", disabled: true
+    # Basic synced folder
+    config.vm.synced_folder "../data", "/vagrant_data"
+    config.vm.synced_folder "../data", "/vagrant_data", create: true
+    # Advanced options example
+    config.vm.synced_folder "./src", "/srv/website",
+        owner: "www-data",
+        group: "www-data",
+        mount_options: ["dmode=775", "fmode=664"],
+        type: "nfs"
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # Provisioning:
+    # Provisioners in Vagrant automate the configuration of a virtual machine after it is created. 
+    # This could mean installing packages, copying files, or running scripts.
+    # basic syntax:
+    config.vm.provision "provisioner_name", option1: value
+    # ---------------------------------------------------------------------------------
+    # Option	  Type	                                         Description
+    # name	    (string)	            A unique identifier for the provisioner. If no type is provided, this is treated as the type.
+    # type	    (string)	            Explicitly specify the type of provisioner: shell, ansible, puppet, file, etc.
+    # before	(string/symbol)	        Run this provisioner before another. Use :each or :all to apply globally.
+    # after	    (string/symbol)	        Run this provisioner after another. Use :each or :all to apply globally.
+    # communicator_required	(boolean)	Specifies the machine must be accessible by Vagrant in order to run the provisioner. If set to true, the provisioner will only run if Vagrant can establish communication with the guest. If set to false the provisioner will run regardless of Vagrant's ability to communicate with the guest. Defaults to true.
+    # ---------------------------------------------------------------------------------
+    # file    : https://developer.hashicorp.com/vagrant/docs/provisioning/file
+    # ---------------------------------------------------------------------------------
+    # Shell   : https://developer.hashicorp.com/vagrant/docs/provisioning/shell
+    # ---------------------------------------------------------------------------------
+    # Ansible : 
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+    # pugins
+    # Hostmanager settings must be at top level
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+    config.hostmanager.manage_guest = true
+    config.hostmanager.ignore_private_ip = false
+    config.hostmanager.include_offline = true
+
+
+
+
+
+
+
+    # -------------------------------
+    # SHARED CONFIGURATION
+    # -------------------------------
+    config.vm.provision "shell", run: "once", inline: <<-SHELL
+        # Add host entries (optional)
+        echo "192.168.56.10 web.server" >> /etc/hosts
+        echo "192.168.56.20 db.server" >> /etc/hosts
+    SHELL
+
+    # Displays a custom message to the user after vagrant up completes successfully. 
+    # Use Case: 
+    # Provide helpful instructions such as: 
+    # How to SSH into the VM URLs for web services running in the VM Default credentials Setup tips or next steps
+    config.vm.post_up_message = <<-MESSAGE
+    Your VM is up and running!
+
+    Access the app at: http://localhost:3000
+    SSH into the machine with: vagrant ssh
+
+    Default login credentials:
+        username: admin
+        password: secret
+    MESSAGE
+
+    # Sets the number of seconds Vagrant will wait for the machine to gracefully shut down after vagrant halt is run.
+    config.vm.graceful_halt_timeout = 120
+end

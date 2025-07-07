@@ -1,0 +1,13 @@
+_______________________________________________________________________________________________________________________________________
+Personal Area Network (PAN)
+        - A Personal Area Network is a network for a single person or a small group of devices.
+
+        Characteristics:
+            - Covers a range of a few meters (1-10 meters).
+            - Used to connect personal devices like smartphones, laptops, and wearables.
+            - Wireless PANs (WPANs) use Bluetooth, ZigBee, or Infrared.
+
+        Examples:
+            - Connecting a smartphone to wireless earbuds.
+            - Synchronizing fitness trackers with a mobile app.
+_______________________________________________________________________________________________________________________________________            

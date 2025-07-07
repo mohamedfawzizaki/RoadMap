@@ -1,0 +1,36 @@
+_______________________________________________________________________________________________________________________________________
+                                        📌 List of All `events` Block Directives in Nginx  
+                                        
+The `events` block controls how Nginx handles network connections. It is global and can appear only once in `nginx.conf`.  
+
+_______________________________________________________________________________________________________________________________________
+
+Here’s the table with a Syntax column added:  
+
+ 🔹 1️⃣ Core Directives  
+| Directive            | Syntax                                          | Description |
+| `worker_connections` | `worker_connections <number>;`                  | Defines maximum connections per worker process. |
+| `use`                | `use <event-model>;`                            | Specifies the event-driven model (e.g., `epoll`, `kqueue`). |
+| `multi_accept`       | `multi_accept on|off;`                          | If enabled, a worker accepts multiple connections at once. |
+| `accept_mutex`       | `accept_mutex on|off;`                          | Prevents multiple workers from accepting connections simultaneously. |
+| `accept_mutex_delay` | `accept_mutex_delay <time>;`                    | Sets a delay (in seconds) between connection accept attempts. |
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 2️⃣ Debugging & Performance  
+| `debug_connection`   | `debug_connection <IP-Address|CIDR>;`           | Enables debugging for specific IP addresses. |
+
+_______________________________________________________________________________________________________________________________________
+
+ 📌 Example: `events` Block in `nginx.conf`
+````````````````````````````````````````````````````````````````````nginx
+events {
+    worker_connections  1024;  # Each worker can handle 1024 connections
+    use epoll;                 # Use epoll for Linux (high-performance)
+    multi_accept on;           # Accept multiple connections at once
+    accept_mutex on;           # Enable accept mutex
+    accept_mutex_delay 500ms;  # Delay between accept attempts
+}
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________

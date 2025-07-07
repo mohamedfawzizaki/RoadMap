@@ -1,0 +1,63 @@
+_______________________________________________________________________________________________________________________________________
+                                        📌 List of All `stream` Block Directives in Nginx  
+
+The `stream` block in Nginx is used to handle TCP and UDP traffic. 
+It allows load balancing, proxying, and SSL termination for non-HTTP protocols like MySQL, Redis, and MQTT.  
+
+_______________________________________________________________________________________________________________________________________
+
+
+ 🔹 1️⃣ Core Directives  
+| Directive            | Syntax                                     | Description |
+| `server`             | `server { ... }`                           | Defines a TCP/UDP listener inside the `stream` block. |
+| `listen`             | `listen <IP>:<port> [options];`            | Specifies IP/port for the `server` to listen on. |
+| `proxy_pass`         | `proxy_pass <protocol>://<backend>;`       | Passes traffic to another upstream server. |
+| `proxy_protocol`     | `proxy_protocol on|off;`                   | Enables Proxy Protocol for passing client info. |
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 2️⃣ Load Balancing & Upstream  
+| `upstream`           | `upstream <name> { server <IP>:<port>; }`  | Defines a group of backend servers. |
+| `least_conn`         | `least_conn;`                              | Routes requests to the least busy server. |
+| `hash`               | `hash <key> [consistent];`                  | Uses a hash function for load balancing. |
+| `round_robin`        | _(Default behavior, no explicit directive)_ | Distributes requests evenly. |
+| `health_check`       | `health_check interval=<time> fails=<N>;`   | Checks backend health (only in paid Nginx Plus). |
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 3️⃣ Proxy & Timeout Settings  
+| `proxy_connect_timeout` | `proxy_connect_timeout <time>;`                 | Timeout for connecting to the backend. |
+| `proxy_timeout`         | `proxy_timeout <time>;`                         | Timeout for backend responses. |
+| `proxy_buffer_size`     | `proxy_buffer_size <size>;`                     | Sets the buffer size for proxying data. |
+| `proxy_bind`            | `proxy_bind <IP> [transparent];`                | Binds Nginx to a specific outgoing IP. |
+| `proxy_protocol_timeout`| `proxy_protocol_timeout <time>;`                | Timeout for Proxy Protocol headers. |
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 4️⃣ Security & SSL  
+| `ssl_preread`         | `ssl_preread on|off;`                           | Enables SSL SNI inspection for routing. |
+| `ssl_certificate`     | `ssl_certificate /path/to/cert.pem;`            | Defines the SSL certificate for encryption. |
+| `ssl_certificate_key` | `ssl_certificate_key /path/to/private.key;`     | Sets the private key for SSL. |
+
+_______________________________________________________________________________________________________________________________________
+
+ 📌 Example: `stream` Block in `nginx.conf`
+````````````````````````````````````````````````````````````````````nginx
+stream {
+    upstream backend {
+        least_conn;  # Send traffic to the least busy server
+        server 192.168.1.10:3306;
+        server 192.168.1.11:3306;
+    }
+
+    server {
+        listen 3306;   # Listen for MySQL connections
+        proxy_pass backend;
+        proxy_connect_timeout 5s;
+        proxy_timeout 20s;
+        proxy_protocol on;
+    }
+}
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________

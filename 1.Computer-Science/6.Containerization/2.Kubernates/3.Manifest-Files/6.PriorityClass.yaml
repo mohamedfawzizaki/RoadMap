@@ -1,0 +1,26 @@
+# ----------------------------------------------------------------------------------------------------
+# Kubernetes PriorityClass: Control Pod Scheduling Priority
+# ----------------------------------------------------------------------------------------------------
+# PURPOSE:
+# PriorityClass defines the importance of pods during scheduling and eviction.
+# Higher `value` means higher priority. Useful during resource contention or preemption.
+#
+# USAGE:
+# - Pods can specify `priorityClassName` to be assigned this priority.
+# - During node pressure, lower-priority pods may be evicted first.
+# - During scheduling, higher-priority pods are chosen for placement first.
+#
+# FIELDS:
+# - value: Priority level as an integer. Higher = more important.
+# - globalDefault: If true, used as default when pods omit `priorityClassName`. Only one can be true.
+# - preemptionPolicy: (optional) Can be `PreemptLowerPriority` (default) or `Never`.
+# ----------------------------------------------------------------------------------------------------
+
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: high-priority                # Name used in Pod.spec.priorityClassName
+value: 100000                        # Priority value (higher = more important)
+globalDefault: false                 # Set to true if this is the default for all pods (only one allowed)
+description: "Used for critical workloads"  # Helpful context for admins
+preemptionPolicy: PreemptLowerPriority      # (Optional) Preempt lower-priority pods if needed

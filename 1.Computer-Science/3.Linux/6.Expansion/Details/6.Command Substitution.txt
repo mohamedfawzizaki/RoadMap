@@ -1,0 +1,150 @@
+______________________________________________________________________________________________________________________________________
+                                                   Command Substitution 
+                                                   ====================
+Command substitution in Linux allows you to capture the output of a command and use it as input for another command.
+This feature is commonly used in shell scripting to
+ assign command output to variables or to dynamically generate parts of a command.
+---------------------------------------------------------------------------------------------------------
+Syntax of Command Substitution
+
+There are two common ways to perform command substitution:
+
+1.Using backticks (`command`):
+   ```bash
+   result=`command`
+   ```
+
+2.Using `$()` (preferred modern syntax):
+   ```bash
+   result=$(command)
+   ```
+
+The `$()` syntax is more readable and supports nesting, making it a better choice in most cases.
+---------------------------------------------------------------------------------------------------------
+Basic Example
+
+   ```bash
+   current_date=$(date)
+   echo "Today's date is: $current_date"
+   ```
+
+   Output:
+   ```
+   Today's date is: Mon Jan 7 12:34:56 UTC 2025
+   ```
+---------------------------------------------------------------------------------------------------------
+Assigning Command Output to Variables
+
+You can store the result of a command in a variable for later use:
+
+   ```bash
+   user=$(whoami)
+   echo "You are logged in as: $user"
+   ```
+
+   Output:
+   ```
+   You are logged in as: your-username
+   ```
+---------------------------------------------------------------------------------------------------------
+Using Command Substitution in Commands
+
+Command substitution can be used as part of other commands.For example:
+
+   ```bash
+   echo "There are $(ls | wc -l) files in the current directory."
+   ```
+
+   Output:
+   ```
+   There are 10 files in the current directory.
+   ```
+
+Here, `ls` lists the files, and `wc -l` counts the number of lines in the output, representing the number of files.
+---------------------------------------------------------------------------------------------------------
+Nesting Command Substitution
+
+Command substitution supports nesting when using the `$()` syntax:
+
+   ```bash
+   result=$(echo "The current user is $(whoami) and the date is $(date)")
+   echo "$result"
+   ```
+
+   Output:
+   ```
+   The current user is your-username and the date is Mon Jan 7 12:34:56 UTC 2025
+   ```
+---------------------------------------------------------------------------------------------------------
+Using Command Substitution in Loops
+
+Command substitution is often used in loops to process command output:
+
+   ```bash
+   for file in $(ls .txt); do
+      echo "Processing $file"
+   done
+   ```
+
+This script processes each `.txt` file in the current directory.
+---------------------------------------------------------------------------------------------------------
+Capturing Multiline Output
+
+Command substitution can capture multiline output from commands:
+
+   ```bash
+   files=$(ls)
+   echo "List of files:"
+   echo "$files"
+   ```
+---------------------------------------------------------------------------------------------------------
+Quoting and Command Substitution
+
+If the output contains spaces or newlines, you may need to use quotes around the variable to preserve the formatting:
+
+   ```bash
+   files=$(ls)
+   echo "$files"   Quoted to preserve newlines and spaces
+   ```
+
+Without quotes, the output might appear on a single line, separated by spaces.
+---------------------------------------------------------------------------------------------------------
+Common Use Cases
+
+1.Getting the number of running processes:
+      ```bash
+      process_count=$(ps -e | wc -l)
+      echo "There are $process_count processes running."
+      ```
+
+2.Checking disk usage:
+      ```bash
+      disk_usage=$(df -h / | awk 'NR==2 {print $5}')
+      echo "Disk usage: $disk_usage"
+      ```
+
+3.Reading a file and using its content:
+      ```bash
+      first_line=$(head -n 1 myfile.txt)
+      echo "First line of the file: $first_line"
+      ```
+---------------------------------------------------------------------------------------------------------
+
+ Backticks vs  $() Syntax
+ _________________________________________________________________________________________
+| Feature                     | Backticks (`command`)       | $() Syntax                  |
+|_____________________________|_____________________________|_____________________________|
+| Readability                 | Harder to read              | Easier to read              |
+| Nesting                     | Difficult and confusing     | Supports easy nesting       |
+| Portability                 | Supported in older systems  | Supported in modern systems |
+| Preferred usage             | Legacy syntax               | Modern and preferred syntax |
+|_____________________________|_____________________________|_____________________________|
+
+---------------------------------------------------------------------------------------------------------
+Conclusion
+
+Command substitution is a powerful feature in Linux shell scripting,
+ allowing you to dynamically capture and use the output of commands.
+The modern `$()` syntax is easier to read, supports nesting, and is recommended for most use cases.
+It simplifies writing efficient scripts that can react to system information or dynamically process data.
+______________________________________________________________________________________________________________________________________

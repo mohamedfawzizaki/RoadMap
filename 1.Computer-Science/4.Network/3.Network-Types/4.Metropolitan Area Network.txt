@@ -1,0 +1,12 @@
+_______________________________________________________________________________________________________________________________________
+Metropolitan Area Network (MAN)
+        - A Metropolitan Area Network spans a city or large campus, bridging multiple LANs.
+
+        Characteristics:
+            - Typically managed by telecom companies or ISPs.
+            - High-speed connections (fiber-optic or Ethernet-based).
+
+        Examples:
+            - City-wide Wi-Fi networks.
+            - University connections across multiple campuses.
+_______________________________________________________________________________________________________________________________________

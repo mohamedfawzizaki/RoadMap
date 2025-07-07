@@ -1,0 +1,38 @@
+______________________________________________________________________________________________________________________________________
+                                                          `/proc/` Directory
+                                                          ==================
+
+- Purpose: 
+      - The `/proc/` directory is a virtual filesystem that provides an interface to kernel data structures.
+      - It contains real-time information about the system, processes, and hardware.
+  
+- Unlike normal directories, `/proc/` doesn't contain regular files; it holds virtual files
+  that represent system and process information.
+
+- Typical Contents:
+            - `/proc/cpuinfo`: 
+                    - Provides details about the CPU, including the model, cores, and architecture.
+            
+            - `/proc/meminfo`: 
+                    - Provides information about system memory usage.
+            
+            - `/proc/uptime`: 
+                    - Shows the uptime of the system.
+            
+            - `/proc/[pid]/`: 
+                    - Contains directories for each running process (where `[pid]` is the process ID).
+                    - Inside each of these directories, you’ll find information about the process,
+                       such as memory usage, status, and open file descriptors.
+            
+            - `/proc/sys/`: 
+                    - Allows the kernel parameters to be modified at runtime.For example, 
+                    `/proc/sys/net/ipv4/ip_forward` controls IP forwarding.
+
+- Example Usage: To view the system’s total memory usage, you would use:
+  ```bash
+  cat /proc/meminfo
+  ```
+
+  Or to check the processes running on the system, you might look in `/proc/[pid]/status` 
+  to examine the status of a particular process.
+______________________________________________________________________________________________________________________________________

@@ -1,0 +1,44 @@
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                                  Hard - Soft Links
+                                                  =================       
+                                        ---------------------------------------
+                                        ln [options]  <file-name>  <link-name>
+                                        ---------------------------------------
+         __________________________________________________________________________________________________________________________________________________
+        | Options  |              Example                                 |                                        Usage                                                               
+        |__________|______________________________________________________|________________________________________________________________________________         
+        | no opt   |  ln          file1   hardlink1	                      | Creates a hard     link instead of a hard link.
+        |  -d / -F |  ln  -d      dir1    hardlink_dir1	                  | Creates a hard link to a directory (only superusers can use this).
+        |--------------------------------------------------------------------------------------------------------------------------------------------------
+        |  -s	   |  ln  -s      file1   symlink1	                      | Creates a symbolic link instead of a hard link.
+        |  -f	   |  ln  -sf     file2   symlink1	                      | Forces the creation of the link by removing any existing file with the same name.
+        |--------------------------------------------------------------------------------------------------------------------------------------------------
+        |  -i	   |  ln  -si     file3   symlink2	                      | Interactive mode: Prompts before overwriting existing files.
+        |  -v	   |  ln  -sv     file1   symlink1	                      | Verbose mode: Displays detailed information about the created link.
+        |  -T	   |  ln  -sT     file    target	                      | Treats the target as a regular file, even if it’s a directory.
+        |  -n	   |  ln  -sn     dir1    link_to_dir1	                  | Prevents dereferencing a symlink if the link already exists.
+        |  -b	   |  ln  -sb     file1   symlink1	                      | Creates a backup of existing destination files before linking.
+        |--------------------------------------------------------------------------------------------------------------------------------------------------
+        |--backup  |  ln  --backup=file1         symlink1	              | Same as -b, but allows specifying a backup suffix.
+        |--suffix  |  ln  -b --suffix=.bak file1 symlink1	              | Defines a custom suffix for backup files (default is ~).
+        |--relative|  ln  --relative      /path/to/file link	          | Creates a symbolic link using a relative path to the target.
+        |          |  ln  -s file1 --target-directory=backup_dir	      | Places the created link inside the specified directory.
+        |--------------------------------------------------------------------------------------------------------------------------------------------------
+        |--help	   |  ln  --help	                                      | Displays help information about the command.
+        |--version |  ln  --version	                                      | Displays version information about the command.
+        |__________|______________________________________________________|________________________________________________________________________________  
+
+#_________________________________________________________________________________________________________________________________________________________________________# 
+
+
+
+
+
+
+
+
+
+
+
+
+

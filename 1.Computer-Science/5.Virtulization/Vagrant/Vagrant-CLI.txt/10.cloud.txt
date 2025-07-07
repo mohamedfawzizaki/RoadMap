@@ -1,0 +1,97 @@
+ ___________________________________________________________________________________________________________________________________
+|   vagrant cloud auth login [options]
+                 -c, --check                                Checks if currently logged in
+                 -d, --description DESCRIPTION              Set description for the Vagrant Cloud token
+                 -t, --token TOKEN                          Set the Vagrant Cloud token
+                 -u, --username USERNAME_OR_EMAIL           Vagrant Cloud username or email address
+|___________________________________________________________________________________________________________________________________
+|   vagrant cloud auth logout                               Log out of Vagrant Cloud
+|___________________________________________________________________________________________________________________________________
+|   vagrant cloud auth whoami [token]                       Display currently logged in user
+|___________________________________________________________________________________________________________________________________
+|___________________________________________________________________________________________________________________________________
+|___________________________________________________________________________________________________________________________________
+|   vagrant cloud box create[options]organization/box-name  Creates an empty box entry on Vagrant Cloud
+                 -d, --description DESCRIPTION              Full description of the box        
+                 -s DESCRIPTION,                            Short description of the box       
+                     --short-description
+                 -p, --[no-]private                         Makes box private
+|___________________________________________________________________________________________________________________________________
+|   vagrant cloud box show[options] organization/box-name   Displays a boxes attributes on Vagrant Cloud
+                 --architectures ARCH                       Filter results by architecture support (can be defined multiple times)
+                 --versions VERSION                         Display box information for a specific version (can be defined multiple times)
+                 --providers PROVIDER                       Filter results by provider support (can be defined multiple times)
+                 --[no-]auth                                Authenticate with Vagrant Cloud if required before searching
+|___________________________________________________________________________________________________________________________________
+|   vagrant cloud box update[options]organization/box-name  Updates a box entry on Vagrant Cloud
+                 -d, --description DESCRIPTION              Full description of the box
+                 -s DESCRIPTION,                            Short description of the box
+                     --short-description          
+                 -p, --[no-]private                         Makes box private
+|___________________________________________________________________________________________________________________________________
+|   vagrant cloud box delete[options]organization/box-name  Deletes box entry on Vagrant Cloud
+                 -f, --[no-]force                           Do not prompt for deletion confirmation
+|___________________________________________________________________________________________________________________________________
+|___________________________________________________________________________________________________________________________________
+|___________________________________________________________________________________________________________________________________
+|   vagrant cloud provider create [options] organization/box-name provider-name version [url]
+                                                            Creates a provider entry on Vagrant Cloud
+                 -a, --architecture ARCH                    Architecture of guest box (defaults to current host architecture)
+                 -c, --checksum CHECKSUM_VALUE              Checksum of the box for this provider. --checksum-type option is required.
+                 -C, --checksum-type TYPE                   Type of checksum used (md5, sha1, sha256, sha384, sha512). --checksum option is required.
+                     --[no-]default-architecture            Mark as default architecture for specific provider
+|___________________________________________________________________________________________________________________________________
+|   vagrant cloud provider update [options] organization/box-name provider-name version architecture [url]
+                                                            Updates a provider entry on Vagrant Cloud
+                 -a, --architecture ARCH                    Update architecture value of guest box
+                 -c, --checksum CHECKSUM_VALUE              Checksum of the box for this provider. --checksum-type option is required.
+                 -C, --checksum-type TYPE                   Type of checksum used (md5, sha1, sha256, sha384, sha512). --checksum option is required.
+                     --[no-]default-architecture            Mark as default architecture for specific provider
+|___________________________________________________________________________________________________________________________________
+|   vagrant cloud provider upload [options] organization/box-name provider-name version architecture box-file
+                                                            Uploads a box file to Vagrant Cloud for a specific provider
+                 -D, --[no-]direct                          Upload asset directly to backend storage
+|___________________________________________________________________________________________________________________________________
+|   vagrant cloud provider delete [options] organization/box-name provider-name version [architecture]
+                                                            Deletes a provider entry on Vagrant Cloud
+                 -f, --[no-]force                           Force deletion of box version provider without confirmation
+|___________________________________________________________________________________________________________________________________
+|   vagrant cloud provider delete [options] organization/box-name provider-name version [architecture]
+                                                            Deletes a provider entry on Vagrant Cloud
+                 -f, --[no-]force                           Force deletion of box version provider without confirmation
+|___________________________________________________________________________________________________________________________________
+|___________________________________________________________________________________________________________________________________
+|___________________________________________________________________________________________________________________________________
+|   vagrant cloud search [options] query                    Search for boxes managed by a specific user/organization on Vagrant Cloud
+                 -a, --architecture ARCH                    Filter search results to a single architecture. Defaults to all.
+                 -j, --json                                 Formats results in JSON
+                     --page PAGE                            The page to display Default: 1
+                 -s, --short                                Shows a simple list of box names
+                 -o, --order ORDER                          Order to display results ('desc' or 'asc') Default: 'desc'
+                 -l, --limit LIMIT                          Max number of search results Default: 25
+                 -p, --provider PROVIDER                    Filter search results to a single provider. Defaults to all.
+                     --sort-by SORT                         Field to sort results on (created, downloads, updated) Default: downloads
+                     --[no-]auth                            Authenticate with Vagrant Cloud if required before searching
+|___________________________________________________________________________________________________________________________________
+|___________________________________________________________________________________________________________________________________
+|___________________________________________________________________________________________________________________________________
+|   vagrant cloud version create [options] organization/box-name version
+                                                            Creates a version entry on Vagrant Cloud
+                 -d, --description DESCRIPTION              A description for this version
+|___________________________________________________________________________________________________________________________________
+|   vagrant cloud version update [options] organization/box-name version
+                                                            Updates a version entry on Vagrant Cloud
+                 -d, --description DESCRIPTION              A description for this version
+|___________________________________________________________________________________________________________________________________
+|   vagrant cloud version release [options] organization/box-name version
+                                                            Releases a version entry on Vagrant Cloud
+                 -f, --[no-]force                           Release without confirmation
+|___________________________________________________________________________________________________________________________________
+|   vagrant cloud version revoke [options] organization/box-name version
+                                                            Revokes a version entry on Vagrant Cloud
+                 -f, --[no-]force                           Force revocation without confirmation
+|___________________________________________________________________________________________________________________________________
+|   vagrant cloud version delete [options] organization/box-name version
+                                                            Deletes a version entry on Vagrant Cloud
+                 -f, --[no-]force                           Force deletion without confirmation
+|___________________________________________________________________________________________________________________________________

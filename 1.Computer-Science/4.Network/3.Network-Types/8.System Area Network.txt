@@ -1,0 +1,12 @@
+_______________________________________________________________________________________________________________________________________
+System Area Network
+        - A System Area Network is designed for high-performance computing (HPC), connecting clustered computers.
+
+        Characteristics:
+            - Ultra-low latency and high bandwidth.
+            - Used in supercomputers and server farms.
+
+        Examples:
+            - High-speed network interconnects for AI/ML workloads.
+            - Data centers running distributed systems.
+_______________________________________________________________________________________________________________________________________

@@ -1,0 +1,54 @@
+# ======================================================================================
+# 📘 Definition: PersistentVolumeClaim (PVC)
+# --------------------------------------------------------------------------------------
+# A PersistentVolumeClaim (PVC) is a request for storage by a user (or a Pod).
+# PVCs abstract away the physical storage details and bind to a PersistentVolume (PV)
+# that satisfies the claim's resource and access requirements.
+#
+# Key Concepts:
+# - Used by Pods to request storage in a portable and declarative way.
+# - PVCs can trigger dynamic provisioning if a matching StorageClass is provided.
+# - Supports features like volume expansion, snapshots, cloning, and attribute tuning.
+# - PVCs can reference:
+#   - `storageClassName`: to trigger dynamic provisioning
+#   - `volumeName`: for static provisioning
+#   - `volumeAttributesClassName`: to inject CSI-specific attributes (K8s v1.27+)
+#   - `dataSource` or `dataSourceRef`: for cloning or snapshot restore
+# ======================================================================================
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc                          # 🔖 Name of the PVC object
+  namespace: default                    # 📛 Namespace the claim belongs to
+spec:
+  accessModes:                          # 📥 Requested access modes
+    - ReadWriteOnce                     #   - RWO: Mounted once as read-write by a single node
+    # - ReadOnlyMany                    #   - Optional: ROM: Mounted by many nodes read-only
+    # - ReadWriteMany                   #   - Optional: RWX: Mounted by many nodes read-write
+
+  resources:
+    requests:
+      storage: 10Gi                     # 📦 Minimum amount of storage to request
+
+  storageClassName: fast-storage        # 🏷 StorageClass to use for dynamic provisioning
+  volumeMode: Filesystem                # 📁 Volume format: Filesystem (default) or Block
+
+  volumeAttributesClassName: fast-retention-class # 🔧 Optional: Advanced CSI tuning for mutable attributes
+
+  selector:                             # 🎯 Optional: match a manually created PV by label
+    matchLabels:
+      type: local-ssd
+
+  # volumeName: my-pv                  # 🔗 Optional: bind to a specific PV (static provisioning only)
+
+  dataSource:                           # 📤 Optional: initialize volume from existing PVC or snapshot
+    name: snapshot-01
+    kind: VolumeSnapshot
+    apiGroup: snapshot.storage.k8s.io
+
+  dataSourceRef:                        # 📤🔁 Optional: Superset of dataSource with full namespace support (beta)
+    name: snapshot-01
+    kind: VolumeSnapshot
+    apiGroup: snapshot.storage.k8s.io
+    namespace: backup-ns                # 🚨 Requires ReferenceGrant from `backup-ns` (alpha feature)

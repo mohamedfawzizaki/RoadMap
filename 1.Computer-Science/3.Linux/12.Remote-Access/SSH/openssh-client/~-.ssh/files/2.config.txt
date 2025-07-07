@@ -1,0 +1,175 @@
+_________________________________________________________________________________________________________________________________________________________________________
+                                                `~/.ssh/config`
+                                              ===================
+
+The `~/.ssh/config` file is a configuration file for the SSH client.
+It allows users to define custom SSH settings for specific hosts or all hosts,
+ simplifying the use of SSH by reducing the need to specify common options repeatedly on the command line.
+
+-------------------------------------------------------------------------------------------------------------------------------
+Location
+
+The file is typically located at:
+
+````````````````````````````````````bash
+~/.ssh/config
+````````````````````````````````````
+
+If the file does not exist, you can create it:
+
+````````````````````````````````````bash
+touch ~/.ssh/config
+chmod 600 ~/.ssh/config
+````````````````````````````````````
+
+The file permissions should be set to `600` (read and write only by the owner) to ensure it is secure.
+
+-------------------------------------------------------------------------------------------------------------------------------
+Structure of `~/.ssh/config`
+
+The file is organized into sections, where each section starts with the `Host` keyword followed by patterns or specific hostnames.
+Under each section, you can define various SSH options.
+
+ Basic Syntax
+
+````````````````````````````````````bash
+Host <pattern or hostname>
+    Option1 value1
+    Option2 value2
+    ...
+````````````````````````````````````
+
+- Host: Specifies which hosts the configuration applies to.You can use:
+  - A specific hostname (e.g., `Host example.com`)
+  - Wildcards (e.g., `Host .example.com`)
+  - `Host `: Applies settings to all SSH connections.
+
+-------------------------------------------------------------------------------------------------------------------------------
+Common SSH Options
+
+Below are commonly used options in `~/.ssh/config`:
+ ____________________________________________________________________________________________________________________________________________________________________________________
+| Option                   | Description                                                                                                      | Example                                    
+|__________________________|__________________________________________________________________________________________________________________|______________________________________
+| `HostName`               | Specifies the real hostname or IP address to connect to.This is useful when using an alias or wildcard in `Host` | `HostName 192.168.1.100`                   
+| `User`                   | Specifies the username to use when logging in.                                                                   | `User ubuntu`                              
+| `Port`                   | Specifies the port to connect to on the remote host.The default is `22`.                                         | `Port 2222`                                
+| `IdentityFile`           | Specifies the path to the private key file to use for authentication.                                            | `IdentityFile ~/.ssh/id_rsa`               
+| `StrictHostKeyChecking`  | Controls whether SSH prompts the user to accept a new host key.Possible values are `yes`, `no`, or `ask`.        | `StrictHostKeyChecking no`                 
+| `UserKnownHostsFile`     | Specifies the file to use for storing known hosts.                                                               | `UserKnownHostsFile ~/.ssh/custom_known_hosts` 
+| `ForwardAgent`           | Enables forwarding of the authentication agent connection.                                                       | `ForwardAgent yes`                              
+| `ProxyJump`              | Specifies a jump host to connect through before reaching the target.                                             | `ProxyJump jump.example.com`                    
+| `LocalForward`           | Specifies local port forwarding (maps a local port to a remote one).                                             | `LocalForward 8080 127.0.0.1:80`                
+| `RemoteForward`          | Specifies remote port forwarding (maps a remote port to a local one).                                            | `RemoteForward 2222 127.0.0.1:22`               
+| `Compression`            | Enables compression, which can improve performance over slow connections.                                        | `Compression yes`                               
+| `LogLevel`               | Specifies the verbosity level of logging.Possible values: `QUIET`, `FATAL`, `ERROR`, `INFO`, `VERBOSE`, `DEBUG`. | `LogLevel INFO`                                 
+| `ServerAliveInterval`    | Sets the time interval (in seconds) after which the client sends a keepalive message to the server.              | `ServerAliveInterval 60`                        
+| `ServerAliveCountMax`    | Number of keepalive messages sent without a response before disconnecting.                                       | `ServerAliveCountMax 3`                         
+| `ControlMaster`          | Enables sharing of multiple SSH sessions over a single connection.Possible values are `yes`, `no`, or `auto`.    | `ControlMaster auto`                            
+| `ControlPath`            | Specifies the path for the control socket used by the connection sharing feature.                                | `ControlPath ~/.ssh/%r@%h:%p`                   
+| `ControlPersist`         | Keeps the master connection open in the background for a specified time or indefinitely (`yes`).                 | `ControlPersist 10m`                            
+| `HashKnownHosts`         | Enables hashing of hostnames in the `known_hosts` file for privacy.                                              | `HashKnownHosts yes`                            
+|__________________________|__________________________________________________________________________________________________________________|______________________________________
+
+-------------------------------------------------------------------------------------------------------------------------------
+Examples
+
+ 1.Simple Configuration for a Host
+
+````````````````````````````````````bash
+Host myserver
+    HostName 192.168.1.100
+    User ubuntu
+    Port 2222
+    IdentityFile ~/.ssh/id_rsa
+````````````````````````````````````
+
+Now you can connect using:
+
+````````````````````````````````````bash
+ssh myserver
+````````````````````````````````````
+
+Instead of typing:
+
+````````````````````````````````````bash
+ssh -i ~/.ssh/id_rsa -p 2222 ubuntu@192.168.1.100
+````````````````````````````````````
+
+-------------------------------------------------------------------------------------------------------------------------------
+2.Using Wildcards
+
+````````````````````````````````````bash
+Host .example.com
+    User admin
+    IdentityFile ~/.ssh/id_admin
+````````````````````````````````````
+
+This configuration applies to any host ending with `.example.com`.
+
+-------------------------------------------------------------------------------------------------------------------------------
+3.Jump Host (ProxyJump)
+
+If you need to connect to a target host through a jump host (bastion):
+
+````````````````````````````````````bash
+Host target
+    HostName target.example.com
+    User target_user
+    ProxyJump jump.example.com
+````````````````````````````````````
+
+The command:
+
+````````````````````````````````````bash
+ssh target
+````````````````````````````````````
+
+Will automatically route through `jump.example.com`.
+
+-------------------------------------------------------------------------------------------------------------------------------
+4.Port Forwarding
+
+Local Port Forwarding: Forward a local port (e.g., 8080) to a remote port (e.g., 80):
+
+````````````````````````````````````bash
+Host webserver
+    HostName web.example.com
+    LocalForward 8080 127.0.0.1:80
+````````````````````````````````````
+
+Now, connecting to `localhost:8080` will forward traffic to `web.example.com:80`.
+
+-------------------------------------------------------------------------------------------------------------------------------
+5.Keepalive Configuration
+
+To prevent SSH sessions from timing out due to inactivity:
+
+````````````````````````````````````bash
+Host 
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+````````````````````````````````````
+
+This sends a keepalive message every 60 seconds and disconnects after 3 missed responses.
+
+-------------------------------------------------------------------------------------------------------------------------------
+Useful Tips
+
+1.Use `Include` Directive:  
+   You can split your SSH configurations into multiple files and include them in `~/.ssh/config` using:
+
+   ````````````````````````````````````bash
+   Include ~/.ssh/custom_config
+   ````````````````````````````````````
+
+2.Debugging Connections:  
+   To debug issues with SSH, use the `-v`, `-vv`, or `-vvv` options:
+
+   ````````````````````````````````````bash
+   ssh -vvv myserver
+   ````````````````````````````````````
+
+3.Avoid Plaintext Passwords:  
+   Always use key-based authentication (`IdentityFile`) rather than passwords for better security.
+_________________________________________________________________________________________________________________________________________________________________________

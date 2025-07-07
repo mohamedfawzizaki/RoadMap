@@ -1,0 +1,158 @@
+_________________________________________________________________________________________________________________________________
+                                                   Process Management 
+                                                   ------------------
+Definition:
+        - Process management is a fundamental component of an operating
+           system (OS) that deals with the creation, scheduling, and termination of processes.
+        - A process is a program in execution, which requires resources like CPU time, 
+           memory, files, and I/O devices to accomplish its task.
+        - Effective process management ensures that system resources are allocated efficiently,
+           enabling multitasking, user interaction, and background processing.
+_________________________________________________________________________________________________________________________________
+                                             Key Concepts in Process Management
+                                             ----------------------------------
+1.Process States:
+       - New              : The process is being created.
+       - Ready            : The process is waiting to be assigned to the CPU.
+       - Running          : The process is currently being executed by the CPU.
+       - Waiting (Blocked): The process is waiting for an event (e.g., I/O completion).
+       - Terminated       : The process has finished execution.
+
+       -> Transition between these states is managed by the OS scheduler.
+--------------------------------------------------------------------------------------------------------------
+2.Process Control Block (PCB):
+       - A data structure used by the OS to store information about a process.
+       - Contains:
+              - Process ID (PID)
+              - Process state
+              - Program counter
+              - CPU registers
+              - Scheduling information
+              - Memory management information
+              - Accounting information
+              - I/O status
+--------------------------------------------------------------------------------------------------------------
+3.Types of Processes:
+       - User Processes            : Created by users to perform tasks, such as running applications.
+       - System Processes          : Background processes managed by the OS for system functionality.
+       
+       - Interactive Processes     : Require user interaction.
+       - Batch Processes           : Execute without user intervention.
+--------------------------------------------------------------------------------------------------------------
+4.Process vs.Thread:
+       - A process is an independent program in execution, 
+         while a thread is a lightweight unit of execution within a process.
+       - Threads within the same process share resources like memory and file descriptors.
+
+_________________________________________________________________________________________________________________________________
+                                                   Process Scheduling
+                                                   ------------------
+Definition:
+       - The OS uses scheduling algorithms to allocate CPU time to processes.
+       - Scheduling ensures efficient utilization of the CPU and provides fair resource access.
+--------------------------------------------------------------------------------------------------------------
+1.Schedulers:
+       - Long-Term Scheduler:
+                - Determines which processes are admitted to the ready queue.
+                - Controls the degree of multiprogramming.
+       - Short-Term Scheduler (CPU Scheduler):
+                - Selects which process to execute next.
+                - Runs frequently (milliseconds).
+       - Medium-Term Scheduler:
+                - Temporarily removes processes from memory (swapping) to reduce load and improve performance.
+--------------------------------------------------------------------------------------------------------------
+2.Scheduling Algorithms:
+       - First-Come, First-Served (FCFS)         : Processes are executed in the order they arrive.
+       - Shortest Job Next (SJN)                 : Executes the shortest process first.
+       - Priority Scheduling                     : Executes processes based on priority.
+       - Round Robin (RR)                        : Each process gets a fixed time slice (quantum) in a cyclic order.
+       - Multilevel Queue Scheduling             : Divides processes into queues with different priority levels.
+       - Multilevel Feedback Queue Scheduling    : Processes can move between queues based on behavior.
+--------------------------------------------------------------------------------------------------------------
+3.Context Switching:
+       - The act of saving the state of a currently running process and loading the state of the next process.
+       - Context switches occur due to multitasking, interrupts, or process termination.
+_________________________________________________________________________________________________________________________________
+                                                Process Synchronization
+                                                ------------------------
+Definition:
+       - Processes often need to coordinate their activities, 
+         especially in a multitasking or multiprocessing environment.
+--------------------------------------------------------------------------------------------------------------
+1.Critical Section:
+       - A section of code that accesses shared resources and must 
+         not be executed by more than one process at a time.
+       - Requires synchronization mechanisms to prevent race conditions.
+--------------------------------------------------------------------------------------------------------------
+2.Synchronization Mechanisms:
+       - Mutexes (Mutual Exclusion): Prevent multiple processes from accessing a critical section simultaneously.
+       - Semaphores                : Signaling mechanism to control access to shared resources.
+       - Monitors                  : High-level synchronization construct that encapsulates shared variables and their operations.
+       - Condition Variables       : Allow processes to wait until a specific condition is met.
+_________________________________________________________________________________________________________________________________
+                                                Inter-Process Communication (IPC)
+                                                ---------------------------------
+Definition:
+       - Processes may need to communicate with each other to exchange data or coordinate actions.
+--------------------------------------------------------------------------------------------------------------
+1.Methods of IPC:
+       - Shared Memory  : Processes share a segment of memory for communication.
+       - Message Passing: Processes send and receive messages via the OS.
+       - Pipes          : Unidirectional communication channel between processes.
+       - Sockets        : Communication between processes over a network.
+       - Signals        : Asynchronous notifications sent to a process to indicate events.
+       - Named Pipes (FIFO): Similar to pipes but support bidirectional communication and can be used by unrelated processes.
+--------------------------------------------------------------------------------------------------------------
+2.IPC Mechanisms in Linux:
+       - `fork()`: Creates a child process.
+       - `exec()`: Replaces a process’s memory space with a new program.
+       - `wait()`: Makes the parent process wait for the child to finish.
+       - `exit()`: ermination system calls.
+       - `kill()`: Sends signals to processes.
+_________________________________________________________________________________________________________________________________
+                                                Process Creation and Termination
+                                                --------------------------------
+--------------------------------------------------------------------------------------------------------------
+1.Process Creation:
+       - A process creates a new process using system calls like `fork()` in Unix/Linux.
+       - The created process is called the child process, and the creating process is the parent process.
+       - The child process can inherit resources from the parent.
+--------------------------------------------------------------------------------------------------------------
+2.Process Termination:
+       - A process can terminate after completing its task or due to errors.
+       - Termination system calls include `exit()` in Unix/Linux.
+       - A terminated process enters the zombie state until the parent retrieves its exit status.
+_________________________________________________________________________________________________________________________________
+                                                Process Management Commands in Linux
+                                                ------------------------------------
+1.Viewing Processes:
+       - `ps`: Displays information about running processes.
+       - `top`: Shows real-time process activity.
+       - `htop`: Interactive version of `top`.
+       - `pidof`: Finds the PID of a running process.
+--------------------------------------------------------------------------------------------------------------
+2.Managing Processes:
+       - `kill <PID>`: Sends a signal to terminate a process.
+       - `killall <name>`: Terminates all processes with a specific name.
+       - `nice`: Starts a process with a specified priority.
+       - `renice`: Changes the priority of a running process.
+--------------------------------------------------------------------------------------------------------------
+3.Process States:
+       - `R`: Running.
+       - `S`: Sleeping.
+       - `D`: Uninterruptible sleep (usually I/O).
+       - `Z`: Zombie.
+_________________________________________________________________________________________________________________________________
+                                                Key Challenges in Process Management
+                                                ------------------------------------
+--------------------------------------------------------------------------------------------------------------
+1.Deadlock:
+       - Occurs when processes block each other by holding resources the others need.
+       - Prevented using strategies like resource allocation ordering, avoiding circular waits, or implementing deadlock detection.
+--------------------------------------------------------------------------------------------------------------
+2.Starvation:
+       - A low-priority process may never get CPU time if higher-priority processes continuously occupy the CPU.
+--------------------------------------------------------------------------------------------------------------
+3.Concurrency Issues:
+       - Race conditions and inconsistencies when multiple processes access shared resources simultaneously.
+_______________________________________________________________________________________________________________________________________

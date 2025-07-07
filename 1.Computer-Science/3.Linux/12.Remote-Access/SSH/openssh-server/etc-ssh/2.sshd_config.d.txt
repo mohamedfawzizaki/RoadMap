@@ -1,0 +1,120 @@
+_________________________________________________________________________________________________________________________________________________________________________
+                                            `/etc/ssh/sshd_config.d/`
+                                            =========================
+The `/etc/ssh/sshd_config.d/` directory is used to store additional SSH server configuration files in a modular way.
+These files are included in the main SSH daemon configuration (`/etc/ssh/sshd_config`) using the `Include` directive.
+The main benefit of using this directory is that it allows for a more organized configuration,
+ where specific SSH settings can be managed in separate files rather than cluttering the main `sshd_config` file.
+
+Key Concepts of `/etc/ssh/sshd_config.d/`:
+-------------------------------------------------------------------------------------------------------------------------------
+- Modular Configuration: Instead of editing a single large configuration file (`/etc/ssh/sshd_config`), 
+   SSH settings can be split across multiple files inside `/etc/ssh/sshd_config.d/`.
+- Each file can contain related settings, making it easier to manage and update.
+  
+- Inclusion in the Main Configuration: The SSH server automatically includes all files
+  from `/etc/ssh/sshd_config.d/` as part of the main `sshd_config`.
+- This is controlled by the `Include` directive, which typically looks like this:
+  ````````````````````````````````````````````````bash
+  Include /etc/ssh/sshd_config.d/.conf
+  ````````````````````````````````````````````````
+  This line includes all `.conf` files in the `/etc/ssh/sshd_config.d/` directory.
+
+- File Organization: You can organize settings into different files based on the specific feature or service you are configuring.
+  For example, you might have:
+            - `/etc/ssh/sshd_config.d/00-logging.conf` for logging-related settings.
+            - `/etc/ssh/sshd_config.d/01-authentication.conf` for authentication-related settings.
+            - `/etc/ssh/sshd_config.d/10-security.conf` for security-related settings.
+  
+- File Naming Convention: While there is no strict rule for naming configuration files in `/etc/ssh/sshd_config.d/`,
+  it's a common practice to use a numbering prefix (e.g., `00-`, `01-`, `10-`) to control
+   the order in which configurations are applied, as files are processed alphabetically.
+-------------------------------------------------------------------------------------------------------------------------------
+ Example Usage:
+
+        `/etc/ssh/sshd_config.d/` directory structure:
+                ````````````````````````````````````````````````bash
+                /etc/ssh/sshd_config.d/
+                ├── 00-security.conf
+                ├── 10-authentication.conf
+                ├── 20-logging.conf
+                └── 30-advanced-settings.conf
+                ````````````````````````````````````````````````
+
+                Each of these configuration files would contain settings related to their respective sections.
+
+        Example of `/etc/ssh/sshd_config.d/00-security.conf`:
+                ````````````````````````````````````````````````bash
+                Security-related SSH settings
+                PermitRootLogin no
+                PasswordAuthentication no
+                PermitEmptyPasswords no
+                ````````````````````````````````````````````````
+
+        Example of `/etc/ssh/sshd_config.d/10-authentication.conf`:
+                ````````````````````````````````````````````````bash
+                Authentication-related SSH settings
+                PubkeyAuthentication yes
+                ChallengeResponseAuthentication no
+                UsePAM yes
+                ````````````````````````````````````````````````
+
+        Example of `/etc/ssh/sshd_config.d/20-logging.conf`:
+                ````````````````````````````````````````````````bash
+                Logging-related SSH settings
+                LogLevel INFO
+                SyslogFacility AUTH
+                ````````````````````````````````````````````````
+
+        Example of `/etc/ssh/sshd_config.d/30-advanced-settings.conf`:
+                ````````````````````````````````````````````````bash
+                Advanced SSH settings
+                ClientAliveInterval 300
+                ClientAliveCountMax 3
+                ````````````````````````````````````````````````
+
+-------------------------------------------------------------------------------------------------------------------------------
+Benefits of Using `/etc/ssh/sshd_config.d/`:
+
+1.Organization: 
+        - By splitting SSH configurations into multiple files, it's easier to organize and maintain them,
+          especially on systems with complex SSH configurations.
+  
+2.Modularity: 
+        - It allows system administrators to enable or disable specific configurations by adding/removing files.
+        - For example, one could add a new `.conf` file for a specific feature or service,
+          without modifying the main `sshd_config` file directly.
+
+3.Compatibility: 
+        - On systems that use `/etc/ssh/sshd_config.d/`, the modular configuration approach
+          is fully compatible with the traditional `sshd_config` file, making it easy to migrate
+          or work with existing configurations.
+
+-------------------------------------------------------------------------------------------------------------------------------
+How to Use It:
+
+1.Create Configuration Files: Create separate configuration files within `/etc/ssh/sshd_config.d/` for different purposes.
+
+2.Ensure `Include` Directive is Present: Check that the main `/etc/ssh/sshd_config`
+  includes the directory by verifying that the following line is present:
+        ````````````````````````````````````````````````bash
+        Include /etc/ssh/sshd_config.d/.conf
+        ````````````````````````````````````````````````
+
+3.Restart the SSH Service: After adding or modifying files in the `/etc/ssh/sshd_config.d/` directory,
+  restart the SSH service to apply the changes:
+        ````````````````````````````````````````````````bash
+        sudo systemctl restart sshd
+        ````````````````````````````````````````````````
+
+-------------------------------------------------------------------------------------------------------------------------------
+                                                       Summary 
+                                                       =======
+
+- The `/etc/ssh/sshd_config.d/` directory allows modular configuration of the SSH daemon,
+   providing a more organized way to manage SSH server settings.
+
+- Configuration files within this directory are included in the main `/etc/ssh/sshd_config` file,
+   allowing for better organization and separation of concerns.
+
+_________________________________________________________________________________________________________________________________________________________________________

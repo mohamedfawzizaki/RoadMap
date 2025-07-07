@@ -1,0 +1,80 @@
+______________________________________________________________________________________________________________________________________
+                                                Java Files in Linux 
+                                                ===================
+
+When Java is installed on a Linux system, various files are placed in specific directories.
+These files are part of the Java Development Kit (JDK) or the Java Runtime Environment (JRE), depending on the installation type.
+---------------------------------------------------------------------------------------------------------
+Main Directories for Java Files
+
+1.`/usr/lib/jvm/`
+   - This is the standard directory for storing installed Java versions on most Linux distributions.
+   - Subdirectories typically include:
+     - `/usr/lib/jvm/java-11-openjdk-amd64/`  
+       Contains the JDK/JRE for a specific version (e.g., OpenJDK 11).
+     - `/usr/lib/jvm/default-java/`  
+       A symlink pointing to the default Java installation.
+
+2.Key Files in JDK Installation
+   - `/usr/lib/jvm/<java-version>/bin/`  
+     Contains Java executables such as:
+     - `java` – The Java runtime (JRE).
+     - `javac` – The Java compiler.
+     - `jar` – The JAR archive tool.
+     - `javadoc` – The Java documentation generator.
+     - `jshell` – The Java REPL (Read-Eval-Print Loop).
+   
+   - `/usr/lib/jvm/<java-version>/lib/`  
+     Contains libraries required by the Java runtime, including:
+     - `rt.jar` – Core Java class library.
+     - `tools.jar` – Tools for Java development (e.g., the compiler).
+   
+   - `/usr/lib/jvm/<java-version>/include/`  
+     Header files for JNI (Java Native Interface) development.
+
+---------------------------------------------------------------------------------------------------------
+Java Configuration Files
+
+1.`/etc/alternatives/java`
+   - A symlink that points to the currently active Java version. 
+     You can switch Java versions using the `update-alternatives` command:
+     ```bash
+     sudo update-alternatives --config java
+     ```
+
+2.Environment Variables
+   - Java requires environment variables to be set for proper functionality:
+     - `JAVA_HOME`: Points to the Java installation directory.
+     - `PATH`: Should include the Java `bin` directory.
+   - Example of setting these variables in `~/.bashrc` or `~/.bash_profile`:
+     ```bash
+     export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+     export PATH=$JAVA_HOME/bin:$PATH
+     ```
+---------------------------------------------------------------------------------------------------------
+Common Java Commands in Linux
+
+1.Check Java Version
+   ```bash
+   java -version
+   ```
+
+2.Check Java Compiler Version
+   ```bash
+   javac -version
+   ```
+
+3.Compile and Run a Java Program
+   ```bash
+   javac HelloWorld.java    Compile
+   java HelloWorld          Run
+   ```
+---------------------------------------------------------------------------------------------------------
+Logs and Temporary Files
+
+1.Java application logs
+   - Java applications often generate logs, typically stored in `/var/log/` or a custom directory specified by the application.
+   
+2.Temporary files
+   - Java applications may use the `/tmp/` directory for temporary files.
+______________________________________________________________________________________________________________________________________

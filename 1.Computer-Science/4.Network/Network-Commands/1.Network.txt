@@ -1,0 +1,177 @@
+_________________________________________________________________________________________________________________________________________________________________________ 
+                                                     Network Management 
+                                                     ==================
+_________________________________________________________________________________________________________________________________________________________________________
+                                      Network Configuration and Interface Management
+                                      ==============================================
+                ________________________________________________________________________________________________________
+                |  Command            | Description                                                                      |
+                |_____________________|__________________________________________________________________________________|
+                | ip addr             | Displays and configures network interfaces and routing.                          |
+                | ip addr show        |                                                                                  |
+                | ip link show        | shows mac address.                                                               |
+                | ip addr show lo     | shows loopback address.                                                          |
+                | ip addr show eth0   | shows private ip address.                                                        |
+                | curl ifconfig.me    | shows public  ip address.                                                        |
+                | ip route show       |                                                                                  |
+                |---------------------|----------------------------------------------------------------------------------|
+                | sudo ip addr add IP | sudo ip addr add 192.168.1.100/24 dev eth0    Assign a static private IP address.|
+                | ip route            | sudo ip route add default via 172.20.128.1 dev eth0 | Manually set the default gateway 'Router's public IP'. |                                
+                |---------------------|----------------------------------------------------------------------------------|
+                | ip link             | sudo ip link set eth0 up        |  Brings network interfaces up.                 |                                        
+                |                     | sudo ip link set eth0 down      |  Brings network interfaces down.               |
+                |---------------------|----------------------------------------------------------------------------------|
+                |---------------------|----------------------------------------------------------------------------------|
+                | sudo dhclient eth0  |  To enable DHCP on `eth0`.                                                       |
+                | sudo dhclient -r eth0  To disable/release DHCP on `eth0`.                                              |
+                |---------------------|----------------------------------------------------------------------------------|
+                | nmap 127.0.0.1      | check for open ports and services running on the local system.                   |
+                |---------------------|----------------------------------------------------------------------------------|
+                | ethtool             |   ethtool eth0                |  Displays or changes Ethernet device settings.   |                                  
+                |_____________________|__________________________________________________________________________________|
+
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                             Network Monitoring and Statistics
+                                             =================================
+
+
+         _______________________________________________________________________________________________________________________
+        |   Command  |           Example             |                Description                                               |
+        |____________|_______________________________|__________________________________________________________________________|
+        | ping       |   ping google.com             |  Tests connectivity to a remote host.                                    |
+        | traceroute |   traceroute google.com       |  Displays the path packets take to reach a remote host.                  |
+        | mtr        |   mtr google.com              |  Combines ping and traceroute for real-time network diagnostics.         |
+        |____________|_______________________________|__________________________________________________________________________|
+        | netstat    |   netstat -tuln               |  Displays active network connections (deprecated, replaced by ss).       |
+        | ss         |   ss -tuln                    |  Displays active network connections and listening ports.                |
+        |____________|_______________________________|__________________________________________________________________________|
+        | tcpdump    |   sudo tcpdump -i eth0        |  Captures and analyzes network packets.                                  |
+        | wireshark  |   wireshark                   |  Graphical network packet analysis tool.                                 |
+        | iftop      |   sudo iftop -i eth0          |  Displays real-time bandwidth usage by connections.                      |
+        |____________|_______________________________|__________________________________________________________________________|
+        | nload      |   nload eth0                  |  Shows real-time network traffic statistics.                             |
+        | sar        |   sar -n DEV 1                |  Displays network statistics over time.                                  |
+        |____________|_______________________________|__________________________________________________________________________|
+
+
+
+
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                                DNS and Name Resolution
+                                                =======================
+
+         ________________________________________________________________________________________________________________________
+        |   Command  |          Example              |              Description                                                  |
+        |____________|_______________________________|___________________________________________________________________________|
+        | dig        |   dig example.com             |  Queries DNS servers for domain name information.                         |
+        | nslookup   |   nslookup example.com        |  Queries DNS servers for domain name or IP information.                   |
+        | host       |   host example.com            |  Resolves a domain name to an IP address and vice versa.                  |
+        | resolvectl |   resolvectl query example.com|  Resolves domain names using the systemd-resolved service.                |
+        |____________|_______________________________|___________________________________________________________________________|
+
+
+
+
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                            Network Testing and Troubleshooting
+                                            ===================================
+
+         _________________________________________________________________________________________________________________________
+        |   Command  |         Example               |                  Description                                               |
+        |____________|_______________________________|____________________________________________________________________________|
+        | curl       |   curl -I http://example.com  |  Fetches content from a URL, useful for testing HTTP/HTTPS.                |
+        | wget       |   wget http://example.com     |  Downloads files and tests HTTP/HTTPS connectivity.                        |
+        | telnet     |   telnet google.com 80        |  Tests TCP connectivity to a specific port.                                |
+        | nc (Netcat)|   nc -zv 192.168.1.1 22       |  Tests connectivity to a specific port, or transfers data over the network.|
+        | arp        |   arp -a                      |  Displays or modifies the ARP table.                                       |
+        | arping     |   arping -I eth0 192.168.1.1  |  Sends ARP requests to test link-layer connectivity.                       |
+        |____________|_______________________________|____________________________________________________________________________|
+
+
+
+
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                                Firewall and Security
+                                                =====================
+
+         _________________________________________________________________________________________________________________________
+        |  Command   |         Example               |             Description                                                    |
+        |____________|_______________________________|____________________________________________________________________________|
+        | ufw        |   ufw status                  |  Manages uncomplicated firewall settings.                                  |
+        | firewalld  |   firewall-cmd --list-all     |  Configures firewalld firewall zones and rules.                            |
+        | iptables   |   iptables -L                 |  Manages IP packet filtering rules.                                        |
+        | nmap       |   nmap -sV 192.168.1.1        |  Scans a host or network for open ports and services.                      |
+        | fail2ban   |   fail2ban-client status      |  Protects against brute-force attacks by banning IPs.                      |
+        |____________|_______________________________|____________________________________________________________________________|
+
+
+
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                              File Sharing and Transfers
+                                              ==========================
+
+         ________________________________________________________________________________________________________________________
+        |  Command   |          Example               | Description                                                              |
+        |____________|________________________________|__________________________________________________________________________|
+        | scp        | scp file.txt user@host:/path   | Securely transfers files over SSH.                                       |
+        | rsync      | rsync -avz file user@host:/path| Synchronizes files between systems.                                      |
+        | ftp        | ftp host                       | Connects to an FTP server for file transfers.                            |
+        | sftp       | sftp user@host                 | Secure FTP using SSH.                                                    |
+        |____________|________________________________|__________________________________________________________________________|
+
+
+
+
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                                DHCP and IP Management
+                                                ======================
+
+         _______________________________________________________________________________________________________________________
+        |  Command   |        Example                 |            Description                                                  |
+        |____________|________________________________|_________________________________________________________________________|
+        | dhclient   |  sudo dhclient eth0            | Requests or renews an IP address from a DHCP server.                    |
+        | dhcping    |  dhcping -s 192.168.1.1        | Tests DHCP server availability.                                         |
+        | sudo dhclient -r eth0                       | To disable/release DHCP on `eth0`.                                      |
+        |____________|________________________________|_________________________________________________________________________|
+
+
+
+
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                             Wi-Fi and Wireless Management
+                                             =============================
+
+ _______________________________________________________________________________________________________________________________
+|   Command  |          Example              |            Description                                                           |
+|____________|_______________________________|__________________________________________________________________________________|
+| iwlist     |  iwlist wlan0 scanning        | Scans for available wireless networks.                                           |
+| wpa_cli    |  wpa_cli status               | Manages Wi-Fi connections for wpa_supplicant.                                    |
+| rfkill     |  rfkill list                  | Displays and manages the blocking of wireless devices.                           |
+|____________|_______________________________|__________________________________________________________________________________|
+
+
+
+
+
+_________________________________________________________________________________________________________________________________________________________________________
+                                                VPN and Tunneling
+                                                =================
+
+ _______________________________________________________________________________________________________________________________
+|  Command  |           Example                 |          Description                                                          |
+|___________|___________________________________|_______________________________________________________________________________|
+| openvpn   | sudo openvpn --config file.ovpn   | Connects to an OpenVPN server.                                                |
+| ssh -L    | ssh -L 8080:localhost:80 user@host| Creates an SSH tunnel for local port forwarding.                              |
+|___________|___________________________________|_______________________________________________________________________________|
+
+ 
+
+_________________________________________________________________________________________________________________________________________________________________________ 
+

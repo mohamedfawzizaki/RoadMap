@@ -1,0 +1,166 @@
+_____________________________________________________________________________________________________________________________________
+                                                   NGINX as a Cache Server
+                                                   =======================
+
+NGINX can act as a cache server to improve the performance of web applications.
+By caching static and dynamic content, NGINX reduces
+ the load on backend servers and speeds up responses to client requests.
+ 
+Caching is useful for high-traffic websites, APIs, and applications with frequently accessed data.
+
+_____________________________________________________________________________________________________________________________________
+                                                  How Caching Works in NGINX
+1.Request Flow:
+   - When a client makes a request, NGINX checks if the response is already in its cache.
+   - If the content exists in the cache and is valid (a cache hit), NGINX serves it directly to the client.
+   - If the content does not exist in the cache or is stale (a cache miss),
+     NGINX fetches it from the backend server, stores it in the cache, and then serves it to the client.
+
+2.Cache Keys:
+   - A cache key uniquely identifies cached content based on the URL and other request parameters.
+   - You can customize cache keys to differentiate responses for dynamic requests.
+
+_____________________________________________________________________________________________________________________________________
+                                              Setting Up NGINX as a Cache Server
+
+1.Enable Caching
+
+Add the following to your NGINX configuration:
+        ```````````````````````````````````````````````nginx
+        proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:10m max_size=10g inactive=60m use_temp_path=off;
+
+        server {
+            listen 80;
+            server_name example.com;
+
+            location / {
+                proxy_cache my_cache;
+                proxy_cache_key $scheme$host$request_uri;
+                proxy_cache_valid 200 302 10m;
+                proxy_cache_valid 404 1m;
+                proxy_cache_bypass $http_cache_control;
+                add_header X-Cache-Status $upstream_cache_status;
+
+                proxy_pass http://127.0.0.1:8080;
+            }
+        }
+        ```````````````````````````````````````````````
+
+Explanation:
+        - `proxy_cache_path`:
+                - Specifies the cache directory, size, and parameters.
+                - `levels=1:2`: Directory structure to store cached files.
+                - `keys_zone=my_cache:10m`: Defines a shared memory zone named `my_cache` with 10 MB for storing cache keys and metadata.
+                - `max_size=10g`: Sets the maximum cache size to 10 GB.
+                - `inactive=60m`: Removes cache entries that are inactive for 60 minutes.
+        - `proxy_cache`: Enables caching using the `my_cache` zone.
+        - `proxy_cache_key`: Defines the unique key for cached content.`$scheme$host$request_uri` includes protocol, host, and URI.
+        - `proxy_cache_valid`:
+                - `200 302 10m`: Cache 200 OK and 302 Found responses for 10 minutes.
+                - `404 1m`: Cache 404 Not Found responses for 1 minute.
+        - `proxy_cache_bypass`: Bypasses the cache if `Cache-Control` headers indicate no caching.
+        - `add_header`: Adds `X-Cache-Status` to responses to indicate cache status (`HIT`, `MISS`, `BYPASS`).
+
+----------------------------------------------------------------------------------------------
+2.Test the Cache Configuration
+
+1.Reload the NGINX configuration:
+        ```````````````````````````````````````````````bash
+        sudo nginx -t
+        sudo systemctl reload nginx
+        ```````````````````````````````````````````````
+
+2.Make a request:
+        ```````````````````````````````````````````````bash
+        curl -I http://example.com
+        ```````````````````````````````````````````````
+
+3.Check the `X-Cache-Status` header:
+        - `MISS`  : The content was fetched from the backend and stored in the cache.
+        - `HIT`   : The content was served from the cache.
+        - `BYPASS`: The cache was bypassed.
+
+_____________________________________________________________________________________________________________________________________
+                                               Advanced Cache Configuration
+
+1.Caching Only Specific Content
+
+Control what gets cached by using conditions:
+        ```````````````````````````````````````````````nginx
+        location /static/ {
+            proxy_cache my_cache;
+            proxy_pass http://127.0.0.1:8080;
+        }
+        ```````````````````````````````````````````````
+
+2.Purging Cache
+
+Enable cache purging to remove specific cached entries:
+        ```````````````````````````````````````````````nginx
+        location /purge/ {
+            allow 127.0.0.1;
+            deny all;
+
+            proxy_cache_purge my_cache $scheme$host$request_uri;
+        }
+        ```````````````````````````````````````````````
+Make a request to purge:
+        ```````````````````````````````````````````````bash
+        curl -X PURGE http://example.com/some-resource
+        ```````````````````````````````````````````````
+
+3.Cache Stale Responses
+
+        Serve stale content when the backend is unavailable:
+        ```````````````````````````````````````````````nginx
+        proxy_cache_use_stale error timeout updating;
+        ```````````````````````````````````````````````
+
+4.Skip Caching for Authenticated Users
+
+Avoid caching responses for logged-in users:
+        ```````````````````````````````````````````````nginx
+        location / {
+            proxy_cache_bypass $http_authorization;
+            proxy_pass http://127.0.0.1:8080;
+        }
+        ```````````````````````````````````````````````
+
+5.Configure Cache-Control Headers
+
+Ensure proper headers are passed to clients:
+        ```````````````````````````````````````````````nginx
+        proxy_hide_header Cache-Control;
+        proxy_hide_header Expires;
+        add_header Cache-Control "public, max-age=3600";
+        ```````````````````````````````````````````````
+
+_____________________________________________________________________________________________________________________________________
+                                                   Monitoring Cache Performance
+- Log Cache Status:
+
+  Add cache status to access logs:
+        ```````````````````````````````````````````````nginx
+        log_format cache_log '$remote_addr - $upstream_cache_status [$time_local] "$request" $status';
+        access_log /var/log/nginx/cache.log cache_log;
+        ```````````````````````````````````````````````
+
+- Check Cache Directory:
+        Cached files are stored in `/var/cache/nginx`.Use `ls` to inspect:
+        ```````````````````````````````````````````````bash
+        ls /var/cache/nginx
+        ```````````````````````````````````````````````
+
+_____________________________________________________________________________________________________________________________________
+                                          Benefits of Using NGINX as a Cache Server
+1.Performance:
+        - Reduces response time for frequent requests.
+        - Lowers backend server load.
+2.Scalability:
+        - Supports high traffic with minimal hardware resources.
+3.Cost-Effectiveness:
+        - Reduces backend server requirements by serving cached content.
+4.Flexibility:
+        - Cache control through configuration and HTTP headers.
+
+_____________________________________________________________________________________________________________________________________

@@ -1,0 +1,55 @@
+_____________________________________________________________________________________________________________________________________
+
+
+http {
+    # Rate limit based on client IP (default)
+    limit_req_zone $binary_remote_addr zone=default_limit:10m rate=10r/s;
+
+    # Rate limit based on API keys
+    map $http_x_api_key $api_key_limit {
+        default "default_limit";   # Default limit for unknown API keys
+        key_123456 "premium_limit"; # Premium users get higher limits
+    }
+    limit_req_zone $api_key_limit zone=api_key_limit:10m rate=20r/s;
+
+    # Strict rate limit for login to prevent brute force attacks
+    limit_req_zone $binary_remote_addr zone=login_limit:10m rate=3r/m;
+
+    server {
+        listen 80;
+        server_name api.example.com;
+
+        # General API rate limiting
+        location /api/ {
+            limit_req zone=api_key_limit burst=20 nodelay;
+            auth_request /auth;
+            error_page 401 = @unauthorized;
+            proxy_pass http://backend_service;
+        }
+
+        # Login-specific rate limiting
+        location /api/login {
+            limit_req zone=login_limit burst=5 nodelay;
+            proxy_pass http://auth_service;
+        }
+
+        # Authentication service
+        location /auth {
+            proxy_pass http://auth-service/validate;
+            proxy_pass_request_body off;
+            proxy_set_header Content-Length "";
+            proxy_set_header X-Original-URI $request_uri;
+        }
+
+        # Custom error response for rate limiting
+        error_page 503 = @rate_limit_exceeded;
+        location @rate_limit_exceeded {
+            return 429 "Too Many Requests";
+        }
+
+        location @unauthorized {
+            return 401 "Unauthorized";
+        }
+    }
+}
+_____________________________________________________________________________________________________________________________________

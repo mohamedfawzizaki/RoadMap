@@ -1,0 +1,310 @@
+________________________________________________________________________________________________________________________________
+                                                       Functions
+                                                    ================ 
+In shell scripting, functions allow you to encapsulate
+ and reuse code, making your scripts more modular, readable, and maintainable. 
+ 
+Functions in shell scripts work similarly to functions in other programming languages,
+ providing a way to group commands under a single name.
+
+Items:
+        - Defining and Using Functions.
+        - Simple Function.
+        - Function with Multiple Arguments.
+        - Function Returning a Value.
+        - Function with Local Variables.
+        - Passing Arrays to Functions.
+        - Recursive Functions.
+        - Function Scope.
+        - Function Libraries.
+        - Debugging Functions.
+________________________________________________________________________________________________________________________________
+                                                Defining and Using Functions
+                                                ============================
+
+Basic Syntax
+        ``````````````````````````````````````````bash
+        function_name() {
+            commands
+        }
+        ``````````````````````````````````````````
+
+OR (less common but valid):
+
+        ``````````````````````````````````````````bash
+        function function_name {
+            commands
+        }
+        ``````````````````````````````````````````
+
+Calling a Function
+To execute a function, simply type its name:
+        ``````````````````````````````````````````bash
+        function_name
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                    1. Simple Function
+                                                    ==================
+        ``````````````````````````````````````````bash
+        greet() {
+            echo "Hello, $1!"
+        }
+        greet "World"
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Hello, World!
+        ``````````````````````````````````````````
+
+Here, `$1` refers to the first argument passed to the function.
+
+________________________________________________________________________________________________________________________________
+                                                2. Function with Multiple Arguments
+                                                ===================================
+        ``````````````````````````````````````````bash
+        add() {
+            result=$(( $1 + $2 ))
+            echo "The sum is: $result"
+        }
+        add 5 7
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        The sum is: 12
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                3. Function Returning a Value
+                                                =============================
+Functions in shell scripting do not directly return values like in other languages.
+Instead, you can use the `return` statement to return an exit status (integer between 0 and 255)
+ or use `echo` to output a value that can be captured.
+
+Example with `return`
+        ``````````````````````````````````````````bash
+        is_even() {
+            if (( $1 % 2 == 0 )); then
+                return 0  # Success
+            else
+                return 1  # Failure
+            fi
+        }
+
+        is_even 4 && echo "Even" || echo "Odd"
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Even
+        ``````````````````````````````````````````
+
+Example with `echo`
+        ``````````````````````````````````````````bash
+        square() {
+            echo $(( $1  $1 ))
+        }
+
+        result=$(square 6)
+        echo "Square is: $result"
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Square is: 36
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                          4. Function with Local Variables
+                                          ================================
+You can use the `local` keyword to define variables that are only accessible within the function.
+
+        ``````````````````````````````````````````bash
+        calculate_area() {
+            local length=$1
+            local width=$2
+            echo $(( length * width ))
+        }
+
+        area=$(calculate_area 5 10)
+        echo "Area: $area"
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Area: 50
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                  Function Arguments
+                                                  ==================
+
+Accessing Arguments
+- `$1`, `$2`, ...: Represent the positional arguments passed to the function.
+- `$#`: Represents the number of arguments passed to the function.
+- `$@` or `$`: Represents all arguments passed to the function.
+
+Example
+        ``````````````````````````````````````````bash
+        show_args() {
+            echo "Number of arguments: $#"
+            echo "All arguments: $@"
+        }
+
+        show_args 10 20 30
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Number of arguments: 3
+        All arguments: 10 20 30
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                Passing Arrays to Functions
+                                                ===========================
+Shell scripts don’t support passing arrays directly, but you can pass them as space-separated strings.
+
+Example
+        ``````````````````````````````````````````bash
+        process_array() {
+            for element in "$@"; do
+                echo "Element: $element"
+            done
+        }
+
+        my_array=("one" "two" "three")
+        process_array "${my_array[@]}"
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Element: one
+        Element: two
+        Element: three
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                     Recursive Functions
+                                                     ===================
+
+Functions in shell scripts can be recursive, although recursion is not commonly used due to performance concerns.
+
+Example: Factorial
+        ``````````````````````````````````````````bash
+        factorial() {
+            if (( $1 <= 1 )); then
+                echo 1
+            else
+                prev=$(factorial $(( $1 - 1 )))
+                echo $(( $1 * prev ))
+            fi
+        }
+
+        result=$(factorial 5)
+        echo "Factorial: $result"
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Factorial: 120
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                        Function Scope
+                                                        ==============
+
+Global Variables
+By default, variables in shell scripts are global and can be accessed from anywhere, including inside functions.
+
+Example
+        ``````````````````````````````````````````bash
+        greet() {
+            echo "Hello, $name!"
+        }
+
+        name="John"
+        greet
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Hello, John!
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                       Local Variables
+                                                       ===============
+Use `local` to restrict the scope of a variable to the function.
+
+Example
+        ``````````````````````````````````````````bash
+        update_var() {
+            local var="Function Scope"
+            echo $var
+        }
+
+        var="Global Scope"
+        update_var
+        echo $var
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Function Scope
+        Global Scope
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                    Function Libraries
+                                                    ==================
+
+Sourcing External Function Files
+You can write reusable functions in separate files and source them in your script using the `source` or `.` command.
+
+external_functions.sh
+        ``````````````````````````````````````````bash
+        greet() {
+            echo "Hello, $1!"
+        }
+        ``````````````````````````````````````````
+
+main_script.sh
+        ``````````````````````````````````````````bash
+        #!/bin/bash
+        source external_functions.sh
+        greet "John"
+        ``````````````````````````````````````````
+
+Output:
+        ``````````````````````````````````````````
+        Hello, John!
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                       Debugging Functions
+                                                       ===================
+
+Use `set -x` to enable debugging within a function and `set +x` to disable it.
+
+Example
+        ``````````````````````````````````````````bash
+        debug_example() {
+            set -x
+            echo "Debugging this function"
+            set +x
+        }
+
+        debug_example
+        ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                           Key Points
+                                                           ==========
+1. Use functions for code modularity and reusability.
+2. Always validate inputs within the function.
+3. Prefer local variables for cleaner function design.
+4. Use `source` to reuse functions across scripts.
+________________________________________________________________________________________________________________________________

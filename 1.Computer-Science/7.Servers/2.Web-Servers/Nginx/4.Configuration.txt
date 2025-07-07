@@ -1,0 +1,261 @@
+_______________________________________________________________________________________________________________________________________
+                                                    Nginx Directories and Files
+
+The Nginx installation includes multiple directories and files that control its configuration, logs, and modules. 
+
+Below is a detailed breakdown of its filesystem structure.
+
+/etc/nginx/
+├── nginx.conf                  # Main Nginx configuration
+├── sites-available/            # Stores all virtual host configs
+│   ├── example.com             # Configuration for example.com
+│   ├── api.example.com         # API subdomain configuration
+│   ├── old-site.conf           # Disabled site (not linked)
+│   ├── test.conf               # Disabled test site
+│
+├── sites-enabled/              # Contains only active sites (linked from sites-available)
+│   ├── example.com     -> /etc/nginx/sites-available/example.com
+│   ├── api.example.com -> /etc/nginx/sites-available/api.example.com
+│
+└── conf.d/                     # Stores general settings (gzip, proxy, security, etc.)
+│   ├── example.com.conf        # Virtual host for example.com
+│   ├── api.example.com.conf    # API-specific configuration
+│   ├── security.conf           # Security rules
+│   ├── gzip.conf               # Gzip compression settings
+│   └── proxy.conf              # Reverse proxy settings
+├── modules-available/          # Stores all module configuration files
+│   ├── 50-mod-http-geoip.conf
+│   ├── 50-mod-http-headers-more.conf
+│   ├── 50-mod-stream.conf
+│
+├── modules-enabled/         # Contains only enabled modules (symlinks to modules-available)
+│   ├── 50-mod-http-geoip.conf -> /etc/nginx/modules-available/50-mod-http-geoip.conf
+│   ├── 50-mod-http-headers-more.conf -> /etc/nginx/modules-available/50-mod-http-headers-more.conf
+
+
+
+/var/log/nginx/
+| `access.log`        | Logs all HTTP requests received by Nginx. 
+| `error.log`         | Logs errors and warnings encountered by Nginx. 
+| `ssl_access.log`    | Logs HTTPS (SSL/TLS) requests. 
+| `ssl_error.log`     | Logs SSL/TLS-related errors. 
+| `proxy_access.log`  | Logs requests forwarded to a backend server (if proxying is used). 
+| `proxy_error.log`   | Logs errors from the proxy_pass directive. 
+_______________________________________________________________________________________________________________________________________
+                                            1. Nginx Installation Directory (Default Paths)
+
+# Linux (Ubuntu/Debian)
+- Binary: `/usr/sbin/nginx`
+- Configuration: `/etc/nginx/`
+- Log Files: `/var/log/nginx/`
+- Website Root (Default): `/var/www/html/`
+- PID File: `/run/nginx.pid`
+- Cache Directory: `/var/cache/nginx/`
+- Modules: `/usr/lib/nginx/modules/`
+
+# Linux (CentOS/RHEL)
+- Binary: `/usr/sbin/nginx`
+- Configuration: `/etc/nginx/`
+- Log Files: `/var/log/nginx/`
+- Website Root (Default): `/usr/share/nginx/html/`
+- PID File: `/var/run/nginx.pid`
+- Cache Directory: `/var/cache/nginx/`
+- Modules: `/etc/nginx/modules/`
+
+# Windows
+- Binary: `C:\nginx\nginx.exe`
+- Configuration: `C:\nginx\conf\`
+- Log Files: `C:\nginx\logs\`
+- Website Root (Default): `C:\nginx\html\`
+- Cache Directory: `C:\nginx\cache\`
+
+_______________________________________________________________________________________________________________________________________
+                                               2. Key Directories and Their Purpose
+
+# (1) Configuration Files: `/etc/nginx/`
+This directory contains the main configuration files.
+
+| File/Directory                | Description 
+| `/etc/nginx/nginx.conf`       | Main configuration file. 
+| `/etc/nginx/mime.types`       | Defines supported MIME types. 
+| `/etc/nginx/sites-available/` | Directory for storing virtual host configuration files. 
+| `/etc/nginx/sites-enabled/`   | Active virtual hosts (symlinks from sites-available). 
+| `/etc/nginx/conf.d/`          | Additional configuration files (often includes `.conf` files for modules, caching, etc.). 
+| `/etc/nginx/snippets/`        | Reusable configuration snippets (e.g., SSL settings). 
+| `/etc/nginx/modules/`         | Stores dynamically loaded Nginx modules. 
+
+_______________________________________________________________________________________________________________________________________
+
+# (2) Log Files: `/var/log/nginx/`
+Stores log files for access and error logging.
+
+| File                          | Description 
+| `/var/log/nginx/access.log`   | Logs all incoming requests. 
+| `/var/log/nginx/error.log`    | Logs Nginx errors, warnings, and critical issues. 
+
+ Example: Checking Logs
+To monitor access logs:
+````````````````````````````````````````````````````````````````````bash
+tail -f /var/log/nginx/access.log
+````````````````````````````````````````````````````````````````````
+To monitor error logs:
+````````````````````````````````````````````````````````````````````bash
+tail -f /var/log/nginx/error.log
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+# (3) Website Root Directory: `/var/www/html/`
+Default directory where Nginx serves website content.
+
+| Path                      | Description 
+| `/var/www/html/`          | Default root directory for websites. 
+| `/var/www/example.com/`   | Custom directory for a virtual host (if configured). 
+
+ Example: Setting a Custom Root Directory
+Edit the virtual host file:
+````````````````````````````````````````````````````````````````````nginx
+server {
+    listen 80;
+    server_name example.com;
+    root /var/www/example.com;
+    index index.html;
+}
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+# (4) PID and Cache Files
+Nginx maintains runtime files.
+
+| File/Directory        | Description 
+| `/run/nginx.pid`      | Stores the process ID of the running Nginx instance. 
+| `/var/cache/nginx/`   | Cache directory for storing temporary files (e.g., reverse proxy cache). 
+
+ Check Running Process
+````````````````````````````````````````````````````````````````````bash
+cat /run/nginx.pid
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+# (5) Modules Directory
+Nginx supports dynamically loaded modules.
+
+| Directory                 | Description 
+| `/usr/lib/nginx/modules/` | Stores `.so` module files. 
+| `/etc/nginx/modules/`     | Alternative directory for modules. 
+
+ Example: Listing Installed Modules
+````````````````````````````````````````````````````````````````````bash
+nginx -V 2>&1 | grep -- 'modules'
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 3. Detailed Breakdown of Configuration Files
+
+# (1) `/etc/nginx/nginx.conf` (Main Configuration)
+This is the core configuration file that includes global settings.
+
+ Example `/etc/nginx/nginx.conf`
+````````````````````````````````````````````````````````````````````nginx
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include mime.types;
+    default_type application/octet-stream;
+    sendfile on;
+    keepalive_timeout 65;
+
+    include /etc/nginx/sites-enabled/;
+}
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+# (2) `/etc/nginx/sites-available/` and `/etc/nginx/sites-enabled/`
+These directories store per-site configurations.
+
+ Example Virtual Host File (`/etc/nginx/sites-available/example.com`)
+````````````````````````````````````````````````````````````````````nginx
+server {
+    listen 80;
+    server_name example.com www.example.com;
+    root /var/www/example.com;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+````````````````````````````````````````````````````````````````````
+
+# Enabling a Site
+````````````````````````````````````````````````````````````````````bash
+ln -s /etc/nginx/sites-available/example.com /etc/nginx/sites-enabled/
+nginx -t && systemctl reload nginx
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+# (3) `/etc/nginx/conf.d/`
+Used for additional configuration files.
+
+ Example: `gzip.conf` for Compression
+````````````````````````````````````````````````````````````````````nginx
+gzip on;
+gzip_types text/plain text/css application/json;
+gzip_comp_level 5;
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+# (4) `/etc/nginx/snippets/`
+Reusable configurations.
+
+ Example: `ssl-params.conf`
+````````````````````````````````````````````````````````````````````nginx
+ssl_protocols TLSv1.2 TLSv1.3;
+ssl_ciphers HIGH:!aNULL:!MD5;
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+
+ 4. Checking Nginx Status and Configuration
+
+# (1) Test Configuration
+Before reloading Nginx, check the syntax.
+````````````````````````````````````````````````````````````````````bash
+nginx -t
+````````````````````````````````````````````````````````````````````
+
+# (2) Restart Nginx
+````````````````````````````````````````````````````````````````````bash
+systemctl restart nginx
+````````````````````````````````````````````````````````````````````
+
+# (3) Reload Nginx (without downtime)
+````````````````````````````````````````````````````````````````````bash
+systemctl reload nginx
+````````````````````````````````````````````````````````````````````
+
+# (4) Check Active Nginx Processes
+````````````````````````````````````````````````````````````````````bash
+ps aux | grep nginx
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________
+                                                            Conclusion
+                                                            
+Nginx’s directory structure is well-organized, with configuration files
+ in `/etc/nginx/`, logs in `/var/log/nginx/`, and served website files in `/var/www/`. 
+ 
+Understanding these directories helps in managing, debugging, and optimizing Nginx efficiently. 🚀
+_______________________________________________________________________________________________________________________________________

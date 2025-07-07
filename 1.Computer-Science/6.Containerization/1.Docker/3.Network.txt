@@ -1,0 +1,189 @@
+________________________________________________________________________________________________________________________________________________________________
+                                                                Network Management
+
+                                                (Write "docker network" to list all network commands)
+
+ ___________________________________________________________________________________________________________________________________________________________________  
+| Command                                                            | Description                                                                                  |
+|____________________________________________________________________|______________________________________________________________________________________________|                 
+| docker network ls                                                  | Lists all Docker networks available on the host.                                             |
+| docker network ls -q --filter driver=bridge                        | Lists only the IDs of networks using the bridge driver.                                      |
+| docker network inspect my_custom_network                           | Display detailed information on one or more networks
+|--------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
+| docker network create my_custom_network                            | Creates a custom network with default settings (driver: bridge).                             |
+| docker network create --driver bridge my_bridge_network            | Creates a custom network with the bridge driver.                                             |
+| docker network create --driver host my_host_network                | Creates a custom network with the host driver. Containers share the host network namespace.  |
+| docker network create --driver none my_none_network                | Creates a custom network with no networking.                                                 |
+| docker network create --subnet=192.168.1.0/24 my_subnet_network    | Creates a network with a specified subnet.                                                   |
+| docker network create --internal my_internal_network               | Creates an isolated network. Containers cannot access external networks.                     |
+| docker network create --driver overlay my-overlay-network          | Creates an overlay network (requires a Docker Swarm or Docker Enterprise setup).             |
+| docker network create -d macvlan --subnet=192.168.1.0/24 --gateway=192.168.1.1 my-macvlan-network | Creates a macvlan network with a specified subnet and gateway.|
+|--------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
+| docker network connect my_custom_network <container_name-or-id>    | Connects a container to a specific network.                                                  |
+| docker network disconnect my_custom_network <container_name-or-id> | Disconnects a container from a specific network.                                             |
+|--------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
+|--------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
+| docker run -it --net my_custom_network <image> <app/Command>       | Runs a container connected to a specific network.                                            |
+| docker run --network my-network -d my-container                    | Runs a container in detached mode, connected to the specified network.                       |
+| docker run --network host my-container                             | Runs a container using the host's network stack.                                             |
+| docker run --network none my-container                             | Runs a container with no network interface.                                                  |
+|--------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
+| docker network prune                                               | Removes all unused networks.                                                                 |
+| docker network prune -f                                            | Forcefully removes all unused networks without prompting.                                    |
+| docker network rm my_custom_network                                | Removes a specific network.                                                                  |
+|____________________________________________________________________|______________________________________________________________________________________________|                 
+
+
+
+mo@myWinHostMachine:~/projects$ docker network create --help
+
+Usage:  docker network create [OPTIONS] NETWORK
+
+Create a network
+
+Options:
+      --attachable           Enable manual container attachment
+      --aux-address map      Auxiliary IPv4 or IPv6 addresses used by Network driver (default map[])
+      --config-from string   The network from which to copy the configuration
+      --config-only          Create a configuration only network
+  -d, --driver string        Driver to manage the Network (default "bridge")
+      --gateway strings      IPv4 or IPv6 Gateway for the master subnet
+      --ingress              Create swarm routing-mesh network
+      --internal             Restrict external access to the network
+      --ip-range strings     Allocate container ip from a sub-range
+      --ipam-driver string   IP Address Management Driver (default "default")
+      --ipam-opt map         Set IPAM driver specific options (default map[])
+      --ipv6                 Enable or disable IPv6 networking
+      --label list           Set metadata on a network
+  -o, --opt map              Set driver specific options (default map[])
+      --scope string         Control the network's scope
+      --subnet strings       Subnet in CIDR format that represents a network segment
+
+      
+
+
+________________________________________________________________________________________________________________________________________________________________
+                                                        Example Scenario: Connecting Containers
+
+Step 1: Run two containers on different networks
+        bash
+        docker container run -d --name my-db-server -p 8000:80 nginx:latest
+        docker container run -d --name my-app-server -p 8080:80 nginx:latest
+
+Step 2: Disconnect the containers from the default bridge network
+        bash
+        docker network disconnect bridge my-db-server
+
+Step 3: Connect the containers to a custom network
+        bash
+        docker network connect my-internal-network my-db-server
+        docker network connect my-internal-network my-app-server
+
+
+This setup ensures both containers are isolated from the default
+ bridge network and can communicate through the my-internal-network.
+
+Create:
+        docker network create my_custom_network
+        docker network create --driver bridge my_bridge_network
+        docker network create --driver host   my_bridge_network
+        docker network create --driver none   my_bridge_network
+        docker network create --subnet=192.168.1.0/24 my_subnet_network
+        docker network create --internal      my_internal_network   
+
+the containers only connected to this network can communicate 
+ with each other but cannot communicate with the outside and the outside cannot communicate to them.
+ this useful in testing and Database.
+
+        docker container run -d --name my-db-server -p 8000:80 nginx:latest
+        docker container run -d --name my-app-server -p 8080:80 nginx:latest
+        docker network disconnect bridge my-db-server
+        docker network connect my-internal-network my-db-server
+        docker network connect my-internal-network my-app-server         
+
+________________________________________________________________________________________________________________________________________________________________
+                                                                        Network
+                                                                        =======
+Docker networking allows containers to communicate with each other, 
+with the host system, and with external networks. 
+It is a fundamental feature for deploying applications in isolated containers that require interconnectivity.
+
+Docker Network Types:
+        bridge: The default network type. Containers on this network are isolated from the host and other containers.
+        host: Containers on this network are not isolated from the host or other containers.
+        none: Containers on this network are not isolated from the host or other containers.
+
+Use Cases for Each Network Type
+        Network Type	Use Case
+        bridge	        Default for single-host setups; containers communicate within the host.
+        host	        High-performance scenarios where network isolation isn’t needed.
+        none	        For containers that don’t need network access (e.g., data-only containers).
+        overlay	        Distributed applications requiring multi-host communication in Swarm mode.
+        macvlan	        For direct container integration into a physical network. 
+
+using non you can only communicate with the host:
+        ping localhost
+        ping 127.0.0.1
+        curl http://localhost:8080
+        curl http://127.0.0.1:8080
+
+Notes:
+1.Communication between Host and Containers:
+    - Your host can communicate with your container service by exposing ports: 
+        Examples:
+                docker container runr   -p HPortFortheWHoleContainer:servicePortInContainer <my-image>
+                docker container run -d -p 8080:80 nginx
+
+                From Host      Shell:  curl http://localhost:8080:80      -> localhost refers to the host machine localhost '192.168.1.5'.
+                                       curl http://localhost:8080         -> you do not need to the servicePortInContainer if it take the port 80
+                From Container Shell:  curl http://localhost:80           -> localhost refers to the container's localhost.
+
+2.Communication between Container and another Container in the same host machine:
+    - Container in the same host can see each other by their IP address, but cann't see each other by thier names.
+    - Your container can communicate with other containers by using the container IP address:
+        Example: 
+                From Container Shell:  curl http://172.17.0.2:80           ---> http://ContainerIP:servicePortInContainer
+    
+    - to communicate with container's name, you should do one of the following:
+            1. Use the container name in the /etc/hosts file of the container:
+            Example:
+                  1.Solution1:
+                                docker container run -it --name my-client --add-host my-server:172.17.0.2 centos:latest
+                  2.Solution2:
+                    From Container Shell:  echo "172.17.0.2 container1" >> /etc/hosts
+                    From Container Shell:  curl http://container1:80
+                                            [root@container /] echo "172.17.0.2 my-server" >> /etc/hosts
+                                            [root@container /] curl http://my-server
+
+            2. Use the --link option when running the container:
+                                docker container run -d  --name my-server -p 8000:80 nginx:latest   
+                                docker container run -it --name my-client --link my-server centos:latest    : the server container should be running.
+                                [root@05bad2692e60 /] curl http://my-server:80
+
+            3. Use the --net option  when running the container:
+                                 Create a custom network
+                                    docker network create my-custom-network
+
+                                 Start the server container on the custom network
+                                    docker run -d --name my-server --net my-custom-network nginx:latest
+
+                                 Start the client container on the same network
+                                    docker run -it --name my-client --net my-custom-network centos:latest
+            ________________________________________________________________________________________________
+            1.docker container run -it --name my-client --add-host my-server:172.17.0.2 centos:latest
+
+            2.docker container run -it --name my-client --link my-server centos:latest
+
+            3.docker network create my-custom-network
+              docker run -d  --name my-server --net my-custom-network nginx:latest
+              docker run -it --name my-client --net my-custom-network centos:latest
+            ________________________________________________________________________________________________
+
+
+2.Communication between Container and another Container in different hosts machines:
+    - Containers in different host machines can't see each other by their IP address.
+    - Containers in different host machines can't see each other by their names.
+    - Containers in different host machines can see each other by 
+      their IP address if they are in the same network, and they are in the same network if they are in the same Docker network.
+ 
+_______________________________________________________________________________________________________________________________________

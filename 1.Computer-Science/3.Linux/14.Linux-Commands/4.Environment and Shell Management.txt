@@ -1,0 +1,20 @@
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                                     Environment and Shell Management
+                                                     ================================
+#_________________________________________________________________________________________________________________________________________________________________________# 
+
+                env                         – Show environment variables.
+                export                      – Set environment variables.
+
+                declare     
+                set                         – Display or set shell variables.
+                unset                       – Remove shell variables.
+
+                alias                       – Create command shortcuts.
+                unalias                     – Remove command aliases.
+                source                      – Execute commands from a file in the current shell.
+
+                bash                        – Start a new Bash shell session.
+                sh                          – Start a new POSIX shell session.
+                zsh                         – Start a new Zsh shell session.
+                fish                        – Start a new Fish shell session.

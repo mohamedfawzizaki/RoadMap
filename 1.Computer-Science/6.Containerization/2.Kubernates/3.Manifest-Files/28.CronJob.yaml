@@ -1,0 +1,67 @@
+# --------------------------------------------------------------------------------------------------------
+# Kubernetes CronJob
+# --------------------------------------------------------------------------------------------------------
+# PURPOSE:
+# A CronJob in Kubernetes creates Jobs on a repeating schedule (like `cron` on Linux).
+# This is useful for recurring tasks like backups, sending emails, cleanup scripts, etc.
+#
+# CORE FIELDS:
+# - schedule: Cron format (e.g. "*/5 * * * *" means every 5 minutes).
+# - jobTemplate: Defines the Job (and Pod) that will run.
+# - concurrencyPolicy: Controls how overlapping executions are handled.
+# - successfulJobsHistoryLimit / failedJobsHistoryLimit: Clean up old job records.
+# - startingDeadlineSeconds: Grace period to start a missed job.
+# - suspend: Temporarily pause CronJob execution.
+# - timeZone: Optional timezone support (since v1.24).
+#
+# CLEANUP:
+# Use `ttlSecondsAfterFinished` to automatically delete finished jobs after N seconds.
+# --------------------------------------------------------------------------------------------------------
+
+apiVersion: batch/v1             # API version for batch resources like CronJob.
+kind: CronJob                    # Specifies this resource is a CronJob.
+
+metadata:
+  name: hello-cron               # Name of the CronJob.
+  namespace: default             # Namespace to which this CronJob belongs.
+  labels:
+    job: hello                   # Custom label (can be used for filtering/monitoring).
+
+spec:
+  schedule: "*/5 * * * *"        # Cron schedule (every 5 minutes). Format: min hour day month weekday
+                                 # See: https://en.wikipedia.org/wiki/Cron
+
+  timeZone: "UTC"                # Optional: Sets time zone for the schedule. Defaults to kube-controller-manager's timezone.
+
+  concurrencyPolicy: "Forbid"    # Specifies how concurrent jobs are handled:
+                                 # - "Allow": allow parallel runs
+                                 # - "Forbid": skip if previous still running
+                                 # - "Replace": kill existing and start new
+
+  startingDeadlineSeconds: 100   # If a job misses its schedule by more than this value, it will not be started.
+
+  suspend: false                 # If true, prevents the controller from starting new jobs (but doesn't affect already running ones).
+
+  successfulJobsHistoryLimit: 3  # How many successful jobs to retain for history.
+  failedJobsHistoryLimit: 1      # How many failed jobs to retain for history.
+
+  jobTemplate:                   # Defines the Job to be run at each schedule.
+    metadata:
+      labels:
+        app: cron-runner
+    spec:
+      backoffLimit: 2            # Number of retries before marking the job as failed.
+      ttlSecondsAfterFinished: 60  # Optional: Clean up job resource after 60 seconds of finishing.
+
+      template:                  # Pod template that the Job will use.
+        metadata:
+          labels:
+            job: cronjob-task
+        spec:
+          restartPolicy: OnFailure  # Pod will restart only if it fails.
+
+          containers:
+            - name: hello
+              image: busybox
+              args: ["/bin/sh", "-c", "echo Hello from Kubernetes CronJob && date"]
+              # The command prints a message with a timestamp

@@ -1,0 +1,50 @@
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                                 Services Management 
+                                                 ===================
+ 
+                                                    sudo systemctl
+                                                    ===============
+ _____________________________________________________________________________________________________________________________________________________________
+|          Command                          |                 Example                    |             Description                                            |
+|___________________________________________|____________________________________________|____________________________________________________________________|
+| sudo systemctl start      <service>       | sudo systemctl start      apache2          | Starts the specified service.                                      |
+| sudo systemctl restart    <service>       | sudo systemctl restart    apache2          | Restarts the specified service.                                    |
+| sudo systemctl stop       <service>       | sudo systemctl stop       apache2          | Stops the specified service.                                       |
+| sudo systemctl reload     <service>       | sudo systemctl reload     apache2          | Reloads the configuration files for a running service.             |
+|-------------------------------------------|--------------------------------------------|--------------------------------------------------------------------|
+| sudo systemctl status     <service>       | sudo systemctl status     apache2          | Displays the current status of the specified service.              |
+| sudo systemctl show       <service>       | sudo systemctl show       apache2          | Displays detailed information about the service.                   |
+|-------------------------------------------|--------------------------------------------|--------------------------------------------------------------------|
+| sudo systemctl enable     <service>       | sudo systemctl enable     apache2          | Enables the service to start on boot.                              |
+| sudo systemctl disable    <service>       | sudo systemctl disable    apache2          | Disables the service from starting on boot.                        |
+| sudo systemctl is-enabled <service>       | sudo systemctl is-enabled apache2          | Checks if the service is enabled to start on boot.                 |
+| sudo systemctl is-active  <service>       | sudo systemctl is-active  apache2          | Checks if the service is active.                                   |
+|-------------------------------------------|--------------------------------------------|--------------------------------------------------------------------|
+| sudo systemctl mask       <service>       | sudo systemctl mask       apache2          | Disables a service completely by preventing it from being started. |
+| sudo systemctl unmask     <service>       | sudo systemctl unmask     apache2          | Reverses the effect of mask, allowing the service to start.        |
+|-------------------------------------------|--------------------------------------------|--------------------------------------------------------------------|
+| sudo systemctl --failed                   | sudo systemctl --failed                    | List failed services                                               |
+| sudo systemctl list-units --type=service  | sudo systemctl list-units --type=service   | Lists all active services.                                         |
+|___________________________________________|____________________________________________|____________________________________________________________________|
+
+
+
+
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                                     sudo service
+                                                    =============== 
+
+ ___________________________________________________________________________________________________________________________________________________
+|            Command                   |              Example                  |             Description                                            |
+|______________________________________|_______________________________________|____________________________________________________________________|
+| sudo service <service> start         | sudo service  apache2  start          | Starts the specified service.                                      |
+| sudo service <service> stop          | sudo service  apache2  stop           | Stops the specified service.                                       |
+|--------------------------------------|---------------------------------------|--------------------------------------------------------------------|
+| sudo service <service> restart       | sudo service  apache2  restart        | Restarts the specified service.                                    |
+| sudo service <service> reload        | sudo service  apache2  restart        | Reloads the configuration without stopping.                        |
+|--------------------------------------|---------------------------------------|--------------------------------------------------------------------|
+| sudo service <service> status        | sudo service  apache2  status         | Displays the current status of the specified service.              |
+|______________________________________|_______________________________________|____________________________________________________________________|
+
+ 
+#_________________________________________________________________________________________________________________________________________________________________________# 

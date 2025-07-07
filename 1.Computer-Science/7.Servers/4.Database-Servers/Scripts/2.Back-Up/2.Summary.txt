@@ -1,0 +1,146 @@
+___________________________________________________________________________________________________________________________________
+
+                                                    MySQL Backup & Restore Commands
+
+ 1. Backup Using `mysqldump` (Logical Backup)
+         ________________________________________________________________________________________________________________________
+        |________________________________________________________________________________________________________________________|
+        |         mysqldump -u [username] -p [database_name] > [backup_file].sql                                                 |
+        |------------------------------------------------------------------------------------------------------------------------|
+        |         mysqldump -u [username] -p --databases db1 db2 db3 > [backup_file].sql                                         |
+        |------------------------------------------------------------------------------------------------------------------------|
+        |         mysqldump -u [username] -p --all-databases > [backup_file].sql                                                 |
+        |------------------------------------------------------------------------------------------------------------------------|
+        |         mysqldump -u [username] -p --routines --events --triggers [database_name] > [backup_file].sql                  |
+        |         mysqldump -u [username] -p --single-transaction [database_name] > [backup_file].sql                            |
+        |         mysqlpump -u root -p --default-parallelism=4 my_database > my_database_pump.sql                                |
+        |         mysqldump -u root -p --all-databases --single-transaction --flush-logs > full_backup.sql                       |
+        |------------------------------------------------------------------------------------------------------------------------|
+        |         mysqldump -u [username] -p [database_name] table1 table2 > [backup_file].sql                                   |
+        |------------------------------------------------------------------------------------------------------------------------|
+        |         mysqldump -u [username] -p --no-data [database_name] > [backup_file].sql                                       |
+        |------------------------------------------------------------------------------------------------------------------------|
+        |         mysqldump -u [username] -p --no-create-info [database_name] > [backup_file].sql                                |
+        |------------------------------------------------------------------------------------------------------------------------|
+        |________________________________________________________________________________________________________________________|
+        |         mysql -u [username] -p my_database < my_database_backup.sql                                                    |
+        |------------------------------------------------------------------------------------------------------------------------|
+        |         mysql -u [username] -p < all_databases_backup.sql                                                              |
+        |________________________________________________________________________________________________________________________|
+
+
+2.Compressed Backup:
+         ________________________________________________________________________________________________________________________
+        |         mysqldump -u [username] -p my_database | gzip > my_database_backup.sql.gz                                      |
+        |------------------------------------------------------------------------------------------------------------------------|
+        |         gunzip < my_database_backup.sql.gz | mysql -u [username] -p my_database                                        |
+        |________________________________________________________________________________________________________________________|
+
+
+
+3.Physical Backup Using `rsync` (Faster for Large Databases)
+         ________________________________________________________________________________________________________________________
+        |         sudo systemctl stop mysql                                                                                      |
+        |         sudo rsync -av /var/lib/mysql /backup/mysql_data/                                                              |
+        |         sudo systemctl start mysql                                                                                     |
+        |------------------------------------------------------------------------------------------------------------------------|
+        |         sudo systemctl stop mysql                                                                                      |
+        |         sudo rsync -av /backup/mysql_data/ /var/lib/mysql/                                                             |
+        |         sudo systemctl start mysql                                                                                     |
+        |________________________________________________________________________________________________________________________|
+        
+
+4.Using MySQL Enterprise Backup (Physical Hot Backup)
+         ________________________________________________________________________________________________________________________
+        | mysqlbackup --user=root --password='MyPassword' --backup-dir=/backup/mysql --backup-image=backup.mbi backup-to-image   | 
+        |------------------------------------------------------------------------------------------------------------------------|
+        | mysqlbackup --user=root --password='MyPassword' --backup-dir=/backup/mysql --backup-image=backup.mbi copy-back         |
+        |________________________________________________________________________________________________________________________|
+
+
+
+5.Remote Backup:
+         ________________________________________________________________________________________________________________________
+        | mysqldump -u root -p my_database | gzip | ssh user@remote-server "cat > /backup/mysql/my_database_$(date +\%F).sql.gz" |
+        | ssh user@remote-server "cat /backup/mysql/my_database_$(date +\%F).sql.gz" | gunzip | mysql -u root -p my_database     |
+        | aws s3 cp /backup/mysql/my_database_backup.sql.gz s3://my-database-backups/                                            |
+        |________________________________________________________________________________________________________________________|
+
+___________________________________________________________________________________________________________________________________
+
+
+
+
+
+
+
+
+
+
+
+ _______________________________________________________________________________________________________________________________________________________________________________________________
+| Category    |             Task                        |                                       Command                                                                           |
+|_____________|_________________________________________|_______________________________________________________________________________________________________________________________________|
+| Logical Backups (mysqldump)                           |                                                                                                                         |
+|             | Backup a single database                | mysqldump -u root -p my_database > my_database_backup.sql                                                               |
+|             | Backup multiple databases               | mysqldump -u root -p --databases db1 db2 > multiple_databases_backup.sql                                                |
+|             | Backup all databases                    | mysqldump -u root -p --all-databases > all_databases_backup.sql                                                         |
+|             | Include triggers, events, and stored procedures | mysqldump -u root -p --routines --events --triggers my_database > full_backup.sql                               |
+|             | Compressed backup                       | mysqldump -u root -p my_database | gzip > my_database_backup.sql.gz                                                     |
+|             | Restore a database                      | mysql -u root -p my_database < my_database_backup.sql                                                                   |
+|             | Restore multiple databases              | mysql -u root -p < multiple_databases_backup.sql                                                                        |
+|             | Restore all databases                   | mysql -u root -p < all_databases_backup.sql                                                                             |
+|             | Restore from compressed backup          | gunzip < my_database_backup.sql.gz | mysql -u root -p my_database                                                       |
+|-------------|-----------------------------------------|-------------------------------------------------------------------------------------------------------------------------|
+|_____________|_________________________________________|_______________________________________________________________________________________________________________________________________|
+| Automating Backups (cron)                             |                                                                                                                         |
+|             | Open crontab                            | crontab -e                                                                                                              |
+|             | Daily backup at 2 AM                    | 0 2 * * *  mysqldump -u root -p'MyPassword' my_database | gzip > /backup/mysql/my_database_$(date +\%F).sql.gz          |
+|             | Create backup directory                 | sudo mkdir -p /backup/mysql                                                                                             |
+|             | Set directory permissions               | sudo chmod 700 /backup/mysql                                                                                            |
+|             | Check cron job logs                     | cat /var/log/syslog | grep cron                                                                                         |
+|_____________|_________________________________________|_______________________________________________________________________________________________________________________________________|
+| Physical Backup (rsync)                               |                                                                                                                         |
+|             | Stop MySQL before backup                | sudo systemctl stop mysql                                                                                               |
+|             | Backup MySQL data directory             | sudo rsync -av /var/lib/mysql /backup/mysql_data/                                                                       |
+|             | Restart MySQL after backup              | sudo systemctl start mysql                                                                                              |
+|             | Restore MySQL data files                | sudo rsync -av /backup/mysql_data/ /var/lib/mysql/                                                                      |
+|_____________|_________________________________________|_______________________________________________________________________________________________________________________________________|
+| Parallel Backup (mysqlpump)                           |                                                                                                                         |
+|             | Backup database with parallel execution | mysqlpump -u root -p --default-parallelism=4 my_database > my_database_pump.sql                                         |
+|             | Restore from mysqlpump backup           | mysql -u root -p < my_database_pump.sql                                                                                 |
+|_____________|_________________________________________|_______________________________________________________________________________________________________________________________________|
+| Enterprise Backup (Commercial)                        |                                                                                                                         |
+|             | Perform backup                          | mysqlbackup --user=root --password='MyPassword' --backup-dir=/backup/mysql --backup-image=backup.mbi backup-to-image    |
+|             | Restore backup                          | mysqlbackup --user=root --password='MyPassword' --backup-dir=/backup/mysql --backup-image=backup.mbi copy-back          |
+|_____________|_________________________________________|_______________________________________________________________________________________________________________________________________|
+| Remote Backups                                        |                                                                                                                         |
+|             | Backup to remote server using SSH       | mysqldump -u root -p my_database | gzip | ssh user@remote-server "cat > /backup/mysql/my_database_$(date +\%F).sql.gz"  |
+|             | Restore from remote server              | ssh user@remote-server "cat /backup/mysql/my_database_$(date +\%F).sql.gz" | gunzip | mysql -u root -p my_database      |
+|_____________|_________________________________________|_______________________________________________________________________________________________________________________________________|
+| Cloud Backups                                         |                                                                                                                         |
+|             | Install rclone (Google Drive)           | sudo apt install rclone                                                                                                 |
+|             | Configure Google Drive                  | rclone config                                                                                                           |
+|             | Sync backup to Google Drive             | rclone copy /backup/mysql mydrive:mysql_backups                                                                         |
+|             | Install AWS CLI                         | sudo apt install awscli                                                                                                 |
+|             | Configure AWS credentials               | aws configure                                                                                                           |
+|             | Upload backup to S3                     | aws s3 cp /backup/mysql/my_database_backup.sql.gz s3://my-database-backups/                                             |
+|_____________|_________________________________________|_______________________________________________________________________________________________________________________________________|
+| Incremental Backups (Binary Logs)                     |                                                                                                                         |
+|             | Enable binary logs (Edit MySQL config)  | log_bin = /var/log/mysql/mysql-bin.log (in /etc/mysql/mysql.conf.d/mysqld.cnf)                                          |
+|             | Restart MySQL                           | sudo systemctl restart mysql                                                                                            |
+|             | Take a full backup                      | mysqldump -u root -p --all-databases --single-transaction --flush-logs > full_backup.sql                                |
+|             | Backup binary logs                      | cp /var/log/mysql/mysql-bin. /backup/mysql_binlogs/                                                                     |
+|             | Restore full backup                     | mysql -u root -p < full_backup.sql                                                                                      |
+|             | Apply binary logs                       | mysqlbinlog /backup/mysql_binlogs/mysql-bin. | mysql -u root -p                                                         |
+|_____________|_________________________________________|_______________________________________________________________________________________________________________________________________|
+| Backup Strategy Recommendation                        |                                                                                                                         |
+|             | Small databases                         | mysqldump                                                                                                               |
+|             | Large databases                         | mysqlpump                                                                                                               |
+|             | Production servers                      | Physical backup with rsync                                                                                              |
+|             | High-performance backup                 | MySQL Enterprise Backup                                                                                                 |
+|             | Remote backup                           | SSH, SCP, AWS S3, Google Drive                                                                                          |
+|             | Continuous incremental backup           | Binary logs                                                                                                             |
+|_____________|_________________________________________|_______________________________________________________________________________________________________________________________________|
+
+

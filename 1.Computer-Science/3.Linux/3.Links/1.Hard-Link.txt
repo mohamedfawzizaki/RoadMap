@@ -1,0 +1,95 @@
+_________________________________________________________________________________________________________________________________________________________________________
+                                                          Hard Links 
+                                                          ==========
+
+A hard link is a reference or pointer to the same inode as an existing file.
+Since it shares the same inode, it effectively acts as another name for the same file.
+Both the original file and the hard link are indistinguishable—changes made to one will reflect in the other.
+
+---------------------------------------------------------------------------------------------------------
+Characteristics of Hard Links
+
+
+1.Same Inode:  
+        - Hard links share the same inode number as the
+          original file, meaning they point to the same data blocks on the disk.
+   
+2.File Duplication:  
+        - There is no duplication of file content.
+        - The hard link merely adds an additional directory entry pointing to the same data.
+
+3.Changes are Shared:  
+        - Modifications to the content of either the original file or the hard link will be reflected in both.
+
+4.Deletion Tolerance:  
+        - If the original file is deleted, the hard link will
+          still work because the data remains on disk until all links are removed.
+
+5.Cannot Link Directories:  
+        - Hard links to directories are not allowed to prevent filesystem loops.
+
+6.Cannot Cross Filesystems:  
+        - Hard links can only be created within the same filesystem (partition).
+
+---------------------------------------------------------------------------------------------------------
+Syntax
+         ````````````````````````````````````````
+         ln [original_file] [hard_link_name]
+         ````````````````````````````````````````
+
+---------------------------------------------------------------------------------------------------------
+Example
+
+1.Create a Hard Link
+         ````````````````````````````````````````
+         touch original.txt
+         echo "Hello, world!" > original.txt
+         ln original.txt hardlink.txt
+         ````````````````````````````````````````
+
+2.Check Inode Numbers
+         ````````````````````````````````````````
+         ls -i original.txt hardlink.txt
+         ````````````````````````````````````````
+         Output:
+         ````````````````````````````````````````
+         123456 original.txt
+         123456 hardlink.txt
+         ````````````````````````````````````````
+         Both files have the same inode number, meaning they refer to the same data.
+
+3.Modify Content
+         ````````````````````````````````````````
+         echo "Updated content" >> hardlink.txt
+         cat original.txt
+         ````````````````````````````````````````
+         Output:
+         ````````````````````````````````````````
+         Hello, world!
+         Updated content
+         ````````````````````````````````````````
+         Changes made to `hardlink.txt` are reflected in `original.txt`.
+
+4.Delete the Original File
+         ````````````````````````````````````````
+         rm original.txt
+         cat hardlink.txt
+         ````````````````````````````````````````
+         Output:
+         ````````````````````````````````````````
+         Hello, world!
+         Updated content
+         ````````````````````````````````````````
+         The content remains accessible via `hardlink.txt` because the data still exists on disk.
+
+---------------------------------------------------------------------------------------------------------
+Use Cases for Hard Links
+         - Backup without Duplication:  
+                       - Create hard links to files instead of duplicating them to save disk space.
+         
+         - File Redundancy:  
+                       - If the original file is accidentally deleted, the hard link still provides access to the data.
+
+---------------------------------------------------------------------------------------------------------
+
+_________________________________________________________________________________________________________________________________________________________________________

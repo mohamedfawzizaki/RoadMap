@@ -1,0 +1,207 @@
+_______________________________________________________________________________________________________________________________________
+                                                               Subnet Mask
+                                                               ===========
+
+A subnet mask is a 32-bit number used in IP networks to divide an IP address into two parts: the network and the host portions. 
+
+It helps define which part of the IP address identifies the network and which part identifies the host (device) within that network.
+
+The subnet mask works alongside the IP address to determine the available network range and
+ the number of hosts that can be addressed within that range.
+
+_______________________________________________________________________________________________________________________________________
+                                                           Subnet Mask Format
+
+A subnet mask is typically written in dotted decimal format, similar to an IP address, consisting of four octets (8-bit groups). 
+Each octet can range from 0 to 255.
+
+For example:
+````````````````````````````````````````````
+255.255.255.0
+````````````````````````````````````````````
+
+In binary, this looks like:
+````````````````````````````````````````````
+11111111.11111111.11111111.00000000
+````````````````````````````````````````````
+
+- 1s in the subnet mask represent the network portion of the address.
+- 0s represent the host portion of the address.
+
+The subnet mask works by bitwise ANDing with the IP address to extract the network address.
+
+_______________________________________________________________________________________________________________________________________
+                                                         Purpose of a Subnet Mask
+
+1. Identify Network and Host Portions:
+   - The subnet mask helps distinguish between the network portion and the host portion of an IP address. 
+   - The network portion identifies the specific network, while the host portion identifies the device within that network.
+
+2. Subnetting:
+   - A subnet mask allows you to create subnets (smaller networks) within a larger network. 
+   - Subnetting helps improve network efficiency, security, and management by 
+     dividing large networks into smaller, more manageable segments.
+
+3. Routing:
+   - When data is sent over the network, routers use the subnet mask to determine the
+     correct network to forward the data to, ensuring it reaches the right destination.
+
+_______________________________________________________________________________________________________________________________________
+                                        Subnet Mask in Binary and Dotted Decimal Notation
+
+A subnet mask is usually represented in dotted decimal format (e.g., `255.255.255.0`), but
+ it is essential to understand its binary representation because that is how computers process it.
+
+Here’s a breakdown of a few common subnet masks:
+
+1. 255.255.255.0
+   - Binary: `11111111.11111111.11111111.00000000`
+   - Network portion: First 24 bits (`255.255.255`)
+   - Host portion: Last 8 bits (`0`)
+
+   This subnet mask is commonly used for Class C networks.
+
+2. 255.255.0.0
+   - Binary: `11111111.11111111.00000000.00000000`
+   - Network portion: First 16 bits (`255.255`)
+   - Host portion: Last 16 bits (`0.0`)
+
+   This subnet mask is typically used for Class B networks.
+
+3. 255.0.0.0
+   - Binary: `11111111.00000000.00000000.00000000`
+   - Network portion: First 8 bits (`255`)
+   - Host portion: Last 24 bits (`0.0.0`)
+
+   This subnet mask is used for Class A networks.
+
+4. /32 (CIDR notation)
+   - This is a special case where all the bits are used for the network portion and none are left for the host portion.
+   - Equivalent subnet mask: `255.255.255.255`
+
+_______________________________________________________________________________________________________________________________________
+                                             Classful IP Addressing and Subnet Masks
+
+Historically, IP addresses were classified into classes, with default subnet masks based on the class. 
+These are referred to as classful networks.
+
+1. Class A (1.0.0.0 to 127.255.255.255)
+   - Default Subnet Mask: `255.0.0.0`
+   - First octet (1–127) is used for network addressing, and the rest is used for host addressing.
+
+2. Class B (128.0.0.0 to 191.255.255.255)
+   - Default Subnet Mask: `255.255.0.0`
+   - First two octets (128–191) are used for network addressing, and the last two are for host addressing.
+
+3. Class C (192.0.0.0 to 223.255.255.255)
+   - Default Subnet Mask: `255.255.255.0`
+   - First three octets (192–223) are used for network addressing, and the last octet is for host addressing.
+
+4. Class D (Multicast): Used for special multicast addressing, and it does not have a default subnet mask.
+
+5. Class E (Reserved): Reserved for future use and experiments.
+
+Note: Classful addressing is largely obsolete today, with CIDR (Classless Inter-Domain Routing) being used instead.
+
+_______________________________________________________________________________________________________________________________________
+                                                          CIDR Notation
+
+CIDR (Classless Inter-Domain Routing) is a method of specifying IP addresses and their
+ associated subnet masks using a slash (`/`) followed by a number that indicates the number of bits used for the network portion.
+
+For example:
+````````````````````````````````````````````
+192.168.1.0/24
+````````````````````````````````````````````
+- This represents an IP address of `192.168.1.0` with a subnet mask of `255.255.255.0`,
+  which means the first 24 bits are for the network and the remaining 8 bits are for the host.
+
+_______________________________________________________________________________________________________________________________________
+                                                      How Subnet Masks Work
+
+- The network portion of the IP address is determined by the 1s in the subnet mask.
+- The host portion is determined by the 0s in the subnet mask.
+
+ Example:
+
+IP Address: `192.168.1.10`
+Subnet Mask: `255.255.255.0`
+
+1. Convert both the IP address and subnet mask to binary:
+
+   ````````````````````````````````````````````
+   IP Address:   11000000.10101000.00000001.00001010
+   Subnet Mask:  11111111.11111111.11111111.00000000
+   ````````````````````````````````````````````
+
+2. Perform a bitwise AND operation:
+   - The network portion is the result of ANDing each corresponding bit of the IP address and the subnet mask.
+   - The host portion is what remains after the network portion.
+
+   Result:
+   ````````````````````````````````````````````
+   Network Address: 11000000.10101000.00000001.00000000
+   ````````````````````````````````````````````
+
+   This results in the network address `192.168.1.0`, meaning the device with IP `192.168.1.10` belongs to the `192.168.1.0` network.
+
+_______________________________________________________________________________________________________________________________________
+                                              Calculating Number of Subnets and Hosts
+
+Given a subnet mask, you can calculate the number of subnets and hosts that are possible:
+
+1. Number of Subnets:
+   The number of subnets is determined by the number of bits borrowed from the host portion for subnetting. 
+   You can calculate it using the formula:
+   \[
+   \text{Number of Subnets} = 2^n
+   \]
+   where `n` is the number of bits borrowed.
+
+2. Number of Hosts per Subnet:
+   The number of hosts available in a subnet is determined by the number of bits left for hosts. 
+   The formula is:
+   \[
+   \text{Number of Hosts} = 2^h - 2
+   \]
+   where `h` is the number of host bits, and we subtract 2 because one address is reserved
+    for the network address and one for the broadcast address.
+
+_______________________________________________________________________________________________________________________________________
+                                                      Subnetting Example
+
+Given an IP address of `192.168.1.0/24`, let's calculate the number of subnets and hosts:
+
+- Subnet Mask: `255.255.255.0` or `/24`
+- Borrowing 2 bits from the host portion to create subnets:
+  - Number of Subnets: \(2^2 = 4\)
+  - Number of Hosts per Subnet: \(2^6 - 2 = 62\)
+
+So, by borrowing 2 bits from the host portion, you create 4 subnets, each capable of hosting 62 devices.
+
+_______________________________________________________________________________________________________________________________________
+                                                  Common Subnet Masks
+
+Here are some common subnet masks and their CIDR notation:
+                            __________________________________________________________________________
+                           | Subnet Mask       | CIDR Notation  | Number of Hosts | Number of Subnets |
+                           |___________________|________________|_________________|___________________|
+                           | 255.0.0.0         |      /8        |     16,777,214  |        1          |
+                           | 255.255.0.0       |      /16       |     65,534      |        1          |
+                           | 255.255.255.0     |      /24       |     254         |        1          |
+                           | 255.255.255.192   |      /26       |     62          |        4          |
+                           | 255.255.255.224   |      /27       |     30          |        8          |
+                           | 255.255.255.240   |      /28       |     14          |        16         |
+                           | 255.255.255.248   |      /29       |     6           |        32         |
+                           |___________________|________________|_________________|___________________|
+
+_______________________________________________________________________________________________________________________________________
+                                                     Conclusion
+
+A subnet mask plays a crucial role in determining how IP addresses are divided into networks and hosts. 
+It is an essential part of IP addressing and network configuration,
+ ensuring that devices can communicate with each other within a network. 
+ 
+Subnetting allows for efficient use of IP addresses, and understanding
+ subnet masks is critical for managing and troubleshooting network configurations.
+_______________________________________________________________________________________________________________________________________

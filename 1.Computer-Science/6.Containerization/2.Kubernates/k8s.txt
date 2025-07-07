@@ -1,0 +1,65 @@
+kubectl port-forward -n kubernetes-dashboard service/kubernetes-dashboard 8080:80
+http://localhost:8080
+
+
+
+
+
+Kaniko-based Jenkins agent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kubernetes (K8s) is an open-source container orchestration platform developed by Google,
+ now maintained by the Cloud Native Computing Foundation (CNCF). 
+It helps you deploy, scale, and manage containerized applications (like Docker containers) automatically.
+
+
+
+
+
+
+
+
+
+
+control-plane:
+    1.api-server.
+    2.controller-manager.
+    3.scheduler.
+    4.etcd.
+worker-nodes:
+    1.kubelet.
+    2.container-runc:
+    3.pod-network
+    4.kube-proxy.
+
+
+namespaces
+
+
+
+1.deployment.
+2.replica-set.
+3.daemon-set.
+4.stateful-set.
+
+pods:
+    1.container.
+    2.volume.
+    3.env.
+    4.configmap.
+
+ingress:
+service:
+

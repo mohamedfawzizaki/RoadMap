@@ -1,0 +1,141 @@
+____________________________________________________________________________________________________________________________________________________________
+                                                     Environment Variables
+                                                     =====================
+
+Environment variables are key-value pairs used by the operating 
+ system and applications to store configuration settings and system information.
+
+They play a crucial role in defining how processes interact with the system and manage their execution environment.
+
+________________________________________________________________________________________________________________________________
+                                            1. Characteristics of Environment Variables
+
+- Global Scope: They are available to the shell and all its child processes.
+- Defined in Key-Value Pairs: For example, `KEY=value`.
+- Case-Sensitive: Variable names are typically in uppercase by convention.
+- Temporary or Persistent: Can be defined temporarily for the current session or persistently for future sessions.
+
+________________________________________________________________________________________________________________________________
+                                            2. Common Environment Variables
+                       ____________________________________________________________________________
+                      |      Variable      |                Description                            |
+                      |____________________|_______________________________________________________|
+                      | `PATH`             | Lists directories to search for executable files.     |
+                      | `HOME`             | Specifies the home directory of the current user.     |
+                      | `USER`             | Contains the username of the logged-in user.          |
+                      | `SHELL`            | Specifies the default shell for the user.             |
+                      | `LANG`             | Defines the system language and locale.               |
+                      | `PWD`              | Contains the present working directory.               |
+                      | `EDITOR`           | Defines the default text editor for the system.       |
+                      | `TERM`             | Describes the type of terminal in use (e.g., `xterm`).|
+                      | `MAIL`             | Path to the user’s mailbox file.                      |
+                      | `LOGNAME`          | Username of the logged-in user (similar to `USER`).   |
+                      | `TZ`               | Specifies the time zone setting.                      |
+                      |____________________|_______________________________________________________|
+
+________________________________________________________________________________________________________________________________
+                                             3. Viewing Environment Variables
+- List All Environment Variables:
+          ``````````````````````````````````````````bash
+          printenv
+          ``````````````````````````````````````````
+  or
+          ``````````````````````````````````````````bash
+          env
+          ``````````````````````````````````````````
+- View a Specific Variable:
+          ``````````````````````````````````````````bash
+          echo $VARIABLE_NAME
+          ``````````````````````````````````````````
+  Example:
+          ``````````````````````````````````````````bash
+          echo $PATH
+          ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                 4. Setting Environment Variables
+
+Temporarily (Session-Specific)
+Variables set in this way are lost once the session ends.
+          ``````````````````````````````````````````bash
+          VARIABLE_NAME=value
+          export VARIABLE_NAME
+          ``````````````````````````````````````````
+Example:
+          ``````````````````````````````````````````bash
+          export GREETING="Hello, World"
+          echo $GREETING
+          ``````````````````````````````````````````
+
+Persistently
+To make variables persistent, add them to configuration files:
+1. For Current User: Add to `~/.bashrc` or `~/.bash_profile`.
+          ``````````````````````````````````````````bash
+          export VARIABLE_NAME=value
+          ``````````````````````````````````````````
+   Reload the file:
+          ``````````````````````````````````````````bash
+          source ~/.bashrc
+          ``````````````````````````````````````````
+
+2. For All Users: Add to `/etc/environment` or `/etc/profile`.
+
+________________________________________________________________________________________________________________________________
+                                           5. Modifying Existing Environment Variables
+
+- Example: Appending to the `PATH` Variable:
+          ``````````````````````````````````````````bash
+          export PATH=$PATH:/new/directory
+          ``````````````````````````````````````````
+- Prepending to the `PATH` Variable:
+          ``````````````````````````````````````````bash
+          export PATH=/new/directory:$PATH
+          ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                             6. Unsetting Environment Variables
+
+Use the `unset` command to remove a variable from the environment.
+          ``````````````````````````````````````````bash
+          unset VARIABLE_NAME
+          ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                           7. Common Use Cases
+- Application Configuration: Setting database credentials or API keys.
+          ``````````````````````````````````````````bash
+          export DB_HOST="localhost"
+          export DB_USER="root"
+          ``````````````````````````````````````````
+- Localization: Setting the system language.
+          ``````````````````````````````````````````bash
+          export LANG=en_US.UTF-8
+          ``````````````````````````````````````````
+- Custom Scripts: Passing runtime configuration to scripts.
+          ``````````````````````````````````````````bash
+          export LOG_LEVEL=debug
+          ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                            8. Best Practices
+
+1. Use All Caps for Names: Makes it easy to identify environment variables.
+2. Avoid Overwriting System Variables: Unless necessary, avoid changing critical variables like `PATH` or `HOME`.
+3. Secure Sensitive Data: Do not expose sensitive data like passwords in global variables.
+
+________________________________________________________________________________________________________________________________
+                                   9. Example Script with Environment Variables
+                                   
+          ``````````````````````````````````````````bash
+          #!/bin/bash
+
+          # Setting environment variables
+          export APP_ENV="production"
+          export LOG_PATH="/var/log/app"
+
+          # Using environment variables
+          echo "Application environment: $APP_ENV"
+          echo "Log files stored at: $LOG_PATH"
+          ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________

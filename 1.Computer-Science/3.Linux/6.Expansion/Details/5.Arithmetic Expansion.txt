@@ -1,0 +1,157 @@
+______________________________________________________________________________________________________________________________________
+                                                Arithmetic Expansion 
+                                                ====================
+
+Arithmetic expansion in Linux allows you to 
+ perform arithmetic operations within shell scripts using the `$((expression))` syntax.
+This feature is available in most POSIX-compliant shells, including Bash and Ksh.
+---------------------------------------------------------------------------------------------------------
+Syntax
+
+        ```bash
+        $((expression))
+        ```
+
+
+- The shell evaluates the arithmetic expression inside `$(( ))` and substitutes the result.
+- It supports basic arithmetic operations (addition, subtraction, multiplication, division) and bitwise operations.
+
+---------------------------------------------------------------------------------------------------------
+Basic Arithmetic Operations
+ __________________________________________________________
+| Operation      | Symbol | Example               | Result |
+|________________|________|_______________________|________|
+| Addition       | `+`    | `echo $((5 + 3))`     | `8`    |
+| Subtraction    | `-`    | `echo $((5 - 3))`     | `2`    |
+| Multiplication | `*`    | `echo $((5 * 3))`     | `15`   |
+| Division       | `/`    | `echo $((6 / 3))`     | `2`    |
+| Modulus        | `%`    | `echo $((5 % 3))`     | `2`    |
+| Exponentiation | `**`   | `echo $((2 ** 3))`    | `8`    |
+|________________|________|_______________________|________|
+---------------------------------------------------------------------------------------------------------
+Example: Basic Usage
+
+        ```bash
+        Performing addition
+        a=10
+        b=5
+        sum=$((a + b))
+        echo "Sum: $sum"   Output: Sum: 15
+        ```
+---------------------------------------------------------------------------------------------------------
+Combining Arithmetic and Variable Assignment
+
+You can directly modify a variable using arithmetic expansion:
+
+        ```bash
+        Incrementing a variable
+        count=5
+        count=$((count + 1))
+        echo "Count: $count"   Output: Count: 6
+        ```
+
+Alternatively, you can use the shorthand operators:
+ ______________________________________
+| Shorthand    | Meaning               |
+|______________|_______________________|
+| `+=`         | Add and assign        |
+| `-=`         | Subtract and assign   |
+| `=`          | Multiply and assign   |
+| `/=`         | Divide and assign     |
+| `%=`         | Modulus and assign    |
+| `++`         | Increment by 1        |
+| `--`         | Decrement by 1        |
+|______________|_______________________|
+
+        Example:
+        ```bash
+        x=2
+        x+=5
+        echo "x: $x"   Output: x: 25
+
+        y=4
+        ((y++))
+        echo "y: $y"   Output: y: 5
+        ```
+---------------------------------------------------------------------------------------------------------
+Comparison Operations
+
+Arithmetic expansion supports comparison operators, returning `1` for true and `0` for false.
+ ____________________________________________________________
+| Operation        | Symbol | Example               | Result |
+|__________________|________|_______________________|________|
+| Equal            | `==`   | `echo $((5 == 5))`    | `1`    |
+| Not Equal        | `!=`   | `echo $((5 != 3))`    | `1`    |
+| Greater Than     | `>`    | `echo $((5 > 3))`     | `1`    |
+| Less Than        | `<`    | `echo $((5 < 3))`     | `0`    |
+| Greater or Equal | `>=`   | `echo $((5 >= 5))`    | `1`    |
+| Less or Equal    | `<=`   | `echo $((5 <= 3))`    | `0`    |
+|__________________|________|_______________________|________|
+---------------------------------------------------------------------------------------------------------
+Logical Operations
+ _____________________________________________________________
+| Operation     | Symbol | Example                   | Result |
+|_______________|________|___________________________|________|
+| Logical AND   | `&&`   | `echo $((5 > 3 && 2 > 1))`| `1`    |
+| Logical OR    | `||`   | `echo $((5 > 3 || 2 < 1))`| `1`    |
+| Logical NOT   | `!`    | `echo $((!0))`            | `1`    |
+|_______________|________|___________________________|________|
+
+---------------------------------------------------------------------------------------------------------
+Bitwise Operations
+ ___________________________________________________________
+| Operation        | Symbol | Example              | Result |
+|__________________|________|______________________|________|
+| Bitwise AND      | `&`    | `echo $((5 & 3))`    | `1`    |
+| Bitwise OR       | `|`    | `echo $((5 | 3))`    | `7`    |
+| Bitwise XOR      | `^`    | `echo $((5 ^ 3))`    | `6`    |
+| Bitwise NOT      | `~`    | `echo $((~5))`       | `-6`   |
+| Left Shift       | `<<`   | `echo $((5 << 1))`   | `10`   |
+| Right Shift      | `>>`   | `echo $((5 >> 1))`   | `2`    |
+|__________________|________|______________________|________|
+---------------------------------------------------------------------------------------------------------
+Using Arithmetic Expansion in Loops
+
+Arithmetic expansion is commonly used in for loops and while loops for iteration and counting.
+
+        Example: Using a `for` loop
+        ```bash
+        for ((i = 1; i <= 5; i++)); do
+            echo "Iteration $i"
+        done
+        ```
+        Output:
+        ```
+        Iteration 1
+        Iteration 2
+        Iteration 3
+        Iteration 4
+        Iteration 5
+        ```
+---------------------------------------------------------------------------------------------------------
+Using Arithmetic Expansion with `if` Statements
+
+You can use arithmetic expansion to evaluate conditions in `if` statements.
+
+        Example:
+        ```bash
+        a=10
+        b=5
+        if ((a > b)); then
+            echo "a is greater than b"
+        else
+            echo "b is greater than or equal to a"
+        fi
+        ```
+        Output:
+        ```
+        a is greater than b
+        ```
+---------------------------------------------------------------------------------------------------------
+Conclusion
+
+Arithmetic expansion in Linux is a powerful tool for performing mathematical
+ operations, comparisons, and bitwise manipulations directly in the shell.
+It's especially useful for writing shell scripts that require
+ numeric computations or conditional logic based on numerical values.
+______________________________________________________________________________________________________________________________________

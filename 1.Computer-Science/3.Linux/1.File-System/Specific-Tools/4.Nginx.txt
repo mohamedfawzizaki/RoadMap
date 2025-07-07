@@ -1,0 +1,178 @@
+______________________________________________________________________________________________________________________________________
+                                          Nginx Files and Directories in Linux
+                                          ====================================
+
+Nginx (pronounced "Engine-X") is a high-performance web server and
+ reverse proxy server, often used as a load balancer and HTTP cache.
+Nginx is widely used for its low resource consumption, 
+ handling thousands of simultaneous connections with minimal memory usage.
+
+In a typical Nginx installation on a Linux system, several directories and
+ configuration files are involved in managing the server's operation.
+Below is an overview of the essential Nginx directories and their contents.
+---------------------------------------------------------------------------------------------------------
+Key Nginx Directories and Files
+
+1.`/etc/nginx/` (Main Configuration Directory)
+   - This is the primary directory for storing Nginx configuration files on most Linux systems (Debian, Ubuntu, CentOS, etc.).
+   - Files and Subdirectories:
+     - `/etc/nginx/nginx.conf`: 
+                  - The main configuration file for Nginx.It contains global settings for 
+                    the Nginx server, including worker processes, server blocks, and other global directives.
+     - `/etc/nginx/sites-available/`: 
+                  - This directory contains configuration files for each website or "server block" (virtual host).
+                  - Server block configuration files define how requests to the server are handled and routed to specific directories.
+                  - You can create separate files for each site.
+     - `/etc/nginx/sites-enabled/`: 
+                  - Contains symbolic links to the configuration files from `sites-available/` that are active (enabled).
+                  - The links are created using `ln -s` and make the corresponding sites available for Nginx.
+     - `/etc/nginx/conf.d/`: 
+                  - Directory for additional configuration files that are included in the main Nginx configuration (`nginx.conf`).
+                  - Typically used for extra settings like SSL, proxy configuration, or module configurations.
+     - `/etc/nginx/snippets/`:
+                  - Contains reusable pieces of configuration that can be included in other configuration files.
+                  - For example, SSL configurations or common directives can be stored here and referenced from other files.
+     - `/etc/nginx/mime.types`: 
+                  - A file that maps file extensions to MIME types.
+                  - It's used to help Nginx serve the correct content type based on file
+                     extensions (e.g., `.html` as `text/html`, `.jpg` as `image/jpeg`).
+     - `/etc/nginx/fastcgi_params`: 
+                  - Contains FastCGI parameters for integrating PHP (via PHP-FPM) or other FastCGI applications.
+     - `/etc/nginx/ssl/`: 
+                  - Directory for SSL certificates and keys (if SSL is configured).
+
+2.`/var/www/` (Web Content Directory)
+   - Similar to Apache, Nginx also serves web content from a specified directory.
+   - `/var/www/html/`: 
+            - The default document root directory where web content such
+              as HTML files, images, CSS, and JavaScript files are placed.
+
+3.`/var/log/nginx/` (Log Directory)
+   - This is where Nginx logs its activity, including access logs and error logs.
+   - Files:
+     - `/var/log/nginx/access.log`: 
+                  - Records all incoming HTTP requests to the server, including information
+                    like the request's IP address, requested URL, and response status.
+     - `/var/log/nginx/error.log`: 
+                  - Logs errors, warnings, and critical messages related to the operation of Nginx.
+
+4.`/usr/sbin/nginx` (Nginx Binary)
+   - This is the executable binary for Nginx, typically located in `/usr/sbin/nginx`.
+   - It is used to start, stop, and manage the Nginx service.
+
+5.`/usr/share/nginx/` (Shared Files for Nginx)
+   - `/usr/share/nginx/html/`: This directory may contain default HTML files that
+      Nginx serves when installed, such as a default welcome page or a "not found" page.
+
+6.`/run/nginx/` (Runtime Directory)
+   - `/run/nginx.pid`: 
+               - The process ID file for the Nginx master process.
+               - This file is used by the system to manage the running Nginx instance.
+   - `/run/nginx/` may also contain other runtime data used by Nginx while it is running.
+---------------------------------------------------------------------------------------------------------
+Important Nginx Configuration Files
+
+1.`/etc/nginx/nginx.conf`:
+   - This is the central configuration file for Nginx.It is responsible for 
+     setting global options like worker processes, logging, and general directives for all server blocks.
+   - Common sections:
+     - Main block  : Defines global settings (worker processes, log file locations, etc.).
+     - HTTP block  : Configures HTTP-related settings, such as timeouts, file limits, and default settings for server blocks.
+     - Server block: Defines settings for individual websites or virtual hosts.
+                     Each website typically has its own server block configuration.
+   
+   Example `nginx.conf` structure:
+   ```nginx
+   user www-data;
+   worker_processes auto;
+   pid /run/nginx.pid;
+
+   events {
+       worker_connections 1024;
+   }
+
+   http {
+       include       /etc/nginx/mime.types;
+       default_type  application/octet-stream;
+       access_log    /var/log/nginx/access.log;
+
+       server {
+           listen 80;
+           server_name example.com;
+           root /var/www/example.com;
+
+           location / {
+               try_files $uri $uri/ =404;
+           }
+       }
+   }
+   ```
+2.`/etc/nginx/sites-available/` and `/etc/nginx/sites-enabled/`:
+   - `sites-available/`: 
+               - Directory where individual site configuration files are placed.
+               - These files define how Nginx should handle specific domains or websites.
+   - `sites-enabled/`: 
+               - Directory containing symlinks to the configuration files in `sites-available/` that should be active.
+
+   Example configuration file in `sites-available/`:
+   ```nginx
+   server {
+       listen 80;
+       server_name yourdomain.com;
+       root /var/www/yourdomain.com;
+
+       location / {
+           index index.html index.htm;
+       }
+   }
+   ```
+
+   To enable a site, create a symbolic link from `sites-available` to `sites-enabled`:
+   ```bash
+   sudo ln -s /etc/nginx/sites-available/yourdomain.com /etc/nginx/sites-enabled/
+   ```
+
+3.`/etc/nginx/conf.d/`:
+   - This directory is used for additional configuration files that Nginx includes in the main `nginx.conf` file.
+   - For example, a file like `/etc/nginx/conf.d/default.conf` 
+     can be used to set up basic configurations or additional settings like reverse proxies, caching, and SSL.
+---------------------------------------------------------------------------------------------------------
+Service Control (Systemd)
+
+- Start Nginx:
+  ```bash
+  sudo systemctl start nginx
+  ```
+
+- Stop Nginx:
+  ```bash
+  sudo systemctl stop nginx
+  ```
+
+- Enable Nginx to Start on Boot:
+  ```bash
+  sudo systemctl enable nginx
+  ```
+
+- Check Nginx Status:
+  ```bash
+  sudo systemctl status nginx
+  ```
+
+- Test Nginx Configuration:
+  Before restarting or reloading Nginx, it's a good practice to test the configuration for errors:
+  ```bash
+  sudo nginx -t
+  ```
+---------------------------------------------------------------------------------------------------------
+Summary of Nginx Directories
+
+- `/etc/nginx/`: Configuration files for Nginx (e.g., `nginx.conf`, `sites-available/`, `sites-enabled/`).
+- `/var/www/`: The root directory where web files are stored.
+- `/var/log/nginx/`: Log directory for access and error logs.
+- `/usr/sbin/nginx`: Nginx binary used to start the server.
+- `/run/nginx/`: Runtime data such as process IDs.
+  
+Nginx is highly configurable, and its directories and files give you the
+ flexibility to manage server behavior, configure virtual hosts, handle SSL, and log requests and errors efficiently.
+______________________________________________________________________________________________________________________________________

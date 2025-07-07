@@ -1,0 +1,109 @@
+___________________________________________________________________________________________________________________________________
+                                               /etc/mysql/mysql.conf.d/mysql.cnf 
+                                               =================================
+
+This is the MySQL client configuration file, located at:  
+
+``````````````````````````````````````````````````````````````
+/etc/mysql/mysql.conf.d/mysql.cnf
+``````````````````````````````````````````````````````````````
+
+Unlike the `mysqld.cnf` file, which configures the MySQL server, 
+ this file is used to configure settings for the MySQL command-line client (`mysql` command).
+
+___________________________________________________________________________________________________________________________________
+                                               Breakdown of the File Contents
+
+``````````````````````````````````````````````````````````````plaintext
+
+# The MySQL database client configuration file
+
+# Ref to https://dev.mysql.com/doc/refman/en/mysql-command-options.html
+``````````````````````````````````````````````````````````````
+- This is a comment providing information about the purpose of the file.
+- The reference link points to MySQL documentation for command-line options:  
+  [MySQL Client Command Options](https://dev.mysql.com/doc/refman/en/mysql-command-options.html).
+
+``````````````````````````````````````````````````````````````plaintext
+[mysql]
+``````````````````````````````````````````````````````````````
+- This section header `[mysql]` means that all configurations below this line apply only to the MySQL client (`mysql` command).
+
+___________________________________________________________________________________________________________________________________
+                                             Possible Configurations for `[mysql]`
+
+Since your file currently doesn’t specify any options under `[mysql]`,
+ the client will use its default settings. However, you can add parameters to customize behavior. 
+ 
+Below are some useful options you might want to configure:
+
+ 1. Set Default Username
+``````````````````````````````````````````````````````````````plaintext
+[mysql]
+user=root
+``````````````````````````````````````````````````````````````
+- Automatically logs in as `root` without needing `-u root` every time.
+- Useful if you frequently use a specific MySQL user.
+
+ 2. Set Default Host
+``````````````````````````````````````````````````````````````plaintext
+[mysql]
+host=localhost
+``````````````````````````````````````````````````````````````
+- Default connection host is `localhost` (the local machine).
+- If you connect to a remote MySQL server often, you can change this to the server’s IP or domain.
+
+ 3. Set Default Password (Not Recommended)
+``````````````````````````````````````````````````````````````plaintext
+[mysql]
+password=yourpassword
+``````````````````````````````````````````````````````````````
+- Security Warning: Storing passwords in plaintext is a major security risk.  
+  Instead, use the `mysql_config_editor` command:
+  ``````````````````````````````````````````````````````````````
+  mysql_config_editor set --login-path=myserver --user=root --password
+  ``````````````````````````````````````````````````````````````
+
+ 4. Enable Auto-Reconnect
+``````````````````````````````````````````````````````````````plaintext
+[mysql]
+auto-rehash
+``````````````````````````````````````````````````````````````
+- Enables automatic command completion for table and column names in MySQL CLI.
+- This improves usability but slightly slows down the initial connection.
+
+ 5. Set Default Database
+``````````````````````````````````````````````````````````````plaintext
+[mysql]
+database=mydatabase
+``````````````````````````````````````````````````````````````
+- Automatically connects to `mydatabase` upon login.
+
+ 6. Change Prompt Appearance
+``````````````````````````````````````````````````````````````plaintext
+[mysql]
+prompt="MySQL> "
+``````````````````````````````````````````````````````````````
+- Customizes the MySQL prompt.
+- Example: `prompt="\u@\h [\d]> "` shows `username@host [database]>`.
+
+___________________________________________________________________________________________________________________________________
+                                                    How to Apply Changes?
+
+After modifying `mysql.cnf`, restart MySQL for the changes to take effect:
+
+``````````````````````````````````````````````````````````````bash
+sudo systemctl restart mysql
+``````````````````````````````````````````````````````````````
+or  
+``````````````````````````````````````````````````````````````bash
+sudo service mysql restart
+``````````````````````````````````````````````````````````````
+
+___________________________________________________________________________________________________________________________________
+                                                         Conclusion
+
+- The `mysql.cnf` file is only for configuring the MySQL client (`mysql` command).
+- Your file currently has no custom options, meaning MySQL CLI runs with default settings.
+- You can customize default user, host, database, prompt, and more to make your workflow easier.
+___________________________________________________________________________________________________________________________________

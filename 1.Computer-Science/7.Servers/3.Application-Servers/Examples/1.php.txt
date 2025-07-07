@@ -1,0 +1,79 @@
+Here’s a **comprehensive list of PHP application servers**, including traditional and high-performance modern ones:
+
+---
+
+## 🔥 **Modern PHP Application Servers** (Persistent/High Performance)
+
+These servers keep your PHP app **in memory**, reducing the boot time per request.
+
+### 1. **RoadRunner**
+- **Written in**: Go
+- **Use Case**: Laravel (with Octane), Symfony, custom apps
+- **Features**:
+  - Multithreaded performance
+  - Static file serving
+  - GRPC, Queues, Events, and more
+- **Website**: [https://roadrunner.dev](https://roadrunner.dev)
+
+### 2. **Swoole**
+- **Written in**: C (PHP Extension)
+- **Use Case**: Laravel (with Octane), native Swoole apps
+- **Features**:
+  - Coroutine support
+  - Async HTTP server
+  - WebSockets, TCP, UDP support
+- **Website**: [https://www.swoole.co.uk](https://www.swoole.co.uk)
+
+### 3. **FrankenPHP**
+- **Written in**: Go (by the Caddy web server team)
+- **Use Case**: Symfony, WordPress, Laravel
+- **Features**:
+  - Built-in web server (no Nginx needed)
+  - HTTP/3, TLS, QUIC, workers
+- **Website**: [https://frankenphp.dev](https://frankenphp.dev)
+
+---
+
+## 🧊 **Traditional PHP Application Servers** (Stateless)
+
+These servers start a new PHP process or re-parse the app on every request.
+
+### 4. **PHP-FPM (FastCGI Process Manager)**
+- **Most Common Setup**
+- Works with: **Apache**, **Nginx**
+- Easy to set up but **slow for large apps** (boot on every request)
+
+### 5. **Apache mod_php**
+- Loads PHP as a module inside Apache
+- Simple but less efficient than PHP-FPM
+- **Not recommended for production anymore**
+
+### 6. **HHVM (HipHop Virtual Machine)** – _[Deprecated for PHP]_
+- Created by Facebook
+- Used to be a high-speed PHP runtime
+- Now supports **Hack language**, not PHP
+- **Not suitable for new PHP apps**
+
+---
+
+## ⚙️ **Local Development Servers**
+
+| Server | Use Case |
+|--------|----------|
+| **Built-in PHP Server** (`php -S`) | Great for local testing |
+| **Laravel's Artisan Serve** (`php artisan serve`) | Wrapper around PHP's built-in server |
+| **Symfony CLI Server** | Symfony-specific |
+
+---
+
+## 💡 TL;DR — Which One Should You Use?
+
+| Use Case | Recommended Server |
+|----------|--------------------|
+| **High performance Laravel** | RoadRunner or Swoole (with Octane) |
+| **Symfony with native speed** | FrankenPHP or RoadRunner |
+| **Simple shared hosting** | PHP-FPM with Apache or Nginx |
+| **Microservices or APIs** | RoadRunner or Swoole |
+| **Development** | Artisan serve or `php -S` |
+
+---

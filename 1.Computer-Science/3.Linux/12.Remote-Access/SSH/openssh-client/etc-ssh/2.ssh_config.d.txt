@@ -1,0 +1,116 @@
+_________________________________________________________________________________________________________________________________________________________________________
+                                           `/etc/ssh/ssh_config.d/`
+                                            ======================
+The  directory is a feature introduced in OpenSSH 7.6 and later.
+It allows for modular SSH client configuration, meaning you can split your
+ SSH client configuration into multiple files within this directory.
+ 
+This approach is useful for organizing SSH configurations
+ more clearly, especially when there are numerous custom configurations.
+
+ How `/etc/ssh/ssh_config.d/` Works:
+-------------------------------------------------------------------------------------------------------------------------------
+1.Modular Configuration:
+   The directory contains individual configuration files that are included in the main `/etc/ssh/ssh_config` file.
+   Each file in the `ssh_config.d/` directory will be automatically read by SSH client when it starts,
+    as if its contents were directly placed in the main `ssh_config` file.
+
+2.File Naming:
+   Files in this directory typically have a `.conf` extension (e.g., `50-myconfig.conf`, `90-remotehost.conf`),
+    and they are read in lexicographical order.
+   This allows for better organization of configurations based on priority or functionality.
+
+3.Overriding Configurations:
+   Configuration options specified in files in the `ssh_config.d/` directory
+    can override those in the main `/etc/ssh/ssh_config` file, depending on the order of
+     reading (based on filename lexicographical order).
+-------------------------------------------------------------------------------------------------------------------------------
+Example Directory Structure:
+````````````````````````````````````
+/etc/ssh/
+├── ssh_config           Main configuration file
+└── ssh_config.d/
+    ├── 10-default.conf
+    ├── 20-custom.conf
+    ├── 30-office.conf
+    └── 50-remote.conf
+````````````````````````````````````
+
+In this case:
+- The `10-default.conf` might include default settings for all SSH connections.
+- The `20-custom.conf` could contain custom configurations for specific environments.
+- The `50-remote.conf` might define SSH settings for specific remote hosts.
+-------------------------------------------------------------------------------------------------------------------------------
+Key Features:
+- Modular Organization: Useful when you want to break down complex configurations into smaller, more manageable pieces.
+- Prioritization: Files are read in lexicographical order, so you can control the order in which
+  settings are applied based on filename (e.g., files starting with numbers are processed before those starting with letters).
+- Separation of Concerns: Allows system administrators to group configurations based on environment,
+  host, or use case (e.g., different settings for work, home, or specific remote servers).
+
+-------------------------------------------------------------------------------------------------------------------------------
+Example Use Case:
+Let's say you have different configurations for SSH connections to a set of remote servers.You might have:
+1.Default Settings:
+   ````````````````````````````````````bash
+   /etc/ssh/ssh_config.d/10-default.conf
+   Host 
+     User myuser
+     Port 22
+     Compression yes
+   ````````````````````````````````````
+
+2.Custom Settings for Specific Hosts:
+   ````````````````````````````````````bash
+   /etc/ssh/ssh_config.d/20-custom.conf
+   Host example.com
+     User admin
+     IdentityFile ~/.ssh/id_rsa
+     ServerAliveInterval 60
+   ````````````````````````````````````
+
+3.Configurations for Remote Servers:
+   ````````````````````````````````````bash
+   /etc/ssh/ssh_config.d/50-remote.conf
+   Host remote-host-1
+     HostName 192.168.1.100
+     Port 2222
+   Host remote-host-2
+     HostName 192.168.1.101
+     Port 2222
+   ````````````````````````````````````
+-------------------------------------------------------------------------------------------------------------------------------
+Benefits of Using `/etc/ssh/ssh_config.d/`:
+1.Better Organization: 
+        - Especially in environments where multiple SSH clients or configurations are needed,
+          separating configurations into different files helps keep things clean and manageable.
+2.Easier to Manage Changes: 
+        - When you need to modify a specific set of settings for certain hosts,
+          you can edit or add a single file without touching the main `ssh_config` file.
+3.Improved Security and Access Control: 
+        - You can separate configurations by groups, allowing certain configurations
+          to be more restrictive or tailored for particular use cases.
+
+-------------------------------------------------------------------------------------------------------------------------------
+How to Enable this Feature:
+For OpenSSH versions 7.6 and later, the configuration from `/etc/ssh/ssh_config.d/` is automatically included by default.
+However, if for any reason it's not enabled or you are using an older version,
+ you can manually include the directory in `/etc/ssh/ssh_config`:
+
+````````````````````````````````````bash
+Include /etc/ssh/ssh_config.d/.conf
+````````````````````````````````````
+
+This line ensures that all `.conf` files in the `ssh_config.d/` directory are included in the main configuration.
+
+-------------------------------------------------------------------------------------------------------------------------------
+                                                    Summary
+                                                    =======
+- `/etc/ssh/ssh_config.d/` is a directory where you can place modular configuration files for the SSH client.
+- It allows more organized and flexible management of SSH client configurations.
+- Files in this directory are read in lexicographical order, and they can override 
+  settings from the main `/etc/ssh/ssh_config` file.
+- It's a useful feature for systems with complex or varying SSH configurations,
+  and it enhances the manageability of SSH client settings.
+
+_________________________________________________________________________________________________________________________________________________________________________

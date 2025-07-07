@@ -1,0 +1,173 @@
+_________________________________________________________________________________________________________________________________________________
+                                                      To-Document-Terraform
+                                                      =====================
+
+The `output` block in Terraform is used to display information about your infrastructure after the configuration is applied.
+This is particularly useful for sharing key data, such as resource IDs, IP addresses,
+ or module results, with users or other parts of your configuration.
+
+_________________________________________________________________________________________________________________________________________________
+                                               Key Features of the `output` Block
+ ____________________________________________________________________________________________________________________
+|       Feature         |                                     Description                                            |
+|_______________________|____________________________________________________________________________________________|
+| Expose Values         | Makes resource or module attributes available for use outside the module or configuration. |
+| Outputs to Console    | Displays important values in the terminal after applying the configuration.                |
+| Dependency Resolution | Automatically waits for dependent resources to be created before resolving the output.     |
+|_______________________|____________________________________________________________________________________________|
+
+_________________________________________________________________________________________________________________________________________________
+                                                Structure of an `output` Block
+
+# Syntax:
+        ````````````````````````````````````````````````````````````````````hcl
+        output "<NAME>" {
+            value       = <EXPRESSION>
+            description = "<DESCRIPTION>"    # Optional but recommended
+            sensitive   = <BOOLEAN>          # Optional, defaults to false
+            depends_on  = [<RESOURCE>]       # Optional, used to specify explicit dependencies
+        }
+        ````````````````````````````````````````````````````````````````````
+ ________________________________________________________________________________________________________________
+|  Attribute   |                                  Description                                                    |
+|______________|_________________________________________________________________________________________________|
+| `<NAME>`     | The name of the output, which must be unique within the configuration.                          |
+| `value`      | The actual data or expression to output.                                                        |
+| `description`| A human-readable explanation of the output's purpose.                                           |
+| `sensitive`  | If `true`, hides the output value from the console to avoid leaking sensitive information.      |
+| `depends_on` | Forces the output to wait for specific resources to be created, even if not directly referenced.|
+|______________|_________________________________________________________________________________________________|
+
+_________________________________________________________________________________________________________________________________________________
+                                            Examples of the `output` Block
+
+# 1.Basic Example
+        ````````````````````````````````````````````````````````````````````hcl
+        output "vpc_id" {
+            value       = aws_vpc.main.id
+            description = "The ID of the created VPC"
+        }
+        ````````````````````````````````````````````````````````````````````
+- `value`      : Displays the ID of the created VPC.
+- `description`: Explains the purpose of the output.
+
+_________________________________________________________________________________________________________________________________________________
+# 2.Sensitive Output
+        ````````````````````````````````````````````````````````````````````hcl
+        output "db_password" {
+            value       = random_password.db.result
+            description = "The database password"
+            sensitive   = true
+        }
+        ````````````````````````````````````````````````````````````````````
+- `sensitive`: Ensures the password is not displayed in the terminal output or state file in plaintext.
+
+-----------------------------------------------------------------------------------------------------------------------------
+# 3.Output from a Module
+        ````````````````````````````````````````````````````````````````````hcl
+        module "vpc" {
+            source = "./modules/vpc"
+            cidr   = "10.0.0.0/16"
+        }
+
+        output "vpc_id" {
+            value       = module.vpc.vpc_id
+            description = "The ID of the VPC created by the module"
+        }
+        ````````````````````````````````````````````````````````````````````
+- Outputs a value from the module’s defined outputs.
+
+-----------------------------------------------------------------------------------------------------------------------------
+# 4.Using Expressions
+        ````````````````````````````````````````````````````````````````````hcl
+        output "instance_ips" {
+            value       = aws_instance.web..public_ip
+            description = "Public IPs of the web instances"
+        }
+        ````````````````````````````````````````````````````````````````````
+- Uses a for-each style expression to output all public IP addresses of instances.
+
+-----------------------------------------------------------------------------------------------------------------------------
+# 5.Explicit Dependencies
+        ````````````````````````````````````````````````````````````````````hcl
+        output "load_balancer_dns" {
+            value       = aws_lb.example.dns_name
+            description = "DNS name of the load balancer"
+            depends_on  = [aws_lb.example]
+        }
+        ````````````````````````````````````````````````````````````````````
+- Ensures the output waits for the load balancer to be fully created.
+
+_________________________________________________________________________________________________________________________________________________
+                                                    Accessing Outputs
+
+# From Root Configuration:
+Run the following command to display outputs in the terminal:
+        ````````````````````````````````````````````````````````````````````bash
+        terraform output <OUTPUT_NAME>
+        ````````````````````````````````````````````````````````````````````
+If you omit the `<OUTPUT_NAME>`, Terraform displays all outputs.
+
+-----------------------------------------------------------------------------------------------------------------------------
+# From Another Module:
+You can pass outputs from one module to another:
+        ````````````````````````````````````````````````````````````````````hcl
+        module "network" {
+            source = "./modules/network"
+        }
+
+        module "application" {
+            source = "./modules/application"
+            vpc_id = module.network.vpc_id
+        }
+        ````````````````````````````````````````````````````````````````````
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+# From Remote State:
+To access outputs from a remote state file:
+        ````````````````````````````````````````````````````````````````````hcl
+        data "terraform_remote_state" "network" {
+            backend = "s3"
+            config = {
+                bucket = "my-terraform-state"
+                key    = "network/terraform.tfstate"
+                region = "us-west-2"
+            }
+        }
+
+        output "vpc_id" {
+            value = data.terraform_remote_state.network.outputs.vpc_id
+        }
+        ````````````````````````````````````````````````````````````````````
+
+_________________________________________________________________________________________________________________________________________________
+                                                Best Practices for `output` Blocks
+
+1.Always Use Descriptions: Helps in understanding the purpose of each output.
+2.Leverage Sensitivity   : Use `sensitive = true` for any data that could be sensitive, such as passwords or private keys.
+3.Limit Exposed Values   : Only output what is necessary to avoid clutter and accidental exposure of sensitive information.
+4.Organize Outputs       : Use consistent naming conventions for easier reference (e.g., prefix outputs with a module name, like `network_vpc_id`).
+5.Validate Dependencies  : Use `depends_on` if the output depends on resources not explicitly mentioned in the `value`.
+
+_________________________________________________________________________________________________________________________________________________
+                                                Common Issues and Troubleshooting
+ ___________________________________________________________________________________________________________________________________________________________________
+|            Issue                |                          Cause                           |                          Solution                                    |
+|_________________________________|__________________________________________________________|______________________________________________________________________|
+| "Output not defined in module"  | Referencing an output not defined in the module.         | Define the output in the module using an `output` block.             |
+| Sensitive Value Displayed       | Forgetting to mark sensitive data as `sensitive`.        | Add `sensitive = true` to the output block.                          |
+| Incorrect Dependencies          | Outputs rely on resources not fully created.             | Use `depends_on` to ensure proper resource creation order.           |
+| Circular Reference Detected     | Outputs referencing each other directly or indirectly.   | Review and refactor the configuration to avoid circular dependencies.|
+|_________________________________|__________________________________________________________|______________________________________________________________________|
+
+_________________________________________________________________________________________________________________________________________________
+                                                            Summary
+
+The `output` block is an essential part of Terraform configurations,
+ allowing you to extract and expose useful information about your infrastructure.
+ 
+By following best practices and leveraging features like sensitivity and explicit dependencies,
+ you can effectively use outputs to build robust and maintainable Terraform setups.
+_________________________________________________________________________________________________________________________________________________
+

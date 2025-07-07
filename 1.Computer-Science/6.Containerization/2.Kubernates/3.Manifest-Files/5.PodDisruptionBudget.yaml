@@ -1,0 +1,52 @@
+# ----------------------------------------------------------------------------------------------------
+# Kubernetes PodDisruptionBudget (PDB): Controls Voluntary Disruptions for High Availability
+# ----------------------------------------------------------------------------------------------------
+# PURPOSE:
+# A PodDisruptionBudget ensures that a minimum number (or percentage) of replicas remain **available**
+# during voluntary disruptions (e.g. node drains, rolling updates, etc).
+#
+# It helps prevent:
+#   - Too many replicas being evicted simultaneously
+#   - Service degradation during maintenance
+#
+# You define either:
+#   - `minAvailable`: minimum number/percentage of pods that must stay available at all times.
+#   - `maxUnavailable`: max number/percentage of pods that can be evicted at once.
+#
+# NOTE:
+# - Does NOT protect against involuntary disruptions (e.g. node crashes, OOMKills).
+# - The `unhealthyPodEvictionPolicy` defines how unhealthy pods are treated during disruption.
+# ----------------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------------
+# PDB for Web App (default namespace): At least 2 pods must always be available
+# ----------------------------------------------------------------------------------------------------
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: web-minavailable
+  namespace: default             # Applies to pods in the 'default' namespace
+spec:
+  minAvailable: 2                # At least 2 pods must remain available at all times
+  selector:
+    matchLabels:
+      app: web                   # Selects pods with label app=web
+  unhealthyPodEvictionPolicy: AlwaysAllow
+                                # Allow evicting even unhealthy pods, regardless of minAvailable.
+                                # WARNING: Use carefully — you must trust your workload to tolerate this.
+
+---
+
+# ----------------------------------------------------------------------------------------------------
+# PDB for API App (prod namespace): At most 25% of pods can be unavailable at any time
+# ----------------------------------------------------------------------------------------------------
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: api-maxunavailable
+  namespace: prod                # Applies to pods in the 'prod' namespace
+spec:
+  maxUnavailable: 25%           # Up to 25% of pods may be evicted simultaneously
+  selector:
+    matchLabels:
+      app: api                  # Selects pods with label app=api

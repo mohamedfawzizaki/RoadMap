@@ -1,0 +1,64 @@
+# ======================================================================================
+# 📘 Definition: PersistentVolume (PV)
+# --------------------------------------------------------------------------------------
+# A PersistentVolume (PV) is a cluster-wide resource in Kubernetes that provides an 
+# abstraction for physical storage devices (e.g., local disk, NFS, cloud disk). 
+# PVs are provisioned by admins or dynamically via StorageClasses.
+# 
+# Key Concepts:
+# - Provisioned manually (static) or automatically (dynamic)
+# - Binds to a PersistentVolumeClaim (PVC) to be used by Pods
+# - Lives independently of any individual Pod or Namespace
+# - Lifecycle controlled by reclaim policies: Retain, Recycle (deprecated), or Delete
+# ======================================================================================
+
+apiVersion: v1
+kind: PersistentVolume  # PV is a cluster-wide resource representing a piece of storage
+metadata:
+  name: local-pv-example  # Unique name for this PersistentVolume
+spec:
+  capacity:
+    storage: 5Gi  # Total storage capacity this PV provides
+  accessModes:
+    - ReadWriteOnce  # The volume can be mounted as read-write by a single node
+    # Other options:
+    # - ReadOnlyMany: Mounted read-only by many nodes
+    # - ReadWriteMany: Mounted read-write by many nodes
+    # - ReadWriteOncePod: Mounted by one Pod only (K8s v1.22+)
+  
+  persistentVolumeReclaimPolicy: Retain  
+  # Determines what happens after the PVC using this PV is deleted
+  # - Retain: Manual cleanup required
+  # - Delete: PV will be deleted along with the underlying storage (only for dynamic provisioning)
+  # - Recycle: Deprecated, used to wipe and reuse (only for simple storage types)
+
+  storageClassName: local-storage  
+  # Used to match with a PVC's storageClassName for binding
+  # Must match the StorageClass if dynamic provisioning is not used
+
+  volumeMode: Filesystem  
+  # Indicates if volume should be formatted and mounted as a filesystem (default) or exposed as a raw block device
+  # Options:
+  # - Filesystem
+  # - Block
+
+  local:  # Alternatively, you can use hostPath below
+    path: /mnt/disks/ssd1  # Local path on the node where the volume physically resides
+
+  nodeAffinity:  # Constrains the node(s) this volume can be scheduled on
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - node-1  # Replace with actual node name
+
+  mountOptions:
+    - noatime  # Example mount option: disables access time writes
+    - nodiratime
+
+  # Uncomment this block instead of "local" above if you want to use hostPath (for testing/single-node only)
+  # hostPath:
+  #   path: /mnt/disks/test  # Host path on the node
+  #   type: DirectoryOrCreate  # Ensures the directory exists or creates it

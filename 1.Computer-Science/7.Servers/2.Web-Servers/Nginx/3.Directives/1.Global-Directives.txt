@@ -1,0 +1,63 @@
+_______________________________________________________________________________________________________________________________________
+                                📌 List of All Global Directives in Nginx (`Main Context`)  
+
+Global directives are placed outside all blocks in `nginx.conf` (before `http`, `stream`, or `events`).
+These settings control the overall behavior of Nginx.
+
+_______________________________________________________________________________________________________________________________________
+
+Here's the table with a Syntax column added:  
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 1️⃣ Process Management Directives  
+| Directive               |  Syntax                                     | Description |
+| `user`                  | `user <username> [group];`                  | Sets the user and group Nginx runs as. |
+| `worker_processes`      | `worker_processes <number>|auto;`           | Defines the number of worker processes (`auto` or number). |
+| `worker_rlimit_nofile`  | `worker_rlimit_nofile <number>;`            | Limits the number of open file descriptors per worker. |
+| `daemon`                | `daemon on|off;`                            | Runs Nginx in the background (`on`/`off`). |
+| `master_process`        | `master_process on|off;`                    | Enables master process (`on`/`off`). |
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 2️⃣ Logging Directives  
+| Directive            | Syntax                                      | Description |
+| `error_log`          | `error_log <file> <level>;`                 | Defines the main error log file and logging level (`warn`, `error`, `debug`). |
+| `debug_points`       | `debug_points abort|stop;`                  | Controls debugging breakpoints (`abort`, `stop`). |
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 3️⃣ Performance & Optimization Directives  
+| Directive            | Syntax                                     | Description |
+| `worker_priority`    | `worker_priority <priority>;`              | Sets worker process priority (`-20` to `19`). |
+| `worker_cpu_affinity`| `worker_cpu_affinity <mask>;`              | Binds workers to specific CPU cores. |
+| `worker_rlimit_core` | `worker_rlimit_core <size>;`               | Limits core dump file size (for debugging). |
+| `timer_resolution`   | `timer_resolution <time>;`                 | Defines timer granularity (affects time-based events). |
+| `lock_file`          | `lock_file <path>;`                        | Sets the lock file path used by accept mutex. |
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 4️⃣ File System & Path Directives  
+| `pid`             | `pid <file-path>;`                   | Defines the file storing Nginx’s process ID. |
+| `include`         | `include <file-path>;`               | Includes external configuration files. |
+| `env`             | `env <variable> [value];`            | Defines environment variables for Nginx workers. |
+
+_______________________________________________________________________________________________________________________________________
+
+ 🔹 5️⃣ Security & Resource Management  
+| `rlimit_nofile`      | `rlimit_nofile <number>;`                  | Limits open files for worker processes. |
+| `rlimit_core`        | `rlimit_core <size>;`                      | Limits the core dump file size for debugging. |
+
+_______________________________________________________________________________________________________________________________________
+
+
+ 📌 Example: Basic Global Directives in `nginx.conf`
+````````````````````````````````````````````````````````````````````nginx
+user  www-data;
+worker_processes  auto;
+error_log  /var/log/nginx/error.log warn;
+pid        /var/run/nginx.pid;
+worker_rlimit_nofile 65535;
+````````````````````````````````````````````````````````````````````
+
+_______________________________________________________________________________________________________________________________________

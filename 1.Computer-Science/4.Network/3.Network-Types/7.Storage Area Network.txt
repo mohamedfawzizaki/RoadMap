@@ -1,0 +1,13 @@
+_______________________________________________________________________________________________________________________________________
+Storage Area Network (SAN)
+        - A Storage Area Network is a high-speed network
+          dedicated to connecting storage devices like disk arrays and tape libraries.
+
+        Characteristics:
+            - Optimized for large-scale data storage and retrieval.
+            - Provides block-level storage to servers.
+
+        Examples:
+            - Data centers for cloud computing.
+            - Enterprise-level backup systems.
+_______________________________________________________________________________________________________________________________________

@@ -1,0 +1,89 @@
+___________________________________________________________________________________________________________________________________ 
+                                                /var/lib/mysql
+                                                ==============
+
+ Where MySQL Stores Data on Ubuntu?
+By default, MySQL stores all its databases, tables, indexes, and logs in `/var/lib/mysql/` on Ubuntu-based systems.
+
+___________________________________________________________________________________________________________________________________
+                                            Structure of `/var/lib/mysql/`
+When you list the contents of `/var/lib/mysql`, you'll see:
+``````````````````````````````````````````````````````````````sh
+sudo ls -l /var/lib/mysql
+``````````````````````````````````````````````````````````````
+
+ Common Directories and Files
+1. Database Directories  
+   Each database has its own directory inside `/var/lib/mysql/`, named after the database:
+   ``````````````````````````````````````````````````````````````sh
+   /var/lib/mysql/my_database/
+   ``````````````````````````````````````````````````````````````
+   Inside each database directory, you'll find:
+   - `.frm` files → Table structure (for older MySQL versions)
+   - `.ibd` files → Data and indexes (for InnoDB tables)
+   - `.MYD` & `.MYI` files → Data and indexes (for MyISAM tables)
+
+2. MySQL System Database (`mysql/`)
+   Stores user accounts, privileges, and other internal metadata.
+   ``````````````````````````````````````````````````````````````sh
+   /var/lib/mysql/mysql/
+   ``````````````````````````````````````````````````````````````
+
+3. Transaction Logs (`ib_logfile`)
+   These store InnoDB transaction logs.
+   ``````````````````````````````````````````````````````````````sh
+   /var/lib/mysql/ib_logfile0
+   /var/lib/mysql/ib_logfile1
+   ``````````````````````````````````````````````````````````````
+
+4. Global Tablespace (`ibdata1`)
+   - This file is used for InnoDB storage and contains metadata and undo logs.
+   ``````````````````````````````````````````````````````````````sh
+   /var/lib/mysql/ibdata1
+   ``````````````````````````````````````````````````````````````
+
+5. Binary Logs (`mysql-bin.`)
+   - Stores replication logs and transaction history (if enabled).
+   ``````````````````````````````````````````````````````````````sh
+   /var/lib/mysql/mysql-bin.000001
+   ``````````````````````````````````````````````````````````````
+
+6. Error Log (`error.log`)
+   - Logs MySQL server errors.
+   ``````````````````````````````````````````````````````````````sh
+   /var/lib/mysql/error.log
+   ``````````````````````````````````````````````````````````````
+
+___________________________________________________________________________________________________________________________________
+                                        How to Check Data for a Specific Database?
+You can inspect a specific database directory:
+``````````````````````````````````````````````````````````````sh
+sudo ls -l /var/lib/mysql/my_database/
+``````````````````````````````````````````````````````````````
+To check the size of a database:
+``````````````````````````````````````````````````````````````sh
+sudo du -sh /var/lib/mysql/my_database/
+``````````````````````````````````````````````````````````````
+
+___________________________________________________________________________________________________________________________________
+                                               Changing MySQL Data Directory
+If you need to move the MySQL data directory to another location (e.g., `/mnt/mysql_data`), you need to:
+1. Stop MySQL  
+   ``````````````````````````````````````````````````````````````sh
+   sudo systemctl stop mysql
+   ``````````````````````````````````````````````````````````````
+2. Copy Data to New Location  
+   ``````````````````````````````````````````````````````````````sh
+   sudo cp -R /var/lib/mysql /mnt/mysql_data
+   ``````````````````````````````````````````````````````````````
+3. Change MySQL Configuration (`mysqld.cnf`)  
+   Edit `/etc/mysql/mysql.conf.d/mysqld.cnf`:
+   ``````````````````````````````````````````````````````````````ini
+   datadir = /mnt/mysql_data
+   ``````````````````````````````````````````````````````````````
+4. Set Permissions and Restart  
+   ``````````````````````````````````````````````````````````````sh
+   sudo chown -R mysql:mysql /mnt/mysql_data
+   sudo systemctl start mysql
+   ``````````````````````````````````````````````````````````````
+___________________________________________________________________________________________________________________________________

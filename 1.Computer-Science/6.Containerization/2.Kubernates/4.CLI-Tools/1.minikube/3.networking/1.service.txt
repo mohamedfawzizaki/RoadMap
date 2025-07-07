@@ -1,0 +1,17 @@
+______________________________________________________________________________________________________________________________________
+                                        https://minikube.sigs.k8s.io/docs/commands/service/
+______________________________________________________________________________________________________________________________________
+                                            minikube service [flags] SERVICE
+______________________________________________________________________________________________________________________________________
+      --all                Forwards all services in a namespace (defaults to "false")
+      --format string      Format to output service URL in. This format will be applied to each url individually and they will be printed one at a time. (default "http://{{.IP}}:{{.Port}}")
+      --https              Open the service URL with https instead of http (defaults to "false")
+      --interval int       The initial time interval for each check that wait performs in seconds (default 1)
+  -n, --namespace string   The service namespace (default "default")
+      --url                Display the Kubernetes service URL in the CLI instead of opening it in the default browser
+      --wait int           Amount of time to wait for a service in seconds (default 2)
+  -p, --profile string     The name of the minikube VM being used. This can be set to allow having multiple instances of minikube independently. (default "minikube")
+      --rootless           Force to use rootless driver (docker and podman driver only)
+      --user string        Specifies the user executing the operation. Useful for auditing operations executed by 3rd party tools. Defaults to the operating system username.
+  
+

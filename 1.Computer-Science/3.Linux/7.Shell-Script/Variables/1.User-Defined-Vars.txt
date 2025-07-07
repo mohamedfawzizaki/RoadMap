@@ -1,0 +1,185 @@
+____________________________________________________________________________________________________________________________________________________________
+                                                     User-Defined Variables
+                                                     ======================
+            declare -p
+
+User-defined variables are custom variables that users
+ can create to store and manipulate data within shell sessions or scripts. 
+ 
+These variables are local to the current shell unless explicitly exported.
+
+________________________________________________________________________________________________________________________________
+                                              1. Characteristics of User-Defined Variables
+
+- Name: Must start with a letter or underscore (`_`) and can contain letters, numbers, and underscores. 
+        Avoid starting with numbers or special characters.
+
+- Case Sensitivity  : Variable names are case-sensitive (`VAR` ≠ `var`).
+- Scope             : By default, variables are local to the current shell session.
+- Value Assignment  : Assign values without spaces around the `=` operator.
+
+________________________________________________________________________________________________________________________________
+                                              2. Declaring User-Defined Variables
+- Syntax:
+          ``````````````````````````````````````````bash
+          VARIABLE_NAME=value
+          ``````````````````````````````````````````
+- Examples:
+          ``````````````````````````````````````````bash
+          NAME="John"
+          AGE=30
+          CITY="New York"
+          ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                    3. Accessing Variables
+Use the `$` symbol to retrieve the value of a variable.
+- Examples:
+          ``````````````````````````````````````````bash
+          echo $NAME   # Outputs: John
+          echo $AGE    # Outputs: 30
+          ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                 4. Updating Variable Values
+You can update the value of a variable at any time by reassigning it.
+- Example:
+          ``````````````````````````````````````````bash
+          NAME="Alice"
+          echo $NAME   # Outputs: Alice
+          ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                 5. Unsetting Variables
+Use the `unset` command to remove a variable.
+- Example:
+          ``````````````````````````````````````````bash
+          unset NAME
+          echo $NAME   # Outputs nothing
+          ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                 6. Common Use Cases
+1. Storing Temporary Data:
+          ``````````````````````````````````````````bash
+          TEMP_DIR="/tmp"
+          echo "Files will be stored in $TEMP_DIR"
+          ``````````````````````````````````````````
+
+2. Dynamic Data in Scripts:
+          ``````````````````````````````````````````bash
+          FILE="backup_$(date +%F).tar.gz"
+          echo "Creating file: $FILE"
+          ``````````````````````````````````````````
+
+3. Reusing Values:
+          ``````````````````````````````````````````bash
+          BASE_URL="https://example.com/api"
+          curl "$BASE_URL/resource"
+          ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                            7. User-Defined Variable Rules
+- No Spaces Around `=`:
+          ``````````````````````````````````````````bash
+          VAR = value    # Incorrect
+          VAR=value      # Correct
+          ``````````````````````````````````````````
+- Avoid Reserved Keywords: Don’t use shell keywords or system variables (`PATH`, `HOME`, etc.) as variable names.
+- Quotes for Strings with Spaces: Use double or single quotes for values containing spaces.
+          ``````````````````````````````````````````bash
+          GREETING=Hello World    # Incorrect
+          GREETING="Hello World"  # Correct
+          ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                            8. Exporting User-Defined Variables
+To make variables accessible to child processes, use the `export` command.
+- Example:
+          ``````````````````````````````````````````bash
+          export GREETING="Hello World"
+          ``````````````````````````````````````````
+  Now, the variable `GREETING` is available to subprocesses.
+
+
+- To export a function to child processes, use the -f option:
+          ``````````````````````````````````````````bash
+          my_function() {
+          echo "This is a function."
+          }
+          export -f my_function
+          ``````````````````````````````````````````bash
+
+________________________________________________________________________________________________________________________________
+                                            9. Persistent User-Defined Variables
+To make variables persistent across sessions, add them to configuration files:
+- For Current User:
+  - Add to `~/.bashrc` or `~/.bash_profile`.
+          ``````````````````````````````````````````bash
+          MY_VAR="Persistent Value"
+          export MY_VAR
+          ``````````````````````````````````````````
+  - Reload the file:
+          ``````````````````````````````````````````bash
+          source ~/.bashrc
+          ``````````````````````````````````````````
+
+- For All Users:
+  - Add to `/etc/environment` or `/etc/profile`.
+
+________________________________________________________________________________________________________________________________
+                                              10. Examples of User-Defined Variables
+
+Simple Variable Assignment
+          ``````````````````````````````````````````bash
+          FRUIT="Apple"
+          echo "My favorite fruit is $FRUIT"
+          ``````````````````````````````````````````
+
+Dynamic Variable
+          ``````````````````````````````````````````bash
+          DATE=$(date +%F)
+          echo "Today's date is $DATE"
+          ``````````````````````````````````````````
+
+Using in a Script
+          ``````````````````````````````````````````bash
+          #!/bin/bash
+          NAME="John"
+          echo "Hello, $NAME!"
+          ``````````````````````````````````````````
+
+Arithmetic Operations
+          ``````````````````````````````````````````bash
+          NUM1=5
+          NUM2=10
+          SUM=$((NUM1 + NUM2))
+          echo "The sum is $SUM"
+          ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                     11. Debugging Variables
+- Show All Variables:
+          ``````````````````````````````````````````bash
+          set
+          ``````````````````````````````````````````
+- Display a Specific Variable:
+          ``````````````````````````````````````````bash
+          echo $VARIABLE_NAME
+          ``````````````````````````````````````````
+- Check Exported Variables:
+          ``````````````````````````````````````````bash
+          printenv
+          ``````````````````````````````````````````
+
+________________________________________________________________________________________________________________________________
+                                                    12. Best Practices
+1. Use descriptive names to avoid confusion.
+          ``````````````````````````````````````````bash
+          FILE_PATH="/var/log/syslog"
+          ``````````````````````````````````````````
+2. Always quote values containing spaces.
+3. Export only when necessary to prevent accidental overrides.
+4. Avoid overriding system variables unless required.
+
+________________________________________________________________________________________________________________________________

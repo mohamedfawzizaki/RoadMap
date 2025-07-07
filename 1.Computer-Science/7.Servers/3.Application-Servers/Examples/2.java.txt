@@ -1,0 +1,82 @@
+Great question! The Java ecosystem has **a wide variety of application servers**, from **lightweight** embedded ones to **full-featured enterprise-grade** servers. Here's a breakdown:
+
+---
+
+## 🚀 **Popular Java Application Servers**
+
+### 1. **Apache Tomcat** 🐱
+- **Type**: Servlet Container (Web server)
+- **Use Case**: Web apps (JSP, Servlets, Spring MVC)
+- **Lightweight, fast, widely used**
+- **Not a full Java EE (Jakarta EE) server**
+- **Website**: [https://tomcat.apache.org](https://tomcat.apache.org)
+
+---
+
+### 2. **Jetty**
+- **Type**: Web server & Servlet container
+- **Use Case**: Lightweight microservices, embedded in apps (e.g. Eclipse IDE)
+- **Very fast & embeddable**
+- **Great for programmatic configuration**
+- **Website**: [https://www.eclipse.org/jetty/](https://www.eclipse.org/jetty/)
+
+---
+
+### 3. **Undertow**
+- **Type**: Lightweight, embeddable web server
+- **Developed by**: Red Hat (used in **WildFly**)
+- **Asynchronous, non-blocking I/O**
+- **Very fast and scalable**
+- **Used by frameworks like Quarkus**
+- **Website**: [https://undertow.io](https://undertow.io)
+
+---
+
+### 4. **WildFly (formerly JBoss AS)**
+- **Type**: Full Jakarta EE (Java EE) Application Server
+- **Use Case**: Enterprise Java (EJB, CDI, JPA, JMS, etc.)
+- **Supports clustering, transactions, security**
+- **Website**: [https://www.wildfly.org](https://www.wildfly.org)
+
+---
+
+### 5. **Payara Server / Payara Micro**
+- **Type**: Full Jakarta EE server (fork of GlassFish)
+- **Use Case**: Enterprise-grade cloud-native applications
+- **Payara Micro**: Lightweight, suited for microservices
+- **Website**: [https://www.payara.fish](https://www.payara.fish)
+
+---
+
+### 6. **GlassFish**
+- **Type**: Jakarta EE reference implementation
+- **Good for learning / testing EE specs**
+- **Less commonly used in production now**
+- **Website**: [https://javaee.github.io/glassfish/](https://javaee.github.io/glassfish/)
+
+---
+
+## ⚡ Embedded Web Servers (in Frameworks)
+
+Modern Java frameworks come with **embedded servers** so you don’t need to install one separately:
+
+| Framework      | Embedded Server | Notes |
+|----------------|------------------|-------|
+| **Spring Boot** | Tomcat (default), Jetty, or Undertow | Super popular, production-ready |
+| **Micronaut**   | Netty or Jetty   | Fast startup, low memory, good for microservices |
+| **Quarkus**     | Undertow         | Kubernetes-native Java |
+| **Vert.x**      | Netty            | Reactive, event-driven apps |
+
+---
+
+## 🧠 When to Use What?
+
+| Use Case | Recommended Server |
+|----------|--------------------|
+| Spring Boot / REST API | **Embedded Tomcat/Jetty** (via Spring Boot) |
+| Microservices | **Payara Micro**, **Micronaut**, **Quarkus**, **Vert.x** |
+| Jakarta EE app | **WildFly** or **Payara Server** |
+| Lightweight embeddable | **Jetty** or **Undertow** |
+| Learning / testing specs | **GlassFish** |
+
+---

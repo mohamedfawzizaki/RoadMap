@@ -1,0 +1,31 @@
+#_________________________________________________________________________________________________________________________________________________________________________# 
+                                                Disk and Storage Management
+                                                =========================== 
+
+             __________________________________________________________________________________________________________________________________________________
+            | Command  |              Example                                 |                                        Usage                                                                |
+            |__________|______________________________________________________|___________________________________________________________________________                                |
+            | df       | df -h                                                | Report disk space usage in human-readable format.                                                           |
+            | lsblk    | lsblk -f                                             | List block devices and their filesystems.                                                                  |
+            | du       | du -sh /path/to/dir                                  | Estimate file and directory space usage (human-readable).                                                  |
+            | iotop    | sudo iotop                                           | Monitor disk I/O operations in real-time.                                                                  |
+            |--------------------------------------------------------------------------------------------------------------------------------------------------|
+            | fdisk    | sudo fdisk /dev/sda                                  | Partition table manipulator for Linux (interactive tool).                                                  |
+            | parted   | sudo parted /dev/sda                                 | Command-line tool to manage disk partitions.                                                               |
+            |--------------------------------------------------------------------------------------------------------------------------------------------------|
+            | mkfs     | sudo mkfs.ext4 /dev/sda1                             | Create an ext4 file system on a device.                                                                    |
+            | fsck     | sudo fsck /dev/sda1                                  | File system consistency check and repair.                                                                  |
+            |--------------------------------------------------------------------------------------------------------------------------------------------------|
+            | mount    | sudo mount /dev/sda1 /mnt                            | Mount a file system to a specified directory.                                                              |
+            | umount   | sudo umount /mnt                                     | Unmount a file system.                                                                                     |
+            |--------------------------------------------------------------------------------------------------------------------------------------------------|
+            | lvcreate | sudo lvcreate -L 10G -n lv_name vg_name              | Create a logical volume of size 10GB.                                                                      |
+            | lvextend | sudo lvextend -L +5G /dev/vg_name/lv_name            | Extend the size of a logical volume by 5GB.                                                                |
+            | vgcreate | sudo vgcreate vg_name /dev/sda1                      | Create a volume group using a physical volume.                                                             |
+            |--------------------------------------------------------------------------------------------------------------------------------------------------|
+            | vgextend | sudo vgextend vg_name /dev/sdb1                      | Add a physical volume to an existing volume group.                                                         |
+            | pvcreate | sudo pvcreate /dev/sda1                              | Create a physical volume from a partition or device.                                                       |
+            |__________|______________________________________________________|___________________________________________________________________________                                |
+
+ 
+#_________________________________________________________________________________________________________________________________________________________________________# 
