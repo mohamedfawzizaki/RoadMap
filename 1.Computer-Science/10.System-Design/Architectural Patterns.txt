@@ -1,0 +1,224 @@
+______________________________________________________________________________________________________________________________________________________
+                                                 ===============================================
+                                                 =             Architectural Patterns           =
+                                                 ===============================================
+                                                 =   ______________________________________     =
+                                                 =  |  1.Deployment Patterns:              |    =
+                                                 =  |               1.Server-Based.        |    =
+                                                 =  |               2.Serverless.          |    =
+                                                 =  |               3.Event-Driven.        |    =
+                                                 =  |--------------------------------------|    =
+                                                 =  |  2.APP Design Patterns:              |    =
+                                                 =  |               1.Monolithic.          |    =
+                                                 =  |               2.Microservices.       |    =
+                                                 =  |--------------------------------------|    =       
+                                                 =  |  3.APP Purpose Patterns:             |    =
+                                                 =  |               1.Single-Vendor/Tenant.|    =     
+                                                 =  |               2.Multi-Vendor/Tenant. |    =   
+                                                 =  |--------------------------------------|    =       
+                                                 =  |  4.APP Flow Patterns:                |    =
+                                                 =  |               1.MVC.                 |    =     
+                                                 =  |               2.HMVC.                |    =    
+                                                 =  |--------------------------------------|    =
+                                                 =  |  5.DB Patterns:                      |    =
+                                                 =  |               1.Single-DB.           |    =    
+                                                 =  |               2.Multi-DB.            |    =                               
+                                                 =  |--------------------------------------|    =
+                                                 =  |  6.Code Design:                      |    =
+                                                 =  |               1.OOP.                 |    =
+                                                 =  |               2.DRY-KISS.            |    =
+                                                 =  |               3.SOLID Principles.    |    =
+                                                 =  |               4.Design Patterns.     |    =
+                                                 =  |______________________________________|    =
+                                                 =                                              =
+                                                 ================================================
+                     
+                     
+______________________________________________________________________________________________________________________________________________________
+
+                                                                     Monolithic App                                                                                     
+                                                                           |                                                                                                    
+                                                                           |                                                                                                   
+                                      ____________________________________/ \____________________________________                                                                   
+                                     |                                     .                                     |                                                              
+                                     |                                     .                                     |                                                              
+                            Single-Vendor/Tenant                           .                            Multi-Vendor/Tenant                                                 
+                                     |                                     .                                     |                                                                 
+                                     |                                     .                                     |                                                                 
+                                     |                                     .                                     |                                                                                    
+                                     / \                                    .                                    / \                                                               
+                      ______________/   \______________                    .                     ______________/   \______________ 
+                     |                                 |                   .                    |                                 |
+                     |                                 |                   .                    |                                 |
+                    MVC                               HMVC                 .                   MVC                              HMVC            
+                     |                                 |                   .                    |                                 | 
+                     |                                 |                   .                    |                                 | 
+                    / \                               / \                  .                   / \                               / \      
+             ______/   \______                 ______/   \______           .            ______/   \______                 ______/   \______ 
+            |                 |               |                 |          .           |                 |               |                 |         
+            |                 |               |                 |          .           |                 |               |                 |          
+         Single-DB        Multi-DB          Single-DB        Multi-DB      .        Single-DB        Multi-DB          Single-DB        Multi-DB
+            |                                 |                            .           |                                 |
+            |                                 |                            .           |                                 |
+           / \                               / \                           .          / \                               / \
+    ______/   \______                 ______/   \______                    .   ______/   \______                 ______/   \______
+   |                 |               |                 |                   .  |                 |               |                 |
+   |                 |               |                 |                   .  |                 |               |                 |
+Single-Schema    Multi-Schema   Single-Schema     Multi-Schema            . Single-Schema  Multi-Schema     Single-Schema     Multi-Schema
+
+______________________________________________________________________________________________________________________________________________________
+
+
+
+
+
+
+
+ 
+
+### **1. Deployment Patterns**
+
+These patterns define how the application is deployed and managed across servers or cloud environments.
+
+#### **1.1 Server-Based Architecture**
+In server-based architecture, the application and its resources are hosted on physical or virtual servers. These servers manage the resources required by the application, including compute power, storage, and networking.
+
+- **Characteristics**: 
+  - Traditional, often used in on-premise setups or managed cloud services.
+  - The server is responsible for both running the application and managing the resources.
+  - Requires manual scaling, monitoring, and provisioning of hardware.
+  
+- **Example Use Case**: On-premise enterprise applications, legacy systems, or dedicated cloud instances.
+
+#### **1.2 Serverless Architecture**
+In serverless architecture, the cloud provider manages the infrastructure, and the application is composed of stateless functions that are triggered by events. Developers do not need to manage the servers; they only deploy the code.
+
+- **Characteristics**:
+  - No need to manage servers, automatic scaling based on demand.
+  - Functions are triggered by events (e.g., HTTP requests, database updates).
+  - Pay-per-use model (only pay for the actual execution time or number of requests).
+  
+- **Example Use Case**: Event-driven microservices, APIs, data processing.
+
+---
+
+### **2. App Design Patterns**
+
+These patterns define how the overall application is structured and organized.
+
+#### **2.1 Monolithic Architecture**
+A monolithic architecture involves a single, unified application where all components (UI, business logic, data access) are tightly integrated and deployed as a single unit.
+
+- **Characteristics**:
+  - All components live in a single codebase.
+  - Easy to develop initially but becomes harder to scale and maintain as it grows.
+  - Requires scaling the entire application even if only one part is under heavy load.
+  
+- **Example Use Case**: Small to medium-sized applications with straightforward requirements.
+
+#### **2.2 Microservices Architecture**
+In microservices architecture, the application is divided into smaller, loosely-coupled services that can be developed, deployed, and scaled independently.
+
+- **Characteristics**:
+  - Each service is autonomous and communicates with others via well-defined APIs.
+  - Can use different technologies for each service.
+  - Services can be scaled independently based on demand.
+  
+- **Example Use Case**: Complex applications, large-scale systems requiring high scalability and flexibility.
+
+---
+
+### **3. App Purpose Patterns**
+
+These patterns define the purpose of the application and how it is designed to cater to specific audiences.
+
+#### **3.1 Single-Vendor/Tenant Architecture**
+A single-vendor or single-tenant architecture is where the application is designed to serve the needs of a single client or organization. The application and its data are dedicated to that specific customer.
+
+- **Characteristics**:
+  - One instance of the application for one customer.
+  - Data is isolated and private to that customer.
+  - Customization is easier as each tenant has its own dedicated environment.
+  
+- **Example Use Case**: Enterprise applications or SaaS products where each customer gets their own instance of the app.
+
+#### **3.2 Multi-Vendor/Tenant Architecture**
+A multi-vendor or multi-tenant architecture allows a single instance of the application to serve multiple customers (tenants), each with their own isolated data and possibly varying functionality.
+
+- **Characteristics**:
+  - One instance of the application for multiple customers.
+  - Data is logically separated, but resources (e.g., compute, storage) are shared.
+  - Cost-effective and easier to maintain compared to multiple single-tenant deployments.
+  
+- **Example Use Case**: SaaS platforms, shared cloud environments.
+
+---
+
+### **4. App Code Patterns**
+
+These patterns define how the application’s codebase is structured in terms of interaction between components.
+
+#### **4.1 MVC Architecture (Model-View-Controller)**
+MVC is a design pattern where the application is divided into three interconnected components: Model (data), View (UI), and Controller (business logic).
+
+- **Characteristics**:
+  - Separation of concerns: each component has a distinct responsibility.
+  - Makes it easier to manage and maintain code, as UI, logic, and data are separated.
+  - Suitable for traditional web applications with server-rendered views.
+  
+- **Example Use Case**: Web applications with clear UI, business logic, and data layers.
+
+#### **4.2 HMVC Architecture (Hierarchical Model-View-Controller)**
+HMVC is an extension of MVC where the application is organized hierarchically into sub-applications or modules. Each module follows the MVC pattern but can be nested inside others.
+
+- **Characteristics**:
+  - Improved scalability and maintainability by breaking down complex applications into modular components.
+  - Each module has its own MVC architecture, allowing for better encapsulation.
+  - More suitable for larger applications.
+  
+- **Example Use Case**: Large enterprise applications or complex web apps that need modularity.
+
+---
+
+### **5. App DB Patterns**
+
+These patterns define how the application interacts with databases and stores data.
+
+#### **5.1 Single-DB Architecture**
+A single-database architecture is where the entire application uses a single database to store all data.
+
+- **Characteristics**:
+  - Simpler architecture with a single point of access for data.
+  - Easier to manage and backup data, but could become a bottleneck if the application grows.
+  - May face scalability issues if the data grows significantly.
+  
+- **Example Use Case**: Small to medium-sized applications with relatively simple data requirements.
+
+#### **5.2 Multi-DB Architecture**
+In a multi-database architecture, different parts of the application may use different databases, or the application may be split across multiple databases for scalability and performance.
+
+- **Characteristics**:
+  - More complex than a single-DB architecture, but allows for better performance and scalability.
+  - Different databases may be optimized for different tasks (e.g., NoSQL for unstructured data, relational DB for transactional data).
+  - Requires additional effort for data consistency and integration across databases.
+  
+- **Example Use Case**: Large-scale applications with diverse data needs (e.g., transactional data, analytics data).
+
+---
+
+### Summary of Patterns:
+
+| **Category**          | **Pattern**                 | **Description**                                                           |
+|-----------------------|-----------------------------|---------------------------------------------------------------------------|
+| **Deployment**        | Server-Based                | Traditional server-based hosting with manual management.                  |
+|                       | Serverless                  | Cloud-managed, event-driven architecture without managing servers.       |
+| **App Design**        | Monolithic                  | Single unified application with tightly coupled components.              |
+|                       | Microservices               | Decentralized, loosely coupled services that can scale independently.     |
+| **App Purpose**       | Single-Vendor/Tenant        | Application dedicated to a single client or organization.                |
+|                       | Multi-Vendor/Tenant         | Single application serving multiple customers with isolated data.        |
+| **App Code**          | MVC                         | Divides application into Model, View, and Controller for separation of concerns. |
+|                       | HMVC                        | Extends MVC with a hierarchical structure for modularity.                |
+| **App DB**            | Single-DB                   | Single database storing all application data.                             |
+|                       | Multi-DB                    | Multiple databases for different application components.                  |
+
+These patterns provide a comprehensive guide for structuring applications depending on the use case, scale, and technology stack involved. The choice of architecture is heavily influenced by the specific requirements of the project, including scalability, flexibility, performance, and resource management.

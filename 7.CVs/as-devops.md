@@ -20,8 +20,9 @@ DevOps Engineer with experience in **infrastructure automation**, **cloud-native
 - **Containers & Orchestration:** Docker, Kubernetes (EKS, Minikube), Helm.
 - **Infrastructure as Code:** Terraform, Vagrant. 
 - **Configuration Management:** Ansible.
-- **Version Control**: Git, Github.
-- **CI/CD:** GitHub Actions, Jenkins, GitHub Webhooks.  
+- **Version Control:** Git, Github.
+- **CI/CD:** GitHub Actions, Jenkins, GitHub Webhooks.
+- **Message Brokers:** RabbitMQ, Kafka, AWS SQS, AWS SNS.  
 - **Monitoring & Observibility:** Prometheus/Grafana, CloudWatch.  
 - **Cloud (AWS):** EC2, S3, RDS, EKS, IAM, CloudWatch.  
 - **Networking:** Service meshes, load balancing (NGINX), distributed systems.  

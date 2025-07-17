@@ -8,7 +8,7 @@
 
 ## **Professional Summary**  
 
-Backend Engineer with 3+ years of expertise in **PHP/Laravel backend systems**, specializing in **high-performance API development**, **e-commerce solutions**, and **scalable architecture**. Proven track record in building secure, maintainable systems using **SOLID principles**, **DDD**, **OOP**, **Design Patterns**, and **clean architecture**. Combines deep backend development skills with DevOps proficiency to deliver optimized, production-ready solutions. Passionate about **code quality** (PSR standards), **database optimization**, and **test-driven development**. Strong DevOps integration background with **Docker**, **Kubernetes**, **CI/CD pipelines**, and cloud platforms (**AWS**).
+Backend Engineer with experience in **PHP/Laravel backend systems**, specializing in **high-performance API development**, **e-commerce solutions**, and **scalable architecture**. Proven track record in building secure, maintainable systems using **SOLID principles**, **DDD**, **OOP**, **Design Patterns**, and **clean architecture**. Combines deep backend development skills with DevOps proficiency to deliver optimized, production-ready solutions. Passionate about **code quality** (PSR standards), **database optimization**, and **test-driven development**. Strong DevOps integration background with **Docker**, **Kubernetes**, **CI/CD pipelines**, and cloud platforms (**AWS**).
 
 
 ---
@@ -17,17 +17,24 @@ Backend Engineer with 3+ years of expertise in **PHP/Laravel backend systems**, 
 
 ### **Core Backend Expertise**  
 - **Languages:** PHP 8.x, Laravel 10+, SQL, Bash  
-- **API Development:** RESTful APIs, OpenAPI/Swagger, Webhooks  
+- **API Development:** RESTful APIs, Webhooks  
 - **Architecture:** Microservices, Domain-Driven Design (DDD), CQRS, Clean Architecture, MVC, Repository Pattern
 - **Database Engineering:** MySQL (Query Optimization, Indexing, Replication), Redis (Caching, Queues)  
 - **Code Quality:** OOP, Algorithms, DataStructures, SOLID, DRY, KISS Principle PSR Standards, Design Patterns  
 - **Version Control**: Git, Github.
+- **Message Brokers:** RabbitMQ, Kafka, AWS SQS, AWS SNS.  
 
 ### **DevOps Integration**  
-- **Infrastructure:** Docker, Kubernetes, Terraform  
-- **CI/CD:** GitHub Actions, Jenkins  
-- **Cloud:** AWS (EC2, S3, RDS, CloudWatch)  
-- **Monitoring:** Prometheus/Grafana
+- **Virtualization:** VirtualBox, Vagrant.
+- **Containers & Orchestration:** Docker, Kubernetes (EKS, Minikube), Helm.
+- **Infrastructure as Code:** Terraform, Vagrant. 
+- **Configuration Management:** Ansible.
+- **Version Control:** Git, Github.
+- **CI/CD:** GitHub Actions, Jenkins, GitHub Webhooks.
+- **Monitoring & Observibility:** Prometheus/Grafana, CloudWatch.  
+- **Cloud (AWS):** EC2, S3, RDS, EKS, IAM, CloudWatch.  
+- **Networking:** Service meshes, load balancing (NGINX), distributed systems.  
+- **Security:** IAM, Secrets Management, SSL, Firewalls, Input validation, rate limiting, API token management, JWT, CSRF/XSS protection
 
 ### **Security & Performance**  
 - **API Security:** OAuth2 (Passport), JWT, Rate Limiting  
@@ -104,7 +111,7 @@ A modular and extensible Laravel project for integrating multiple payment gatewa
 
 **Faculty of Medicine**, Sohag University, Egypt  
 *2019 – 2025*  
-*Note: Self-taught DevOps/Cloud engineering through projects and certifications while completing medical degree.* 
+*Note: Self-taught Backend engineering through projects and certifications while completing medical degree.* 
 
 ---
 

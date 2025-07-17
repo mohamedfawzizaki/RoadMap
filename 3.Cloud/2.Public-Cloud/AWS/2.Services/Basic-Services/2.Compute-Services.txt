@@ -1,0 +1,12 @@
+_______________________________________________________________________________________________________________________________________
+
+
+
+ALL Services: 
+    - https://docs.aws.amazon.com/whitepapers/latest/aws-overview/introduction.html
+    - https://docs.aws.amazon.com/?nc2=h_rsc_lrn_docs
+
+EC2: https://docs.aws.amazon.com/ec2/?icmpid=docs_homepage_featuredsvcs
+
+
+_______________________________________________________________________________________________________________________________________
